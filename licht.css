@@ -153,3 +153,34 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .kz-paneel{animation:kzIn .45s .1s cubic-bezier(.2,.8,.2,1) both}@keyframes kzIn{from{opacity:0;transform:translateY(24px)}}
 .appgeest{animation:none!important;transition:none!important}
 .appgeest *{animation:none!important;transition:none!important}
+/* ===== Toverpoeder-ampul ===== */
+.ampul{position:relative;width:30px;height:48px;flex:0 0 auto;filter:drop-shadow(0 0 6px rgba(197,138,255,.6))}
+.ampul svg{width:100%;height:100%;overflow:visible}.apvul{transition:y .6s cubic-bezier(.2,.8,.2,1)}
+.apglim circle{animation:apglim 1.6s ease-in-out infinite}@keyframes apglim{50%{opacity:.2}}
+.ampul.tik{animation:aptik .25s ease}@keyframes aptik{50%{transform:scale(1.15) rotate(-6deg)}}
+.ampul.vult svg{filter:drop-shadow(0 0 10px #e0b0ff)}
+.ampul.volglans{animation:apvol 2.5s ease}@keyframes apvol{0%,100%{filter:drop-shadow(0 0 6px rgba(197,138,255,.6))}20%,60%{filter:drop-shadow(0 0 18px #ffe58a) drop-shadow(0 0 30px #c58aff);transform:scale(1.25)}}
+.apvolle{position:absolute;right:-8px;top:-4px;min-width:18px;height:18px;border-radius:9px;background:linear-gradient(#ffe58a,#c9a227);color:#3a2205;font-size:11px;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;padding:0 3px}
+.m3mid{position:relative;padding-left:40px!important}.m3amp{position:absolute!important;left:6px;top:50%;transform:translateY(-50%);width:28px;height:44px}
+.m3amp.tik{animation:aptik2 .25s ease}@keyframes aptik2{50%{transform:translateY(-50%) scale(1.15) rotate(-6deg)}}
+.apdeeltje{position:fixed;z-index:70;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;pointer-events:none;background:radial-gradient(#fff 0 20%,#c58aff 45%,rgba(197,138,255,0) 70%);box-shadow:0 0 10px 3px rgba(197,138,255,.7)}
+.apdeeltje.goud{width:7px;height:7px;background:radial-gradient(#fff 0 20%,#ffd84a 45%,rgba(255,216,74,0) 70%);box-shadow:0 0 8px 2px rgba(255,216,74,.7)}
+.ampulkaart{display:flex;align-items:center;gap:12px;margin:8px 0;padding:8px 12px;border-radius:14px;background:var(--licht-paneel);border:1px solid rgba(255,226,140,.5)}
+.ampulkaart b{display:block;color:#ffe9a8}.ampulkaart small{display:block;color:#f3e9cc}.ampulkaart .klein2{opacity:.8;font-size:.78em}
+/* ===== Elfjes ===== */
+#elfcv{position:fixed;inset:0;width:100vw;height:100vh;z-index:12;pointer-events:none}
+.elfpaneel{margin:12px 0;padding:12px;border-radius:16px;background:linear-gradient(rgba(250,238,210,.97),rgba(236,214,170,.97));color:#2b1a0b;border:2px solid #c9a227}
+.elfpaneel h3{margin:0;color:#6b1d0e}.elfpaneel small,.elfpaneel p{color:#3a2410!important}
+.elfkop{display:flex;align-items:center;gap:12px}
+.balans{margin:10px 0 4px}.bzones{display:grid;grid-template-columns:1fr 1fr 1fr;font-size:11px;text-align:center;color:#5a3a14;font-variant:small-caps}
+.bbalk{position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,#9ab0d8 0 33%,#7fd07a 33% 67%,#e8a86a 67%);border:1.5px solid #8a6a2a}
+.bbalk i{position:absolute;top:-5px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fffbe0,#ffd84a 60%,#a07a10);border:2px solid #fff;box-shadow:0 0 8px #ffd84a;transition:left .6s}
+.balanstekst{font-style:italic;margin:6px 0}
+.elfrij{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;scroll-snap-type:x mandatory}
+.elfkaart{flex:0 0 132px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;padding:8px;border-radius:12px;background:rgba(255,255,255,.55);border:1px solid rgba(140,100,40,.4)}
+.elfkaart b{color:#3a2410}.elfkaart small{font-size:.74em;line-height:1.25}.elfkaart em{font-size:.75em;color:#2e6b34;font-weight:bold;font-style:normal}
+.elfico{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle,#fff 0 12%,var(--ek) 35%,transparent 70%);display:flex;align-items:center;justify-content:center;animation:elfz 2.4s ease-in-out infinite}
+.elfkaart.sloom .elfico{filter:grayscale(.7) brightness(.85);animation:none}.elfkaart.aan{box-shadow:0 0 0 2px var(--ek),0 0 12px var(--ek)}
+@keyframes elfz{50%{transform:translateY(-4px)}}
+.makerelf input[type=number]{width:70px}
+@media(prefers-reduced-motion:reduce){.apglim circle,.ampul.tik,.m3amp.tik,.ampul.volglans,.elfico{animation:none!important}}
