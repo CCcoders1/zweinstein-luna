@@ -95,3 +95,11 @@ input{background:#fbf3dc!important;color:#2b1a0b!important}
 #overgang.ov-deur{position:fixed!important;inset:0!important;width:auto!important;top:0;bottom:0;background:none!important;border:0!important;box-shadow:none!important;transform:none!important}
 #overgang.ov-deur:after{display:none}
 .tilly-p .tgez{font-size:0!important;overflow:hidden}.tilly-p .tgez svg{width:100%;height:100%}
+
+.ritueel{animation:rFade .6s ease both}.ritueel>*{animation:rIn .9s .15s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rFade{from{opacity:0}}@keyframes rIn{from{opacity:0;transform:translateY(14px) scale(.97)}}
+@media(prefers-reduced-motion:reduce){.ritueel,.ritueel>*{animation:none!important}}
+html{background:#0c1124}
+.ritueel p,.ritueel li,.ritueel small{color:#3b2412!important}
+
+.modal{animation:rFade .5s ease both}.modal .modalin{animation:rIn .6s .1s cubic-bezier(.2,.7,.2,1) both}@media(prefers-reduced-motion:reduce){.modal,.modal .modalin{animation:none!important}}
