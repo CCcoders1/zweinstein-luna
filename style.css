@@ -1,0 +1,112 @@
+html{background:#0b0818}
+:root{--a:#c9a227;--b:#5a3e1b;--bg1:#1a1230;--bg2:#0b0818;--perk:#f3e3bf;--ink:#3b2a14}
+.huis-griffoendor{--a:#d4a017;--b:#7f0909;--bg1:#3a0b0b;--bg2:#120404}
+.huis-huffelpuf{--a:#f0c75e;--b:#372e29;--bg1:#3a2f10;--bg2:#120f05}
+.huis-ravenklauw{--a:#c0a062;--b:#0e1a40;--bg1:#0e1a40;--bg2:#050a1a}
+.huis-zwadderich{--a:#c0c0c0;--b:#1a472a;--bg1:#0f2d1b;--bg2:#040e08}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Georgia,"Palatino Linotype","Book Antiqua",serif;color:var(--perk);background:radial-gradient(ellipse at top,var(--bg1),var(--bg2));background-attachment:fixed;padding-bottom:80px}
+h1,h2,h3,.sier{font-family:"Palatino Linotype","URW Palladio L",Palatino,"Monotype Corsiva","Apple Chancery",cursive;letter-spacing:.04em;color:var(--a);text-shadow:0 0 10px rgba(255,200,80,.4)}
+#sterren{position:fixed;inset:0;pointer-events:none;z-index:-1}
+.ster{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkel 3s infinite ease-in-out}
+@keyframes twinkel{0%,100%{opacity:.2}50%{opacity:1;box-shadow:0 0 6px #fff}}
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 16px;background:rgba(0,0,0,.35);border-bottom:1px solid var(--a)}
+#logo{font-size:1.4em;color:var(--a);cursor:pointer;user-select:none}
+#stats{font-size:.95em;display:flex;gap:12px;flex-wrap:wrap}
+main{max-width:860px;margin:0 auto;padding:16px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:rgba(0,0,0,.75);border-top:1px solid var(--a);padding:6px 0}
+nav button{background:none;border:0;color:var(--perk);font:inherit;font-size:.8em;cursor:pointer;display:flex;flex-direction:column;align-items:center}
+nav button b{font-size:1.5em}
+nav button.actief{color:var(--a)}
+.perkament{background:linear-gradient(135deg,#f6e7c1,#e8d09a 60%,#d9b978);color:var(--ink);border-radius:6px;padding:24px;box-shadow:0 0 30px rgba(255,190,90,.25),inset 0 0 40px rgba(120,80,20,.35);position:relative}
+.perkament h1,.perkament h2,.perkament h3{color:#6b1d0e;text-shadow:none}
+.kaart{background:rgba(255,255,255,.06);border:1px solid var(--a);border-radius:10px;padding:16px;margin:12px 0}
+.raster{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.tegel{background:rgba(0,0,0,.3);border:1px solid var(--a);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:.25s}
+.tegel:hover{transform:translateY(-4px);box-shadow:0 0 18px var(--a)}
+.tegel .ico{font-size:2.4em}
+button.knop{background:linear-gradient(var(--a),#8a6a12);color:#1a1000;border:0;border-radius:20px;padding:10px 18px;font:inherit;font-weight:bold;cursor:pointer;margin:4px;box-shadow:0 0 8px rgba(255,200,80,.4)}
+button.knop:disabled{opacity:.4;cursor:default}
+button.optie{display:block;width:100%;text-align:left;background:rgba(0,0,0,.3);color:var(--perk);border:1px solid var(--a);border-radius:8px;padding:10px;margin:6px 0;font:inherit;cursor:pointer}
+.perkament button.optie{color:var(--ink);background:rgba(255,255,255,.4)}
+button.optie:hover{background:rgba(201,162,39,.3)}
+input,textarea{font:inherit;padding:8px;border-radius:6px;border:1px solid #8a6a12;background:#fff8e6;color:#3b2a14;width:100%;max-width:340px}
+.brief{animation:open 1.4s ease-out}
+@keyframes open{from{transform:scaleY(.05) rotateX(80deg);opacity:0}to{transform:none;opacity:1}}
+.zegel{width:70px;height:70px;border-radius:50%;background:radial-gradient(#b3261e,#6d0f0a);color:#f3d27a;display:flex;align-items:center;justify-content:center;font-size:1.8em;margin:10px auto;box-shadow:0 2px 6px #000}
+.kaars{display:inline-block;animation:flakker 1.5s infinite alternate}
+@keyframes flakker{from{filter:drop-shadow(0 0 4px orange)}to{filter:drop-shadow(0 0 14px gold);transform:scale(1.05)}}
+#toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--a);color:#1a1000;padding:10px 18px;border-radius:20px;opacity:0;transition:.4s;z-index:9;pointer-events:none;font-weight:bold}
+#toast.zien{opacity:1}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:420px;margin:auto}
+.memk{aspect-ratio:1;border-radius:8px;background:repeating-linear-gradient(45deg,var(--b),var(--b) 6px,#000 6px,#000 12px);border:2px solid var(--a);display:flex;align-items:center;justify-content:center;font-size:2em;cursor:pointer;flex-direction:column}
+.memk small{font-size:.35em}
+.memk.open,.memk.klaar{background:#f3e3bf;color:#3b2a14}
+.memk.klaar{box-shadow:0 0 12px gold}
+.ketel{font-size:4em;text-align:center}
+.ingr{display:inline-block;margin:4px;padding:8px 12px;border-radius:16px;border:1px solid var(--a);background:rgba(0,0,0,.3);color:var(--perk);cursor:pointer;font:inherit}
+.balk{height:12px;background:rgba(0,0,0,.4);border-radius:6px;overflow:hidden;border:1px solid var(--a)}
+.balk div{height:100%;background:linear-gradient(90deg,var(--a),#fff3b0)}
+.badge{display:inline-block;text-align:center;width:90px;margin:6px;opacity:.3}
+.badge.ja{opacity:1}.badge b{font-size:2em;display:block}
+.code{font-family:"Courier New",monospace;font-size:1.2em;letter-spacing:.15em;background:rgba(0,0,0,.08);padding:10px;border-radius:6px;word-break:break-word}
+.goed{color:#2e7d32;font-weight:bold}.fout{color:#c62828;font-weight:bold}
+@media(max-width:500px){main{padding:10px}.perkament{padding:16px}#logo span{display:none}}
+.tilly{display:flex;gap:12px;align-items:flex-start;background:rgba(20,40,20,.35);border:1px solid var(--a);border-radius:40px 10px 40px 10px;padding:12px 16px;margin:12px 0;font-style:italic}
+.tilly .gez{font-size:2.4em;flex:none;animation:flakker 3s infinite alternate}
+.tilly b{font-style:normal;color:var(--a)}
+.lijst{position:relative;padding:34px}
+.lijst svg.hoek{position:absolute;width:70px;height:70px;pointer-events:none}
+.hoek.lb{top:0;left:0}.hoek.rb{top:0;right:0;transform:scaleX(-1)}.hoek.lo{bottom:0;left:0;transform:scaleY(-1)}.hoek.ro{bottom:0;right:0;transform:scale(-1)}
+.rank{position:fixed;bottom:60px;width:90px;height:300px;pointer-events:none;opacity:.55;z-index:-1}
+.rank path{stroke-dasharray:600;stroke-dashoffset:600;animation:groei 8s ease-out forwards}
+.rank .blad{transform-origin:center;animation:wiegen 5s infinite ease-in-out alternate}
+@keyframes groei{to{stroke-dashoffset:0}}
+@keyframes wiegen{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+.kas{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.pot{text-align:center;background:linear-gradient(transparent 60%,rgba(120,70,30,.4));border:1px solid var(--a);border-radius:12px;padding:10px}
+.pot svg{width:100px;height:130px}
+.pot .st{animation:wiegen 4s infinite alternate ease-in-out;transform-origin:50px 110px}
+body{font-size:19px;line-height:1.55;cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M3 29 L24 8' stroke='%235a3a1a' stroke-width='4' stroke-linecap='round'/><path d='M22 10 L27 5' stroke='%23f3e3bf' stroke-width='4' stroke-linecap='round'/><circle cx='28' cy='4' r='3' fill='%23ffd700'/></svg>") 28 4,auto}
+button,.tegel,.memk,.ingr{cursor:inherit}
+button.knop{font-size:1.05em;padding:13px 22px;min-height:48px}
+button.optie{font-size:1.05em;padding:14px;min-height:52px}
+input{font-size:1.05em;padding:12px}
+nav button{font-size:.85em;min-width:60px;min-height:52px}
+#fxc{position:fixed;inset:0;pointer-events:none;z-index:8}
+#geluid{position:fixed;right:10px;bottom:76px;z-index:9;background:rgba(0,0,0,.6);border:1px solid var(--a);border-radius:24px;padding:4px 10px;display:flex;align-items:center;gap:6px}
+#geluid button{background:none;border:0;font-size:1.4em;cursor:inherit;min-width:40px;min-height:40px}
+#geluid input{width:90px;padding:0;accent-color:var(--a)}
+.flits{position:fixed;inset:0;background:radial-gradient(circle,rgba(255,230,140,.55),transparent 70%);pointer-events:none;z-index:7;animation:flits .7s ease-out forwards}
+@keyframes flits{from{opacity:1}to{opacity:0}}
+.schud{animation:schud .5s}
+@keyframes schud{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.rook{position:fixed;font-size:2.4em;pointer-events:none;z-index:9;animation:rook 1.4s ease-out forwards;filter:grayscale(1)}
+@keyframes rook{to{transform:translateY(-70px) scale(2);opacity:0}}
+.lvlup{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.55);z-index:10;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+.lvlup div{font-size:5em}.lvlup h2{color:#fff}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+.badgepop{position:fixed;top:90px;right:-320px;z-index:10;display:flex;gap:12px;align-items:center;padding:12px 20px;border-radius:14px;border:2px solid gold;color:#3b2a14;background:linear-gradient(110deg,#e6c35c 30%,#fff7d0 45%,#e6c35c 60%);background-size:250% 100%;animation:schuif 4.2s ease forwards,glans 1.6s linear infinite}
+.badgepop b{font-size:2.4em}
+@keyframes schuif{10%,85%{right:16px}100%{right:-320px}}
+@keyframes glans{from{background-position:100% 0}to{background-position:-150% 0}}
+.badge.ja b{background:linear-gradient(110deg,transparent 40%,rgba(255,255,255,.8) 50%,transparent 60%);background-size:250%;animation:glans 3s linear infinite;border-radius:50%}
+.wrd{opacity:0;display:inline-block;animation:wrd .5s forwards}
+@keyframes wrd{from{opacity:0;transform:translateY(8px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+.onthul{opacity:0;animation:pop .8s 3.2s forwards cubic-bezier(.2,1.6,.4,1)}
+@keyframes popf{to{opacity:1}}
+.onthul{animation:onth 1s 3.2s forwards}
+@keyframes onth{from{opacity:0;transform:scale(.3)}70%{transform:scale(1.15)}to{opacity:1;transform:none}}
+#intro{position:fixed;inset:0;z-index:20;background:radial-gradient(ellipse,#1a1230,#05030c);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s}
+#intro.weg{opacity:0}
+.uil{font-size:5em;animation:vlieg 2.6s ease-out;text-align:center;position:relative}
+@keyframes vlieg{0%{transform:translate(-70vw,-40vh) rotate(-20deg) scale(.4)}60%{transform:translate(5vw,-3vh) rotate(8deg)}100%{transform:none}}
+.env{width:150px;height:95px;margin:-10px auto 0;background:linear-gradient(160deg,#f3e3bf,#d9b978);border-radius:4px;position:relative;box-shadow:0 4px 20px rgba(255,200,90,.4);overflow:hidden}
+.env:before{content:'';position:absolute;left:0;right:0;top:0;height:60%;background:linear-gradient(to bottom right,transparent 49%,#c9a86a 50%) left/50% 100% no-repeat,linear-gradient(to bottom left,transparent 49%,#c9a86a 50%) right/50% 100% no-repeat;transform-origin:top;transition:transform .7s .4s}
+.zg{position:absolute;left:50%;top:42%;width:44px;height:44px;margin-left:-22px;border-radius:50%;background:radial-gradient(#b3261e,#6d0f0a);color:#f3d27a;font-size:22px;display:flex;align-items:center;justify-content:center;transition:.5s;z-index:2}
+#intro.breek .zg{transform:scale(1.4) rotate(40deg);opacity:0;clip-path:polygon(0 0,45% 0,60% 50%,40% 100%,0 100%)}
+#intro.breek .env:before{transform:rotateX(180deg)}
+#intro.breek .env{animation:openv 1s .6s forwards}
+@keyframes openv{to{transform:scale(3,4);opacity:0}}
+.tik{text-align:center;font-size:1.2em;margin-top:30px;animation:twinkel 2s infinite}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.wrd,.onthul{opacity:1}}

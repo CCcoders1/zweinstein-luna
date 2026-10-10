@@ -1,0 +1,172 @@
+BRONNEN EN LICENTIES
+
+AFBEELDINGEN (map img/) – allemaal van Wikimedia Commons, vrij gelicenseerd.
+Bewerkingen: verkleind, omgezet naar WebP; sneeuwuil, alruinwortel en lakzegel uitgeknipt (achtergrond verwijderd).
+Bewerkte CC BY-SA-afbeeldingen vallen onder dezelfde CC BY-SA-licentie.
+Geen filmbeelden, logo's of fanart. Wapens, schilden, iconen, geluid en muziek zijn eigen werk (gegenereerd in de browser).
+
+img/sneeuwuil.webp
+  Origineel: File:Snowy-Owl.1.jpg
+  Maker: Bert de Tilly
+  Licentie: CC BY-SA 3.0
+  Bron: https://commons.wikimedia.org/wiki/File:Snowy-Owl.1.jpg
+
+img/alruinwortel.webp
+  Origineel: File:Mandrake Root.jpg
+  Maker: D arckangel
+  Licentie: CC BY-SA 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:Mandrake_Root.jpg
+
+img/lakzegel.webp
+  Origineel: File:Wax seal detail, Russia 1917-06-29 money cover reverse (cropped).jpg
+  Maker: Post of Russia
+  Licentie: Public domain
+  Bron: https://commons.wikimedia.org/wiki/File:Wax_seal_detail,_Russia_1917-06-29_money_cover_reverse_(cropped).jpg
+
+img/sneeuwuil-portret.webp
+  Origineel: File:'Hedwig' (5487312312).jpg
+  Maker: Peter Trimming from Croydon, England
+  Licentie: CC BY 2.0
+  Bron: https://commons.wikimedia.org/wiki/File:%27Hedwig%27_(5487312312).jpg
+
+img/perkament.webp
+  Origineel: File:Pergament.1.jpg
+  Maker: Membeth
+  Licentie: CC0
+  Bron: https://commons.wikimedia.org/wiki/File:Pergament.1.jpg
+
+img/sterrenhemel.webp
+  Origineel: File:Milky Way and starry night sky (26972689115).jpg
+  Maker: NPS/Jacob W. Frank
+  Licentie: Public domain
+  Bron: https://commons.wikimedia.org/wiki/File:Milky_Way_and_starry_night_sky_(26972689115).jpg
+
+img/kasteel.webp
+  Origineel: File:Alnwick Castle 02.jpg
+  Maker: Phil Thomas
+  Licentie: CC BY 2.0
+  Bron: https://commons.wikimedia.org/wiki/File:Alnwick_Castle_02.jpg
+
+img/oude-boeken.webp
+  Origineel: File:Leather bound books (Unsplash).jpg
+  Maker: Chris Lawton chrislawton
+  Licentie: CC0
+  Bron: https://commons.wikimedia.org/wiki/File:Leather_bound_books_(Unsplash).jpg
+
+img/venusvliegenval.webp
+  Origineel: File:Venus flytrap (Dionaea muscipula) Zagreb Botanical Garden 1060.jpg
+  Maker: ImagePerson
+  Licentie: CC BY 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:Venus_flytrap_(Dionaea_muscipula)_Zagreb_Botanical_Garden_1060.jpg
+
+img/alruin-gravure.webp
+  Origineel: File:Mandragora mas. Mandragore (Mandrake root) Wellcome L0075040.jpg
+  Maker: Wellcome Collection
+  Licentie: CC BY 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:Mandragora_mas._Mandragore_(Mandrake_root)_Wellcome_L0075040.jpg
+
+img/vijzel.webp
+  Origineel: File:Wooden mortar and pestle, Europe, 1501-1800 Wellcome L0058925.jpg
+  Maker: Wellcome Collection
+  Licentie: CC BY 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:Wooden_mortar_and_pestle,_Europe,_1501-1800_Wellcome_L0058925.jpg
+
+img/varen.webp
+  Origineel: File:A fern frond, possibly Polystichum aculeatum Wellcome V0043910.jpg
+  Maker: Wellcome Collection
+  Licentie: CC BY 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:A_fern_frond,_possibly_Polystichum_aculeatum_Wellcome_V0043910.jpg
+
+img/kaars-foto.webp
+  Origineel: File:A Candle in the Dark.jpeg
+  Maker: Leoadec
+  Licentie: CC BY-SA 3.0
+  Bron: https://commons.wikimedia.org/wiki/File:A_Candle_in_the_Dark.jpeg
+
+img/zegel-oud.webp
+  Origineel: File:Seal of the Lords de Cantilupe; c.1301. Red Wax; the National Archives, UK. PRO 23-926.png
+  Maker: Unknown. Presumed late 13th- / early 14th-century waxer. Colour tint, of insufficient individuality to create a new copyright, added by myself.
+  Licentie: Public domain
+  Bron: https://commons.wikimedia.org/wiki/File:Seal_of_the_Lords_de_Cantilupe;_c.1301._Red_Wax;_the_National_Archives,_UK._PRO_23-926.png
+
+img/flesjes-foto.webp
+  Origineel: File:Apothecary Bottles.JPG
+  Maker: Angela Andriot
+  Licentie: CC BY-SA 3.0
+  Bron: https://commons.wikimedia.org/wiki/File:Apothecary_Bottles.JPG
+
+img/ketel-foto.webp
+  Origineel: File:Cauldron-1.JPG
+  Maker: Ted Garvin
+  Licentie: CC BY-SA 2.5
+  Bron: https://commons.wikimedia.org/wiki/File:Cauldron-1.JPG
+
+TEKSTBRONNEN (controle canon/NL-namen)
+- Harry Potter-boeken (NL-vertaling, Uitgeverij De Harmonie)
+- https://harrypotter.fandom.com/nl/wiki/Wisseldrank
+- https://harrypotter.fandom.com/nl/wiki/Drank_van_de_Levende_Dood
+- https://harrypotter.fandom.com/nl/wiki/Kruidenkunde
+- https://www.hp-lexicon.org/magic/pepperup-potion/
+
+DECORS (kleur-gegrade: warm, minder verzadigd, zachte vignet-rand; Wikimedia Commons)
+
+img/decor-bibliotheek.webp
+  Origineel: File:Old Geodesy library books.jpg
+  Maker: Bibliothek Wissenschaftspark Albert Einstein
+  Licentie: CC BY-SA 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:Old_Geodesy_library_books.jpg
+
+img/decor-bos.webp
+  Origineel: File:Misty, Dark and Deep - panoramio.jpg
+  Maker: Pavan Lulla
+  Licentie: CC BY 3.0
+  Bron: https://commons.wikimedia.org/wiki/File:Misty,_Dark_and_Deep_-_panoramio.jpg
+
+img/decor-gewelf.webp
+  Origineel: File:Exeter (Devon, UK), Cathedral Church of Saint Peter -- 2013 -- 1417.jpg
+  Maker: Dietmar Rabich
+  Licentie: CC BY-SA 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:Exeter_(Devon,_UK),_Cathedral_Church_of_Saint_Peter_--_2013_--_1417.jpg
+
+img/decor-gang.webp
+  Origineel: File:Exeter Cathedral, fan vaulting (18048995973).jpg
+  Maker: Jules &amp; Jenny from Lincoln, UK
+  Licentie: CC BY 2.0
+  Bron: https://commons.wikimedia.org/wiki/File:Exeter_Cathedral,_fan_vaulting_(18048995973).jpg
+
+img/decor-glas.webp
+  Origineel: File:Medieval Stained glass window, St Marys Nettlestead (geograph 3847967).jpg
+  Maker: J.Hannan-Briggs
+  Licentie: CC BY-SA 2.0
+  Bron: https://commons.wikimedia.org/wiki/File:Medieval_Stained_glass_window,_St_Marys_Nettlestead_(geograph_3847967).jpg
+
+img/decor-haard.webp
+  Origineel: File:Czocha Castle 07.jpg
+  Maker: Scotch Mist
+  Licentie: CC BY-SA 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:Czocha_Castle_07.jpg
+
+img/decor-kas.webp
+  Origineel: File:Interior of Sefton Park Palm House, Liverpool.jpg
+  Maker: Fatih Renkligil
+  Licentie: CC BY-SA 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:Interior_of_Sefton_Park_Palm_House,_Liverpool.jpg
+
+img/decor-kerker.webp
+  Origineel: File:Harvest Celebration, Castello di Amorosa Winery, Napa Valley, California, USA (7311768496).jpg
+  Maker: Jim G from Silicon Valley, CA, USA
+  Licentie: CC BY 2.0
+  Bron: https://commons.wikimedia.org/wiki/File:Harvest_Celebration,_Castello_di_Amorosa_Winery,_Napa_Valley,_California,_USA_(7311768496).jpg
+
+img/decor-meer.webp
+  Origineel: File:A small loch in the saddle between Beinn an Dothaidh and Beinn Dorain, Scotland 01.jpg
+  Maker: Michal Klajban
+  Licentie: CC BY-SA 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:A_small_loch_in_the_saddle_between_Beinn_an_Dothaidh_and_Beinn_Dorain,_Scotland_01.jpg
+
+img/decor-telescoop.webp
+  Origineel: File:Brass Telescope at Adler.jpg
+  Maker: Yaoshiiscool
+  Licentie: CC BY-SA 4.0
+  Bron: https://commons.wikimedia.org/wiki/File:Brass_Telescope_at_Adler.jpg
+
