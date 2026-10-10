@@ -38,7 +38,7 @@ function gidsWeg(){$('#gids').classList.remove('zien');document.querySelectorAll
 $('#gids .gsluit').onclick=gidsWeg;
 /* ---------- filmische overgangen ---------- */
 const TYPE=v=>['lessen','les','spel','groei','quests','beker'].includes(v)?'gang':['kamer','verhaal','dier'].includes(v)?'portret':['kaart','brief'].includes(v)?'rol':'deur';
-const OVHTML={deur:`<div class="ov-deur l"></div><div class="ov-deur r"></div>`,portret:`<div class="ov-portret"><div class="ov-lijst"></div></div>`,gang:`<div class="ov-gang"></div>`,rol:`<div class="ov-rol"></div>`};
+const OVHTML={deur:`<div class="ov-dl ov-vl"></div><div class="ov-dr ov-vl"></div>`,portret:`<div class="ov-portret"><div class="ov-lijst"></div></div>`,gang:`<div class="ov-gang"></div>`,rol:`<div class="ov-rol"></div>`};
 function overgang(v){if(RMP)return;const o=$('#overgang');const t=TYPE(v);o.className='';o.innerHTML=OVHTML[t];void o.offsetWidth;o.className='speel ov-'+t;try{fx.speel('whoosh')}catch(e){}clearTimeout(o._t);o._t=setTimeout(()=>{o.className='';o.innerHTML=''},1100)}
 /* ---------- navigatiegeschiedenis + terugknop ---------- */
 const stapel=[];let huidig='';def('bezocht',{});def('uitleg',{});def('tut',0);

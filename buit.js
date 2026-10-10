@@ -54,8 +54,8 @@ const _bel4=beloon;beloon=function(id,pt,gal,tekst){if(id=='drank'&&$('.ketelfot
 /* ---------- voorleesstem ---------- */
 let stemAudio=null;
 function voorlezen(id,tekst){stopStem();try{fx.duik(true)}catch(e){}
- const a=new Audio('audio/'+id+'.mp3');stemAudio=a;a.onended=()=>{try{fx.duik(false)}catch(e){}};
- a.play().catch(()=>{stemAudio=null;if(!('speechSynthesis' in window)){fx.duik(false);return}const u=new SpeechSynthesisUtterance(tekst);u.lang='nl-NL';u.rate=.85;u.pitch=.7;const vs=speechSynthesis.getVoices().filter(v=>/^nl/i.test(v.lang));u.voice=vs.find(v=>/male|man|frank|willem|xander|maarten|daan/i.test(v.name))||vs[0]||null;u.onend=()=>{try{fx.duik(false)}catch(e){}};speechSynthesis.speak(u)})}
+ const a=new Audio('audio/'+id+'.mp3');stemAudio=a;a.volume=+(localStorage.getItem('zw_stem')??1);a.onended=()=>{try{fx.duik(false)}catch(e){}};
+ a.play().catch(()=>{stemAudio=null;if(!('speechSynthesis' in window)){fx.duik(false);return}const u=new SpeechSynthesisUtterance(tekst);u.lang='nl-NL';u.volume=+(localStorage.getItem('zw_stem')??1);u.rate=.85;u.pitch=.7;const vs=speechSynthesis.getVoices().filter(v=>/^nl/i.test(v.lang));u.voice=vs.find(v=>/male|man|frank|willem|xander|maarten|daan/i.test(v.name))||vs[0]||null;u.onend=()=>{try{fx.duik(false)}catch(e){}};speechSynthesis.speak(u)})}
 function stopStem(){if(stemAudio){stemAudio.pause();stemAudio=null}try{speechSynthesis.cancel()}catch(e){}}
 const slug=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 /* ---------- verzamelboek ---------- */
