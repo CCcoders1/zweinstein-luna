@@ -53,3 +53,7 @@
 .m3eind{text-align:center}.m3ster .icn{width:80px;height:80px;stroke:#ffe58a;fill:rgba(255,229,138,.5);animation:herstel 1s both;filter:drop-shadow(0 0 14px gold)}
 body.m3aan #tasknop{display:none}
 nav button .icn{width:24px;height:24px}nav button{display:flex;flex-direction:column;align-items:center;gap:2px}
+.dagdoelen{padding-right:58px}
+#gids p,#gids .gbel,#gtekst{color:#2b1a0b!important}
+.bonusraster .tegel{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}.bonusraster .tegel small{font-size:.78em}
+#combo{display:none!important}

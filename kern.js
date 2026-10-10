@@ -64,7 +64,7 @@ function bonusVrij(b){if(S.bonusOpen[b[0]])return true;const v=VAK1.find(x=>x.id
 function bonusCheck(){BONUS.forEach(b=>{if(!S.bonusOpen[b[0]]&&bonusVrij(b)){S.bonusOpen[b[0]]=1;bewaar();setTimeout(()=>verhaal([['Tilly',`${b[5]} Luna, we hebben iets nieuws ontdekt: <b>${b[1]}</b>! Je vindt het onder Bonus. Daar verdien je extra Galjoenen, kaarten en soms een ster.`]],()=>{}),700)}})}
 /* verhaalmoment */
 const SPREKER={Tilly:'tilly','Professor Stronk':'blad','Professor Sneep':'ketel','Professor Banning':'stok','Hagrid':'huis','Professor Sinistra':'telescoop','Professor Anderling':'hoed'};
-function verhaal(regels,klaar){let i=0;const o=document.createElement('div');o.className='modal verhaalm';document.body.appendChild(o);
+function verhaal(regels,klaar){if(document.querySelector('.modal')){return setTimeout(()=>verhaal(regels,klaar),800)}let i=0;const o=document.createElement('div');o.className='modal verhaalm';document.body.appendChild(o);
  const toon=()=>{const[w,t]=regels[i];o.innerHTML=`<div class="modalin rococo vh"><div class="vh-p">${w=='Tilly'?tillySVG(i%2?'blij':'praat'):`<div class="vh-ico">${icoon(SPREKER[w]||'hoed')}</div>`}</div><div class="vh-t"><b>${w}</b><p>${t}</p></div><button class="knop volgende" id="vhv">${i<regels.length-1?'Verder':'Oké!'}</button></div>`;
   try{fx.speel('kras')}catch(e){}$('#vhv').onclick=()=>{i++;if(i<regels.length)toon();else{o.remove();klaar&&klaar()}}};toon()}
 /* kweekpotten */
@@ -95,7 +95,7 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home=v.decor;try{zetDecor(v.deco
  const klaar=v.taken.filter(t=>S.taken[t[0]]).length;const vol=v.taken.find(t=>!S.taken[t[0]]);const dd=dagDoelen();
  app(`<section class="dagdoelen">${dd.map(g=>`<button class="dd ${g.af?'af':''}" data-k="${g.k}">${icoon(g.af?'vinkje':g.i)}<span>${g.n}</span><small>${g.h}/${g.m}</small></button>`).join('')}</section>
  <section class="lokaal rococo"><div class="lk-kop"><small>Leerjaar ${j} · ${v.n}</small><h2>${v.lokaal}</h2></div>
- <div class="scene" style="background-image:url(img/${v.img}.webp)">${v.taken.map(t=>{const h=S.taken[t[0]];const k=S.keuze[t[0]];return `<div class="obj ${h?'hersteld':'stoffig'} ${M3.nieuw==t[0]?'net':''}" style="left:${t[4][0]}%;top:${t[4][1]}%" title="${t[1]}">${icoon(t[3])}${h?`<small>${k!=null&&t[6]?t[6][k]:t[1].replace(/^[A-Z][a-z]+ /,'')}</small>`:''}</div>`}).join('')}<div class="scene-mist" style="opacity:${1-klaar/5}"></div></div>
+ <div class="scene" style="background-image:url(img/${v.img}.webp)">${v.taken.map(t=>{const h=S.taken[t[0]];const k=S.keuze[t[0]];return `<div class="obj ${h?'hersteld':'stoffig'} ${M3.nieuw==t[0]?'net':''}" style="left:${t[4][0]}%;top:${t[4][1]}%" title="${t[1]}">${icoon(t[3])}${h&&k!=null&&t[6]?`<small>${t[6][k]}</small>`:''}</div>`}).join('')}<div class="scene-mist" style="opacity:${1-klaar/5}"></div></div>
  <div class="voortgang"><div style="width:${klaar/v.taken.length*100}%"></div></div><p class="lk-tel">${klaar} van ${v.taken.length} taken · ${sterTeller()}</p>
  ${vol?`<button class="knop taak ${S.sterren>=vol[2]?'volgende':''}" id="taakknop">${vol[1]} <span class="kost">${icoon('ster')}${vol[2]}</span></button>`:''}
  <button class="knop speel ${vol&&S.sterren<vol[2]?'volgende':''}" id="speelknop">Spelen · Level ${S.m3lvl}</button></section>
@@ -146,4 +146,4 @@ S.tut=Math.max(S.tut||0,9);
 // tegels: verticaal wisselen ook vloeiend
 bewaar();
 if(S.naam&&S.huis)ga('home');
-requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add('klaar')));setTimeout(()=>document.body.classList.add('klaar'),1500);
+requestAnimationFrame(()=>requestAnimationFrame(()=>document.documentElement.classList.add('klaar')));setTimeout(()=>document.documentElement.classList.add('klaar'),1500);
