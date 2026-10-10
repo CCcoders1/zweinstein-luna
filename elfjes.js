@@ -1,22 +1,26 @@
 'use strict';
 /* ====== Toverpoeder-ampul & elfjes in de kas ====== */
 def('ampul',{n:0,vol:0});def('ampulBasis',20);def('elfjes',{});def('elfOpen',false);def('elfT',Date.now());
-const ELFJES=[
+const ELFJES_ALLE=[
  {id:'pip',n:'Pip',k:'#ffb0e0',kar:'giechelig en altijd te vroeg op',plant:'mandragora'},
  {id:'fenna',n:'Fenna',k:'#a8f0ff',kar:'dromerig, praat tegen bladeren',plant:'valeriaan'},
  {id:'bram',n:'Bram',k:'#c8ff8a',kar:'stoer, maar bang voor slakken',plant:'varkensgras'},
  {id:'lotje',n:'Lotje',k:'#ffe28a',kar:'nieuwsgierig, verzamelt glimmers',plant:'wolfsmelk'},
  {id:'mier',n:'Miertje',k:'#d6b0ff',kar:'precies en een tikje bazig',plant:'mandragora'},
  {id:'roosje',n:'Roosje',k:'#ffb48a',kar:'zingt zachtjes tijdens het werk',plant:'valeriaan'}];
+/* config: voorlopig 1 elfje actief (data van de rest blijft bewaard) */
+const ELF_ACTIEF=1;const ELF_CAPACITEIT=3;/* 1 elfje helpt tot 3 groeiende planten */
+const ELFJES=ELFJES_ALLE.slice(0,ELF_ACTIEF);
+(()=>{let m=0;Object.keys(S.elfjes||{}).forEach(id=>{if(!ELFJES.some(e=>e.id==id)){delete S.elfjes[id];m=1}});if(m)bewaar()})();
 const ampulDoel=()=>{let j=1;try{j=jaar()}catch(e){}return Math.max(3,(+S.ampulBasis||20)+2*(j-1)+actieveElfjes().length)};
 const elfjesOpen=()=>!!S.elfOpen||(S.m3lvl||1)>15;
 const actieveElfjes=()=>ELFJES.filter(e=>(S.elfjes[e.id]||0)>Date.now());
 const groeiend=()=>Object.values(S.kweek||{}).filter(p=>p&&stadium(p)<4).length;
-function elfBalans(){const a=actieveElfjes().length,p=groeiend();if(!a)return{z:'geen',f:1,t:p?'Nog geen elfjes aan het werk. Met een volle ampul huur je er één in.':'Plant iets, dan hebben de elfjes werk.'};
- if(!p)return{z:'veel',f:1,t:'De elfjes vervelen zich: er groeit niets! Plant snel een zaadje.'};
- const goed=Math.ceil(p/2);if(a<goed)return{z:'weinig',f:1+.2*a,t:`Te weinig handjes: ${a} elfje${a>1?'s':''} voor ${p} planten. Het groeit, maar langzaam.`};
- if(a>p)return{z:'veel',f:1.6,t:`Te veel elfjes voor ${p} plant${p>1?'en':''}. Ze vervelen zich (en eten toch poeder).`};
- return{z:'goed',f:1.6,goud:.12,t:'Perfecte balans! Gouden glans op je planten en meer kans op een gouden oogst.'}}
+function elfBalans(){const a=actieveElfjes().length,p=groeiend(),cap=a*ELF_CAPACITEIT,een=ELF_ACTIEF==1;
+ if(!a)return{z:'geen',f:1,t:p?(een?'Pip doet een dutje. Met een volle ampul huur je haar in.':'Nog geen elfjes aan het werk. Met een volle ampul huur je er één in.'):'Plant iets, dan heeft Pip straks werk.'};
+ if(!p)return{z:'veel',f:1,t:een?'Pip verveelt zich: er groeit niets! Plant snel een zaadje.':'De elfjes vervelen zich: er groeit niets!'};
+ if(p>cap)return{z:'weinig',f:1+.6*cap/p,t:`${een?'Pip':'De elfjes'} kan maar ${cap} planten tegelijk verzorgen; je hebt er ${p}. Het groeit wat sneller, maar niet overal.`};
+ return{z:'goed',f:1.6,goud:.12,t:een?`Perfecte balans! Pip verzorgt je ${p} plant${p>1?'en':''}: gouden glans en meer kans op een gouden oogst.`:'Perfecte balans! Gouden glans op je planten en meer kans op een gouden oogst.'}}
 /* groeibonus toepassen */
 function elfTick(){const nu=Date.now(),dt=Math.min(864e5,nu-(S.elfT||nu));S.elfT=nu;if(!elfjesOpen()||dt<=0)return;const b=elfBalans();if(b.f<=1)return;
  Object.values(S.kweek||{}).forEach(p=>{if(!p||stadium(p)>=4)return;p.bonus=(p.bonus||0)+Math.min(rest(p),dt*(b.f-1));if(b.goud&&!p.elfRol){p.elfRol=1;if(Math.random()<b.goud)p.goud=true}});bewaar()}
@@ -44,9 +48,9 @@ const _homeE=V.home;V.home=(...a)=>{_homeE(...a);const app=$('#app');const dd=ap
 /* ---------- Kas: paneel ---------- */
 const _kasE=V.kas;V.kas=(...a)=>{_kasE(...a);const app=$('#app');if(!app.querySelector('.kassen'))return;elfTick();
  const open=elfjesOpen(),b=elfBalans(),act=actieveElfjes();
- const meter=`<div class="balans"><div class="bzones"><span>te weinig</span><span>goed</span><span>te veel</span></div><div class="bbalk"><i style="left:${{geen:4,weinig:22,goed:50,veel:84}[b.z]}%"></i></div></div>`;
+ const meter=`<div class="balans"><div class="bzones"><span>te veel planten</span><span>goed</span><span>verveelt zich</span></div><div class="bbalk"><i style="left:${{geen:4,weinig:22,goed:50,veel:84}[b.z]}%"></i></div></div>`;
  const kaarten=ELFJES.map(e=>{const t=(S.elfjes[e.id]||0)-Date.now(),aan=t>0;return `<div class="elfkaart ${aan?'aan':'sloom'}" style="--ek:${e.k}"><div class="elfico"><i></i></div><b>${e.n}</b><small>${e.kar}</small><small>Lievelingsplant: ${(ZADEN[e.plant]||[e.plant])[0]}</small>${aan?`<em>aan het werk · nog ${tijd(t)}</em>`:`<button class="knop klein huur" data-e="${e.id}" ${S.ampul.vol?'':'disabled'}>Inhuren · 1 ampul</button>`}</div>`}).join('');
- const html=open?`<section class="elfpaneel rococo"><div class="elfkop">${ampulSVG('klein')}<div><h3>Elfjes van de kas</h3><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> poeder · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'} · ${act.length} aan het werk</small></div></div>${meter}<p class="balanstekst">${b.t}</p><div class="elfrij">${kaarten}</div><p class="klein">1 volle ampul = 1 elfje voor 1 dag. Onbetaalde elfjes doen een dutje, maar blijven gewoon bij je.</p></section>`
+ const html=open?`<section class="elfpaneel rococo"><div class="elfkop">${ampulSVG('klein')}<div><h3>${ELF_ACTIEF==1?"Pip, het kaself":"Elfjes van de kas"}</h3><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> poeder · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'} · ${act.length} aan het werk</small></div></div>${meter}<p class="balanstekst">${b.t}</p><div class="elfrij">${kaarten}</div><p class="klein">1 volle ampul = 1 dag hulp. Pip verzorgt tot ${ELF_CAPACITEIT} groeiende planten. Zonder poeder doet ze een dutje, maar ze blijft gewoon bij je.</p></section>`
   :`<section class="elfpaneel teaser rococo"><div class="elfkop">${ampulSVG('klein')}<div><h3>Er fladdert iets…</h3><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> toverpoeder verzameld</small></div></div><p class="balanstekst">Tilly: "Zag je dat lichtje bij de potten? Ik denk dat er elfjes wonen! Speel verder (level 16) en spaar toverpoeder, dan durven ze misschien te blijven."</p></section>`;
  const anker=app.querySelector('.kassen');anker.insertAdjacentHTML('afterend',html);
  app.querySelectorAll('.huur').forEach(k=>k.onclick=()=>{if(S.ampul.vol<1){toast('Je hebt nog geen volle ampul.');return}const e=ELFJES.find(x=>x.id==k.dataset.e);S.ampul.vol--;S.elfjes[e.id]=Math.max(Date.now(),S.elfjes[e.id]||0)+864e5;S.elfT=Date.now();bewaar();try{fx.speel('goed')}catch(x){}vib(30);toast(`${e.n} komt helpen! ${e.n} houdt van ${(ZADEN[e.plant]||[e.plant])[0]}.`);V.kas()});

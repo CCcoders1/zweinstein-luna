@@ -184,3 +184,4 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 @keyframes elfz{50%{transform:translateY(-4px)}}
 .makerelf input[type=number]{width:70px}
 @media(prefers-reduced-motion:reduce){.apglim circle,.ampul.tik,.m3amp.tik,.ampul.volglans,.elfico{animation:none!important}}
+.elfrij:has(.elfkaart:only-child){justify-content:center}.elfkaart:only-child{flex-basis:200px}
