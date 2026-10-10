@@ -55,7 +55,7 @@ function m3Level(n){// n vanaf 1
  else{const d=n-30,ok=['midden','rand','kruis','onder','vol','dambord'],kk=['rij','hoeken','dubbel'];const doelen=[];
   const typ=[r()<.6?'o':null,r()<.5?'k':null,r()<.4?'p':null].filter(Boolean);if(!typ.length||r()<.3)doelen.push([r()*6|0,15+Math.min(25,d/2|0)]);
   typ.forEach(t=>doelen.push(t=='p'?['p',2+Math.min(4,d/10|0)]:[t]));
-  L=[Math.max(18,30-Math.min(10,d/12|0)),6,doelen,typ.includes('o')?ok[r()*ok.length|0]:0,typ.includes('k')?kk[r()*kk.length|0]:0,typ.includes('p')?2+Math.min(4,d/10|0):0]}
+  L=[Math.max(18,30-Math.min(10,d/12|0))+(n>45?3:0),n>45?7:6,doelen,typ.includes('o')?ok[r()*ok.length|0]:0,typ.includes('k')?kk[r()*kk.length|0]:0,typ.includes('p')?2+Math.min(4,d/10|0):0]}
  return{n,zetten:L[0]+((S.m3kal||{})[n]||0),kleuren:L[1],doelen:L[2],onkruid:L[3],kist:L[4],pot:L[5],extra:+(S.m3extra||{})[n]||0}}
 function patroon(p,r,c){if(!p)return 0;switch(p){case 'midden':return r>=2&&r<=5&&c>=2&&c<=4?1:0;case 'rand':return r==0||r==RIJEN-1||c==0||c==KOL-1?1:0;case 'kruis':return r==3||r==4||c==3?1:0;case 'onder':return r>=5?1:0;case 'vol':return r>=1?(r>=5?2:1):0;case 'dambord':return (r+c)%2&&r>=1?2:0}return 0}
 function kistPat(p,r,c){if(!p)return 0;if(p=='rij')return r==4&&c%2==1?1:0;if(p=='hoeken')return (r==6||r==7)&&(c<=1||c>=5)?1:0;if(p=='dubbel')return r==4&&c>=1&&c<=5?2:0;return 0}
@@ -163,7 +163,7 @@ function m3BesteZet(b){let best=null,bs=-1;for(let r=0;r<RIJEN;r++)for(let c=0;c
 /* ---------- weergave ---------- */
 const M3={};
 V.match3=async(n)=>{n=n||S.m3lvl||1;if((S.m3kal||{})[n]==null){app('<p class="m3voor">Het level wordt klaargezet…</p>');await m3Kalibreer(n,m3VakVoor(n).thema);if(document.body.dataset.view!=='match3')return}const L=m3Level(n);const vak=m3VakVoor(n);const thema=vak.thema;const T=M3THEMA[thema];
- const doelTxt=d=>d[0]=='o'?T.onkruid:d[0]=='k'?T.kist:d[0]=='p'?T.pot+'en':T.t[d[0]].map?T.t[d[0]][0]:'';
+ const doelTxt=d=>d[0]=='o'?T.onkruid:d[0]=='k'?T.kist:d[0]=='p'?(/pot$/.test(T.pot)?T.pot+'ten':T.pot+'en'):T.t[d[0]].map?T.t[d[0]][0]:'';
  app(`<div class="m3voor rococo"><h2>Level ${n}</h2><p class="m3vak">${T.n}</p><div class="m3doelen-voor">${L.doelen.map(d=>`<span>${m3DoelIco(d,T)}<b>${doelTxt(d)}</b></span>`).join('')}</div>
  <p>${L.zetten} zetten</p><p class="klein">Boosters (optioneel):</p><div class="m3boost"><label><input type="checkbox" id="b1"> Start met een raket <small>30 Galjoenen</small></label><label><input type="checkbox" id="b2"> Start met een ketelbom <small>50 Galjoenen</small></label></div>
  <p class="harten">${harten()}</p><button class="knop volgende" id="m3start">Spelen</button></div>`);
@@ -178,7 +178,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
  <div class="m3doel" id="m3d"></div></div><div class="m3bord"><canvas id="m3c"></canvas><div id="m3fx"></div></div></div>`);
  document.body.classList.add('m3aan');
  const cv=$('#m3c'),ctx=cv.getContext('2d');const dpr=Math.min(2,devicePixelRatio||1);let cel,W,H;
- const maat=()=>{cel=Math.floor(Math.min((innerWidth-18)/KOL,(innerHeight-250)/RIJEN,66));W=cel*KOL;H=cel*RIJEN;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);for(let k=0;k<6;k++)tegelBeeld(T,k,cel)};maat();addEventListener('resize',maat);
+ const maat=()=>{cel=Math.floor(Math.min((innerWidth-18)/KOL,(innerHeight-250)/RIJEN,66));W=cel*KOL;H=cel*RIJEN;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);try{m3Voorrender(T.id||thema,cel,b.L.kleuren)}catch(e){for(let k=0;k<b.L.kleuren;k++)tegelBeeld(T,k,cel)}};maat();addEventListener('resize',maat);
  const deeltjes=[],geesten=[],fxs=[];let slowTot=0,schud=0,sel=null,hintT=Date.now(),hint=null,bezig=false,vliegers=0;
  const vorig=b.doel.map(d=>d.over);
  const doelUI=()=>{const el=$('#m3d');if(!el)return;if(!el.children.length)el.innerHTML=b.doel.map((d,i)=>`<div class="m3kaart">${m3DoelIco(L.doelen[i],T)}<b></b></div>`).join('');
