@@ -1,0 +1,231 @@
+'use strict';
+/* ====== Match-3 hoofdspel (eigen engine, canvas) ====== */
+const M3THEMA={
+ herbologie:{n:'Herbologie',onkruid:'Onkruid',kist:'Kistje',pot:'Mandragorapot',t:[
+  ['Mandragora','#4f9a3c','M12 21V11M12 11c-5 0-7-4-7-8 4 0 7 2 7 8zM12 11c5 0 7-4 7-8-4 0-7 2-7 8zM9 21h6'],
+  ['Zaadje','#b0773a','M12 3c4 4 5 9 0 18-5-9-4-14 0-18zM12 7v10'],
+  ['Bloempot','#cf5f33','M5 8h14l-2 12H7zM4 5h16v3H4z'],
+  ['Gieter','#3b80c4','M4 10h11v9H4zM15 12l5-4M7 10V7a3 3 0 016 0'],
+  ['Bloesem','#d65b98','M12 12m-2.5 0a2.5 2.5 0 105 0 2.5 2.5 0 10-5 0M12 3a3 3 0 010 6M12 15a3 3 0 010 6M3 12a3 3 0 016 0M15 12a3 3 0 016 0'],
+  ['Varenblad','#d9b42c','M12 21V4M12 7l-4-2M12 7l4-2M12 11l-5-2M12 11l5-2M12 15l-5-2M12 15l5-2']]},
+ toverdranken:{n:'Toverdranken',onkruid:'Gemorst brouwsel',kist:'Ingrediëntenkist',pot:'Ketel',t:[
+  ['Groen flesje','#3f9e57','M10 3h4M10 3v5l-4 7a4 4 0 004 6h4a4 4 0 004-6l-4-7V3'],
+  ['Bezoar','#9a7a55','M6 10l4-5h5l4 5-2 8H8z'],
+  ['Rood flesje','#c4413b','M9 3h6M10 3v4a6 6 0 104 0V3'],
+  ['Florfliegen','#3b80c4','M12 8a2 2 0 110 4 2 2 0 010-4zM12 12v8M10 9C6 5 3 6 3 9s4 3 7 1M14 9c4-4 7-3 7 0s-4 3-7 1'],
+  ['Hoornpoeder','#8b5cc4','M5 20c2-8 6-14 15-17-3 5-5 10-6 17z'],
+  ['Feniksveer','#e0a92c','M5 20L19 6M19 6c-6 0-11 3-12 10 5-1 10-4 12-10z']]},
+};
+M3THEMA.bezweringen={n:'Bezweringen',onkruid:'Spinrag',kist:'Boekenkist',pot:'Zwevende veer',t:[['Veer','#4f9a3c',M3THEMA.toverdranken.t[5][2]],['Boek','#b0773a','M4 5h7a2 2 0 012 2v12a2 2 0 00-2-2H4zM20 5h-7v14h7z'],['Ster','#cf5f33','M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z'],['Toverstok','#3b80c4','M4 20L18 6M16 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1z'],['Kaars','#d65b98','M10 9h4v12h-4zM12 3c2 2 2 4 0 5-2-1-2-3 0-5z'],['Sleutel','#d9b42c','M8 14a4 4 0 110-.1M11 13h10M18 13v3M21 13v2']]};
+M3THEMA.fabeldieren={n:'Verzorging van Fabeldieren',onkruid:'Modder',kist:'Voerkist',pot:'Drakenei',t:M3THEMA.herbologie.t.map((x,i)=>i==1?['Uilenveer','#b0773a',M3THEMA.toverdranken.t[5][2]]:x)};
+M3THEMA.astronomie={n:'Astronomie',onkruid:'Sterrenstof',kist:'Telescoopkist',pot:'Hemelbol',t:M3THEMA.bezweringen.t.map((x,i)=>i==4?['Maan','#d65b98','M15 4a8 8 0 100 16 7 7 0 010-16z']:x)};
+const P2D={};const pad=s=>P2D[s]||(P2D[s]=new Path2D(s));
+/* deterministische rng */
+const rngVan=seed=>()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+/* ---------- levels ---------- */
+const HANDGEMAAKT=[ // [zetten, kleuren, doelen, onkruid-patroon, kisten, potten]
+ [20,5,[[0,10]],0,0,0],[20,5,[[1,12],[3,12]],0,0,0],[18,5,[[2,18]],0,0,0],[20,5,[['o']],'midden',0,0],[22,5,[['o'],[0,10]],'rand',0,0],
+ [20,5,[[4,20]],0,0,0],[22,5,[['o']],'kruis',0,0],[22,5,[['k']],0,'rij',0],[22,5,[['k'],[1,15]],0,'hoeken',0],[24,5,[['o'],['k']],'midden','rij',0],
+ [22,5,[['p',2]],0,0,2],[24,5,[['p',3],[0,15]],0,0,3],[24,5,[['o'],['p',2]],'onder',0,2],[22,6,[[2,16],[5,16]],0,0,0],[24,5,[['k'],['p',2]],0,'hoeken',2],
+ [24,6,[['o']],'vol',0,0],[25,6,[['k']],0,'dubbel',0],[24,6,[['p',4]],0,0,4],[25,6,[['o'],['k']],'kruis','hoeken',0],[26,6,[['o'],['p',3]],'vol',0,3],
+ [24,6,[[0,25],[3,25]],0,0,0],[26,6,[['k'],['o']],'rand','dubbel',0],[25,6,[['p',5]],0,'rij',5],[26,6,[['o']],'dambord',0,0],[27,6,[['k'],['p',3],[1,15]],0,'dubbel',3],
+ [26,6,[['o'],['k']],'vol','rij',0],[25,6,[[4,30]],'midden',0,0],[27,6,[['p',4],['o']],'dambord',0,4],[28,6,[['k'],['o'],['p',2]],'vol','dubbel',2],[30,6,[['o'],['k'],['p',4]],'dambord','dubbel',4]];
+const RIJEN=8,KOL=7;
+async function m3Kalibreer(n,thema){S.m3kal=S.m3kal||{};if(S.m3kal[n]!=null)return S.m3kal[n];const L={...m3Level(n)};L.zetten-=0;for(const e of [0,3,6,10,15,20,30]){if(await m3Oplosbaar({...L,zetten:L.zetten+e},thema)>=1){S.m3kal[n]=e;bewaar();return e}}S.m3kal[n]=30;bewaar();return 30}
+function m3Level(n){// n vanaf 1
+ const r=rngVan(n*7919+13);let L;
+ if(n<=HANDGEMAAKT.length)L=HANDGEMAAKT[n-1];
+ else{const d=n-30,ok=['midden','rand','kruis','onder','vol','dambord'],kk=['rij','hoeken','dubbel'];const doelen=[];
+  const typ=[r()<.6?'o':null,r()<.5?'k':null,r()<.4?'p':null].filter(Boolean);if(!typ.length||r()<.3)doelen.push([r()*6|0,15+Math.min(25,d/2|0)]);
+  typ.forEach(t=>doelen.push(t=='p'?['p',2+Math.min(4,d/10|0)]:[t]));
+  L=[Math.max(18,30-Math.min(10,d/12|0)),6,doelen,typ.includes('o')?ok[r()*ok.length|0]:0,typ.includes('k')?kk[r()*kk.length|0]:0,typ.includes('p')?2+Math.min(4,d/10|0):0]}
+ return{n,zetten:L[0]+((S.m3kal||{})[n]||0),kleuren:L[1],doelen:L[2],onkruid:L[3],kist:L[4],pot:L[5],extra:+(S.m3extra||{})[n]||0}}
+function patroon(p,r,c){if(!p)return 0;switch(p){case 'midden':return r>=2&&r<=5&&c>=2&&c<=4?1:0;case 'rand':return r==0||r==RIJEN-1||c==0||c==KOL-1?1:0;case 'kruis':return r==3||r==4||c==3?1:0;case 'onder':return r>=5?1:0;case 'vol':return r>=1?(r>=5?2:1):0;case 'dambord':return (r+c)%2&&r>=1?2:0}return 0}
+function kistPat(p,r,c){if(!p)return 0;if(p=='rij')return r==4&&c%2==1?1:0;if(p=='hoeken')return (r==6||r==7)&&(c<=1||c>=5)?1:0;if(p=='dubbel')return r==4&&c>=1&&c<=5?2:0;return 0}
+/* ---------- bord ---------- */
+class Bord{
+ constructor(L,thema,sim){this.L=L;this.T=M3THEMA[thema]||M3THEMA.herbologie;this.sim=sim;this.rng=sim?rngVan(L.n*31+(sim|0)):Math.random;this.zet=L.zetten+(L.extra||0);
+  this.g=[];this.lay=[];this.kist=[];this.score=0;this.combo=0;this.doel=L.doelen.map(d=>({t:d[0],n:d[1]||0,over:0}));this.potOver=L.pot;this.potGeplaatst=0;this.fx=[];
+  for(let r=0;r<RIJEN;r++){this.g.push([]);this.lay.push([]);this.kist.push([]);for(let c=0;c<KOL;c++){this.lay[r][c]=patroon(L.onkruid,r,c);this.kist[r][c]=kistPat(L.kist,r,c);this.g[r][c]=null}}
+  for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(!this.kist[r][c]){let k;do k=this.rng()*L.kleuren|0;while((c>=2&&this.k(r,c-1)==k&&this.k(r,c-2)==k)||(r>=2&&this.k(r-1,c)==k&&this.k(r-2,c)==k));this.g[r][c]=this.tegel(k,r,c,r)}
+  // potten bovenaan
+  for(let i=0;i<Math.min(2,L.pot);i++){const c=1+i*4;this.g[0][c]=this.tegel(-1,0,c,0);this.potGeplaatst++}
+  this.doel.forEach(d=>{if(d.t=='o')d.n=this.lay.flat().reduce((a,b)=>a+b,0);if(d.t=='k')d.n=this.kist.flat().reduce((a,b)=>a+b,0);d.over=d.n});
+  if(!this.heeftZet())this.schud()}
+ tegel(k,r,c,van){return{k,s:null,x:c,y:sim0(this)?r:(van===undefined?r:van-RIJEN),sc:1,vy:0,id:Math.random()}}
+ k(r,c){const t=this.g[r]&&this.g[r][c];return t?t.k:-9}
+ binnen(r,c){return r>=0&&r<RIJEN&&c>=0&&c<KOL}
+ runs(){const res=[];for(let r=0;r<RIJEN;r++){let c=0;while(c<KOL){const k=this.k(r,c);let e=c;while(e+1<KOL&&this.k(r,e+1)==k)e++;if(k>=0&&e-c>=2)res.push({h:1,cel:Array.from({length:e-c+1},(_,i)=>[r,c+i])});c=e+1}}
+  for(let c=0;c<KOL;c++){let r=0;while(r<RIJEN){const k=this.k(r,c);let e=r;while(e+1<RIJEN&&this.k(e+1,c)==k)e++;if(k>=0&&e-r>=2)res.push({h:0,cel:Array.from({length:e-r+1},(_,i)=>[r+i,c])});r=e+1}}
+  for(let r=0;r<RIJEN-1;r++)for(let c=0;c<KOL-1;c++){const k=this.k(r,c);if(k>=0&&this.k(r,c+1)==k&&this.k(r+1,c)==k&&this.k(r+1,c+1)==k)res.push({sq:1,cel:[[r,c],[r,c+1],[r+1,c],[r+1,c+1]]})}
+  return res}
+ groepen(rs){const gs=[];rs.forEach(run=>{const key=run.cel.map(x=>x+'');const g=gs.find(g=>run.cel.some(x=>g.set.has(x+'')));if(g){run.cel.forEach(x=>g.set.add(x+''));g.runs.push(run)}else gs.push({set:new Set(key),runs:[run]})});
+  // samenvoegen
+  for(let i=0;i<gs.length;i++)for(let j=gs.length-1;j>i;j--)if([...gs[j].set].some(x=>gs[i].set.has(x))){gs[j].set.forEach(x=>gs[i].set.add(x));gs[i].runs.push(...gs[j].runs);gs.splice(j,1)}
+  return gs}
+ heeftZet(){for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(!t)continue;if(t.s)return true;for(const[dr,dc]of[[0,1],[1,0]]){const r2=r+dr,c2=c+dc;if(!this.binnen(r2,c2)||!this.g[r2][c2])continue;this.wis(r,c,r2,c2);const ok=this.runs().length>0;this.wis(r,c,r2,c2);if(ok)return[[r,c],[r2,c2]]}}return false}
+ wis(a,b,c,d){const t=this.g[a][b];this.g[a][b]=this.g[c][d];this.g[c][d]=t}
+ schud(){const ts=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(t&&t.k>=0&&!t.s)ts.push(t)}let p=0;do{for(let i=ts.length-1;i>0;i--){const j=this.rng()*(i+1)|0;[ts[i],ts[j]]=[ts[j],ts[i]]}let i=0;for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(t&&t.k>=0&&!t.s){this.g[r][c]=ts[i++];this.g[r][c].x=c;this.g[r][c].y=r}}p++}while((this.runs().length||!this.heeftZet())&&p<40)}
+ async wissel(a,b,hooks={}){// a,b = [r,c]
+  const ta=this.g[a[0]][a[1]],tb=this.g[b[0]][b[1]];if(!ta||!tb)return false;
+  this.wis(a[0],a[1],b[0],b[1]);await this.wacht(160);
+  let effect=null;
+  if(ta.s&&tb.s)effect='combi';else if(ta.s=='bal'||tb.s=='bal')effect='bal';
+  if(!effect&&!this.runs().length&&(ta.s||tb.s))effect='los';
+  if(!effect&&!this.runs().length){this.wis(a[0],a[1],b[0],b[1]);await this.wacht(160);return false}
+  this.zet--;this.combo=0;const extra=new Set();
+  if(effect=='bal'){const bal=ta.s=='bal'?b:a,ander=ta.s=='bal'?tb:ta;bal.toString();const pos=ta.s=='bal'?b:a;extra.add(pos+'');
+   if(ander.s){/* bal+special: alle tegels van die kleur worden die special */const k=ander.k;for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(t&&t.k==k){t.s=t.s||ander.s;extra.add([r,c]+'')}}}
+   else{const k=ander.k;for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(this.k(r,c)==k)extra.add([r,c]+'')}
+   this.fx.push({t:'straal',van:pos,k:ander.k})}
+  if(effect=='combi'){if(ta.s=='bal'&&tb.s=='bal'){for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(this.g[r][c])extra.add([r,c]+'')}
+   else{extra.add(a+'');extra.add(b+'');if((ta.s+tb.s).includes('bom')&&(ta.s+tb.s).match(/r[hv]/)){ // groot kruis
+     for(let d=-1;d<=1;d++){for(let c=0;c<KOL;c++)extra.add([b[0]+d,c]+'');for(let r=0;r<RIJEN;r++)extra.add([r,b[1]+d]+'')}}
+    else if(ta.s.match(/r[hv]/)&&tb.s.match(/r[hv]/)){ta.s='rh';tb.s='rv'}else if(ta.s=='bom'&&tb.s=='bom'){ta.s='bom2';tb.s='bom2'}}}
+  if(effect=='los'){if(ta.s)extra.add(b+'');if(tb.s)extra.add(a+'')}
+  await this.oplossen(a,b,extra,hooks);return true}
+ async oplossen(a,b,extra,hooks){
+  let eerste=true;
+  while(true){const rs=this.runs();const wis=new Set(eerste?extra:[]);const nieuw=[];
+   const gs=this.groepen(rs);
+   gs.forEach(g=>{g.set.forEach(x=>wis.add(x));const lang=Math.max(...g.runs.filter(r=>!r.sq).map(r=>r.cel.length),0);const hv=new Set(g.runs.filter(r=>!r.sq).map(r=>r.h));const sq=g.runs.some(r=>r.sq);
+    let s=null;if(lang>=5)s='bal';else if(hv.size==2)s='bom';else if(lang==4)s=g.runs.find(r=>r.cel.length==4).h?'rv':'rh';else if(sq&&lang<4)s='uil';
+    if(s){const cel=[...g.set].map(x=>x.split(',').map(Number));let p=cel.find(x=>eerste&&((a&&x[0]==a[0]&&x[1]==a[1])||(b&&x[0]==b[0]&&x[1]==b[1])))||cel[cel.length>>1];const t=this.g[p[0]][p[1]];nieuw.push([p,s,t.k])}});
+   if(!wis.size)break;
+   this.combo++;hooks.combo&&hooks.combo(this.combo);
+   // specials kettingreactie
+   const rij=[...wis];const gedaan=new Set();
+   while(rij.length){const x=rij.shift();if(gedaan.has(x))continue;gedaan.add(x);const[r,c]=x.split(',').map(Number);if(!this.binnen(r,c))continue;const t=this.g[r][c];if(!t||!t.s)continue;
+    const ad=(rr,cc)=>{if(this.binnen(rr,cc)){const k=[rr,cc]+'';wis.add(k);rij.push(k)}};
+    if(t.s=='rh'){for(let cc=0;cc<KOL;cc++)ad(r,cc);this.fx.push({t:'rh',r})}
+    if(t.s=='rv'){for(let rr=0;rr<RIJEN;rr++)ad(rr,c);this.fx.push({t:'rv',c})}
+    if(t.s=='bom'||t.s=='bom2'){const R=t.s=='bom2'?2:1;for(let rr=r-R;rr<=r+R;rr++)for(let cc=c-R;cc<=c+R;cc++)ad(rr,cc);this.fx.push({t:'bom',r,c,R})}
+    if(t.s=='uil'){const doel=this.uilDoel(wis);if(doel){ad(doel[0],doel[1]);this.fx.push({t:'uil',van:[r,c],naar:doel})}}
+    if(t.s=='bal'){const k=t.k;for(let rr=0;rr<RIJEN;rr++)for(let cc=0;cc<KOL;cc++)if(this.k(rr,cc)==k)ad(rr,cc)}
+    t.s=null}
+   // wis + schade
+   const geraakteKist=new Set();
+   wis.forEach(x=>{const[r,c]=x.split(',').map(Number);if(!this.binnen(r,c))return;
+    if(this.kist[r][c]){geraakteKist.add(x);return}
+    const t=this.g[r][c];if(!t||t.k<0)return;
+    if(nieuw.some(([p])=>p[0]==r&&p[1]==c))return;
+    if(this.lay[r][c]){this.lay[r][c]--;this.telDoel('o');this.fx.push({t:'blad',r,c})}
+    this.telDoel(t.k);this.score+=10*this.combo;t.weg=1;this.fx.push({t:'pof',r,c,k:t.k});this.g[r][c]=null;
+    [[0,1],[1,0],[0,-1],[-1,0]].forEach(([dr,dc])=>{if(this.binnen(r+dr,c+dc)&&this.kist[r+dr][c+dc])geraakteKist.add([r+dr,c+dc]+'')})});
+   geraakteKist.forEach(x=>{const[r,c]=x.split(',').map(Number);if(this.kist[r][c]>0){this.kist[r][c]--;this.telDoel('k');this.fx.push({t:'kist',r,c})}});
+   nieuw.forEach(([p,s,k])=>{const t=this.g[p[0]][p[1]];if(t){t.s=s;t.k=k;t.sc=1.5}else{const nt=this.tegel(k,p[0],p[1],p[0]);nt.s=s;nt.sc=1.5;this.g[p[0]][p[1]]=nt}if(s)this.fx.push({t:'nieuw',r:p[0],c:p[1],s})});
+   hooks.wis&&hooks.wis(wis.size,this.combo);
+   await this.wacht(200);
+   this.val();await this.wacht(320);
+   this.potten();
+   eerste=false}
+  if(this.g.some((rw,r)=>rw.some((t,c)=>!t&&!this.kist[r][c]))){this.val();this.potten()}
+  if(!this.heeftZet()){this.schud();hooks.geschud&&hooks.geschud()}}
+ uilDoel(wis){const kans=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){if(wis.has([r,c]+''))continue;if(this.kist[r][c])kans.push([r,c,3]);else if(this.lay[r][c]&&this.g[r][c])kans.push([r,c,2]);else{const t=this.g[r][c];if(t&&this.doel.some(d=>d.t===t.k&&d.over>0))kans.push([r,c,1])}}
+  if(!kans.length)return null;const m=Math.max(...kans.map(k=>k[2]));const b=kans.filter(k=>k[2]==m);const x=b[this.rng()*b.length|0];return[x[0],x[1]]}
+ telDoel(t){this.doel.forEach(d=>{if(d.t===t&&d.over>0)d.over--})}
+ val(){for(let c=0;c<KOL;c++){let leeg=0;for(let r=RIJEN-1;r>=0;r--){if(this.kist[r][c])continue;const t=this.g[r][c];if(!t)leeg++;else if(leeg){let r2=r+leeg;// overslaan kisten
+     let rr=r,nn=leeg;while(nn>0){rr++;if(!this.kist[rr][c])nn--}this.g[rr][c]=t;this.g[r][c]=null}}
+   let n=0;for(let r=RIJEN-1;r>=0;r--)if(!this.kist[r][c]&&!this.g[r][c])n++;let i=0;
+   for(let r=0;r<RIJEN;r++)if(!this.kist[r][c]&&!this.g[r][c]){let k=this.rng()*this.L.kleuren|0;
+     if(this.potGeplaatst<this.L.pot&&this.rng()<.08&&!this.potOpBord()){k=-1;this.potGeplaatst++}
+     const t=this.tegel(k,r,c);t.y=sim0(this)?r:(-n+i-.2);i++;this.g[r][c]=t}}}
+ potOpBord(){return this.g.flat().some(t=>t&&t.k<0)}
+ potten(){for(let c=0;c<KOL;c++){let r=RIJEN-1;while(r>=0&&this.kist[r][c])r--;const t=r>=0&&this.g[r][c];if(t&&t.k<0){this.g[r][c]=null;this.telDoel('p');this.fx.push({t:'pot',r,c});this.val()}}}
+ klaar(){return this.doel.every(d=>d.over<=0)}
+ wacht(ms){return this.sim?Promise.resolve():new Promise(r=>setTimeout(r,ms))}
+}
+function sim0(b){return !!b.sim}
+/* oplosbaarheidscheck: greedy bot speelt het level een paar keer na */
+async function m3Oplosbaar(L,thema){let win=0;for(let p=1;p<=3;p++){const b=new Bord(L,thema,p);let veilig=0;while(b.zet>0&&!b.klaar()&&veilig++<80){const z=m3BesteZet(b);if(!z)break;await b.wissel(z[0],z[1])}if(b.klaar())win++}return win}
+function m3BesteZet(b){let best=null,bs=-1;for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)for(const[dr,dc]of[[0,1],[1,0]]){const r2=r+dr,c2=c+dc;if(!b.binnen(r2,c2)||!b.g[r][c]||!b.g[r2][c2])continue;
+  const ta=b.g[r][c],tb=b.g[r2][c2];let s=0;if(ta.s||tb.s)s=5+(ta.s&&tb.s?10:0);b.wis(r,c,r2,c2);const rs=b.runs();b.wis(r,c,r2,c2);
+  rs.forEach(x=>{s+=x.cel.length;x.cel.forEach(([rr,cc])=>{if(b.lay[rr][cc])s+=2;const t=b.g[rr][cc];const k=(rr==r&&cc==c)?tb:(rr==r2&&cc==c2)?ta:t;if(k&&b.doel.some(d=>d.t===k.k&&d.over>0))s+=2})});
+  rs.forEach(x=>x.cel.forEach(([rr,cc])=>{for(let q=rr-1;q>=0;q--){const t=b.g[q][cc];if(t&&t.k<0){s+=4;break}}if([[0,1],[1,0],[0,-1],[-1,0]].some(([a,d])=>b.binnen(rr+a,cc+d)&&b.kist[rr+a][cc+d]))s+=3}));
+  if(rs.length||ta.s||tb.s){s+=r*0.1;if(s>bs){bs=s;best=[[r,c],[r2,c2]]}}}return best}
+/* ---------- weergave ---------- */
+const M3={};
+V.match3=async(n)=>{n=n||S.m3lvl||1;if((S.m3kal||{})[n]==null){app('<p class="m3voor">Het level wordt klaargezet…</p>');await m3Kalibreer(n,m3VakVoor(n).thema);if(document.body.dataset.view!=='match3')return}const L=m3Level(n);const vak=m3VakVoor(n);const thema=vak.thema;const T=M3THEMA[thema];
+ const doelTxt=d=>d[0]=='o'?T.onkruid:d[0]=='k'?T.kist:d[0]=='p'?T.pot+'en':T.t[d[0]].map?T.t[d[0]][0]:'';
+ app(`<div class="m3voor rococo"><h2>Level ${n}</h2><p class="m3vak">${T.n}</p><div class="m3doelen-voor">${L.doelen.map(d=>`<span>${m3DoelIco(d,T)}<b>${doelTxt(d)}</b></span>`).join('')}</div>
+ <p>${L.zetten} zetten</p><p class="klein">Boosters (optioneel):</p><div class="m3boost"><label><input type="checkbox" id="b1"> Start met een raket <small>30 Galjoenen</small></label><label><input type="checkbox" id="b2"> Start met een ketelbom <small>50 Galjoenen</small></label></div>
+ <p class="harten">${harten()}</p><button class="knop volgende" id="m3start">Spelen</button></div>`);
+ $('#m3start').onclick=()=>{const b1=$('#b1').checked,b2=$('#b2').checked;const kost=(b1?30:0)+(b2?50:0);if(kost>S.galjoenen){toast('Niet genoeg Galjoenen voor die boosters.');return}if(levens()<1){toast('Je harten laden weer op. Speel even een bonusspel!');return}S.galjoenen-=kost;bewaar();stats();m3Speel(n,thema,{b1,b2})}};
+function m3DoelIco(d,T){const kleur=typeof d[0]=='number'?T.t[d[0]][1]:d[0]=='o'?'#6b8f3a':d[0]=='k'?'#8a5a2b':'#c9a227';const p=typeof d[0]=='number'?T.t[d[0]][2]:d[0]=='o'?M3THEMA.herbologie.t[5][2]:d[0]=='k'?'M4 7h16v13H4zM4 7l2-3h12l2 3M4 12h16':'M5 8h14l-2 12H7zM4 5h16v3H4z';
+ return `<svg viewBox="0 0 24 24" class="m3ico" style="background:${kleur}"><path d="${p}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`}
+function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const b=new Bord(L,thema,0);M3.b=b;
+ if(boost.b1){const r=b.g[5][3];if(r)r.s='rh'}if(boost.b2){const r=b.g[6][1];if(r)r.s='bom'}
+ app(`<div class="m3"><div class="m3top"><div class="m3zet"><small>Zetten</small><b id="m3z">${b.zet}</b></div><div class="m3doel" id="m3d"></div></div><canvas id="m3c"></canvas><div class="m3onder"><span>Level ${n} · ${T.n}</span></div></div>`);
+ document.body.classList.add('m3aan');
+ const cv=$('#m3c'),ctx=cv.getContext('2d');const dpr=Math.min(2,devicePixelRatio||1);let cel,W,H;
+ const maat=()=>{cel=Math.floor(Math.min((innerWidth-20)/KOL,(innerHeight-260)/RIJEN,62));W=cel*KOL;H=cel*RIJEN;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0)};maat();addEventListener('resize',maat);
+ const deeltjes=[];let schud=0,sel=null,hintT=Date.now(),hint=null,bezig=false,stralen=[];
+ const doelUI=()=>{$('#m3d').innerHTML=b.doel.map((d,i)=>`<span class="${d.over<=0?'af':''}">${m3DoelIco(L.doelen[i],T)}<b>${d.over<=0?'✓':d.over}</b></span>`).join('');$('#m3z').textContent=b.zet};doelUI();
+ const toonFx=()=>{b.fx.splice(0).forEach(f=>{const px=(f.c+.5)*cel,py=(f.r+.5)*cel;
+  if(f.t=='pof'){const kl=T.t[f.k]?T.t[f.k][1]:'#fff';for(let i=0;i<(RMP?2:7);i++)deeltjes.push({x:px,y:py,vx:(Math.random()-.5)*5,vy:(Math.random()-.8)*5,l:1,k:kl,r:2+Math.random()*3})}
+  if(f.t=='blad'||f.t=='kist'){for(let i=0;i<(RMP?2:8);i++)deeltjes.push({x:px,y:py,vx:(Math.random()-.5)*4,vy:-Math.random()*4,l:1.2,k:f.t=='kist'?'#a0703a':'#7fae4a',r:3,sq:1})}
+  if(f.t=='rh')stralen.push({t:'h',p:(f.r+.5)*cel,l:1});if(f.t=='rv')stralen.push({t:'v',p:(f.c+.5)*cel,l:1});
+  if(f.t=='bom'){schud=10;stralen.push({t:'b',x:px,y:py,R:(f.R+.5)*cel,l:1});vib(60)}
+  if(f.t=='uil')stralen.push({t:'u',x:(f.van[1]+.5)*cel,y:(f.van[0]+.5)*cel,x2:(f.naar[1]+.5)*cel,y2:(f.naar[0]+.5)*cel,l:1});
+  if(f.t=='straal')schud=6;
+  if(f.t=='pot'){toast(T.pot+' verzameld!');fx.speel('munt')}
+  if(f.t=='nieuw'){fx.speel('goed');vib(30)}})};
+ const tekenTegel=(t,x,y,s)=>{if(t.k<0){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle='#c27a3a';ctx.beginPath();ctx.moveTo(-cel*.32,-cel*.15);ctx.lineTo(cel*.32,-cel*.15);ctx.lineTo(cel*.24,cel*.35);ctx.lineTo(-cel*.24,cel*.35);ctx.fill();ctx.fillStyle='#e09a55';ctx.fillRect(-cel*.38,-cel*.3,cel*.76,cel*.16);ctx.strokeStyle='#4f9a3c';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,-cel*.3);ctx.quadraticCurveTo(-cel*.2,-cel*.5,-cel*.25,-cel*.42);ctx.moveTo(0,-cel*.3);ctx.quadraticCurveTo(cel*.2,-cel*.55,cel*.22,-cel*.45);ctx.stroke();ctx.restore();return}
+  const [,kl,pd]=T.t[t.k];const r=cel*.42*s;ctx.save();ctx.translate(x,y);
+  const gr=ctx.createRadialGradient(-r*.3,-r*.4,r*.1,0,0,r*1.1);gr.addColorStop(0,'#fff8');gr.addColorStop(.25,kl);gr.addColorStop(1,'#0006');
+  ctx.fillStyle=kl;ctx.beginPath();ctx.roundRect(-r,-r,2*r,2*r,r*.45);ctx.fill();ctx.fillStyle=gr;ctx.fill();ctx.strokeStyle='rgba(255,240,200,.55)';ctx.lineWidth=1.5;ctx.stroke();
+  const sc=r*2/24*.72;ctx.save();ctx.scale(sc,sc);ctx.translate(-12,-12);ctx.strokeStyle='#fff';ctx.lineWidth=2.2;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke(pad(pd));ctx.restore();
+  if(t.s){ctx.lineWidth=3;ctx.strokeStyle='#ffe58a';ctx.shadowColor='#ffd34d';ctx.shadowBlur=12;
+   if(t.s=='rh'||t.s=='rv'){ctx.beginPath();if(t.s=='rh'){ctx.moveTo(-r*.9,0);ctx.lineTo(r*.9,0);ctx.moveTo(r*.6,-r*.3);ctx.lineTo(r*.9,0);ctx.lineTo(r*.6,r*.3);ctx.moveTo(-r*.6,-r*.3);ctx.lineTo(-r*.9,0);ctx.lineTo(-r*.6,r*.3)}else{ctx.moveTo(0,-r*.9);ctx.lineTo(0,r*.9);ctx.moveTo(-r*.3,-r*.6);ctx.lineTo(0,-r*.9);ctx.lineTo(r*.3,-r*.6);ctx.moveTo(-r*.3,r*.6);ctx.lineTo(0,r*.9);ctx.lineTo(r*.3,r*.6)}ctx.stroke()}
+   if(t.s=='bom'||t.s=='bom2'){ctx.beginPath();ctx.arc(0,0,r*.85,0,7);ctx.stroke();ctx.beginPath();ctx.arc(0,0,r*.55,0,7);ctx.stroke()}
+   if(t.s=='uil'){ctx.beginPath();ctx.moveTo(-r*.9,-r*.2);ctx.quadraticCurveTo(-r*.4,-r*.9,0,-r*.3);ctx.quadraticCurveTo(r*.4,-r*.9,r*.9,-r*.2);ctx.stroke()}
+   if(t.s=='bal'){const h=(performance.now()/6)%360;const g2=ctx.createConicGradient?ctx.createConicGradient(h/57,0,0):null;if(g2){['#f55','#fd5','#5f5','#5df','#a6f','#f55'].forEach((c,i)=>g2.addColorStop(i/5,c));ctx.fillStyle=g2}else ctx.fillStyle='#fd5';ctx.beginPath();ctx.arc(0,0,r*.95,0,7);ctx.fill()}
+   ctx.shadowBlur=0}
+  ctx.restore()};
+ let laatst=performance.now();
+ const frame=nu=>{if(!document.body.contains(cv)){document.body.classList.remove('m3aan');removeEventListener('resize',maat);return}const dt=Math.min(40,nu-laatst)/16.7;laatst=nu;
+  ctx.clearRect(0,0,W,H);ctx.save();if(schud>0){ctx.translate((Math.random()-.5)*schud,(Math.random()-.5)*schud);schud*=.85;if(schud<.5)schud=0}
+  for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){ctx.fillStyle=(r+c)%2?'rgba(250,240,215,.16)':'rgba(250,240,215,.1)';ctx.fillRect(c*cel,r*cel,cel,cel);
+   if(b.lay[r][c]){ctx.fillStyle=b.lay[r][c]>1?'rgba(70,110,40,.85)':'rgba(110,150,60,.7)';ctx.beginPath();ctx.roundRect(c*cel+2,r*cel+2,cel-4,cel-4,8);ctx.fill();ctx.strokeStyle='rgba(180,220,120,.5)';ctx.lineWidth=2;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(c*cel+cel*(.25+i*.25),r*cel+cel*.85);ctx.quadraticCurveTo(c*cel+cel*(.2+i*.25),r*cel+cel*.5,c*cel+cel*(.3+i*.25),r*cel+cel*.3);ctx.stroke()}}}
+  for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(!t)continue;
+   // val met bounce
+   if(t.y<r||t.vy){t.vy+=.045*dt;t.y+=t.vy*dt;if(t.y>=r){t.y=r;if(t.vy>.12){t.vy=-t.vy*.28}else t.vy=0}}else if(t.y>r){t.y+=(r-t.y)*Math.min(1,.35*dt);if(t.y-r<.01)t.y=r}
+   t.x+=(c-t.x)*Math.min(1,.35*dt);if(Math.abs(t.x-c)<.01)t.x=c;t.sc+=(1-t.sc)*.18*dt;
+   let s=t.sc;if(sel&&sel[0]==r&&sel[1]==c)s*=1.1+Math.sin(nu/120)*.04;if(hint&&hint.some(h=>h[0]==r&&h[1]==c))s*=1+Math.sin(nu/150)*.07;
+   const sq=t.vy?1+Math.min(.15,Math.abs(t.vy)*.4):1;ctx.save();ctx.translate((t.x+.5)*cel,(t.y+.5)*cel);ctx.scale(1/sq,sq);tekenTegel(t,0,0,s);ctx.restore()}
+  for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(b.kist[r][c]){const x=c*cel+3,y=r*cel+3,w=cel-6;ctx.fillStyle='#8a5a2b';ctx.beginPath();ctx.roundRect(x,y,w,w,6);ctx.fill();ctx.strokeStyle='#d4af37';ctx.lineWidth=2;ctx.stroke();ctx.strokeStyle='#5a3615';ctx.beginPath();ctx.moveTo(x,y+w/2);ctx.lineTo(x+w,y+w/2);ctx.moveTo(x+w/2,y);ctx.lineTo(x+w/2,y+w);ctx.stroke();if(b.kist[r][c]>1){ctx.strokeStyle='#bbb';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x+4,y+4);ctx.lineTo(x+w-4,y+w-4);ctx.stroke()}}
+  stralen.forEach(s=>{s.l-=.04*dt;ctx.globalAlpha=Math.max(0,s.l);ctx.strokeStyle='#fff3b0';ctx.shadowColor='#ffd34d';ctx.shadowBlur=20;ctx.lineWidth=cel*.35*s.l;ctx.beginPath();
+   if(s.t=='h'){ctx.moveTo(0,s.p);ctx.lineTo(W,s.p)}if(s.t=='v'){ctx.moveTo(s.p,0);ctx.lineTo(s.p,H)}if(s.t=='b'){ctx.lineWidth=6;ctx.arc(s.x,s.y,s.R*(1.3-s.l*.3),0,7)}if(s.t=='u'){ctx.lineWidth=4;ctx.moveTo(s.x,s.y);ctx.quadraticCurveTo((s.x+s.x2)/2,Math.min(s.y,s.y2)-cel*2,s.x2,s.y2)}ctx.stroke();ctx.shadowBlur=0;ctx.globalAlpha=1});
+  stralen=stralen.filter(s=>s.l>0);
+  deeltjes.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=.2*dt;p.l-=.03*dt;ctx.globalAlpha=Math.max(0,p.l);ctx.fillStyle=p.k;if(p.sq)ctx.fillRect(p.x,p.y,p.r*2,p.r);else{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill()}});ctx.globalAlpha=1;
+  for(let i=deeltjes.length-1;i>=0;i--)if(deeltjes[i].l<=0)deeltjes.splice(i,1);
+  ctx.restore();
+  if(!bezig&&Date.now()-hintT>6000&&!hint){hint=b.heeftZet();if(hint===true)hint=null}
+  requestAnimationFrame(frame)};requestAnimationFrame(frame);
+ const blip=(n)=>{try{const{ac,master}=fx.ctx();const t=ac.currentTime;const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=523*2**(Math.min(n,12)*2/12);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.14,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+.35);o.connect(g);g.connect(master);o.start(t);o.stop(t+.4)}catch(e){}};
+ const hooks={combo:n=>{blip(n);if(n>=3&&!RMP)toast(['','','','Prachtig!','Betoverend!','Magisch!','Fenomenaal!'][Math.min(6,n)])},wis:()=>{toonFx();doelUI()},geschud:()=>toast('Geen zetten meer: de tegels worden geschud.')};
+ const cel_=e=>{const r=cv.getBoundingClientRect();return[Math.floor((e.clientY-r.top)/cel),Math.floor((e.clientX-r.left)/cel)]};
+ async function probeer(a,c){if(bezig||!b.binnen(...c)||Math.abs(a[0]-c[0])+Math.abs(a[1]-c[1])!=1)return;bezig=true;sel=null;hint=null;
+  const ok=await b.wissel(a,c,hooks);toonFx();doelUI();if(!ok){fx.speel('fout');vib(20)}bezig=false;hintT=Date.now();einde()}
+ M3.probeer=probeer;
+ let start=null;
+ cv.onpointerdown=e=>{if(bezig)return;try{cv.setPointerCapture(e.pointerId)}catch(x){}const p=cel_(e);start={p,x:e.clientX,y:e.clientY};
+  if(sel&&(sel[0]!=p[0]||sel[1]!=p[1])&&Math.abs(sel[0]-p[0])+Math.abs(sel[1]-p[1])==1){const a=sel;sel=null;start=null;probeer(a,p);return}sel=p;fx.speel('klik')};
+ cv.onpointermove=e=>{if(!start)return;const dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.hypot(dx,dy)>cel*.35){const p=start.p;const d=Math.abs(dx)>Math.abs(dy)?[0,Math.sign(dx)]:[Math.sign(dy),0];start=null;probeer(p,[p[0]+d[0],p[1]+d[1]])}};
+ cv.onpointerup=()=>{start=null};
+ function einde(){if(b.klaar()){m3Winst(n,b)}else if(b.zet<=0)m3Verlies(n,b)}
+ M3.einde=einde}
+function m3Winst(n,b){const sterBonus=b.zet>=5?1:0;const gal=10+b.zet*2;S.sterren=(S.sterren||0)+1;S.galjoenen+=gal;S.xp+=10;S.m3lvl=Math.max(S.m3lvl||1,n+1);delete (S.m3extra||{})[n];tel('opgelost');tel('m3');tel('sterren');bewaar();stats();fx.speel('fanfare');vib([40,30,40,30,120]);try{confetti&&confetti()}catch(e){}
+ try{buitVoor('memory')}catch(e){}
+ const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo m3eind"><h2>Level ${n} gehaald!</h2><div class="m3ster">${icoon('ster')}</div><p><b>+1 ster</b> voor je taken · +${gal} Galjoenen${b.zet?` (${b.zet} zetten over)`:''}</p>${tilly(m3Zin(true))}<button class="knop volgende" id="m3verder">Naar mijn kas</button><button class="knop" id="m3volg">Volgend level</button></div>`;
+ document.body.appendChild(o);$('#m3verder').onclick=()=>{o.remove();ga('home')};$('#m3volg').onclick=()=>{o.remove();ga('match3',n+1)};try{kernNa&&kernNa()}catch(e){}}
+function m3Verlies(n,b){const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo m3eind"><h2>Bijna!</h2><p>Nog ${b.doel.filter(d=>d.over>0).map(d=>d.over).join(' + ')} te gaan.</p>${tilly(m3Zin(false))}<button class="knop volgende" id="m3plus5">Nog 5 zetten · 40 Galjoenen</button><button class="knop" id="m3opn">Opnieuw</button><button class="linkknop" id="m3stop">Stoppen</button></div>`;
+ document.body.appendChild(o);
+ $('#m3plus5').onclick=()=>{if(S.galjoenen<40){toast('Niet genoeg Galjoenen.');return}S.galjoenen-=40;bewaar();stats();b.zet+=5;$('#m3z').textContent=b.zet;o.remove()};
+ $('#m3opn').onclick=()=>{o.remove();verliesLeven();ga('match3',n)};$('#m3stop').onclick=()=>{o.remove();verliesLeven();ga('home')}}
+function m3Zin(w){const W=['Ja! Zag je die raket door de rij gaan? Ik kreeg kippenvel.','Wauw, Luna. Professor Stronk gaat dit horen, echt waar.','Die combinatie was briljant. Nog eentje?','Zo, dat was een ster. Wat gaan we ermee doen in de kas?'],L=['Zo dichtbij! Ik denk dat die onderste rij de sleutel is.','Bijna, echt waar. Zullen we het nog eens proberen? Ik help mee zoeken.','Hmm, die kistjes waren koppig. Een ketelbom zou wonderen doen.'];const a=w?W:L;return a[Math.random()*a.length|0]}
+/* milde levens */
+def('harten',{n:5,t:Date.now()});
+function levens(){const h=S.harten;while(h.n<5&&Date.now()-h.t>20*6e4){h.n++;h.t+=20*6e4}if(h.n>=5)h.t=Date.now();return h.n}
+function verliesLeven(){levens();if(S.harten.n>=5)S.harten.t=Date.now();S.harten.n=Math.max(0,S.harten.n-1);bewaar()}
+function harten(){const n=levens();return Array.from({length:5},(_,i)=>`<span class="hart ${i<n?'vol':''}">${icoon('hart')}</span>`).join('')+(n<5?` <small>+1 over ${Math.ceil((20*6e4-(Date.now()-S.harten.t))/6e4)} min</small>`:'')}

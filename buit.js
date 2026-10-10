@@ -78,6 +78,4 @@ const _doelen=doelen;doelen=function(){const d=_doelen();if(S.nieuwBuit>0)d.spli
 setInterval(()=>{const o=new MutationObserver(()=>{});},1e9);
 new MutationObserver(()=>{clearTimeout(window._bv);window._bv=setTimeout(ketelVoorraad,0)}).observe($('#app'),{childList:true,subtree:true});
 tasTeller();
-if(S.naam&&S.huis)ga('home');
 
-requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add('klaar')));setTimeout(()=>document.body.classList.add('klaar'),1500);
