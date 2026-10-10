@@ -170,3 +170,7 @@ img/decor-telescoop.webp
   Licentie: CC BY-SA 4.0
   Bron: https://commons.wikimedia.org/wiki/File:Brass_Telescope_at_Adler.jpg
 
+
+VOORLEESSTEM (map audio/)
+Gegenereerd met Piper TTS (open source, MIT) en de stem nl_BE-rdh-medium (rhasspy/piper-voices, vrij te gebruiken; zie https://huggingface.co/rhasspy/piper-voices).
+Nabewerkt met ffmpeg: iets lager, iets trager, zachte zaalgalm. Het is geen nabootsing van een bestaande acteur.

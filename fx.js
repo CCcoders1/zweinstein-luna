@@ -10,8 +10,16 @@ const fx=(()=>{let ac,master,muz,muzOn=JSON.parse(localStorage.getItem('zw_muz')
  const AKK=[[50,57,62,65],[46,53,58,62],[43,50,55,58],[45,52,57,61],[50,57,62,65],[41,48,53,57],[43,50,55,58],[45,49,52,57]];
  const MEL=[[74,0,2],[72,2,1],[70,3,2],[69,5,1],[70,6,1.5],[72,7.5,.5],[74,8,1],[77,9,3],[76,12,2],[74,14,1],[72,15,1],[70,16,1],[69,17,1],[67,18,3],[69,21,1.5],[70,22.5,.5],[69,23,1]];
  const cel=(f,t,d,g,dest)=>{toon(f,t,d*1.4,{g,dest});toon(f*4,t,d*.4,{g:g*.25,dest});toon(f*2.01,t,d*.8,{g:g*.3,dest})};
- function loop(){const t0=ac.currentTime+.1;AKK.forEach((a,i)=>{const t=t0+i*MAAT;toon(N(a[0]-12),t,MAAT,{type:'triangle',g:.09,dest:muz,att:.05});[1,2,3,2,1,3].forEach((j,n)=>toon(N(a[j]),t+n*BEAT/2,1.2,{type:'triangle',g:.05,dest:muz}))});
-  MEL.forEach(([m,b,d])=>cel(N(m+12),t0+b*BEAT,d*BEAT,.07,muz));loopT=setTimeout(loop,AKK.length*MAAT*1000)}
+ // Thema's per ruimte (eigen composities: transpositie, tempo, toonsoort, spanning)
+ const THEMA={zaal:{tr:0,bt:.55,maj:0,sp:0},kas:{tr:5,bt:.6,maj:1,sp:0},kerker:{tr:-5,bt:.68,maj:0,sp:1},bieb:{tr:2,bt:.62,maj:0,sp:0},toren:{tr:7,bt:.7,maj:1,sp:0},bos:{tr:-2,bt:.66,maj:0,sp:1},kamer:{tr:3,bt:.6,maj:1,sp:0},dorp:{tr:5,bt:.5,maj:1,sp:0},kaart:{tr:0,bt:.58,maj:0,sp:0},gang:{tr:-3,bt:.58,maj:0,sp:0}};
+ let th=THEMA.zaal,spanning=0;
+ const majeur=m=>{const r=((m-50)%12+12)%12;return r==5||r==10||r==3?m+(r==5?0:1):m};
+ function loop(){const B=th.bt,M=3*B,T=th.tr;const t0=ac.currentTime+.1;const q=m=>N((th.maj?majeur(m):m)+T);
+  AKK.forEach((a,i)=>{const t=t0+i*M;toon(q(a[0]-12),t,M,{type:'triangle',g:.09,dest:muz,att:.05});[1,2,3,2,1,3].forEach((j,n)=>toon(q(a[j]),t+n*B/2,1.2,{type:'triangle',g:.05,dest:muz}));
+   if(th.sp||spanning){for(let n=0;n<6;n++)toon(q(a[0]-24),t+n*B/2,B/2.2,{type:'sawtooth',g:.018*(1+spanning),dest:muz})}});
+  MEL.forEach(([m,b,d])=>cel(q(m+12),t0+b*B,d*B,.07,muz));loopT=setTimeout(loop,AKK.length*M*1000)}
+ function wissel(naam){const n=THEMA[naam]||THEMA.zaal;if(n===th||!ac){th=n;return}const t=ac.currentTime;muz.gain.cancelScheduledValues(t);muz.gain.setValueAtTime(muz.gain.value,t);muz.gain.linearRampToValueAtTime(0,t+.9);clearTimeout(loopT);setTimeout(()=>{th=n;loop();const t2=ac.currentTime;muz.gain.linearRampToValueAtTime(muzOn?.35:0,t2+1.4)},950)}
+ function bloei(){if(!ac)return;const t=ac.currentTime;[62,66,69,74,78].forEach((m,i)=>toon(N(m+th.tr),t+i*.07,2.4,{type:'triangle',g:.06,dest:muz,att:.3}))}
  const S={kras:()=>[0,.12,.26].forEach(d=>setTimeout(()=>ruis(.12,3000,.15,6000),d*1000)),
   munt:()=>{const t=ac.currentTime;[2093,2637,3136].forEach((f,i)=>toon(f,t+i*.06,.4,{g:.15}))},
   whoosh:()=>ruis(.5,400,.25,3000),
@@ -20,7 +28,7 @@ const fx=(()=>{let ac,master,muz,muzOn=JSON.parse(localStorage.getItem('zw_muz')
   fanfare:()=>{const t=ac.currentTime;[[60,0],[64,.15],[67,.3],[72,.45],[67,.7],[72,.85]].forEach(([m,d])=>{toon(N(m),t+d,.5,{type:'square',g:.08});toon(N(m+12),t+d,.5,{type:'triangle',g:.1})})},
   klik:()=>toon(1800,ac.currentTime,.08,{g:.06})};
  const speel=n=>{try{init();if(ac.state==='suspended')ac.resume();S[n]()}catch(e){}};
- return{ctx:()=>{init();if(ac.state==='suspended')ac.resume();return{ac,master}},init,speel,muz:a=>{muzOn=a;localStorage.setItem('zw_muz',a);if(muz)muz.gain.value=a?.35:0},vol:v=>{vol=v;localStorage.setItem('zw_vol',v);if(master)master.gain.value=v},get muzOn(){return muzOn},get volv(){return vol}}})();
+ return{duik:on=>{if(!ac)return;const t=ac.currentTime;muz.gain.cancelScheduledValues(t);muz.gain.setValueAtTime(muz.gain.value,t);muz.gain.linearRampToValueAtTime(on?.06:(muzOn?.35:0),t+.5)},thema:wissel,bloei,spanning:v=>{spanning=v?1:0},ctx:()=>{init();if(ac.state==='suspended')ac.resume();return{ac,master}},init,speel,muz:a=>{muzOn=a;localStorage.setItem('zw_muz',a);if(muz)muz.gain.value=a?.35:0},vol:v=>{vol=v;localStorage.setItem('zw_vol',v);if(master)master.gain.value=v},get muzOn(){return muzOn},get volv(){return vol}}})();
 // overlay canvas: kaarsen, vonken, confetti
 const cv=document.createElement('canvas');cv.id='fxc';document.body.appendChild(cv);const cx=cv.getContext('2d');
 let W,H;const rs=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight};rs();addEventListener('resize',rs);
@@ -35,7 +43,7 @@ requestAnimationFrame(teken);
 if(matchMedia('(pointer:fine)').matches){addEventListener('mousemove',e=>{if(!RM&&Math.random()<.5)deel.push({x:e.clientX,y:e.clientY,vx:(Math.random()-.5),vy:Math.random(),l:.8,k:Math.random()<.5?'#ffd700':'#fff',c:false})})}
 addEventListener('pointerdown',e=>{vonk(e.clientX,e.clientY,6,undefined,2)});
 let lx=innerWidth/2,ly=innerHeight/2;addEventListener('pointerdown',e=>{lx=e.clientX;ly=e.clientY},true);
-fx.goed=()=>{fx.speel('goed');navigator.vibrate&&navigator.vibrate([30,40,60]);vonk(lx,ly,50);if(!RM){const f=document.createElement('div');f.className='flits';document.body.appendChild(f);setTimeout(()=>f.remove(),700)}};
+fx.goed=()=>{fx.speel('goed');try{fx.bloei()}catch(e){}navigator.vibrate&&navigator.vibrate([30,40,60]);vonk(lx,ly,50);if(!RM){const f=document.createElement('div');f.className='flits';document.body.appendChild(f);setTimeout(()=>f.remove(),700)}};
 fx.fout=()=>{fx.speel('fout');navigator.vibrate&&navigator.vibrate([120,60,120]);const m=document.querySelector('#app .perkament')||document.querySelector('#app');if(!RM){m.classList.remove('schud');void m.offsetWidth;m.classList.add('schud')}const r=document.createElement('div');r.className='rook';r.textContent='💨';r.style.left=lx-20+'px';r.style.top=ly-30+'px';document.body.appendChild(r);setTimeout(()=>r.remove(),1400)};
 fx.levelup=t=>{fx.speel('fanfare');navigator.vibrate&&navigator.vibrate([60,40,60,40,200]);for(let i=0;i<5;i++)setTimeout(()=>vonk(Math.random()*W,Math.random()*H*.5+50,60,['#ffd700','#ff6b6b','#7fdbff','#b6ff9e','#e0a6ff'],6),i*350);vonk(W/2,H*.8,120,['#ffd700','#ff6b6b','#7fdbff','#b6ff9e','#e0a6ff'],8,true);
  document.querySelectorAll('.lvlup').forEach(x=>x.remove());const d=document.createElement('div');d.className='lvlup';d.innerHTML='<div>🎓</div><h1>Nieuw niveau!</h1><h2>'+t+'</h2>';document.body.appendChild(d);d.onclick=()=>d.remove();setTimeout(()=>d.remove(),3800)};

@@ -1,0 +1,53 @@
+/* ====== Donkerder & magischer: nachtelijk kasteel, maanlicht, goud op steen ====== */
+body{background:radial-gradient(ellipse at 70% -10%,#1b2a52 0%,#0a1024 45%,#04060f 100%) fixed!important;color:#e9dcb8}
+#decor .bg{opacity:.42;filter:saturate(.7) brightness(.7) hue-rotate(-8deg)}
+#tint{mix-blend-mode:multiply!important;background:linear-gradient(rgba(30,50,110,.35),rgba(5,8,20,.45))!important}
+#vignet{background:radial-gradient(ellipse at 50% 35%,transparent 40%,rgba(2,3,10,.82))}
+body:after{content:'';position:fixed;right:-60px;top:40px;width:220px;height:220px;border-radius:50%;pointer-events:none;z-index:-2;background:radial-gradient(circle at 40% 40%,rgba(235,240,255,.9),rgba(200,215,255,.5) 30%,rgba(140,170,255,.12) 55%,transparent 70%);filter:blur(1px)}
+#decor .mist{opacity:1!important;background:radial-gradient(ellipse at 20% 85%,rgba(170,190,230,.18),transparent 55%),radial-gradient(ellipse at 80% 95%,rgba(170,190,230,.16),transparent 55%)}
+header{background:linear-gradient(rgba(4,6,15,.95),rgba(8,12,28,.85))!important;border-bottom:1px solid rgba(212,175,55,.5)}
+#logo{color:#e8c869;text-shadow:0 0 12px rgba(232,200,105,.6);font-variant:small-caps;letter-spacing:.1em}
+/* gloeiende gouden menu-items op donkere steen */
+.tegel,.kaart.sierlijst,.meer,nav{background:linear-gradient(rgba(22,26,44,.92),rgba(8,10,22,.95)),url(img/decor-gang.webp) center/cover!important;background-blend-mode:normal}
+.tegel b,.tegel .ico,.meer summary,nav button{color:#efd27a;text-shadow:0 0 10px rgba(239,210,122,.55)}
+.tegel:hover,.tegel:focus-visible{box-shadow:0 0 22px rgba(239,210,122,.45),inset 0 0 0 1px rgba(239,210,122,.6)}
+.vandaag{background:linear-gradient(rgba(16,20,38,.94),rgba(6,8,18,.96)),url(img/perkament.webp) center/cover!important;color:#ead9ae!important}
+.vandaag h2{color:#efd27a!important;-webkit-text-fill-color:#efd27a!important;text-shadow:0 0 14px rgba(239,210,122,.5)}
+.vandaag li{border-bottom-color:rgba(239,210,122,.18)!important}.vandaag li .icn{stroke:#efd27a!important}
+.vandaag li.nu{background:rgba(239,210,122,.12)!important}
+.voortgang{background:rgba(255,255,255,.08)!important}
+h1{background:linear-gradient(180deg,#fff7da,#e8c869 50%,#9a7417)!important;-webkit-background-clip:text!important;background-clip:text!important}
+#intro{background:radial-gradient(ellipse at 50% 120%,rgba(10,14,30,.2),rgba(3,4,10,.95)),url(img/kasteel.webp) center bottom/cover!important}
+#intro:after,.ritueel:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(transparent 55%,rgba(170,190,230,.18)),radial-gradient(circle at 78% 14%,rgba(230,236,255,.55),transparent 18%);animation:mist 40s linear infinite alternate}
+.ritueel{background:radial-gradient(rgba(6,10,24,.55),rgba(2,3,8,.96)),url(img/kasteel.webp) center bottom/cover!important}
+.tik-tekst,.tik{color:inherit}
+/* verzamelboek: oud leren boek */
+#tasknop{position:fixed;right:10px;top:64px;z-index:12;width:50px;height:50px;border-radius:50%;border:1px solid rgba(239,210,122,.8);background:radial-gradient(#3a2414,#1a0e06);color:#efd27a;box-shadow:0 0 14px rgba(239,210,122,.35);cursor:inherit}
+#tasknop .icn{width:26px;height:26px}#tasknop.nieuw{animation:pols 2s infinite}#tasknop.pof{animation:squash .35s}
+#tasn{position:absolute;right:-4px;top:-4px;min-width:20px;height:20px;border-radius:10px;background:#a3241a;color:#fff;font-size:12px;line-height:20px;font-weight:bold}#tasn:empty{display:none}
+#combo{top:120px!important}
+.buitvlieg{position:fixed;left:0;top:0;z-index:17;width:44px;height:44px;margin:-22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(#f6e3a1,#9a7417);color:#2a1a05;box-shadow:0 0 18px gold;pointer-events:none}
+.buitvlieg.rZ{background:radial-gradient(#dfe8ff,#5a74c9);box-shadow:0 0 22px #8fb0ff}.buitvlieg.rL{background:radial-gradient(#fff3c0,#d09a20);box-shadow:0 0 34px 10px gold}
+.buitvlieg .icn{width:26px;height:26px}
+.boek{position:relative;margin:6px 0 10px;padding:14px 12px 18px 26px;border-radius:10px 16px 16px 10px;background:radial-gradient(ellipse at 30% 20%,#6a3a1c,#3a1e0c 70%,#24120a);box-shadow:inset 0 0 0 3px #2a1608,inset 0 0 0 5px rgba(212,175,55,.6),0 14px 34px rgba(0,0,0,.7)}
+.boekrug{position:absolute;left:0;top:0;bottom:0;width:18px;border-radius:10px 0 0 10px;background:repeating-linear-gradient(#2a1608 0 30px,#c9a227 30px 33px,#2a1608 33px 60px)}
+.tabs{display:flex;gap:4px;margin:0 0 -2px 6px;position:relative;z-index:1}
+.tab{flex:1;border:1px solid #a8801f;border-bottom:0;border-radius:10px 10px 0 0;padding:10px 4px;font:inherit;font-variant:small-caps;font-size:.85em;background:linear-gradient(#5b3519,#3a1e0c);color:#e9c86a;cursor:inherit;min-height:44px}
+.tab.actief{background:linear-gradient(#f3e3bf,#e2c998);color:#4a2a10;font-weight:bold}
+.blad{background:linear-gradient(90deg,rgba(120,80,30,.25),transparent 6%),linear-gradient(rgba(246,232,196,.97),rgba(228,204,152,.97)),url(img/perkament.webp) center/cover;color:#3b2412;border-radius:0 6px 6px 6px;padding:14px;min-height:420px;transform-origin:left center}
+.blad.omslaan{animation:omslaan .6s cubic-bezier(.4,0,.2,1)}
+@keyframes omslaan{0%{transform:perspective(1200px) rotateY(-80deg);opacity:.2;filter:brightness(.6)}100%{transform:none}}
+.blad h2{text-align:center;color:#6b1d0e;-webkit-text-fill-color:#6b1d0e;background:none;filter:none;margin:4px 0}
+.telling{text-align:center;font-style:italic;margin:0 0 10px}
+.vakjes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.vakje{aspect-ratio:3/4;border-radius:6px;border:1px solid rgba(107,29,14,.35);background:rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:inherit;font-size:.72em;color:#3b2412;padding:6px;cursor:inherit;position:relative}
+.vakje .icn{width:42px;height:42px;stroke:#7a5a1a}
+.vakje.leeg .icn{stroke:#3b2412;opacity:.22;filter:blur(.3px)}.vakje.leeg b{opacity:.35}
+.vakje.heb{box-shadow:inset 0 0 0 2px rgba(184,134,11,.5)}.vakje.rZ{box-shadow:inset 0 0 0 2px #6d86d6,0 0 10px rgba(110,134,214,.45)}.vakje.rL{box-shadow:inset 0 0 0 2px #d4a017,0 0 16px rgba(255,210,80,.7)}
+.vakje small{position:absolute;right:4px;top:2px}
+.detail{margin-top:12px;padding:12px;text-align:center;border-top:1px dashed rgba(107,29,14,.35)}
+.dico .icn{width:64px;height:64px;stroke:#7a5a1a}
+.detail h3{color:#6b1d0e;-webkit-text-fill-color:#6b1d0e;background:none;margin:4px 0}
+.ingr .vr{display:inline-block;margin-left:6px;min-width:20px;padding:0 5px;border-radius:9px;background:rgba(255,255,255,.15);font-size:.75em}
+.ingr .vr.heb{background:#c9a227;color:#2a1a05;font-weight:bold}
+@media(prefers-reduced-motion:reduce){.blad.omslaan,#intro:after,.ritueel:after{animation:none}}
