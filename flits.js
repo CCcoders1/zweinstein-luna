@@ -9,4 +9,4 @@
 (()=>{const _g=ga;ga=function(s,...a){const app=$('#app');const voor=document.body.dataset.view;if(RMP||!app||!app.firstElementChild){return _g(s,...a)}
  const r=app.getBoundingClientRect();const g=app.cloneNode(true);g.removeAttribute('id');g.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));g.querySelectorAll('canvas').forEach(c=>c.remove());g.classList.remove('inkomen','vervaag');g.classList.add('appgeest');
  Object.assign(g.style,{position:'fixed',left:r.left+'px',top:r.top+'px',width:r.width+'px',margin:'0',pointerEvents:'none',zIndex:'1'});
- _g(s,...a);if(document.body.dataset.view===voor){return}document.body.appendChild(g);g.animate([{opacity:1},{opacity:0}],{duration:380,easing:'ease-out',fill:'forwards'}).onfinish=()=>g.remove()}})();
+ _g(s,...a);if(document.body.dataset.view===voor){return}document.body.appendChild(g);g.animate([{opacity:1},{opacity:0}],{duration:560,easing:'ease-in-out',fill:'forwards'}).onfinish=()=>g.remove()}})();

@@ -185,3 +185,6 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .makerelf input[type=number]{width:70px}
 @media(prefers-reduced-motion:reduce){.apglim circle,.ampul.tik,.m3amp.tik,.ampul.volglans,.elfico{animation:none!important}}
 .elfrij:has(.elfkaart:only-child){justify-content:center}.elfkaart:only-child{flex-basis:200px}
+/* Dag/nacht-, vignet- en kaarslichtlagen alleen over het decor, nooit over UI (menubalk, HUD, panelen, knoppen, speelveld) */
+#tint,#vignet,#flakker{z-index:-2!important}
+#nav{z-index:9!important}
