@@ -101,7 +101,7 @@ const amb=(()=>{let ctx,uit,rev,nodes=[],kamer='',vol=+(localStorage.getItem('zw
   if(tijdSfeer()=='nacht'&&k!='bos')tmr.push(setInterval(()=>Math.random()<.15&&oehoe(),9000))}
  return{room(k){kamer=k;bouw()},start(){if(ok())bouw()},donder,vol(v){vol=v;localStorage.setItem('zw_sfeer',v);if(uit)uit.gain.value=v},get v(){return vol},herbouw:bouw}})();
 addEventListener('pointerdown',()=>amb.start(),{once:true});
-$('#geluid').insertAdjacentHTML('beforeend','<span title="Sfeergeluid" aria-hidden="true">🔥</span><input id="sfeer" type="range" min="0" max="1" step="0.05" aria-label="Sfeergeluid">');
+$('#geluid').insertAdjacentHTML('beforeend','<span title="Sfeergeluid" aria-hidden="true"><svg class="icn" viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#efd27a;stroke-width:1.6"><path d="M12 3c1 4 5 6 5 11a5 5 0 01-10 0c0-3 2-4 2-7 1 1 2 2 3 4 0-3 0-5 0-8z"/></svg></span><input id="sfeer" type="range" min="0" max="1" step="0.05" aria-label="Sfeergeluid">');
 $('#sfeer').value=amb.v;$('#sfeer').oninput=e=>amb.vol(+e.target.value);
 /* ---------- live weer Open-Meteo (Wulpstraat 15, Enschede) ---------- */
 const weer={soort:'',mm:0,wind:0,code:-1,tekst:'',ok:false};
