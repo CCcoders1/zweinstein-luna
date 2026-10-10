@@ -148,5 +148,8 @@ S.tut=Math.max(S.tut||0,9);
 // tegels: verticaal wisselen ook vloeiend
 bewaar();
 if(S.naam&&S.huis)ga('home');
-requestAnimationFrame(()=>requestAnimationFrame(()=>document.documentElement.classList.add('klaar')));setTimeout(()=>document.documentElement.classList.add('klaar'),1500);
+(()=>{const k=()=>requestAnimationFrame(()=>requestAnimationFrame(()=>document.documentElement.classList.add('klaar')));let ok=0;const een=()=>{if(!ok++)k()};
+ /* pas infaden als de decorfoto's gedecodeerd zijn, zodat er geen 'eerst effen, dan foto'-sprong is */
+ requestAnimationFrame(()=>{const urls=[...document.querySelectorAll('#decor *')].map(e=>(getComputedStyle(e).backgroundImage.match(/url\(["']?([^"')]+)/)||[])[1]).filter(Boolean);
+  Promise.all(urls.map(u=>{const i=new Image();i.src=u;return i.decode().catch(()=>0)})).then(een)});setTimeout(een,1800)})();
 const _maker=V.maker;V.maker=()=>{_maker();$('#app').insertAdjacentHTML('beforeend',`<div class="kaart"><h3>Menu-stijl</h3><p>Onderbalk: <button class="knop klein" id="mvA">A · alleen iconen</button> <button class="knop klein" id="mvB">B · icoon met tekst</button></p><p class="klein">Nu: variant ${S.menuVariant}</p></div>`);['A','B'].forEach(x=>$('#mv'+x).onclick=()=>{S.menuVariant=x;bewaar();nav('maker');V.maker()})};

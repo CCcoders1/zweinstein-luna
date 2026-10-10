@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<style id="kritiek">html,body{background:#0c1124;color:#f3e9cc;margin:0}body{opacity:0}html.klaar body{opacity:1;transition:opacity .45s ease}@media(prefers-reduced-motion:reduce){html.klaar body{transition:none}}</style>
+<style id="kritiek">html,body{background:#0c1124;color:#f3e9cc;margin:0}html{background:#0c1124!important}
+html::before{content:"";position:fixed;inset:0;z-index:-10;pointer-events:none;background:radial-gradient(ellipse at 70% -10%,#5068a8 0%,#3d5290 40%,#26335e 100%);opacity:0}
+body{opacity:0}html.klaar::before{opacity:1;transition:opacity 1.6s cubic-bezier(.45,0,.55,1)}html.klaar body{opacity:1;transition:opacity 1.6s cubic-bezier(.45,0,.55,1) .15s}
+@media(prefers-reduced-motion:reduce){html.klaar::before,html.klaar body{transition:opacity .8s linear}}</style>
 <title>Zweinstein – Magische Reis</title>
 <meta name="theme-color" content="#0c1124"><meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json"><link rel="icon" href="img/icoon-192.png"><link rel="apple-touch-icon" href="img/icoon-192.png">

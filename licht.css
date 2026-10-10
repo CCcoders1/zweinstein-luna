@@ -111,7 +111,7 @@ header{background:linear-gradient(rgba(40,50,90,.95),rgba(48,60,104,.9))!importa
 @media(max-width:380px){#stats .hoed-t{display:none}#sterbadge{font-size:15px;padding:2px 8px 2px 4px}#sterbadge svg{width:22px;height:22px}}
 @media(prefers-reduced-motion:reduce){.m3combo,.m3gloed,.m3kaart.bump,#sterbadge.pop svg,.m3med.weinig b{animation:none!important}}
 /* achtergrondfoto's zichtbaar: verloop op html, body transparant */
-html{background:radial-gradient(ellipse at 70% -10%,#5068a8 0%,var(--licht-bg-boven) 40%,var(--licht-bg-onder) 100%) fixed #26335e!important}
+html{background:#0c1124!important}html::before{background:radial-gradient(ellipse at 70% -10%,#5068a8 0%,var(--licht-bg-boven) 40%,var(--licht-bg-onder) 100%)}
 body{background:transparent!important}
 #decor .bg{opacity:.9!important;filter:saturate(1) brightness(1.02) sepia(.08)!important}
 #tint{background:linear-gradient(rgba(255,236,200,.06),rgba(30,36,80,.28))!important}
@@ -188,3 +188,7 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 /* Dag/nacht-, vignet- en kaarslichtlagen alleen over het decor, nooit over UI (menubalk, HUD, panelen, knoppen, speelveld) */
 #tint,#vignet,#flakker{z-index:-2!important}
 #nav{z-index:9!important}
+.pipbubbel{position:fixed;z-index:30;max-width:220px;padding:7px 12px;border-radius:14px;background:linear-gradient(#fffaf0,#f3e3c0);color:#3a2410;font:italic 15px/1.3 Georgia,serif;border:1.5px solid #c9a227;box-shadow:0 4px 14px rgba(0,0,0,.3),0 0 12px rgba(255,176,224,.5);pointer-events:none;animation:pipIn .3s cubic-bezier(.2,1.4,.4,1)}
+.pipbubbel::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;margin-left:-6px;background:#f3e3c0;border-right:1.5px solid #c9a227;border-bottom:1.5px solid #c9a227;transform:rotate(45deg)}
+.pipbubbel.weg{opacity:0;transform:translateY(-6px);transition:.45s}@keyframes pipIn{from{opacity:0;transform:scale(.6) translateY(8px)}}
+@media(prefers-reduced-motion:reduce){.pipbubbel{animation:none}}
