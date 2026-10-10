@@ -86,3 +86,27 @@ body{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important}
 .hs .rond{display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3e3a5c,#1a1830 70%);border:2px solid #c9a227;box-shadow:inset 0 2px 3px rgba(255,240,190,.35),0 0 10px rgba(239,210,122,.3)}.hs .rond .icn{width:26px;height:26px;stroke:#f3dc8c}
 .hs-hoofd .rond{background:radial-gradient(circle at 35% 30%,#fff3c4,#e2b23a 50%,#8a6512)}.hs-hoofd .rond .icn{stroke:#3a2205}.hs small{color:#efd27a;font-size:.85em}
 .hs.dicht{opacity:.6;filter:grayscale(.6)}
+/* kassen */
+.kweekopdr{display:grid;gap:4px;padding:10px 12px;border-radius:14px;background:rgba(20,22,42,.85);border:1px solid rgba(239,210,122,.5);margin-bottom:10px}.kweekopdr small{color:#efd27a}
+.kweekbalk{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0}.kweekbalk .voorraad{font-size:.85em;display:flex;gap:6px;align-items:center}.kweekbalk .icn{width:18px;height:18px;stroke:#efd27a}
+.kassen{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.kpot{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:16px;background:linear-gradient(rgba(30,40,40,.8),rgba(14,20,24,.9));border:1px solid rgba(239,210,122,.45);text-align:center;cursor:inherit}
+.kpot b{font-size:.9em}.kpot small{font-size:.75em;color:#d9cfa8;min-height:2.2em}
+.kplant{position:relative;width:96px;height:120px}.kplant svg{width:100%;height:100%;animation:wieg 4s ease-in-out infinite;transform-origin:50% 95%}
+.kplant svg path:first-of-type{fill:var(--pot)}
+.leegpot{width:96px;height:120px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;box-sizing:border-box;color:#998;font-style:italic;font-size:.8em;background:linear-gradient(transparent 70%,var(--pot) 70%,var(--pot) 90%,transparent 90%);border-radius:0 0 30px 30px}
+.kpot.rijp{box-shadow:0 0 18px rgba(160,255,190,.45);border-color:#a8ffcf}.kpot.rijp .kplant svg{animation:wieg 1.6s ease-in-out infinite}
+.kpot.goud .kplant svg{filter:drop-shadow(0 0 8px gold) sepia(.5) saturate(2)}.kpot.goud{border-color:gold}
+.kpot.wieg .kplant svg{animation:wiegtik .6s}.kpot.nieuw .kplant{animation:herstel 1s both}.kpot.oogsten .kplant{animation:oogst .9s forwards}
+@keyframes wieg{50%{transform:rotate(2.5deg)}}@keyframes wiegtik{25%{transform:rotate(-9deg)}75%{transform:rotate(7deg)}}@keyframes oogst{40%{transform:translateY(-14px) scale(1.15)}100%{transform:translateY(-40px) scale(.4);opacity:0}}
+.druppels{position:absolute;top:8px;right:4px;width:16px;height:22px;background:radial-gradient(circle at 50% 70%,#8fd3ff 40%,transparent 42%);opacity:.8}
+.kknop{display:flex;gap:4px}.kknop .knop{padding:6px 8px;font-size:.78em;min-height:36px}
+.zlijst{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.zkies,.zkoop{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border-radius:10px;border:1px solid #b8932e;background:rgba(255,250,235,.75);font:inherit;font-size:.75em;color:#2b1a0b;cursor:inherit}.zkies svg,.zkoop svg{width:46px;height:58px}.zkoop small,.zkies small{color:#5a3e1b!important}
+.mestico .icn{width:40px;height:40px;stroke:#7a5a2a;margin:9px 0}
+.rijp-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:#3fae5a;color:#fff;font-style:normal;font-size:11px;line-height:18px;font-weight:bold;box-shadow:0 0 8px #3fae5a}
+@media(prefers-reduced-motion:reduce){.kplant svg{animation:none!important}}
+#nav button.actief .rond .icn{stroke:#3a2205!important;opacity:1!important}
+.verhaalm .modalin,.keuze.modalin,.nieuwepot.modalin{background:linear-gradient(rgba(250,238,210,.98),rgba(236,214,170,.98))!important;color:#2b1a0b!important}
+.verhaalm .modalin h2,.keuze.modalin h2,.nieuwepot.modalin h2{color:#6b1d0e!important;-webkit-text-fill-color:#6b1d0e!important;background:none!important}
+#gids .gbel{background:linear-gradient(rgba(250,238,210,.98),rgba(236,214,170,.98))!important;color:#2b1a0b!important}
+#gids .gbel b{color:#6b1d0e!important}
