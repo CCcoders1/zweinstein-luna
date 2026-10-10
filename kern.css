@@ -57,3 +57,15 @@ nav button .icn{width:24px;height:24px}nav button{display:flex;flex-direction:co
 #gids p,#gids .gbel,#gtekst{color:#2b1a0b!important}
 .bonusraster .tegel{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}.bonusraster .tegel small{font-size:.78em}
 #combo{display:none!important}
+
+/* hoofdmenu met centrale Hal-knop */
+#nav{display:grid!important;grid-template-columns:1fr 1fr 1.25fr 1fr 1fr;align-items:end;overflow:visible!important;padding-bottom:max(4px,env(safe-area-inset-bottom))}
+#nav button.hal{position:relative;overflow:visible;background:none!important;border:0}
+.halknop{display:flex;align-items:center;justify-content:center;width:68px;height:68px;margin:-30px auto 0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3c4,#e2b23a 45%,#8a6512);border:2px solid #fff0b0;box-shadow:0 0 0 4px rgba(16,16,30,.95),0 0 18px rgba(255,215,90,.55),0 6px 14px rgba(0,0,0,.6);position:relative;overflow:hidden}
+.halknop:after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);transform:translateX(-120%);animation:glans 5s ease-in-out infinite}
+@keyframes glans{0%,70%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+.halknop svg{width:44px;height:auto;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+#nav button.hal.actief .halknop{box-shadow:0 0 0 4px rgba(16,16,30,.95),0 0 28px 6px rgba(255,215,90,.8),0 6px 14px rgba(0,0,0,.6);transform:scale(1.05)}
+#nav button.hal>span:last-child{font-weight:bold}
+body{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important}
+@media(prefers-reduced-motion:reduce){.halknop:after{animation:none}}

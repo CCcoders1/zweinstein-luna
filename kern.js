@@ -100,7 +100,7 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home=v.decor;try{zetDecor(v.deco
  ${vol?`<button class="knop taak ${S.sterren>=vol[2]?'volgende':''}" id="taakknop">${vol[1]} <span class="kost">${icoon('ster')}${vol[2]}</span></button>`:''}
  <button class="knop speel ${vol&&S.sterren<vol[2]?'volgende':''}" id="speelknop">Spelen · Level ${S.m3lvl}</button></section>
  ${tilly(tillyZin(v,vol))}
- <div class="kleinrij"><button class="linkknop" onclick="ga('kas')">Mijn kweekpotten (${kweekPotten()})</button><button class="linkknop" id="afscheid">Voor nu stoppen</button></div>
+ <div class="kleinrij"><button class="linkknop" onclick="ga('meer')">Meer van Zweinstein</button><button class="linkknop" id="afscheid">Voor nu stoppen</button></div>
  <p class="bronlink"><a href="CREDITS.txt" target="_blank">Bronnen & licenties</a> · weer: <a href="https://open-meteo.com/" target="_blank">Open-Meteo</a></p>`);
  M3.nieuw=null;
  document.querySelectorAll('.dd').forEach(b=>b.onclick=()=>{const g=dd.find(x=>x.k==b.dataset.k);if(!g.af)g.f()});
@@ -136,8 +136,8 @@ const BONUSID=new Set(BONUS.map(b=>b[0]));
 V.meer=()=>{const T=[['kas','bloem','Mijn kweekpotten'],['kaart','kaart','Kaart van Zweinstein'],['winkel','winkel','Beloningswinkel'],['groei','hoed','Ontwikkeling & badges'],['kamer','bed','Mijn kamer & huisdier'],['kikker','kikker','Chocokikkers'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Dagbeloning']];
  app(`<h2>Meer</h2><div class="raster">${T.map(t=>`<button class="tegel" onclick="ga('${t[0]}')"><span class="ico">${icoon(t[1])}</span><b>${t[2]}</b></button>`).join('')}</div>`)};
 /* ---------- navigatie (max 5) ---------- */
-const NAV=[['home','huis','Lokaal'],['pad','kaart','Levels'],['boek','boek','Boek'],['bonus','spel','Bonus'],['meer','lijst','Meer']];
-nav=function(act){const m={match3:'pad',kas:'home',lessen:'bonus',les:'bonus'};const a=BONUSID.has(act)?'bonus':(m[act]||act);$('#nav').innerHTML=NAV.map(t=>`<button class="${t[0]==a?'actief':''}" onclick="ga('${t[0]}')">${icoon(t[1])}<span>${t[2]}</span></button>`).join('')};
+const NAV=[['pad','kaart','Kaart'],['kas','bloem','Kas'],['home','','Hal'],['boek','boek','Boek'],['bonus','spel','Extra']];
+nav=function(act){const m={match3:'pad',lessen:'bonus',les:'bonus'};const a=BONUSID.has(act)?'bonus':(m[act]||act);$('#nav').innerHTML=NAV.map(t=>t[0]=='home'?`<button class="hal ${a=='home'?'actief':''}" aria-label="Hal" onclick="ga('home')"><span class="halknop">${wapen(46)}</span><span>Hal</span></button>`:`<button class="${t[0]==a?'actief':''}" onclick="ga('${t[0]}')">${icoon(t[1])}<span>${t[2]}</span></button>`).join('')};
 const _gaK=ga;ga=function(s,...a){if(BONUSID.has(s)&&!S.bonusOpen[s]&&S.huis){s='bonus';a=[]}if(s=='spel')s='bonus';if(s=='match3'){const v=m3VakVoor(a[0]||S.m3lvl);VIEWDECOR.match3=v.decor}return _gaK(s,...a)};
 Object.assign(VIEWDECOR,{pad:'kaart',bonus:'gang',meer:'zaal'});
 Object.assign(UITLEG,{match3:['Een level spelen','Veeg een tegel naar een buur om ze te wisselen. Drie of meer op een rij verdwijnen. Vier op een rij geeft een raket, een blok van 2×2 een uil, een L of T een ketelbom en vijf op een rij een regenboogbal. Haal de doelen bovenaan voordat je zetten op zijn.'],pad:['Het levelpad','Elk level levert een ster op. Met sterren knap je de lokalen op.'],bonus:['Bonusspellen','Extra spellen voor tussendoor, met extra beloningen. Nieuwe spellen ontdek je via het verhaal.']});
