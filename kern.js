@@ -70,8 +70,8 @@ function verhaal(regels,klaar){if(document.querySelector('.modal')){return setTi
 /* kweekpotten */
 const POTSOORT=[['Basispot van terracotta','#b8673a'],['Geglazuurde groene pot','#4f8a5a'],['Koperen pot','#c07a3a'],['Blauw-wit porselein','#4c6fb0'],['Rococo-pot met krullen','#d4af37'],['Gouden pot','#e9c64a']];
 function kweekPotten(){return Math.min(12,1+Math.floor(takenKlaar()/3)+(jaar()-1)*2)}
-V.kas=()=>{const n=kweekPotten();const kl=['#c8b6ff','#f4a6c0','#9fd8cb','#fff1b8','#e6c35c','#88c999','#ff9e6b','#b6c8ff','#ffd1dc','#b0e0a8','#ffe08a','#d0b8ff'];
- app(`<h2>Mijn kweekpotten</h2>${tilly(n==1?'Eén pot om mee te beginnen. Wat we hierin kweken, wordt iets heel bijzonders. Meer potten komen als we de lokalen opknappen.':`${n} potten al! Ik praat elke ochtend even tegen ze. Dat helpt echt, zegt Professor Stronk.`)}
+V.kas=()=>{VIEWDECOR.kas='kas';const n=kweekPotten();const kl=['#c8b6ff','#f4a6c0','#9fd8cb','#fff1b8','#e6c35c','#88c999','#ff9e6b','#b6c8ff','#ffd1dc','#b0e0a8','#ffe08a','#d0b8ff'];
+ app(`<h2>De Kassen</h2>${tilly(n==1?'Eén pot om mee te beginnen. Wat we hierin kweken, wordt iets heel bijzonders. Meer potten komen als we de lokalen opknappen.':`${n} potten al! Ik praat elke ochtend even tegen ze. Dat helpt echt, zegt Professor Stronk.`)}
  <div class="kas">${Array.from({length:n},(_,i)=>{const pt=POTSOORT[Math.min(POTSOORT.length-1,Math.floor(i/2))];const f=Math.max(0,Math.min(4,Math.floor((S.xp-i*40)/25)));return `<div class="pot" style="--pot:${pt[1]}">${plantSVG(f,kl[i%kl.length])}<div><b>${(PLANT_NAMEN[i%PLANT_NAMEN.length])}</b><br><small>${pt[0]} · ${['Zaadje','Kiemplantje','Jonge plant','Knop','Bloeiend'][f]}</small></div></div>`}).join('')}</div>
  <p class="klein">Volgende pot na ${3-takenKlaar()%3} voltooide ${3-takenKlaar()%3==1?'taak':'taken'}.</p>`)};
 function potCheck(){const n=kweekPotten();if(n>S.pottenGezien){const eerste=!S.pottenGezien;S.pottenGezien=n;bewaar();if(eerste)return;const pt=POTSOORT[Math.min(POTSOORT.length-1,Math.floor((n-1)/2))];
@@ -99,8 +99,9 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home=v.decor;try{zetDecor(v.deco
  <div class="voortgang"><div style="width:${klaar/v.taken.length*100}%"></div></div><p class="lk-tel">${klaar} van ${v.taken.length} taken · ${sterTeller()}</p>
  ${vol?`<button class="knop taak ${S.sterren>=vol[2]?'volgende':''}" id="taakknop">${vol[1]} <span class="kost">${icoon('ster')}${vol[2]}</span></button>`:''}
  <button class="knop speel ${vol&&S.sterren<vol[2]?'volgende':''}" id="speelknop">Spelen · Level ${S.m3lvl}</button></section>
+ ${spellenHal()}
  ${tilly(tillyZin(v,vol))}
- <div class="kleinrij"><button class="linkknop" onclick="ga('meer')">Meer van Zweinstein</button><button class="linkknop" id="afscheid">Voor nu stoppen</button></div>
+ <div class="kleinrij"><button class="linkknop" onclick="ga('kas')">Naar de Kassen (${kweekPotten()} ${kweekPotten()==1?'pot':'potten'})</button><button class="linkknop" id="afscheid">Voor nu stoppen</button></div>
  <p class="bronlink"><a href="CREDITS.txt" target="_blank">Bronnen & licenties</a> · weer: <a href="https://open-meteo.com/" target="_blank">Open-Meteo</a></p>`);
  M3.nieuw=null;
  document.querySelectorAll('.dd').forEach(b=>b.onclick=()=>{const g=dd.find(x=>x.k==b.dataset.k);if(!g.af)g.f()});
@@ -110,6 +111,7 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home=v.decor;try{zetDecor(v.deco
  if(!S.verhaalGezien[v.id+j]){S.verhaalGezien[v.id+j]=1;bewaar();setTimeout(()=>verhaal(v.intro),RMP?50:600)}
  else uilenpostCheck();
  potCheck();stats()};
+function spellenHal(){const open=BONUS.filter(b=>S.bonusOpen[b[0]]);const dicht=BONUS.find(b=>!S.bonusOpen[b[0]]);return `<section class="halspel"><h3>Spellen</h3><div class="hs-rij"><button class="hs hs-hoofd" onclick="ga('match3')"><i class="rond">${icoon('ster')}</i><b>Level ${S.m3lvl}</b><small>${m3VakVoor(S.m3lvl).n}</small></button>${open.map(b=>`<button class="hs" onclick="ga('${b[0]}')"><i class="rond">${icoon(b[2])}</i><b>${b[1]}</b></button>`).join('')}${dicht?`<button class="hs dicht" onclick="toast('Nog op slot: ${dicht[5].replace(/'/g,'’')}')"><i class="rond">${icoon('slot')}</i><b>${dicht[1]}</b><small>binnenkort</small></button>`:''}</div></section>`}
 function tillyZin(v,vol){if(!vol)return 'Alles klaar hier! Ik ben zo benieuwd wat er achter de volgende deur zit.';if(S.sterren>=vol[2])return `We hebben genoeg sterren! Zullen we “${vol[1].toLowerCase()}”? Ik heb er zin in.`;return `Nog ${vol[2]-S.sterren} ${vol[2]-S.sterren==1?'ster':'sterren'} nodig voor “${vol[1].toLowerCase()}”. Eén level en we zijn er bijna. Kom!`}
 function doeTaak(v,t){if(S.sterren<t[2]){toast(`Je hebt nog ${t[2]-S.sterren} ster(ren) nodig. Speel een level!`);const b=$('#speelknop');b&&b.classList.add('wijs');return}
  const rond=k=>{S.sterren-=t[2];S.taken[t[0]]=1;if(k!=null)S.keuze[t[0]]=k;tel('taak');S.xp+=15;bewaar();stats();M3.nieuw=t[0];fx.speel('goed');vib([30,40,80]);V.home();
@@ -133,11 +135,11 @@ V.bonus=()=>{app(`<h2>Bonusspellen</h2>${tilly('Hier spelen we tussendoor. Niet 
  document.querySelectorAll('[data-b]').forEach(t=>t.onclick=()=>{if(S.bonusOpen[t.dataset.b])ga(t.dataset.b);else{t.classList.remove('schud');void t.offsetWidth;t.classList.add('schud');toast('Deze deur is nog op slot. Knap eerst het lokaal verder op!')}})};
 const BONUSID=new Set(BONUS.map(b=>b[0]));
 /* ---------- meer ---------- */
-V.meer=()=>{const T=[['kas','bloem','Mijn kweekpotten'],['kaart','kaart','Kaart van Zweinstein'],['winkel','winkel','Beloningswinkel'],['groei','hoed','Ontwikkeling & badges'],['kamer','bed','Mijn kamer & huisdier'],['kikker','kikker','Chocokikkers'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Dagbeloning']];
+V.meer=()=>{const T=[['bonus','spel','Alle extra spellen'],['kaart','kaart','Kaart van Zweinstein'],['winkel','winkel','Beloningswinkel'],['groei','hoed','Ontwikkeling & badges'],['kamer','bed','Mijn kamer & huisdier'],['kikker','kikker','Chocokikkers'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Dagbeloning']];
  app(`<h2>Meer</h2><div class="raster">${T.map(t=>`<button class="tegel" onclick="ga('${t[0]}')"><span class="ico">${icoon(t[1])}</span><b>${t[2]}</b></button>`).join('')}</div>`)};
 /* ---------- navigatie (max 5) ---------- */
-const NAV=[['pad','kaart','Kaart'],['kas','bloem','Kas'],['home','','Hal'],['boek','boek','Boek'],['bonus','spel','Extra']];
-nav=function(act){const m={match3:'pad',lessen:'bonus',les:'bonus'};const a=BONUSID.has(act)?'bonus':(m[act]||act);$('#nav').innerHTML=NAV.map(t=>t[0]=='home'?`<button class="hal ${a=='home'?'actief':''}" aria-label="Hal" onclick="ga('home')"><span class="halknop">${wapen(46)}</span><span>Hal</span></button>`:`<button class="${t[0]==a?'actief':''}" onclick="ga('${t[0]}')">${icoon(t[1])}<span>${t[2]}</span></button>`).join('')};
+def('menuVariant','B');const NAV=[['pad','kaart','Kaart'],['kas','bloem','Kassen'],['home','','Hal'],['boek','boek','Boek'],['meer','lijst','Meer']];
+nav=function(act){const m={match3:'home',lessen:'meer',les:'meer',bonus:'meer'};const a=BONUSID.has(act)?'home':(m[act]||act);$('#nav').className='menu'+S.menuVariant;$('#nav').innerHTML=NAV.map(t=>t[0]=='home'?`<button class="hal ${a=='home'?'actief':''}" aria-label="Hal" onclick="ga('home')"><span class="halknop">${wapen(46)}</span><span>Hal</span></button>`:`<button class="${t[0]==a?'actief':''}" aria-label="${t[2]}" onclick="ga('${t[0]}')"><i class="rond">${icoon(t[1])}</i><span>${t[2]}</span></button>`).join('')};
 const _gaK=ga;ga=function(s,...a){if(BONUSID.has(s)&&!S.bonusOpen[s]&&S.huis){s='bonus';a=[]}if(s=='spel')s='bonus';if(s=='match3'){const v=m3VakVoor(a[0]||S.m3lvl);VIEWDECOR.match3=v.decor}return _gaK(s,...a)};
 Object.assign(VIEWDECOR,{pad:'kaart',bonus:'gang',meer:'zaal'});
 Object.assign(UITLEG,{match3:['Een level spelen','Veeg een tegel naar een buur om ze te wisselen. Drie of meer op een rij verdwijnen. Vier op een rij geeft een raket, een blok van 2×2 een uil, een L of T een ketelbom en vijf op een rij een regenboogbal. Haal de doelen bovenaan voordat je zetten op zijn.'],pad:['Het levelpad','Elk level levert een ster op. Met sterren knap je de lokalen op.'],bonus:['Bonusspellen','Extra spellen voor tussendoor, met extra beloningen. Nieuwe spellen ontdek je via het verhaal.']});
@@ -147,3 +149,4 @@ S.tut=Math.max(S.tut||0,9);
 bewaar();
 if(S.naam&&S.huis)ga('home');
 requestAnimationFrame(()=>requestAnimationFrame(()=>document.documentElement.classList.add('klaar')));setTimeout(()=>document.documentElement.classList.add('klaar'),1500);
+const _maker=V.maker;V.maker=()=>{_maker();$('#app').insertAdjacentHTML('beforeend',`<div class="kaart"><h3>Menu-stijl</h3><p>Onderbalk: <button class="knop klein" id="mvA">A · alleen iconen</button> <button class="knop klein" id="mvB">B · icoon met tekst</button></p><p class="klein">Nu: variant ${S.menuVariant}</p></div>`);['A','B'].forEach(x=>$('#mv'+x).onclick=()=>{S.menuVariant=x;bewaar();nav('maker');V.maker()})};
