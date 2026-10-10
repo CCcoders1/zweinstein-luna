@@ -1,0 +1,69 @@
+/* ===== Helderheidsrichtlijnen (niet onder deze waarden zakken) ===== */
+:root{
+ --licht-bg-boven:#3d5290;   /* minimale helderheid achtergrond boven */
+ --licht-bg-onder:#26335e;   /* minimale helderheid achtergrond onder */
+ --licht-paneel:rgba(52,62,104,.88); /* panelen/kaarten in Hal en menu's */
+ --licht-menu1:#f6e7c4;       /* menubalk: warm perkament */
+ --licht-menu2:#e3c991;
+ --licht-tekst:#fbf3dc;       /* tekst op donker: contrast ≥ 7:1 */
+ --licht-inkt:#3a2410;        /* tekst op perkament: contrast ≥ 7:1 */
+ --licht-goud:#ffe08a;
+ --licht-vignet:.32;          /* maximale vignet-dekking */
+}
+body{background:radial-gradient(ellipse at 70% -10%,#5068a8 0%,var(--licht-bg-boven) 40%,var(--licht-bg-onder) 100%) fixed!important;color:var(--licht-tekst)}
+#vignet{background:radial-gradient(ellipse at 50% 40%,transparent 60%,rgba(5,6,16,var(--licht-vignet)))!important}
+#decor .bg{opacity:.72!important;filter:saturate(.9) brightness(1.05) sepia(.1)!important}
+#tint{background:linear-gradient(rgba(90,110,180,.12),rgba(20,24,50,.12))!important}
+header{background:linear-gradient(rgba(40,50,90,.95),rgba(48,60,104,.9))!important}
+/* menubalk: licht perkament met gouden rand */
+#nav{background:linear-gradient(var(--licht-menu1),var(--licht-menu2))!important;border-top:2px solid #c9a227!important;box-shadow:0 -4px 18px rgba(0,0,0,.35)}
+#nav button span{color:var(--licht-inkt)!important;text-shadow:none!important;font-weight:600}
+#nav .rond{background:radial-gradient(circle at 35% 30%,#fffaf0,#efd9a8 70%)!important;border-color:#b8860b!important;box-shadow:inset 0 2px 3px #fff,inset 0 -3px 5px rgba(120,80,20,.35),0 2px 6px rgba(80,50,10,.35)!important}
+#nav .rond .icn{stroke:#5a3a10!important}
+#nav button.actief .rond{background:radial-gradient(circle at 35% 30%,#fff3c4,#e2b23a 55%,#a07418)!important;box-shadow:inset 0 2px 3px #fff,0 0 14px rgba(255,200,60,.9)!important}
+#nav button.actief .rond .icn{stroke:#3a2205!important}
+.halknop{box-shadow:0 0 0 4px var(--licht-menu1),0 0 18px rgba(255,200,60,.7),0 6px 14px rgba(0,0,0,.4)!important}
+/* Hal & menuschermen */
+.lokaal,.dd,.halspel .hs,.tegel,.kaart.sierlijst,.meer,.m3voor,.kweekopdr,.kpot,.m3doel{background:var(--licht-paneel)!important}
+.tegel{background:linear-gradient(rgba(64,76,124,.9),rgba(48,58,100,.92))!important}
+.dd,.hs,.tegel b,.lokaal,p,li{color:var(--licht-tekst)}
+.scene{filter:none!important}.scene-mist{background:radial-gradient(ellipse at 50% 60%,rgba(160,150,130,.08),rgba(90,85,80,.55))!important}
+.kpot{background:linear-gradient(rgba(70,90,90,.85),rgba(44,60,64,.9))!important}
+/* kasdecor */
+.kasdecor{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.kd-dak{position:absolute;inset:0 0 auto 0;height:42%;background:linear-gradient(rgba(200,230,255,.18),transparent),repeating-linear-gradient(90deg,transparent 0 58px,rgba(220,200,140,.35) 58px 61px),repeating-linear-gradient(0deg,transparent 0 46px,rgba(220,200,140,.25) 46px 48px);mask:linear-gradient(#000 40%,transparent);-webkit-mask:linear-gradient(#000 40%,transparent)}
+.kd-straal{position:absolute;top:-10%;width:90px;height:120%;background:linear-gradient(rgba(255,245,200,.22),transparent 75%);transform:rotate(18deg);filter:blur(6px);animation:straal 9s ease-in-out infinite alternate}
+.kd-straal:nth-child(2){left:8%}.kd-straal:nth-child(3){left:38%;animation-delay:-3s}.kd-straal:nth-child(4){left:64%;animation-delay:-5s;width:60px}.kd-straal:nth-child(5){left:86%;animation-delay:-7s}
+@keyframes straal{from{opacity:.4}to{opacity:1}}
+.kd-rank{position:absolute;top:0;width:70px;height:100%;background:radial-gradient(circle at 30% 10%,#5fae4a 0 6px,transparent 7px) 0 0/40px 70px,radial-gradient(circle at 70% 50%,#4f9a3c 0 7px,transparent 8px) 0 0/40px 90px,linear-gradient(90deg,transparent 45%,#3d6b2a 45% 52%,transparent 52%);opacity:.75}
+.kd-rank.l{left:0}.kd-rank.r{right:0;transform:scaleX(-1)}
+.vv{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff6a0;box-shadow:0 0 10px 3px rgba(255,240,120,.8);animation:vlieg 7s ease-in-out infinite}
+@keyframes vlieg{0%,100%{transform:translate(0,0);opacity:.2}25%{transform:translate(18px,-22px);opacity:1}50%{transform:translate(-10px,-40px);opacity:.5}75%{transform:translate(-24px,-12px);opacity:1}}
+.kpot.mooi{background:linear-gradient(rgba(255,250,235,.16),rgba(255,250,235,.06))!important;border:1px solid rgba(255,230,160,.55)!important;box-shadow:inset 0 -18px 24px rgba(80,50,20,.35),0 6px 14px rgba(0,0,0,.35)}
+.kpot.mooi .kplant{position:relative}.kpot.mooi .kplant>svg:not(.potsvg){position:absolute;inset:0}
+.kpot.mooi .kplant>svg:not(.potsvg)>path:first-of-type,.kpot.mooi .kplant>svg:not(.potsvg)>ellipse:first-of-type{display:none}
+.kpot.mooi .leegpot{display:none}
+.potsvg{position:absolute;inset:0;width:100%;height:100%}
+#app.vervaag{filter:blur(5px) brightness(.7);transition:filter .5s;pointer-events:none}
+#kzoom{position:fixed;inset:0;z-index:40}
+.kz-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(255,240,200,.25),rgba(20,30,40,.55))}
+.kz-terug{position:absolute;top:calc(66px + env(safe-area-inset-top));left:10px;z-index:2;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;border:1px solid #c9a227;background:rgba(40,50,90,.9);color:#fbf3dc;font:inherit;cursor:inherit}.kz-terug .icn{width:18px;height:18px;stroke:#ffe08a}
+.kz-pot{position:absolute;transform-origin:0 0}.kz-pot svg{position:absolute;inset:0;width:100%;height:100%}.kz-pot>svg:not(.potsvg)>path:first-of-type,.kz-pot>svg:not(.potsvg)>ellipse:first-of-type{display:none}
+.kz-pot.goud>svg:not(.potsvg){filter:drop-shadow(0 0 10px gold) sepia(.4) saturate(1.8)}
+.kz-pot>svg:not(.potsvg){animation:wieg 4s ease-in-out infinite;transform-origin:50% 80%}
+.kz-paneel{position:absolute;left:10px;right:10px;bottom:calc(14px + env(safe-area-inset-bottom));padding:14px;border-radius:18px;background:linear-gradient(rgba(250,238,210,.98),rgba(236,214,170,.98));color:#2b1a0b;border:2px solid #c9a227;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:opacity .3s;max-height:48vh;overflow:auto}
+.kz-paneel h3{margin:0 0 8px;color:#6b1d0e;text-align:center}.kz-paneel p{color:#3a2410!important;text-align:center;margin:8px 0 0}
+.kz-car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 10px;touch-action:pan-x}
+.zakje{position:relative;flex:0 0 116px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;padding:14px 6px 10px;border-radius:6px 6px 12px 12px;border:0;font:inherit;color:#3a2410;cursor:inherit;background:linear-gradient(160deg,#f7ecd0,#dcc08a);box-shadow:inset 0 0 0 2px rgba(140,100,40,.45),0 4px 10px rgba(80,50,10,.35)}
+.zk-top{position:absolute;top:0;left:0;right:0;height:10px;background:repeating-linear-gradient(90deg,#c9a227 0 6px,#a07a18 6px 8px);border-radius:6px 6px 0 0;clip-path:polygon(0 0,100% 0,100% 60%,95% 100%,90% 60%,85% 100%,80% 60%,75% 100%,70% 60%,65% 100%,60% 60%,55% 100%,50% 60%,45% 100%,40% 60%,35% 100%,30% 60%,25% 100%,20% 60%,15% 100%,10% 60%,5% 100%,0 60%)}
+.zk-ill{width:70px;height:80px;border-radius:50%;background:radial-gradient(#fffaf0,#efe0b8);display:flex;align-items:center;justify-content:center;overflow:hidden}.zk-ill svg{width:62px;height:80px}
+.zakje b{font-variant:small-caps}.zakje small{color:#6b4a1a}.zakje em{font-style:normal;font-weight:bold;color:#7a1f10;font-size:.85em}
+.kz-stand{display:flex;align-items:center;gap:12px;justify-content:center}.kz-ring{width:64px;height:64px}.kz-stand b{display:block;font-size:1.1em;color:#2b1a0b}.kz-tijd{font-variant-numeric:tabular-nums;font-size:1.25em;color:#2e6b34;font-weight:bold}
+.kz-fasen{display:flex;gap:6px;justify-content:center;margin:8px 0}.kz-fasen i{width:26px;height:6px;border-radius:3px;background:rgba(60,40,20,.2)}.kz-fasen i.ja{background:#5fae4a}
+.kz-acties{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.kz-acties .knop{display:inline-flex;align-items:center;gap:6px}.kz-acties .icn{width:20px;height:20px}
+.goudlabel{font-size:.6em;padding:2px 8px;border-radius:10px;background:linear-gradient(#ffe58a,#c9a227);color:#3a2205;vertical-align:middle}
+.zaadval{position:fixed;width:10px;height:14px;margin-left:-5px;border-radius:50%;background:radial-gradient(#e0b070,#7a4a1a);z-index:45;pointer-events:none}
+.gieter-anim{position:fixed;width:90px;height:68px;z-index:45;pointer-events:none;transform-origin:20% 60%}.gieter-anim svg{width:100%;height:100%}
+.druppel{position:fixed;width:5px;height:9px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#8fd3ff;z-index:45;pointer-events:none}
+.mestkorrel{position:fixed;width:5px;height:5px;border-radius:40%;background:#7a5a2a;z-index:45;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.kd-straal,.vv,.kz-pot>svg{animation:none!important}}

@@ -110,3 +110,5 @@ body{padding-bottom:calc(120px + env(safe-area-inset-bottom))!important}
 .verhaalm .modalin h2,.keuze.modalin h2,.nieuwepot.modalin h2{color:#6b1d0e!important;-webkit-text-fill-color:#6b1d0e!important;background:none!important}
 #gids .gbel{background:linear-gradient(rgba(250,238,210,.98),rgba(236,214,170,.98))!important;color:#2b1a0b!important}
 #gids .gbel b{color:#6b1d0e!important}
+#m3c{background:linear-gradient(rgba(246,228,186,.9),rgba(226,198,146,.92)),url(img/perkament.webp) center/cover!important;border-radius:10px!important;box-shadow:0 0 0 3px #c9a227,0 0 0 9px #5a3418,0 0 0 11px #2a1608,0 0 0 12px rgba(212,175,55,.7),0 14px 30px rgba(0,0,0,.7)!important;margin:12px 0}
+.m3top{margin-bottom:6px}
