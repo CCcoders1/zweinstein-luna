@@ -99,7 +99,7 @@ const amb=(()=>{let ctx,uit,rev,nodes=[],kamer='',vol=+(localStorage.getItem('zw
   if(k=='bieb')brom(300,.035);
   if(weer.soort=='regen'||weer.soort=='onweer'){brom(2500,Math.min(.18,.04+weer.mm*.05),.2);tmr.push(setInterval(()=>Math.random()<.7&&druppel(),120))}
   if(tijdSfeer()=='nacht'&&k!='bos')tmr.push(setInterval(()=>Math.random()<.15&&oehoe(),9000))}
- return{room(k){kamer=k;bouw()},start(){if(ok())bouw()},donder,vol(v){vol=v;localStorage.setItem('zw_sfeer',v);if(uit)uit.gain.value=v},get v(){return vol},herbouw:bouw}})();
+ return{room(k){kamer=k;if(window.MUZIEK_UIT)return;bouw()},start(){if(!window.MUZIEK_UIT&&ok())bouw()},donder,vol(v){vol=v;localStorage.setItem('zw_sfeer',v);if(uit)uit.gain.value=v},get v(){return vol},herbouw:()=>{if(!window.MUZIEK_UIT)bouw()}}})();
 addEventListener('pointerdown',()=>amb.start(),{once:true});
 $('#geluid').insertAdjacentHTML('beforeend','<div class="grij"><label for="sfeer">Sfeer</label><span hidden><svg class="icn" viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#efd27a;stroke-width:1.6"><path d="M12 3c1 4 5 6 5 11a5 5 0 01-10 0c0-3 2-4 2-7 1 1 2 2 3 4 0-3 0-5 0-8z"/></svg></span><input id="sfeer" type="range" min="0" max="1" step="0.05"></div><div class="grij"><label for="stemv">Stem</label><input id="stemv" type="range" min="0" max="1" step="0.05"></div>');$('#stemv').value=localStorage.getItem('zw_stem')??1;$('#stemv').oninput=e=>localStorage.setItem('zw_stem',e.target.value);
 $('#sfeer').value=amb.v;$('#sfeer').oninput=e=>amb.vol(+e.target.value);

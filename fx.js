@@ -1,7 +1,8 @@
 'use strict';
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const fx=(()=>{let ac,master,muz,muzOn=JSON.parse(localStorage.getItem('zw_muz')??'true'),vol=+(localStorage.getItem('zw_vol')??0.5),loopT,live=0,cur=null,swT=null,tracks=0;
- const init=()=>{if(ac)return;ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=vol;master.connect(ac.destination);muz=ac.createGain();muz.gain.value=muzOn?.35:0;muz.connect(master);cur=nieuwTrack(1);loop(cur);document.addEventListener('visibilitychange',()=>{if(!ac)return;document.hidden?ac.suspend():ac.resume()})};
+window.MUZIEK_UIT=true;/* achtergrondmuziek voorlopig uit; zet op false om terug te zetten */
+const fx=(()=>{let ac,master,muz,muzOn=window.MUZIEK_UIT?false:JSON.parse(localStorage.getItem('zw_muz')??'true'),vol=+(localStorage.getItem('zw_vol')??0.5),loopT,live=0,cur=null,swT=null,tracks=0;
+ const init=()=>{if(ac)return;ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=vol;master.connect(ac.destination);muz=ac.createGain();muz.gain.value=muzOn?.35:0;muz.connect(master);if(!window.MUZIEK_UIT){cur=nieuwTrack(1);loop(cur)}document.addEventListener('visibilitychange',()=>{if(!ac)return;document.hidden?ac.suspend():ac.resume()})};
  const toon=(f,t,d,{type='sine',g=.3,dest=master,att=.01}={})=>{const o=ac.createOscillator(),v=ac.createGain();o.type=type;o.frequency.value=f;v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g,t+att);v.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(v);v.connect(dest);o.start(t);o.stop(t+d+.05);live++;o.onended=()=>{live--;try{v.disconnect()}catch(e){}};if(dest._trk)dest._trk.os.push(o);return o};
  const ruis=(d,fq,g=.3,sweep)=>{const n=ac.sampleRate*d,b=ac.createBuffer(1,n,ac.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;const s=ac.createBufferSource();s.buffer=b;const f=ac.createBiquadFilter();f.type='bandpass';f.frequency.value=fq;f.Q.value=1.5;const t=ac.currentTime;if(sweep)f.frequency.exponentialRampToValueAtTime(sweep,t+d);const v=ac.createGain();v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(f);f.connect(v);v.connect(master);s.start()};
  const N=m=>440*2**((m-69)/12);
@@ -21,7 +22,7 @@ const fx=(()=>{let ac,master,muz,muzOn=JSON.parse(localStorage.getItem('zw_muz')
   MEL.forEach(([m,b,dd])=>cel(q(m+12),t0+b*B,dd*B,.07,d));trk.os.forEach(o=>o._t=o._t||t0+AKK.length*M+3);trk.timer=setTimeout(()=>loop(trk),AKK.length*M*1000-150)}
  function stopTrack(trk,fade){clearTimeout(trk.timer);const t=ac.currentTime;trk.g.gain.cancelScheduledValues(t);trk.g.gain.setValueAtTime(trk.g.gain.value,t);trk.g.gain.linearRampToValueAtTime(0,t+fade);
   setTimeout(()=>{trk.os.forEach(o=>{try{o.stop()}catch(e){}});trk.os=[];try{trk.g.disconnect()}catch(e){}tracks--},fade*1000+80)}
- function wissel(naam){const n=THEMA[naam]||THEMA.zaal;if(!ac){th=n;return}if(n===th&&!swT)return;th=n;clearTimeout(swT);
+ function wissel(naam){const n=THEMA[naam]||THEMA.zaal;if(!ac||window.MUZIEK_UIT){th=n;return}if(n===th&&!swT)return;th=n;clearTimeout(swT);
   swT=setTimeout(()=>{swT=null;if(cur&&cur._th===th)return;if(cur)stopTrack(cur,.9);cur=nieuwTrack(0);cur._th=th;const t=ac.currentTime;cur.g.gain.setValueAtTime(0,t);cur.g.gain.linearRampToValueAtTime(1,t+1.4);loop(cur)},300)}
  function bloei(){if(!ac)return;const t=ac.currentTime;[62,66,69,74,78].forEach((m,i)=>toon(N(m+th.tr),t+i*.07,2.4,{type:'triangle',g:.06,dest:muz,att:.3}))}
  const S={kras:()=>[0,.12,.26].forEach(d=>setTimeout(()=>ruis(.12,3000,.15,6000),d*1000)),
@@ -31,7 +32,7 @@ const fx=(()=>{let ac,master,muz,muzOn=JSON.parse(localStorage.getItem('zw_muz')
   fout:()=>{const t=ac.currentTime;toon(196,t,.35,{type:'sawtooth',g:.08});toon(185,t+.18,.45,{type:'sawtooth',g:.08})},
   fanfare:()=>{const t=ac.currentTime;[[60,0],[64,.15],[67,.3],[72,.45],[67,.7],[72,.85]].forEach(([m,d])=>{toon(N(m),t+d,.5,{type:'square',g:.08});toon(N(m+12),t+d,.5,{type:'triangle',g:.1})})},
   klik:()=>toon(1800,ac.currentTime,.08,{g:.06})};
- const speel=n=>{try{init();if(ac.state==='suspended')ac.resume();S[n]()}catch(e){}};
+ const laatstGespeeld={};const speel=n=>{try{init();if(ac.state==='suspended')ac.resume();const nu=performance.now();if(nu-(laatstGespeeld[n]||0)<90)return;if(live>28)return;laatstGespeeld[n]=nu;S[n]()}catch(e){}};
  return{debug:()=>({tracks,live,state:ac&&ac.state}),duik:on=>{if(!ac)return;const t=ac.currentTime;muz.gain.cancelScheduledValues(t);muz.gain.setValueAtTime(muz.gain.value,t);muz.gain.linearRampToValueAtTime(on?.06:(muzOn?.35:0),t+.5)},thema:wissel,bloei,spanning:v=>{spanning=v?1:0},ctx:()=>{init();if(ac.state==='suspended')ac.resume();return{ac,master}},init,speel,muz:a=>{muzOn=a;localStorage.setItem('zw_muz',a);if(muz)muz.gain.value=a?.35:0},vol:v=>{vol=v;localStorage.setItem('zw_vol',v);if(master)master.gain.value=v},get muzOn(){return muzOn},get volv(){return vol}}})();
 // overlay canvas: kaarsen, vonken, confetti
 const cv=document.createElement('canvas');cv.id='fxc';document.body.appendChild(cv);const cx=cv.getContext('2d');
@@ -56,7 +57,7 @@ fx.woorden=(el,ms=160)=>{if(RM||!el)return;const w=el.textContent.split(' ');el.
 // geluidspaneel: luidspreker in de bovenbalk + compact paneel
 const SPK='<svg class="icn" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="golf" d="M16 9a4 4 0 010 6M18.5 6.5a7.5 7.5 0 010 11"/></svg>';
 document.querySelector('header').insertAdjacentHTML('beforeend',`<button id="luid" aria-label="Geluid instellen" aria-expanded="false">${SPK}</button>`);
-const gp=document.createElement('div');gp.id='geluid';gp.setAttribute('role','dialog');gp.innerHTML=`<div class="grij"><label for="vol">Volume</label><input id="vol" type="range" min="0" max="1" step="0.05" value="${fx.volv}"></div><div class="grij"><label>Muziek</label><button id="mzk" aria-pressed="${fx.muzOn}">${fx.muzOn?'Aan':'Uit'}</button></div>`;document.body.appendChild(gp);
+const gp=document.createElement('div');gp.id='geluid';gp.setAttribute('role','dialog');gp.innerHTML=`<div class="grij"><label for="vol">Volume</label><input id="vol" type="range" min="0" max="1" step="0.05" value="${fx.volv}"></div><div class="grij"><label>Muziek</label><span class="binnenkort">binnenkort</span><button id="mzk" hidden>Uit</button></div>`;document.body.appendChild(gp);
 const luid=document.getElementById('luid');luid.onclick=e=>{e.stopPropagation();fx.init();const o=gp.classList.toggle('open');luid.setAttribute('aria-expanded',o)};
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('#geluid,#luid'))gp.classList.remove('open')});
 document.getElementById('mzk').onclick=e=>{e.stopPropagation();fx.init();fx.muz(!fx.muzOn);e.target.textContent=fx.muzOn?'Aan':'Uit';e.target.setAttribute('aria-pressed',fx.muzOn);luid.classList.toggle('stil',!fx.muzOn)};luid.classList.toggle('stil',!fx.muzOn);
