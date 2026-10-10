@@ -91,7 +91,7 @@ const _belK=beloon;beloon=function(id,...a){const r=_belK(id,...a);const p=(id.m
 function kernNa(){dagBeloon();potCheck()}
 /* ---------- hoofdscherm: het actieve lokaal ---------- */
 function sterTeller(){return `<span class="sterteller">${icoon('ster')}<b>${S.sterren}</b></span>`}
-V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home=v.decor;try{zetDecor(v.decor)}catch(e){}
+V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home='zaal';try{zetDecor('zaal')}catch(e){}
  const klaar=v.taken.filter(t=>S.taken[t[0]]).length;const vol=v.taken.find(t=>!S.taken[t[0]]);const dd=dagDoelen();
  app(`<section class="dagdoelen">${dd.map(g=>`<button class="dd ${g.af?'af':''}" data-k="${g.k}">${icoon(g.af?'vinkje':g.i)}<span>${g.n}</span><small>${g.h}/${g.m}</small></button>`).join('')}</section>
  <section class="lokaal rococo"><div class="lk-kop"><small>Leerjaar ${j} · ${v.n}</small><h2>${v.lokaal}</h2></div>

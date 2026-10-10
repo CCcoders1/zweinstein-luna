@@ -174,3 +174,10 @@ img/decor-telescoop.webp
 VOORLEESSTEM (map audio/)
 Gegenereerd met Piper TTS (open source, MIT) en de stem nl_BE-rdh-medium (rhasspy/piper-voices, vrij te gebruiken; zie https://huggingface.co/rhasspy/piper-voices).
 Nabewerkt met ffmpeg: iets lager, iets trager, zachte zaalgalm. Het is geen nabootsing van een bestaande acteur.
+
+--- Ronde: match-3 voorwerpen & nieuwe achtergronden ---
+img/hal-zaal.webp  – "Hall of Christ Church, Oxford 2025-05-04", Wikimedia Commons, CC0 (publiek domein). Bijgesneden en warm kleurgegraded.
+  https://commons.wikimedia.org/wiki/File:Hall_of_Christ_Church,_Oxford_2025-05-04.jpg
+img/kas-licht.webp – "Temperate House - Kew Gardens, London - DSC03199", Wikimedia Commons, CC0 (publiek domein). Bijgesneden en kleurgegraded.
+  https://commons.wikimedia.org/wiki/File:Temperate_House_-_Kew_Gardens,_London_-_DSC03199.jpg
+Match-3 voorwerpen (mandragora, maanbloem, flesjes, ketel, toverstaf, uil, Gouden Snaai e.d.) – eigen canvas-illustraties in m3kunst.js, geen externe bronnen.

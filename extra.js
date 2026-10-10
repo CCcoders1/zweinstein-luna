@@ -28,10 +28,10 @@ const evtBonus=()=>{const f=feestdag();return f&&['halloween','kerst','zwerkbal'
 /* ---------- lagen in de DOM ---------- */
 document.body.insertAdjacentHTML('afterbegin',`<div id="decor"><div class="laag bg"></div><div class="laag mid"></div><div class="stralen"></div><div class="mist"></div><div class="laag fg"></div></div><canvas id="amb"></canvas><div id="tint"></div><div id="vignet"></div><div id="flakker"></div>`);
 const DECORS={
- zaal:{bg:'decor-gewelf',plafond:1,mid:['kaarsen'],licht:'warm',stof:1},
+ zaal:{bg:'hal-zaal',plafond:1,mid:['kaarsen'],licht:'warm',stof:1},
  kaart:{bg:'perkament',mid:[],licht:'warm'},
  kerker:{bg:'decor-kerker',mid:['img:ketel-foto:ketel','img:flesjes-foto:fles'],licht:'groen',mist:1},
- kas:{bg:'decor-kas',mid:['img:venusvliegenval:plant1','img:alruinwortel:plant2'],licht:'dag',vuurvlieg:1,stralen:1},
+ kas:{bg:'kas-licht',mid:['img:venusvliegenval:plant1','img:alruinwortel:plant2'],licht:'dag',vuurvlieg:1,stralen:1},
  bieb:{bg:'decor-bibliotheek',mid:['img:decor-glas:raam'],licht:'warm',stralen:1,stof:1},
  gang:{bg:'decor-gang',mid:['kaarsen'],licht:'warm',stof:1},
  toren:{bg:'sterrenhemel',mid:['img:decor-telescoop:telescoop','img:decor-meer:horizon'],licht:'maan'},
