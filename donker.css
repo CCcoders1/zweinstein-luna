@@ -94,3 +94,4 @@ p,li,.tegel small{color:#f3e9cc}
 input{background:#fbf3dc!important;color:#2b1a0b!important}
 #overgang.ov-deur{position:fixed!important;inset:0!important;width:auto!important;top:0;bottom:0;background:none!important;border:0!important;box-shadow:none!important;transform:none!important}
 #overgang.ov-deur:after{display:none}
+.tilly-p .tgez{font-size:0!important;overflow:hidden}.tilly-p .tgez svg{width:100%;height:100%}
