@@ -531,3 +531,19 @@ img.plantimg.st3{transform:scale(.8);transform-origin:50% 100%}
 .mk-kamer{background:url(img/kas/kamer.webp) 0 0/100% 100% no-repeat}
 .mk-rij{flex-direction:row-reverse}
 .mk-silo{height:62%;width:26%}.mk-leviosa{height:70%}
+/* 2 silo's, 1 blok */
+.mk-leviosa{width:24%;height:72%;left:1%}
+.mk-unit{position:absolute;bottom:0;width:48%;height:100%}.mk-unit.u0{left:0}.mk-unit.u1{left:52%}
+.mk-unit .mk-silo{left:4%;width:40%;height:60%;bottom:12%}
+.mk-unit .mk-plaat{left:48%;width:50%;bottom:12%;height:5%}
+.mk-unit .mk-plaat.in{height:3%;box-shadow:0 1px 0 #4a3a20,0 0 12px rgba(120,200,255,.8)}
+.mk-spr{position:absolute;left:0;right:0;bottom:-2%;font-size:10px!important;padding:3px 4px!important;white-space:nowrap;min-height:0!important}
+.mk-leviosa .mk-blok,.mk-leviosa.aan .mk-blok{width:20%;bottom:15%;transform:none}
+.mk-leviosa[data-b="0"] .mk-blok{left:26%}.mk-leviosa[data-b="1"] .mk-blok{left:78%}
+.mk-blok.zweefR{animation:zwR 1.5s ease-in-out forwards}.mk-blok.zweefL{animation:zwL 1.5s ease-in-out forwards}
+@keyframes zwR{0%{left:26%;bottom:15%}35%{left:26%;bottom:62%;transform:rotate(-6deg)}75%{left:78%;bottom:62%;transform:rotate(5deg)}100%{left:78%;bottom:15%;transform:none}}
+@keyframes zwL{0%{left:78%;bottom:15%}35%{left:78%;bottom:62%;transform:rotate(6deg)}75%{left:26%;bottom:62%;transform:rotate(-5deg)}100%{left:26%;bottom:15%;transform:none}}
+.mk-levtxt{top:-12%;right:0}.mk-meld{bottom:-14%;right:0}
+.mk-kamer.sproei .mk-sproeiers::after{background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(160,215,255,.6) 22px 25px,transparent 25px 60px)}
+.mk-unit .mk-spr{position:absolute!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;margin:0!important;width:auto!important}
+.mk-sproeiers{left:2%;right:4%}

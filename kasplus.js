@@ -49,15 +49,14 @@ V.mijnkas=()=>{VIEWDECOR.mijnkas='kas';const gt=lvl()>=GROTE_TAFEL;
  <div class="mk-scroll" id="mkscroll"><div class="mk-kamer ${siloAan()?'sproei':''}"><div class="mk-sproeiers"></div>
   <div class="mk-tafel klein"><div class="mk-rij">${[0,1,2].map(plek).join('')}</div><img src="img/kas/tafel1.webp" alt=""></div>
   ${gt?`<div class="mk-tafel groot"><div class="mk-rij">${[3,4,5,6].map(plek).join('')}</div><img src="img/kas/tafel2.webp" alt=""></div>`:`<div class="mk-hint t"><span>Hier is nog plek voor iets groots…</span></div>`}
-  <div class="mk-leviosa ${siloAan()?'aan':''}"><div class="mk-silo" title="Watersilo"><i style="height:${Math.round(siloNiveau()*100)}%"></i><span>${siloAan()?Math.round(siloNiveau()*100)+'%':'leeg'}</span></div><div class="mk-plaat"></div><button class="mk-blok" aria-label="Wingardium Leviosa op het blok"><b>ᚹ</b></button><small class="mk-levtxt">${siloAan()?'Sproeiers aan · nog '+tijd(siloRest()):'Tik op het blok'}</small><label class="mk-meld"><input type="checkbox" id="mkmeld" ${S.siloMeld?'checked':''}> Seintje als de silo leeg is</label></div>
+  ${levHTML()}
   <div class="mk-mega">${MEGA_VANAF.map((v,i)=>lvl()>=v?`<button class="megapot ${mpSt(i)==4?'rijp':''}" data-m="${i}">${mp(i)?spImg(mp(i).z,mpSt(i)):''}<img class="gpimg" src="img/kas/grotepot.webp" alt=""><span class="gplabel">${mp(i)?(mpSt(i)==4?'Oogsten!':SUPERPLANTEN[mp(i).z].naam):'Megapot'}</span></button>`:`<div class="megapot dicht"><img class="gpimg" src="img/kas/grotepot.webp" alt=""><span class="gplabel">${i==0?'Een plek voor een megapot':'…'}</span></div>`).join('')}</div>
  </div></div>
  <p class="mk-veeg">‹ Veeg om verder de kas in te lopen</p>
  <div class="bokist">${Object.entries(BOOSTERS).map(([k,d])=>`<span class="${S.bo[k]?'':'nul'}" title="${d.naam}"><img src="img/pu/${d.img}.webp" alt="">${S.bo[k]||0}</span>`).join('')}</div>`);
  $('#mkterug').onclick=()=>ga('kas');
- $('.mk-blok').onclick=e=>{if(siloAan()){toast('De sproeiers staan al aan.');return}levitatie(e.currentTarget)};
- $('#mkmeld').onchange=e=>{S.siloMeld=e.target.checked;bewaar();if(S.siloMeld&&window.Notification&&Notification.permission=='default')Notification.requestPermission().catch(()=>0)};
- const lv=$('.mk-leviosa');new IntersectionObserver((en,ob)=>{if(en[0].isIntersecting&&!S.levUitleg){S.levUitleg=1;bewaar();ob.disconnect();try{gids('Herken je dit uit de Herbologie-les? Zet het blok met <b>Wingardium Leviosa</b> op de drukplaat: dan vult de watersilo zich en geven de sproeiers je planten vier uur lang water. Daarna schuift het blok er weer af.',{})}catch(x){}}},{threshold:.6}).observe(lv);
+ bindLev();
+ const lv=$('.mk-leviosa');new IntersectionObserver((en,ob)=>{if(en[0].isIntersecting&&!S.levUitleg){S.levUitleg=1;bewaar();ob.disconnect();try{gids('Herken je dit uit de Herbologie-les? Er zijn twee silo’s met elk een drukplaat, maar maar één blok. De silo onder het blok vult zich: van leeg tot vol duurt twee uur. Wissel het blok met <b>Wingardium Leviosa</b> naar de andere plaat. Met de sproeiknop geeft een volle silo je planten een half uur water, een halfvolle evenveel minder.',{})}catch(x){}}},{threshold:.6}).observe(lv);
  document.querySelectorAll('.mk-pot').forEach(k=>k.onclick=()=>{const i=+k.dataset.i,p=pot(i);if(!p)return plantKies(i);if(stadium(p)==4)return oogsten(i);const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo"><h3>${ZADEN[p.z][0]}</h3><p>${FASEN[stadium(p)]} · nog ${tijd(rest(p))}</p><button class="knop klein" id="mw" ${p.nat>Date.now()?'disabled':''}>Water</button> <button class="knop klein" id="mm" ${S.mest?'':'disabled'}>Drakenmest</button><p><button class="linkknop" id="mx">Sluiten</button></p></div>`;document.body.appendChild(o);
   o.querySelector('#mx').onclick=()=>o.remove();o.querySelector('#mw').onclick=()=>{p.bonus+=rest(p)*.25;p.nat=Date.now()+30*6e4;bewaar();fx.speel('whoosh');toast('Water gegeven: 25% sneller');o.remove();V.mijnkas()};o.querySelector('#mm').onclick=()=>{S.mest--;p.bonus+=rest(p)*.5;bewaar();toast('Drakenmest: de helft sneller!');o.remove();V.mijnkas()}});
  document.querySelectorAll('.megapot[data-m]').forEach(b=>b.onclick=()=>superModal(+b.dataset.m));
@@ -71,17 +70,29 @@ V.mijnkas=()=>{VIEWDECOR.mijnkas='kas';const gt=lvl()>=GROTE_TAFEL;
 if(typeof ga=='function'){const _ga=ga;ga=function(v,...a){if(v=='mijnkas'){document.body.dataset.view='mijnkas';try{fx.thema('kas')}catch(e){}$('#terug')&&$('#terug').classList.add('zien');window.scrollTo(0,0);return V.mijnkas()}return _ga(v,...a)}}
 // kweek-functies roepen V.kas() aan: in de eigen kas blijven we daar
 const _kasOrig=V.kas;V.kas=(...a)=>{if(document.body.dataset.view=='mijnkas')return V.mijnkas();_kasOrig(...a);deur()};
-/* ---- Wingardium Leviosa-blok, drukplaat, silo & sproeiers ---- */
-const SILO=4*36e5;S.silo=S.silo||0;
-function siloAan(){return Date.now()-S.silo<SILO}function siloRest(){return Math.max(0,SILO-(Date.now()-S.silo))}function siloNiveau(){return siloAan()?siloRest()/SILO:0}
+/* ---- Wingardium Leviosa-blok: 2 schakelaars, 2 silo's ---- */
+const VUL=2*36e5,SPROEI=30*6e4;
+S.water=S.water||{blok:0,sinds:Date.now(),lvl:[0,0],tot:0};delete S.silo;
+const W=()=>S.water;
+function niveau(i){const w=W();return i==w.blok?Math.min(1,w.lvl[i]+(Date.now()-w.sinds)/VUL):w.lvl[i]}
+function vast(){const w=W();w.lvl=[niveau(0),niveau(1)];w.sinds=Date.now()}
+function siloAan(){return W().tot>Date.now()}function siloRest(){return Math.max(0,W().tot-Date.now())}
+function levHTML(){const w=W();return `<div class="mk-leviosa ${siloAan()?'aan':''}" data-b="${w.blok}">${[0,1].map(i=>{const n=niveau(i);return `<div class="mk-unit u${i}"><div class="mk-silo"><i style="height:${Math.round(n*100)}%"></i><span>${Math.round(n*100)}%</span></div><div class="mk-plaat ${w.blok==i?'in':''}"></div><button class="knop klein mk-spr" data-s="${i}" ${n<.02?'disabled':''}>Sproei ${Math.round(n*30)} min</button></div>`}).join('')}
+ <button class="mk-blok" aria-label="Wingardium Leviosa: wissel het blok"><b>ᚹ</b></button><small class="mk-levtxt">${siloAan()?'Sproeiers aan · nog '+tijd(siloRest()):'Silo '+(w.blok+1)+' vult zich · tik op het blok om te wisselen'}</small>
+ <label class="mk-meld"><input type="checkbox" id="mkmeld" ${S.siloMeld?'checked':''}> Seintje als een silo vol is</label></div>`}
 function levitatie(blok){const r=blok.getBoundingClientRect();const t=document.createElement('div');t.className='m3spreuk';t.textContent='Wingardium Leviosa!';t.style.cssText=`left:${r.left+r.width/2}px;top:${r.top-30}px`;document.body.appendChild(t);setTimeout(()=>t.remove(),1800);
- try{fx.speel('tover')}catch(e){}vib([20,40,20]);blok.classList.add('zweef');
- for(let i=0;i<14;i++){const s=document.createElement('i');s.className='mk-ster';s.style.cssText=`left:${r.left+Math.random()*r.width}px;top:${r.top+Math.random()*r.height}px;animation-delay:${i*60}ms`;document.body.appendChild(s);setTimeout(()=>s.remove(),1600)}
- setTimeout(()=>{S.silo=Date.now();S.siloGemeld=0;bewaar();sproei();try{fx.speel('whoosh')}catch(e){}V.mijnkas()},1500)}
+ try{fx.speel('tover')}catch(e){}vib([20,40,20]);const naar=1-W().blok;blok.classList.add(naar?'zweefR':'zweefL');
+ for(let i=0;i<14;i++){const s=document.createElement('i');s.className='mk-ster';s.style.cssText=`left:${r.left+Math.random()*r.width}px;top:${r.top+Math.random()*r.height}px;--x:${(Math.random()-.5)*60}px;animation-delay:${i*60}ms`;document.body.appendChild(s);setTimeout(()=>s.remove(),1700)}
+ setTimeout(()=>{vast();W().blok=naar;W().gemeld=0;bewaar();V.mijnkas()},1500)}
+function sproeiSilo(i){const n=niveau(i);if(n<.02)return;vast();W().lvl[i]=0;W().tot=Math.max(Date.now(),W().tot)+n*SPROEI;bewaar();try{fx.speel('whoosh')}catch(e){}vib(30);toast(`Sproeiers aan: ${Math.round(n*30)} minuten water voor je planten.`);sproei();V.mijnkas()}
 function sproei(){if(!siloAan())return;const nu=Date.now();let w=0;Object.keys(S.kweek||{}).forEach(i=>{if(+i<100)return;const p=S.kweek[i];if(p&&stadium(p)<4&&!(p.nat>nu)){p.bonus+=rest(p)*.25;p.nat=nu+30*6e4;w++}});
  S.mega.forEach((p,i)=>{if(p&&mpSt(i)<4&&!(p.nat>nu)){p.bonus=(p.bonus||0)+mpRest(i)*.15;p.nat=nu+30*6e4;w++}});if(w)bewaar()}
-setInterval(()=>{sproei();if(S.silo&&!siloAan()&&!S.siloGemeld){S.siloGemeld=1;bewaar();if(document.body.dataset.view=='mijnkas')V.mijnkas();if(S.siloMeld){toast('De watersilo is leeg. Tijd voor een nieuwe Wingardium Leviosa!');try{if(Notification.permission=='granted')navigator.serviceWorker.ready.then(r=>r.showNotification('Zweinstein',{body:'De watersilo in je kas is leeg. Zet het blok weer op de drukplaat!',icon:'img/icoon-192.png'}))}catch(e){}}}},60000);
+setInterval(()=>{sproei();const w=W();if(niveau(w.blok)>=1&&!w.gemeld){w.gemeld=1;bewaar();if(S.siloMeld){toast('Silo '+(w.blok+1)+' is vol! Wissel het blok of zet de sproeiers aan.');try{if(Notification.permission=='granted')navigator.serviceWorker.ready.then(r=>r.showNotification('Zweinstein',{body:'Een watersilo in je kas is vol.',icon:'img/icoon-192.png'}))}catch(e){}}}
+ if(document.body.dataset.view=='mijnkas'&&!document.querySelector('.modal')){const l=$('.mk-leviosa');if(l){l.outerHTML=levHTML();bindLev()}}},30000);
 setTimeout(sproei,3000);
+function bindLev(){$('.mk-blok').onclick=e=>levitatie(e.currentTarget);document.querySelectorAll('.mk-spr').forEach(b=>b.onclick=()=>sproeiSilo(+b.dataset.s));
+ $('#mkmeld').onchange=e=>{S.siloMeld=e.target.checked;bewaar();if(S.siloMeld&&window.Notification&&Notification.permission=='default')Notification.requestPermission().catch(()=>0)};
+ const k=$('.mk-kamer');k&&k.classList.toggle('sproei',siloAan())}
 /* ---- de deur in de originele kas ---- */
 function deur(){const a=$('#app');if(!a||a.querySelector('.kasdeur'))return;const h=a.querySelector('.kweekbalk')||a.querySelector('h2');
  h.insertAdjacentHTML('afterend',`<button class="kasdeur" aria-label="Open de deur naar je eigen kas"><span class="kd-licht"></span><span class="kd-kozijn"><span class="kd-blad"><i class="kd-raam"></i><i class="kd-knop"></i></span></span><span class="kd-tekst"><b>Mijn eigen kas</b><small>Tik op de deur</small></span></button>`);
