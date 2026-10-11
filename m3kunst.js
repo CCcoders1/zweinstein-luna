@@ -301,10 +301,11 @@ function uil(c,R,f){// sneeuwuil, live getekend
  c.fillStyle='#3a3a3a';c.beginPath();c.moveTo(-R*.05,-R*.12);c.lineTo(R*.05,-R*.12);c.lineTo(0,-R*.02);c.fill()}
 /* sterrenstof-sprites per kleur */
 const STOF={};function stof(kl){if(STOF[kl])return STOF[kl];const cv=document.createElement('canvas');cv.width=cv.height=32;const c=cv.getContext('2d');c.translate(16,16);c.fillStyle=rg(c,0,0,0,0,0,16,[[0,'rgba(255,255,255,1)'],[.25,kl],[1,'rgba(0,0,0,0)']]);c.beginPath();c.arc(0,0,16,0,7);c.fill();c.fillStyle='rgba(255,255,255,.95)';c.beginPath();for(let i=0;i<8;i++){const q=i%2?2:15,a=i*Math.PI/4;c.lineTo(Math.cos(a)*q,Math.sin(a)*q)}c.fill();return STOF[kl]=cv}
-return{D,RECEPT,beeld,url,speciaal,uil,vleugel,stof,punt,glim}})();
+const wis=()=>{Object.keys(CACHE).forEach(k=>delete CACHE[k]);Object.keys(URL_).forEach(k=>delete URL_[k])};
+return{D,RECEPT,beeld,url,speciaal,uil,vleugel,stof,punt,glim,wis,CACHE}})();
 /* thema's aanpassen: namen + kleuren (paden blijven voor oude iconen) */
 Object.entries(KU.RECEPT).forEach(([th,lijst])=>{const T=M3THEMA[th];if(!T)return;T.id=th;T.t=lijst.map((r,i)=>[r[0],r[1],(T.t[i]||[])[2]||'M12 4v16'])});M3THEMA.herbologie.pot='Mandragorapot';
-tegelBeeld=function(T,k,cel){const fr=RMP?0:Math.floor(performance.now()/140+k*1.7)%8;return KU.beeld(T.id||'herbologie',k,Math.round(cel*2),fr)};
+tegelBeeld=function(T,k,cel){const fr=window.STUK_FOTO?0:RMP?0:Math.floor(performance.now()/140+k*1.7)%8;return KU.beeld(T.id||'herbologie',k,Math.round(cel*2),fr)};
 /* vooraf alle frames renderen (geen haperingen tijdens spel) */
 window.m3Voorrender=(th,cel,n)=>{for(let k=0;k<n;k++)for(let f=0;f<8;f++)KU.beeld(th,k,Math.round(cel*2),f)};
 m3DoelIco=function(d,T){if(typeof d[0]=='number')return `<img class="m3ico m3stuk" src="${KU.url(T.id||'herbologie',d[0])}" alt="${T.t[d[0]][0]}">`;const kleur=d[0]=='o'?'#6b8f3a':d[0]=='k'?'#8a5a2b':'#c9a227';const p=d[0]=='o'?'M12 21V4M12 7l-4-2M12 7l4-2M12 11l-5-2M12 11l5-2M12 15l-5-2M12 15l5-2':d[0]=='k'?'M4 7h16v13H4zM4 7l2-3h12l2 3M4 12h16':'M5 8h14l-2 12H7zM4 5h16v3H4z';
@@ -316,3 +317,20 @@ m3DoelIco=function(d,T){if(typeof d[0]=='number')return `<img class="m3ico m3stu
   const stap=t=>{const p=Math.min(1,(t-t0)/dur),v=Math.round(van+(n-van)*(1-Math.pow(1-p,3)));if(v!==laatste){laatste=v;try{fx.speel('munt')}catch(e){}b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop')}b.querySelector('b').textContent=v;if(p<1)anim=requestAnimationFrame(stap);else{anim=null;getoond=n;sessionStorage.setItem('zw_sterg',n);b.classList.remove('telt')}};anim=requestAnimationFrame(stap)}
  else if(!anim){getoond=n;sessionStorage.setItem('zw_sterg',n);b.querySelector('b').textContent=n}};
  try{stats()}catch(e){}})();
+
+/* ====== Speelstukken ontworpen door de maker (uitgeknipte sprites in img/stukken/) ====== */
+(()=>{window.STUK_FOTO=true;
+ const NAMEN={herinnerbal:['Herinnerbal','#ff3a40'],drankje:['Drankje','#36d05a'],hedwig:['Hedwig','#9ab4ff'],chocokikker:['Chocokikker','#b0703a'],drakenei:['Drakenei','#8a7aa8'],pompoen:['Pompoen','#ff8a1a'],boterbier:['Boterbier','#e0a050'],feniksveer:['Feniksveer','#ff5a2a'],toverstaf:['Toverstaf','#c08a50'],ketelcake:['Ketelcake','#3a8ab8']};
+ const IMG={};const laad=n=>{if(IMG[n])return IMG[n];const i=new Image();i.src=`img/stukken/${n}-256.webp`;IMG[n]=i;return i};
+ const teken=n=>(c)=>{const i=laad(n);if(i.complete&&i.naturalWidth){c.drawImage(i,-50,-50,100,100)}};
+ const st=n=>[NAMEN[n][0],NAMEN[n][1],teken(n),n];
+ const STD=['herinnerbal','drankje','hedwig','chocokikker','drakenei','pompoen','boterbier'].map(st);
+ const SETS={herbologie:STD,bezweringen:['herinnerbal','drankje','hedwig','chocokikker','drakenei','pompoen','toverstaf'].map(st),fabeldieren:['herinnerbal','feniksveer','hedwig','chocokikker','drakenei','pompoen','boterbier'].map(st),
+  toverdranken:['drankje','ketelcake','boterbier','herinnerbal','pompoen','drakenei','feniksveer'].map(st),astronomie:['herinnerbal','drankje','hedwig','toverstaf','drakenei','pompoen','ketelcake'].map(st)};
+ Object.entries(SETS).forEach(([th,l])=>{KU.RECEPT[th]=l;const T=M3THEMA[th];if(T)T.t=l.map(r=>[r[0],r[1],'M12 4v16'])});
+ const _url=KU.url;KU.url=(th,k)=>{const r=(KU.RECEPT[th]||KU.RECEPT.herbologie)[k];if(r&&r[3])return `img/stukken/${r[3]}-128.webp`;try{return _url(th,k)}catch(e){return ''}};
+ const snaai=laad('snaai');Object.keys(NAMEN).forEach(laad);
+ const _sp=KU.speciaal;KU.speciaal=(s,px)=>{if(s!=='snaai'||!snaai.complete)return _sp(s,px);const key='spf'+px;if(KU.CACHE[key])return KU.CACHE[key];const cv=document.createElement('canvas');cv.width=cv.height=px;const c=cv.getContext('2d');c.drawImage(snaai,px*.02,px*.02,px*.96,px*.96);return KU.CACHE[key]=cv};
+ const _vl=KU.vleugel;KU.vleugel=(...a)=>{if(snaai.complete&&snaai.naturalWidth)return;_vl(...a)};
+ Promise.all(Object.values(IMG).map(i=>i.decode().catch(()=>0))).then(()=>KU.wis());
+})();

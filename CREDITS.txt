@@ -181,3 +181,6 @@ img/hal-zaal.webp  – "Hall of Christ Church, Oxford 2025-05-04", Wikimedia Com
 img/kas-licht.webp – "Temperate House - Kew Gardens, London - DSC03199", Wikimedia Commons, CC0 (publiek domein). Bijgesneden en kleurgegraded.
   https://commons.wikimedia.org/wiki/File:Temperate_House_-_Kew_Gardens,_London_-_DSC03199.jpg
 Match-3 voorwerpen (mandragora, maanbloem, flesjes, ketel, toverstaf, uil, Gouden Snaai e.d.) – eigen canvas-illustraties in m3kunst.js, geen externe bronnen.
+
+
+Speelstukken match-3 (img/stukken/): Speelstukken ontworpen door de maker. Uitgeknipt en geschaald voor de app.
