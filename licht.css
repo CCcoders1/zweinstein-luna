@@ -379,3 +379,11 @@ body.lvintro #app,body.lvintro #nav,body.lvintro header,body.lvintro #sterbadge,
 img.m3ico-it{object-fit:contain;padding:2px;box-sizing:border-box}
 .m3pop{animation:m3pop .35s ease-out}@keyframes m3pop{50%{transform:scale(1.25)}}
 @media (prefers-reduced-motion:reduce){.m3spreuk,.m3spoor,.m3flits{animation-duration:.01s}}
+.m3spreuk .sprico{width:64px;height:64px;display:block;margin:0 auto -6px;filter:drop-shadow(0 0 10px rgba(255,220,120,.9));animation:m3pop .5s ease-out}
+.m3spreuk img.staf{width:120px;height:auto;transform:rotate(-70deg);margin:-30px auto -30px}
+.m3spreuk .staf{animation:m3staf2 .6s ease-out forwards}
+@keyframes m3staf2{from{transform:rotate(-120deg)}60%{transform:rotate(-55deg)}to{transform:rotate(-70deg)}}
+.m3flits img{width:100%;height:100%;opacity:.9}
+img.m3spoor{height:auto}
+img.plantimg{width:100%;height:auto;max-height:100%;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(40,20,0,.35))}
+img.plantimg.st3{transform:scale(.8);transform-origin:50% 100%}

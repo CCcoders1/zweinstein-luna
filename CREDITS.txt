@@ -194,3 +194,5 @@ Laadschermen Bezweringen, Toverdranken, Gedaanteverwisselingen, Astronomie en Ve
 Personage-illustraties (img/personages/): Personage-illustraties ontworpen door de maker.
 Level-gehaald-achtergronden en spel-achtergronden per vak (img/winst/, img/spel/): ontworpen door de maker.
 Pixel-art kaars (img/kaars-lijf.png, img/kaars-vlam.png) en onkruid-ranken (img/stukken/rank*): ontworpen door de maker.
+
+Verzamelitems, magische dieren, magische planten, toverdranken, kooien (3 staten), spreuksymbolen, sterretje/veertje/glinster/toverstok en de power-up-uil (img/doel/): eigen ontwerpen van de maker (ontwerpbladen items1, items2, dieren, planten, toverdranken), uitgeknipt en verkleind voor de app.
