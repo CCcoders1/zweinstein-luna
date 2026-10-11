@@ -364,3 +364,18 @@ body.lvintro #app,body.lvintro #nav,body.lvintro header,body.lvintro #sterbadge,
 @keyframes kvlam2{0%{opacity:.85}50%{opacity:1}100%{opacity:.9;translate:0 -1px}}
 @keyframes kgloed{from{opacity:.7;transform:translate(-50%,-50%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
 @media(prefers-reduced-motion:reduce){.zkaars.pix,.zkaars.pix .kvlam,.zkaars.pix .kgloed{animation:none!important}}
+/* verzamel/bevrijd-doelen */
+.m3item{position:fixed;z-index:60;pointer-events:none;will-change:transform}
+.m3spoor{position:fixed;z-index:59;pointer-events:none;color:#ffe9a0;text-shadow:0 0 6px #ffcf5a;animation:m3sp .9s ease-out forwards}
+@keyframes m3sp{to{opacity:0;transform:translate(var(--dx),24px) rotate(var(--r)) scale(.4)}}
+.m3spreuk{position:fixed;left:50%;top:30%;z-index:61;pointer-events:none;transform:translateX(-50%);text-align:center;animation:m3spr 1.5s ease-out forwards}
+.m3spreuk span{display:block;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:40px;white-space:nowrap;background:linear-gradient(180deg,#fff6c8,#e8b839 55%,#a87a1a);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 8px rgba(255,210,100,.85)) drop-shadow(0 2px 2px rgba(40,20,0,.8))}
+.m3spreuk .staf{width:110px;height:22px;display:block;margin:0 auto 4px;transform-origin:5% 60%;animation:m3staf .6s ease-out}
+@keyframes m3staf{from{transform:rotate(-45deg)}60%{transform:rotate(12deg)}to{transform:rotate(0)}}
+@keyframes m3spr{0%{opacity:0;transform:translateX(-50%) scale(.6)}15%{opacity:1;transform:translateX(-50%) scale(1.06)}25%{transform:translateX(-50%) scale(1)}75%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-16px)}}
+.m3flits{position:fixed;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;z-index:58;pointer-events:none;background:radial-gradient(circle,rgba(255,250,220,.95),rgba(255,220,120,.4) 40%,transparent 70%);animation:m3fl .7s ease-out forwards}
+@keyframes m3fl{from{transform:scale(.2)}to{transform:scale(1.4);opacity:0}}
+.m3dank{position:fixed;z-index:61;color:#ff7a9a;font-size:22px;pointer-events:none;animation:m3sp .9s ease-out forwards;--dx:0;--r:0deg}
+img.m3ico-it{object-fit:contain;padding:2px;box-sizing:border-box}
+.m3pop{animation:m3pop .35s ease-out}@keyframes m3pop{50%{transform:scale(1.25)}}
+@media (prefers-reduced-motion:reduce){.m3spreuk,.m3spoor,.m3flits{animation-duration:.01s}}
