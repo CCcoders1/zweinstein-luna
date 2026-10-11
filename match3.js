@@ -163,7 +163,7 @@ function m3BesteZet(b){let best=null,bs=-1;for(let r=0;r<RIJEN;r++)for(let c=0;c
 /* ---------- weergave ---------- */
 const M3={};
 V.match3=async(n)=>{n=n||S.m3lvl||1;if((S.m3kal||{})[n]==null){app('<p class="m3voor">Het level wordt klaargezet…</p>');await m3Kalibreer(n,m3VakVoor(n).thema);if(document.body.dataset.view!=='match3')return}const L=m3Level(n);const vak=m3VakVoor(n);const thema=vak.thema;const T=M3THEMA[thema];
- const doelTxt=d=>d[0]=='o'?T.onkruid:d[0]=='k'?T.kist:d[0]=='p'?(/pot$/.test(T.pot)?T.pot+'ten':T.pot+'en'):T.t[d[0]].map?T.t[d[0]][0]:'';
+ const doelTxt=d=>d[0]=='o'?T.onkruid:d[0]=='k'?T.kist:d[0]=='p'?(T.potMv||(/pot$/.test(T.pot)?T.pot+'ten':T.pot+'en')):T.t[d[0]].map?T.t[d[0]][0]:'';
  app(`<div class="m3voor rococo"><h2>Level ${n}</h2><p class="m3vak">${T.n}</p><div class="m3doelen-voor">${L.doelen.map(d=>`<span>${m3DoelIco(d,T)}<b>${doelTxt(d)}</b></span>`).join('')}</div>
  <p>${L.zetten} zetten</p><p class="klein">Boosters (optioneel):</p><div class="m3boost"><label><input type="checkbox" id="b1"> Start met een raket <small>30 Smekkies</small></label><label><input type="checkbox" id="b2"> Start met een ketelbom <small>50 Smekkies</small></label></div>
  <p class="harten">${harten()}</p><button class="knop volgende" id="m3start">Spelen</button></div>`);

@@ -190,3 +190,4 @@ Laadscherm Herbologie (img/laadschermen/herbologie*.webp): Laadscherm Herbologie
 Smekkies-bonen en zakjes (img/smekkies/): Smekkies en zakjes ontworpen door de maker.
 Menu- en HUD-knoppen (img/ui/): Menu- en HUD-knoppen ontworpen door de maker.
 Level-gehaald-achtergrond (img/winst/): Level-gehaald-achtergrond ontworpen door de maker.
+Laadschermen Bezweringen, Toverdranken, Gedaanteverwisselingen, Astronomie en Verweer tegen de Zwarte Kunsten (img/laadschermen/): ontworpen door de maker.

@@ -277,3 +277,25 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 @keyframes winPan{0%{background-position:12% 0}100%{background-position:88% 0}}
 .winbg:after{background:linear-gradient(rgba(10,8,20,.1),rgba(10,8,20,0) 30%,rgba(26,18,11,.0) 40%,rgba(26,18,11,.85) 54vh,#1a120b 60vh)!important}
 .modal.metwinbg>.modalin{max-height:50vh}
+/* ====== vakken: nieuw-vak-moment + levelpad met secties ====== */
+.lesdeur{margin:10px auto;max-width:520px;text-align:center;padding:12px 14px 18px;position:relative}
+.ld-bord{position:relative;height:210px;border-radius:14px;background:#2a1c10 center/cover;overflow:hidden;border:3px solid #c9a227;box-shadow:inset 0 0 30px rgba(0,0,0,.6),0 4px 14px rgba(0,0,0,.4);perspective:700px}
+.ld-deur{position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(90deg,#5a3618,#7a4c22 40%,#5a3618);border:2px solid #3a220c;box-shadow:inset 0 0 0 6px rgba(201,162,39,.35);transition:transform 1.4s cubic-bezier(.5,0,.2,1),opacity 1.4s}
+.ld-deur.l{left:0;transform-origin:0 50%}.ld-deur.r{right:0;transform-origin:100% 50%}
+.ld-deur:after{content:'';position:absolute;top:50%;width:12px;height:12px;border-radius:50%;background:radial-gradient(#ffe9a0,#9a7417)}.ld-deur.l:after{right:10px}.ld-deur.r:after{left:10px}
+.lesdeur.open .ld-deur.l{transform:rotateY(-105deg);opacity:.15}.lesdeur.open .ld-deur.r{transform:rotateY(105deg);opacity:.15}
+.ld-nr{display:block;margin-top:10px;color:#8a5a10;letter-spacing:.08em;text-transform:uppercase;font-weight:bold}
+.lesdeur h2{margin:4px 0}
+.ld-feest{margin-top:10px;animation:kzIn .7s cubic-bezier(.3,1.3,.5,1) both}
+.ld-feest h3{font-size:1.5em;margin:6px 0;color:#7a2a0a}
+.ld-balk{height:10px;border-radius:6px;background:rgba(80,50,10,.25);overflow:hidden;flex:1}.ld-balk i{display:block;height:100%;background:linear-gradient(90deg,#c9a227,#ffe58a)}
+.vakbalk{display:flex;gap:8px;overflow-x:auto;padding:4px 10px 8px;margin:0 -6px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.pv{flex:0 0 112px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 4px 6px;border-radius:12px;background:linear-gradient(#fff6dc,#ecd9a8)!important;border:2px solid #c9a227!important;color:#3a240c!important;font:bold 12px Georgia,serif;line-height:1.15}
+.pv img{width:100%;height:56px;object-fit:cover;border-radius:8px}
+.pv small{font-weight:normal;color:#7a5a20;display:flex;align-items:center;gap:3px}.pv small .icn{width:12px;height:12px}
+.pv.actief{box-shadow:0 0 0 3px #ffe58a,0 0 14px rgba(255,210,90,.8)}.pv.dicht img{filter:grayscale(.75) brightness(.8)}.pv.af small{color:#2e7a2e}
+.padkopbeeld{margin:6px 0 10px;height:150px;border-radius:14px;background:center 35%/cover;border:3px solid #c9a227;position:relative;overflow:hidden;display:flex;align-items:flex-end}
+.padkopbeeld>div{width:100%;padding:28px 12px 8px;background:linear-gradient(transparent,rgba(10,8,20,.8));color:#fff3cf;text-align:left}
+.padkopbeeld h2{margin:0;color:#ffe58a!important;font-size:1.35em}.padkopbeeld p{margin:0;color:#fff3cf!important}.padkopbeeld small{color:#ffe58a;letter-spacing:.1em;text-transform:uppercase}
+.paddeur{text-align:center;padding:12px;margin:0 0 10px;border-radius:14px;background:linear-gradient(#fff6dc,#ecd9a8);border:2px solid #c9a227;color:#3a240c}
+.paddeur p{color:#3a240c!important;margin:4px 0}.pd-deur .icn{width:28px;height:28px}

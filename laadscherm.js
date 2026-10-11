@@ -11,7 +11,7 @@ const LAADSCHERM={
  const laad=c=>{const u=url(c);if(KLAAR[u])return KLAAR[u];const i=new Image();i.src=u;return KLAAR[u]=i.decode().then(()=>u).catch(()=>u)};
  /* alvast vooraf laden zodra de app rustig is */
  setTimeout(()=>Object.values(LAADSCHERM).forEach(laad),2500);
- const doelTekst=(d,T)=>typeof d[0]=='number'?`${d[1]} × ${T.t[d[0]][0]}`:d[0]=='o'?`Ruim al het ${T.onkruid.toLowerCase()} op`:d[0]=='k'?`Breek alle ${T.kist.toLowerCase()}s`:d[0]=='p'?`Laat ${d[1]} ${T.pot.toLowerCase()}${/pot$/.test(T.pot)?'ten':'en'} zakken`:'';
+ const doelTekst=(d,T)=>typeof d[0]=='number'?`${d[1]} × ${T.t[d[0]][0]}`:d[0]=='o'?`Ruim al het ${T.onkruid.toLowerCase()} op`:d[0]=='k'?`Breek alle ${T.kistMv||T.kist.toLowerCase()+'s'}`:d[0]=='p'?`Laat ${d[1]} ${T.potMv||T.pot.toLowerCase()+(/pot$/.test(T.pot)?'ten':'en')} zakken`:'';
  window.toonLaadscherm=(thema,n,bouw)=>{const c=LAADSCHERM[thema];if(!c){bouw&&bouw();return}
   const T=M3THEMA[thema];const L=m3Level(n);const tip=c.tips[(n+Math.floor(Date.now()/864e5))%c.tips.length];
   const o=document.createElement('div');o.id='laadscherm';o.className='ls';o.style.setProperty('--ls0',c.pan[0]+'%');o.style.setProperty('--ls1',c.pan[1]+'%');o.style.setProperty('--lsduur',c.duur+'ms');

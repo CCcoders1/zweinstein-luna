@@ -61,7 +61,7 @@
  function verwerk(){const v=S.galjoenen||0;if(toon===null){toon=v;doelW=v;rolZet(v);return}
   if(v===doelW)return;const diff=v-doelW;doelW=v;
   if(RM){toon=v;rolZet(v);return}
-  if(diff<0){toon=v;rolZet(v);const d=performance.now()-laatsteTik[2]<4000?laatsteTik:[innerWidth/2,innerHeight/2];uitgeven(-diff,d);return}
+  if(diff<0){toon=v;rolZet(v);const d=window._smekDoel||(performance.now()-laatsteTik[2]<4000?laatsteTik:[innerWidth/2,innerHeight/2]);window._smekDoel=null;uitgeven(-diff,d);return}
   setTimeout(()=>{const win=[...document.querySelectorAll('.m3eind h2')].pop();
    if(win&&win.isConnected&&/gehaald/i.test(win.textContent)){const r=win.getBoundingClientRect();win.classList.add('barst');const bonus=window._m3Bonus||0;window._m3Bonus=0;const hoofd=Math.max(1,diff-bonus);
     spring([r.left+r.width/2,r.top+r.height/2],hoofd,{breed:r.width*.8,kracht:10,vx:9,vloer:Math.min(H-110,r.bottom+220),max:22,stagger:40});if(bonus>0)setTimeout(()=>{if(!bonusBonen(window._m3Zet||bonus,bonus))spring([W/2,H*.4],bonus)},600);if(diff>=100)groteTekst(diff);return}
