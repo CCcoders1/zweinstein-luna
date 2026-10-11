@@ -17,7 +17,7 @@ const elfjesOpen=()=>!!S.elfOpen||(S.m3lvl||1)>15;
 const actieveElfjes=()=>ELFJES.filter(e=>(S.elfjes[e.id]||0)>Date.now());
 const groeiend=()=>Object.values(S.kweek||{}).filter(p=>p&&stadium(p)<4).length;
 function elfBalans(){const a=actieveElfjes().length,p=groeiend(),cap=a*ELF_CAPACITEIT,een=ELF_ACTIEF==1;
- if(!a)return{z:'geen',f:1,t:p?(een?'Pip doet een dutje. Met een volle ampul huur je haar in.':'Nog geen elfjes aan het werk. Met een volle ampul huur je er één in.'):'Plant iets, dan heeft Pip straks werk.'};
+ if(!a)return{z:'geen',f:1,t:p?(een?'Pip fladdert onderaan het hoofdscherm. Met een volle ampul vliegt ze levend in de kas.':'Nog geen elfjes aan het werk. Met een volle ampul huur je er één in.'):'Plant iets, dan heeft Pip straks werk. Tot die tijd fladdert ze onderaan het hoofdscherm.'};
  if(!p)return{z:'veel',f:1,t:een?'Pip verveelt zich: er groeit niets! Plant snel een zaadje.':'De elfjes vervelen zich: er groeit niets!'};
  if(p>cap)return{z:'weinig',f:1+.6*cap/p,t:`${een?'Pip':'De elfjes'} kan maar ${cap} planten tegelijk verzorgen; je hebt er ${p}. Het groeit wat sneller, maar niet overal.`};
  return{z:'goed',f:1.6,goud:.12,t:een?`Perfecte balans! Pip verzorgt je ${p} plant${p>1?'en':''}: gouden glans en meer kans op een gouden oogst.`:'Perfecte balans! Gouden glans op je planten en meer kans op een gouden oogst.'}}
@@ -43,43 +43,54 @@ function ampulLaad(punten){const a=document.querySelector('.m3 .ampul')||documen
   s.animate([{transform:'translate(0,0) scale(1.2)',opacity:1},{transform:`translate(${dx*.3+(Math.random()-.5)*40}px,${dy*.3+bh}px) scale(1)`,opacity:1,offset:.4},{transform:`translate(${dx}px,${dy}px) scale(.4)`,opacity:.9}],{duration:900+i*60+k*90,delay:250,easing:'cubic-bezier(.5,0,.3,1)',fill:'forwards'}).onfinish=()=>{s.remove();if(!k&&i==0)tel();if(a&&!k){a.classList.remove('tik');void a.offsetWidth;a.classList.add('tik')}}}})}
 /* HUD in match-3 */
 const _m3s=m3Speel;m3Speel=function(...a){_m3s(...a);const m=document.querySelector('.m3mid');if(m){m.insertAdjacentHTML('afterbegin',ampulSVG('m3amp'))}};
-/* Hal: ampulkaartje */
-const _homeE=V.home;V.home=(...a)=>{_homeE(...a);const app=$('#app');const dd=app.querySelector('.dagdoelen');const html=`<div class="ampulkaart">${ampulSVG('klein')}<div><b>Toverpoeder</b><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'}</small><small class="klein2">Wis 5+ voorwerpen in één keer om te vullen</small></div></div>`;dd?dd.insertAdjacentHTML('afterend',html):app.insertAdjacentHTML('afterbegin',html)};
+/* Hal: ampulkaartje + inactieve elfjes onderaan */
+function elfOpHome(){if(document.body.dataset.view!=='home')return;const app=$('#app');if(!app)return;if(!app.querySelector('.ampulkaart')){const dd=app.querySelector('.dagdoelen');const html=`<div class="ampulkaart">${ampulSVG('klein')}<div><b>Toverpoeder</b><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'}</small><small class="klein2">Wis 5+ voorwerpen in één keer om te vullen</small></div></div>`;dd?dd.insertAdjacentHTML('afterend',html):app.insertAdjacentHTML('afterbegin',html)}elfStart('home')}
+const _homeE=V.home;V.home=(...a)=>{_homeE(...a);elfOpHome()};
 /* ---------- Kas: paneel ---------- */
 const _kasE=V.kas;V.kas=(...a)=>{_kasE(...a);const app=$('#app');if(!app.querySelector('.kassen'))return;elfTick();
  const open=elfjesOpen(),b=elfBalans(),act=actieveElfjes();
  const meter=`<div class="balans"><div class="bzones"><span>te veel planten</span><span>goed</span><span>verveelt zich</span></div><div class="bbalk"><i style="left:${{geen:4,weinig:22,goed:50,veel:84}[b.z]}%"></i></div></div>`;
  const kaarten=ELFJES.map(e=>{const t=(S.elfjes[e.id]||0)-Date.now(),aan=t>0;return `<div class="elfkaart ${aan?'aan':'sloom'}" style="--ek:${e.k}"><div class="elfico"><i></i></div><b>${e.n}</b><small>${e.kar}</small><small>Lievelingsplant: ${(ZADEN[e.plant]||[e.plant])[0]}</small>${aan?`<em>aan het werk · nog ${tijd(t)}</em>`:`<button class="knop klein huur" data-e="${e.id}" ${S.ampul.vol?'':'disabled'}>Inhuren · 1 ampul</button>`}</div>`}).join('');
- const html=open?`<section class="elfpaneel rococo"><div class="elfkop">${ampulSVG('klein')}<div><h3>${ELF_ACTIEF==1?"Pip, het kaself":"Elfjes van de kas"}</h3><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> poeder · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'} · ${act.length} aan het werk</small></div></div>${meter}<p class="balanstekst">${b.t}</p><div class="elfrij">${kaarten}</div><p class="klein">1 volle ampul = 1 dag hulp. Pip verzorgt tot ${ELF_CAPACITEIT} groeiende planten. Zonder poeder doet ze een dutje, maar ze blijft gewoon bij je.</p></section>`
+ const html=open?`<section class="elfpaneel rococo"><div class="elfkop">${ampulSVG('klein')}<div><h3>${ELF_ACTIEF==1?"Pip, het kaself":"Elfjes van de kas"}</h3><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> poeder · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'} · ${act.length} aan het werk</small></div></div>${meter}<p class="balanstekst">${b.t}</p><div class="elfrij">${kaarten}</div><p class="klein">1 volle ampul = 1 dag hulp. Pip verzorgt tot ${ELF_CAPACITEIT} groeiende planten. Zonder poeder fladdert ze onderaan het hoofdscherm. Is de ampul gebruikt, dan vliegt ze levend in de kas.</p></section>`
   :`<section class="elfpaneel teaser rococo"><div class="elfkop">${ampulSVG('klein')}<div><h3>Er fladdert iets…</h3><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> toverpoeder verzameld</small></div></div><p class="balanstekst">Tilly: "Zag je dat lichtje bij de potten? Ik denk dat er elfjes wonen! Speel verder (level 16) en spaar toverpoeder, dan durven ze misschien te blijven."</p></section>`;
  const anker=app.querySelector('.kassen');anker.insertAdjacentHTML('afterend',html);
  app.querySelectorAll('.huur').forEach(k=>k.onclick=()=>{if(S.ampul.vol<1){toast('Je hebt nog geen volle ampul.');return}const e=ELFJES.find(x=>x.id==k.dataset.e);S.ampul.vol--;S.elfjes[e.id]=Math.max(Date.now(),S.elfjes[e.id]||0)+864e5;S.elfT=Date.now();sessionStorage.pipDans=1;bewaar();try{fx.speel('goed')}catch(x){}vib(30);toast(`${e.n} komt helpen! ${e.n} houdt van ${(ZADEN[e.plant]||[e.plant])[0]}.`);V.kas()});
- elfStart()};
+ elfStart('kas')};
 /* ---------- elfjes-animatie (canvas) ---------- */
 const GLOED={};function elfGloed(k){if(GLOED[k])return GLOED[k];const c=document.createElement('canvas');c.width=c.height=48;const x=c.getContext('2d');const g=x.createRadialGradient(24,24,0,24,24,24);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,k);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,48,48);return GLOED[k]=c}
 let elfRaf=0;
-function elfStart(){if(window._elfStop)window._elfStop();const cv=document.createElement('canvas');cv.id='elfcv';document.body.appendChild(cv);const ctx=cv.getContext('2d');const dpr=Math.min(2,devicePixelRatio||1);let W,H;const maat=()=>{W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)};maat();addEventListener('resize',maat);
- const open=elfjesOpen();const lijst=open?ELFJES.map(e=>({e,aan:(S.elfjes[e.id]||0)>Date.now()})):[{e:{id:'teaser',n:'?',k:'#bff7ff'},aan:true,teaser:true}];
- const elf=lijst.map((o,i)=>({...o,x:Math.random()*W,y:H*.3+Math.random()*H*.4,vx:0,vy:0,tx:0,ty:0,fase:Math.random()*9,spoor:[],wacht:0,mode:'vlieg',t0:performance.now()+(o.teaser?3000:0),zit:null}));
+/* Inactief: onderaan het hoofdscherm. Ampul gebruikt: levend in de kas. */
+function elfStart(plek){if(window._elfStop)window._elfStop();
+ const view=plek==='home'?'home':'kas';const open=elfjesOpen();let lijst;
+ if(view==='home'){if(!open)return;lijst=ELFJES.filter(e=>!((S.elfjes[e.id]||0)>Date.now())).map(e=>({e,aan:false,rust:true}));if(!lijst.length)return}
+ else if(!open)lijst=[{e:{id:'teaser',n:'?',k:'#bff7ff'},aan:true,teaser:true}];
+ else{lijst=ELFJES.filter(e=>(S.elfjes[e.id]||0)>Date.now()).map(e=>({e,aan:true}));if(!lijst.length)return}
+ const cv=document.createElement('canvas');cv.id='elfcv';document.body.appendChild(cv);const ctx=cv.getContext('2d');const dpr=Math.min(2,devicePixelRatio||1);let W,H;const maat=()=>{W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)};maat();addEventListener('resize',maat);
+ const band=()=>{const nav=document.querySelector('#nav');const top=nav?nav.getBoundingClientRect().top:H-88;const onder=Math.max(130,top-52);const boven=Math.max(88,onder-Math.min(150,H*.18));return [boven,onder]};
+ const [b0,o0]=band();
+ const elf=lijst.map((o,i)=>({...o,x:o.rust?W*(.18+.64*i/Math.max(1,lijst.length-1||1)):Math.random()*W,y:o.rust?b0+Math.random()*Math.max(24,o0-b0):H*.3+Math.random()*H*.4,vx:0,vy:0,tx:0,ty:0,fase:Math.random()*9,spoor:[],wacht:0,mode:'vlieg',t0:performance.now()+(o.teaser?3000:0),zit:null}));
  const potDoelen=()=>[...document.querySelectorAll('.kpot')].map(p=>{const r=p.getBoundingClientRect();return[r.left+r.width/2+(Math.random()-.5)*r.width*.3,r.top+r.height*.35]}).filter(([x,y])=>y>60&&y<H-90);
  const nieuwDoel=f=>{const pd=potDoelen();if(f.teaser){f.tx=Math.random()<.5?-40:W+40;f.ty=H*(.25+Math.random()*.4);return}
+  if(f.rust){const [boven,onder]=band();f.mode=Math.random()<.18?'zwaai':'vlieg';f.tx=28+Math.random()*Math.max(40,W-56);f.ty=boven+Math.random()*Math.max(20,onder-boven);return}
   if(!f.aan){const p=pd[f.e.id.length%Math.max(1,pd.length)];[f.tx,f.ty]=p||[W*.2+Math.random()*W*.6,H*.6];f.mode='naarzit';return}
-  const r=Math.random();if(r<.12){f.mode='zwaai';f.tx=W*(.35+Math.random()*.3);f.ty=H*.42;return}if(r<.5&&pd.length){[f.tx,f.ty]=pd[Math.random()*pd.length|0];f.mode='land';return}f.mode='vlieg';f.tx=W*(.1+Math.random()*.8);f.ty=H*(.15+Math.random()*.6)};
+  const r=Math.random();if(r<.12){f.mode='zwaai';f.tx=W*(.35+Math.random()*.3);f.ty=H*.42;return}if(r<.5&&pd.length){[f.tx,f.ty]=pd[Math.random()*pd.length|0];f.mode='land';return}f.mode='vlieg';f.tx=W*(.1+Math.random()*.8);f.ty=H*(.18+Math.random()*.5)};
  elf.forEach(nieuwDoel);const vonk=[];let laatst=performance.now();
- if(sessionStorage.pipDans&&elf[0]&&!elf[0].teaser){sessionStorage.removeItem('pipDans');const f=elf[0];f.x=W/2;f.y=H*.42;f.t0=0;f.dans=performance.now()+2400;f.mode='zwaai';f.tx=W/2;f.ty=H*.42;f.wacht=2400;setTimeout(()=>pipBubbel(f,'Joepie! Ik ga voor je planten zorgen!'),400)}
+ if(view==='kas'&&sessionStorage.pipDans){const f=elf.find(x=>x.aan&&!x.teaser);if(f){sessionStorage.removeItem('pipDans');f.x=W/2;f.y=H*.42;f.t0=0;f.dans=performance.now()+2400;f.mode='zwaai';f.tx=W/2;f.ty=H*.42;f.wacht=2400;setTimeout(()=>pipBubbel(f,'Joepie! Ik ga voor je planten zorgen!'),400)}}
  const tik=ev=>{const p=ev.touches?ev.touches[0]:ev;for(const f of elf){if(performance.now()<f.t0)continue;if(Math.hypot(p.clientX-f.x,p.clientY-(f.y-8))<34){if(f.teaser){pipBubbel(f,'…?');f.tx=f.x<W/2?-40:W+40;return}pipGiechel();vib(15);if(f.aan){f.pir=performance.now()+900;for(let i=0;i<10;i++)vonk.push({x:f.x+(Math.random()-.5)*30,y:f.y+(Math.random()-.5)*30,vy:-.3+Math.random()*.8,l:1,k:f.e.k})}pipBubbel(f,(f.aan?PIPZIN:PIPSLAAP)[Math.random()*(f.aan?PIPZIN:PIPSLAAP).length|0]);ev.stopPropagation();return}}};
  document.addEventListener('pointerdown',tik,true);window._pipTik=elf;
- window._elfStop=()=>{cancelAnimationFrame(elfRaf);cv.remove();removeEventListener('resize',maat);document.removeEventListener('pointerdown',tik,true);window._elfStop=null};
- const frame=nu=>{if(document.body.dataset.view!=='kas'||!document.body.contains(cv)){cv.remove();removeEventListener('resize',maat);document.removeEventListener('pointerdown',tik,true);document.querySelectorAll('.pipbubbel').forEach(e=>e.remove());return}const dt=Math.min(40,nu-laatst)/16.7;laatst=nu;ctx.clearRect(0,0,W,H);
+ const ruim=()=>{cancelAnimationFrame(elfRaf);cv.remove();removeEventListener('resize',maat);document.removeEventListener('pointerdown',tik,true);document.querySelectorAll('.pipbubbel').forEach(e=>e.remove());if(window._elfStop===stop)window._elfStop=null};
+ const stop=()=>ruim();window._elfStop=stop;
+ const frame=nu=>{if(document.body.dataset.view!==view||!document.body.contains(cv)){ruim();return}const dt=Math.min(40,nu-laatst)/16.7;laatst=nu;ctx.clearRect(0,0,W,H);
   for(const f of elf){if(nu<f.t0)continue;
    if(f.teaser&&f.mode!=='weg'&&(f.x<-30||f.x>W+30)&&nu-f.t0>3000){f.t0=nu+18000+Math.random()*12000;f.x=f.tx<0?W+30:-30;f.y=H*(.3+Math.random()*.3);nieuwDoel(f);continue}
    const dx=f.tx-f.x,dy=f.ty-f.y,d=Math.hypot(dx,dy);
    if(f.wacht>0){f.wacht-=dt*16.7;if(f.mode=='land'&&Math.random()<.15)vonk.push({x:f.x+(Math.random()-.5)*14,y:f.y+4,vy:.4+Math.random()*.6,l:1,k:f.e.k});if(f.wacht<=0)nieuwDoel(f)}
    else if(d<8){if(f.mode=='land'){f.wacht=1500+Math.random()*2000}else if(f.mode=='zwaai'){f.wacht=1600}else if(f.mode=='naarzit'){f.mode='zit';f.wacht=1e12}else nieuwDoel(f)}
-   else{const sp=f.aan?(f.teaser?2.4:1.7):.6;const ax=dx/d*sp-f.vx,ay=dy/d*sp-f.vy;f.vx+=ax*.04*dt;f.vy+=ay*.04*dt;f.vx+=Math.sin(nu/400+f.fase)*.03;f.vy+=Math.cos(nu/330+f.fase)*.03}
+   else{const sp=f.teaser?2.4:f.aan?1.7:f.rust?1.25:.6;const ax=dx/d*sp-f.vx,ay=dy/d*sp-f.vy;f.vx+=ax*.04*dt;f.vy+=ay*.04*dt;f.vx+=Math.sin(nu/400+f.fase)*.03;f.vy+=Math.cos(nu/330+f.fase)*.03}
    if(f.wacht>0&&f.mode!=='zit'){f.vx*=.85;f.vy*=.85}if(f.mode=='zit'){f.vx=0;f.vy=0}
    f.x+=f.vx*dt;f.y+=f.vy*dt+(f.wacht>0&&f.mode!=='zit'?Math.sin(nu/300+f.fase)*.25:0);
-   if(f.aan&&!RMP){f.spoor.push([f.x,f.y+6]);if(f.spoor.length>22)f.spoor.shift();if(Math.random()<.35*dt||f.extraVonk){f.extraVonk=0;vonk.push({x:f.x+(Math.random()-.5)*10,y:f.y+8,vy:.25+Math.random()*.4,l:1,k:Math.random()<.5?'#ffe58a':f.e.k})}}else f.spoor.length=0;
+   if(f.rust){const [boven,onder]=band();if(f.y<boven){f.y=boven;f.vy=Math.abs(f.vy)*.4}if(f.y>onder){f.y=onder;f.vy=-Math.abs(f.vy)*.4}if(f.x<18){f.x=18;f.vx=Math.abs(f.vx)}if(f.x>W-18){f.x=W-18;f.vx=-Math.abs(f.vx)}}
+   if(f.aan&&!RMP){f.spoor.push([f.x,f.y+6]);if(f.spoor.length>22)f.spoor.shift();if(Math.random()<.35*dt||f.extraVonk){f.extraVonk=0;vonk.push({x:f.x+(Math.random()-.5)*10,y:f.y+8,vy:.25+Math.random()*.4,l:1,k:Math.random()<.5?'#ffe58a':f.e.k})}}else if(f.rust&&!RMP){f.spoor.push([f.x,f.y+6]);if(f.spoor.length>8)f.spoor.shift()}else f.spoor.length=0;
    ctx.globalCompositeOperation='lighter';f.spoor.forEach(([x,y],i)=>{const a=i/f.spoor.length;ctx.globalAlpha=a*.5;const z=4+a*10;ctx.drawImage(elfGloed(f.teaser?'#bff7ff':f.e.k),x-z/2,y-z/2,z,z)});ctx.globalAlpha=1;
    const sc=f.mode=='zwaai'&&f.wacht>0?1.7:1;elfTeken(ctx,f,nu,sc)}
   ctx.globalCompositeOperation='lighter';for(let i=vonk.length-1;i>=0;i--){const v=vonk[i];v.y+=v.vy*dt;v.l-=.012*dt;v.x+=Math.sin(nu/200+v.y)*.15;if(v.l<=0){vonk.splice(i,1);continue}ctx.globalAlpha=v.l;const vz=3+v.l*6;ctx.drawImage(elfGloed(v.k),v.x-vz/2,v.y-vz/2,vz,vz);if(v.l>.6){ctx.fillStyle='#fff';ctx.fillRect(v.x-.4,v.y-vz*.6,.8,vz*1.2);ctx.fillRect(v.x-vz*.6,v.y-.4,vz*1.2,.8)}}ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
@@ -117,7 +128,7 @@ function pipSprite(k,st){const key=k+st;if(PIPSPR[key])return PIPSPR[key];const 
   else{x.fillStyle='#3a2014';[-2.2,2.2].forEach(a=>{x.beginPath();x.ellipse(a,-14,1,1.3,0,0,7);x.fill()});x.fillStyle='#fff';[-1.9,2.5].forEach(a=>{x.beginPath();x.arc(a,-14.5,.4,0,7);x.fill()})}
   x.strokeStyle='#b0485a';x.lineWidth=.7;x.beginPath();x.arc(0,-11.6,1.3,.25,Math.PI-.25);x.stroke()}
  return PIPSPR[key]=c}
-function pipVleugels(c,nu,f,sl,ts){const fl=sl?Math.sin(nu/900)*.12:Math.sin(nu/34+f.fase);const hue=(nu/20)%360;
+function pipVleugels(c,nu,f,sl,ts){const fl=sl?Math.sin(nu/900)*.12:Math.sin(nu/(f.rust?80:34)+f.fase);const hue=(nu/20)%360;
  [-1,1].forEach(k=>{c.save();c.translate(0,-6);c.scale(k,1);
   const vl=(rot,sx,rx,ry,ang,a)=>{c.save();c.rotate(rot);c.scale(1-Math.abs(fl)*sx,1);const g=c.createLinearGradient(0,-ry,rx*2,ry);
    if(ts){g.addColorStop(0,'rgba(190,240,255,.25)');g.addColorStop(1,'rgba(190,240,255,.05)')}else{g.addColorStop(0,`hsla(${hue},90%,85%,${.55*a})`);g.addColorStop(.5,`hsla(${(hue+80)%360},90%,85%,${.35*a})`);g.addColorStop(1,`hsla(${(hue+170)%360},90%,90%,${.5*a})`)}
@@ -125,10 +136,10 @@ function pipVleugels(c,nu,f,sl,ts){const fl=sl?Math.sin(nu/900)*.12:Math.sin(nu/
    if(!ts){c.strokeStyle='rgba(255,255,255,.4)';c.lineWidth=.35;c.beginPath();c.moveTo(1,0);c.lineTo(rx*1.6,Math.sin(ang)*rx*.8-ry*.3);c.moveTo(1,0);c.lineTo(rx*1.7,Math.sin(ang)*rx*.9+ry*.2);c.stroke();c.fillStyle='rgba(255,255,255,.7)';c.beginPath();c.arc(rx*1.3,Math.sin(ang)*rx*.6-ry*.3,.8,0,7);c.fill()}
    c.restore()};
   vl(-.35-fl*.25,.55,10,5,-.55,1);vl(.25-fl*.18,.45,7.5,3.6,.45,.9);c.restore()})}
-function elfTeken(c,f,nu,sc){const ts=!!f.teaser,sl=!f.aan&&!ts,zw=f.mode=='zwaai'&&f.wacht>0;const k=f.e.k||'#ffb0e0';
- c.save();c.translate(f.x,f.y);const S2=(window.innerWidth<370?1.05:1.15)*sc;c.scale(S2,S2);
+function elfTeken(c,f,nu,sc){const ts=!!f.teaser,sl=!f.aan&&!f.rust&&!ts,zw=f.mode=='zwaai'&&f.wacht>0;const k=f.e.k||'#ffb0e0';
+ c.save();c.translate(f.x,f.y);const S2=(f.rust?.95:window.innerWidth<370?1.05:1.15)*sc;c.scale(S2,S2);
  /* aura */
- c.globalCompositeOperation='lighter';c.globalAlpha=sl?.3:ts?.85:.75;const z=sl?40:ts?46:58;c.drawImage(elfGloed(ts?'#bff7ff':k),-z/2,-z/2-4,z,z);c.globalCompositeOperation='source-over';c.globalAlpha=1;
+ c.globalCompositeOperation='lighter';c.globalAlpha=sl?.3:f.rust?.55:ts?.85:.75;const z=sl?40:f.rust?44:ts?46:58;c.drawImage(elfGloed(ts?'#bff7ff':k),-z/2,-z/2-4,z,z);c.globalCompositeOperation='source-over';c.globalAlpha=1;
  if(sl){/* slaapt op een blad */c.save();c.translate(0,18);const g=c.createLinearGradient(-16,0,16,0);g.addColorStop(0,'#3f8a2e');g.addColorStop(1,'#8fd060');c.fillStyle=g;c.beginPath();c.moveTo(-18,2);c.quadraticCurveTo(0,-8,18,0);c.quadraticCurveTo(0,8,-18,2);c.fill();c.strokeStyle='rgba(220,255,200,.6)';c.lineWidth=.6;c.beginPath();c.moveTo(-16,2);c.quadraticCurveTo(0,-1,16,0);c.stroke();c.restore()}
  /* pirouette / dansje: horizontaal schalen als rondje draaien */
  let rx=1,dy=0;if(f.pir&&nu<f.pir){const p=1-(f.pir-nu)/900;rx=Math.cos(p*Math.PI*4);dy=-Math.sin(p*Math.PI)*8}
@@ -150,3 +161,4 @@ function pipBubbel(f,t){document.querySelectorAll('.pipbubbel').forEach(e=>e.rem
 /* ---------- makerscherm ---------- */
 const _mkE=V.maker;V.maker=(...a)=>{_mkE(...a);$('#app').insertAdjacentHTML('beforeend',`<section class="kaart sierlijst makerelf"><h3>Toverpoeder & elfjes</h3><label>Ampul-basis (5+-combi's per ampul): <input id="mkamp" type="number" min="3" max="200" value="${S.ampulBasis}"></label><p class="klein">Huidig doel: ${ampulDoel()} (basis + 2 per leerjaar + 1 per werkend elfje)</p><label><input type="checkbox" id="mkelf" ${S.elfOpen?'checked':''}> Elfjes direct ontgrendelen (test)</label><p><button class="knop klein" id="mkvul">+1 volle ampul (test)</button></p></section>`);
  $('#mkamp').onchange=e=>{S.ampulBasis=Math.max(3,+e.target.value||20);bewaar();toast('Ampul-doel: '+ampulDoel())};$('#mkelf').onchange=e=>{S.elfOpen=e.target.checked;bewaar();toast(S.elfOpen?'Elfjes ontgrendeld':'Elfjes weer op slot')};$('#mkvul').onclick=()=>{S.ampul.vol++;bewaar();toast('Volle ampul toegevoegd')}};
+if(document.body.dataset.view==='home')elfOpHome();
