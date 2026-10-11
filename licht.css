@@ -547,3 +547,29 @@ img.plantimg.st3{transform:scale(.8);transform-origin:50% 100%}
 .mk-kamer.sproei .mk-sproeiers::after{background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(160,215,255,.6) 22px 25px,transparent 25px 60px)}
 .mk-unit .mk-spr{position:absolute!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;margin:0!important;width:auto!important}
 .mk-sproeiers{left:2%;right:4%}
+/* fullscreen eigen kas */
+body[data-view=mijnkas] header,body[data-view=mijnkas] nav,body[data-view=mijnkas] #hud,body[data-view=mijnkas] .smekbadge,body[data-view=mijnkas] #terug,body[data-view=mijnkas] #tasknop,body[data-view=mijnkas] .nav,body[data-view=mijnkas] .menubalk,body[data-view=mijnkas] #nav,body[data-view=mijnkas] .hud{display:none!important}
+body[data-view=mijnkas]{overflow:hidden}
+.mk-scroll{position:fixed;inset:0;z-index:30;margin:0;border-radius:0;background:#2a2014;box-shadow:none}
+.mk-kamer{height:100vh;height:100dvh;max-height:none}
+.mk-titel{position:fixed;z-index:31;left:calc(14px + env(safe-area-inset-left));top:calc(8px + env(safe-area-inset-top));margin:0;font-size:20px;pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.mk-veeg{position:fixed;z-index:31;right:calc(14px + env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));margin:0;color:#fff6dc;text-shadow:0 1px 4px #000}
+.mk-balk{position:fixed;z-index:32;left:calc(8px + env(safe-area-inset-left));right:calc(8px + env(safe-area-inset-right));bottom:calc(8px + env(safe-area-inset-bottom));display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px 8px;border-radius:18px;background:linear-gradient(rgba(44,32,16,.86),rgba(26,18,8,.9));border:1px solid rgba(232,184,57,.6);box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.mk-balk::-webkit-scrollbar{display:none}
+.mk-balk span{flex:0 0 auto;display:flex;align-items:center;gap:3px;padding:2px 8px 2px 3px;border-radius:12px;background:rgba(255,248,225,.92);color:#3a2a10;font-weight:700;font-size:13px}
+.mk-balk span.nul{opacity:.45}.mk-balk img{width:24px;height:24px;object-fit:contain}.mk-balk svg{width:18px;height:18px}
+/* tafel bij de ingang: verder naar rechts, 30% groter */
+.mk-tafel.klein{right:11%;width:22%;bottom:12%}
+.mk-tafel.klein .mk-rij{margin-bottom:-5%}
+.mk-tafel.klein .mk-pot .potimg{width:84%}
+.mk-tafel img{filter:drop-shadow(0 14px 10px rgba(30,15,5,.5)) drop-shadow(0 3px 2px rgba(0,0,0,.35))}
+.mk-pot .potimg{filter:drop-shadow(0 5px 4px rgba(30,15,5,.45))}
+.mk-tafel.groot,.mk-mega,.mk-leviosa{bottom:12%}
+/* de deur als terugknop */
+.mk-deur{position:absolute;right:.6%;bottom:13%;width:8.5%;height:58%;background:none;border:none;padding:0;cursor:inherit;border-radius:8px;perspective:600px}
+.mk-deur span{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);font-size:12px;color:#fff3d0;background:rgba(40,28,10,.75);border:1px solid rgba(232,184,57,.7);border-radius:10px;padding:2px 9px;white-space:nowrap;animation:pols 2.4s ease-in-out infinite}
+.mk-deur::before{content:'';position:absolute;inset:0;border-radius:8px;background:radial-gradient(ellipse at 30% 60%,rgba(255,226,150,.0),transparent 70%);transition:background .6s}
+.mk-deur.open::before{background:radial-gradient(ellipse at 30% 60%,rgba(255,226,150,.75),transparent 75%)}
+.mk-deur.open{animation:deurzwaai .8s ease-in forwards}@keyframes deurzwaai{to{transform:scale(1.04)}}
+.mk-kamer{aspect-ratio:2.4/1}
+body[data-view=mijnkas] #gids{z-index:40!important}body[data-view=mijnkas] .modal{z-index:50!important}body[data-view=mijnkas] #gids{bottom:calc(64px + env(safe-area-inset-bottom))!important}
