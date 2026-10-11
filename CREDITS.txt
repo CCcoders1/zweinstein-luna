@@ -196,3 +196,9 @@ Level-gehaald-achtergronden en spel-achtergronden per vak (img/winst/, img/spel/
 Pixel-art kaars (img/kaars-lijf.png, img/kaars-vlam.png) en onkruid-ranken (img/stukken/rank*): ontworpen door de maker.
 
 Verzamelitems, magische dieren, magische planten, toverdranken, kooien (3 staten), spreuksymbolen, sterretje/veertje/glinster/toverstok en de power-up-uil (img/doel/): eigen ontwerpen van de maker (ontwerpbladen items1, items2, dieren, planten, toverdranken), uitgeknipt en verkleind voor de app.
+
+Kassen-uitbreiding (eigen ontwerpen van de maker, map hp2): kasruimte, tafels, potten, grote pot,
+superplanten, extra planten (Giftige Tentacula, Duivelsstrik, Mandragora), zaden/planten Varkensgras,
+Wolfsmelk, Alsem, Affodil, Sodejus, Herbologie-spelstukken, doelkaart-iconen, Lumos-teken,
+power-ups (drankbasissen, bommen, bliksemschicht, kristallen, gouden ei, verdwijnspreuk), Stronks prikbord.
+Uitgeknipt en verkleind naar WebP.

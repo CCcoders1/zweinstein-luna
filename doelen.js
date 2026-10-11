@@ -41,7 +41,7 @@ window.kooiSprite=function(n,id,px){const k='k'+n+id+px;if(SC[k])return SC[k];co
 /* rune per spreuk (getekend achter de kieren) */
 const RUNE={[W]:'ᛉ',[A]:'ᚨ',[AL]:'ᛟ',[L]:'ᛋ',[R]:'ᚱ',[RI]:'ᚷ',[P]:'ᛗ'};
 window.runeVan=id=>{const d=alle[id];return RUNE[d&&d.spreuk]||'ᛉ'};
-const SPR_IMG={[W]:'r-wingardium',[A]:'r-accio',[AL]:'r-alohomora',[L]:'staf',[R]:'r-reparo',[RI]:'r-riddikulus',[P]:'r-protego'};
+const SPR_IMG={[W]:'r-wingardium',[A]:'r-accio',[AL]:'r-alohomora',[L]:'r-lumos',[R]:'r-reparo',[RI]:'r-riddikulus',[P]:'r-protego'};
 window.runeImg=id=>{const d=alle[id];const i=laad(SPR_IMG[d&&d.spreuk]||'r-wingardium');return ok(i)?i:null};
 /* doelkaartjes */
 window.doelIco=function(t,thema,L){const id=t=='d'?(L&&L.kistInh&&L.kistInh[0])||DIEREN[vk(thema)][0][0]:t=='i'?(L&&L.kistInh&&L.kistInh[0])||ITEMS[vk(thema)][0][0]:(L&&L.dropInh&&L.dropInh[0])||ITEMS[vk(thema)][0][0];
