@@ -50,7 +50,7 @@ const _bel3=beloon;beloon=function(id,...a){const r=_bel3(id,...a);try{buitVoor(
 const INGR_ID={'Gaasvliegjes':'gaasvlieg','Bloedzuigers':'bloedzuiger','Wolfsmelk':'wolfsmelk','Varkensgras':'varkensgras','Gemalen hoorn':'tweehoorn','Geraspte huid':'boomslang','Alsemaftreksel':'alsem','Poeder van affodilwortel':'affodil','Valeriaanwortels':'valeriaan','Sodejusboon':'sodejus'};
 const idVan=txt=>{for(const k in INGR_ID)if(txt.includes(k))return INGR_ID[k];return null};
 function ketelVoorraad(){document.querySelectorAll('.ingr:not([data-vr])').forEach(b=>{b.dataset.vr=1;const id=idVan(b.textContent);if(id){const n=S.tas[id]||0;b.insertAdjacentHTML('beforeend',`<span class="vr ${n?'heb':''}">${n}</span>`)}})}
-const _bel4=beloon;beloon=function(id,pt,gal,tekst){if(id=='drank'&&$('.ketelfoto')){const R=RECEPTEN.find(r=>$('#app h2')&&$('#app h2').textContent.includes(r.n));if(R){const ids=R.r.map(idVan).filter(Boolean);const alles=ids.every(i=>S.tas[i]>0);if(alles){ids.forEach(i=>S.tas[i]--);gal=Math.round(gal*1.5);tekst=(tekst||'')+' Je gebruikte je eigen ingrediënten uit je verzamelboek: anderhalf keer zoveel Galjoenen!'}}}return _bel4(id,pt,gal,tekst)};
+const _bel4=beloon;beloon=function(id,pt,gal,tekst){if(id=='drank'&&$('.ketelfoto')){const R=RECEPTEN.find(r=>$('#app h2')&&$('#app h2').textContent.includes(r.n));if(R){const ids=R.r.map(idVan).filter(Boolean);const alles=ids.every(i=>S.tas[i]>0);if(alles){ids.forEach(i=>S.tas[i]--);gal=Math.round(gal*1.5);tekst=(tekst||'')+' Je gebruikte je eigen ingrediënten uit je verzamelboek: anderhalf keer zoveel Smekkies!'}}}return _bel4(id,pt,gal,tekst)};
 /* ---------- voorleesstem ---------- */
 let stemAudio=null;
 function voorlezen(id,tekst){stopStem();try{fx.duik(true)}catch(e){}

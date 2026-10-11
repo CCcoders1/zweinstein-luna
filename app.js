@@ -30,7 +30,7 @@ function beloon(id,pt,gal,tekst){
  const nieuw=!S.opgelost[id];S.opgelost[id]=(S.opgelost[id]||0)+1;
  if(!nieuw){pt=Math.ceil(pt/3);gal=Math.ceil(gal/3)}
  const oud=lvl();S.punten+=pt;S.galjoenen+=gal;S.xp+=pt;checkBadges();bewaar();stats();
- fx.goed();setTimeout(()=>fx.speel('munt'),400);toast(`✨ +${pt} punten voor ${S.huis?HUIZEN[S.huis].n:'je afdeling'}, +${gal} Galjoenen`);
+ fx.goed();setTimeout(()=>fx.speel('munt'),400);toast(`✨ +${pt} punten voor ${S.huis?HUIZEN[S.huis].n:'je afdeling'}, +${gal} Smekkies`);
  if(lvl()>oud)setTimeout(()=>fx.levelup(LEVELS[lvl()][1]),900);
  return tilly((tekst||'Prachtig gedaan, '+naam()+'!')+' '+gedacht());}
 const BADGES=[['eerste','🌱','Eerste zaadje',()=>Object.keys(S.opgelost).length>=1],['brouw','⚗️','Drankmeester',()=>S.opgelost.drank>=1],['kruid','🌿','Kruidenkenner',()=>S.opgelost.memory>=1],['spreuk','🪄','Spreukenkenner',()=>S.opgelost.spreuk>=1],['mysterie','🔍','Mysterie opgelost',()=>S.cipherHfd>=4],['trivia','🎓','Geslaagd voor een S.L.IJ.M.B.A.L.',()=>S.lessen&&Object.keys(S.lessen).some(k=>k.endsWith('-slijm'))],['puist','🏛️','P.U.I.S.T. behaald',()=>S.lessen&&S.lessen.puist],['streak3','🔥','3 dagen op rij',()=>S.streak>=3],['streak7','🌙','Een week magie',()=>S.streak>=7],['rijk','💰','Goudgrijp-klant',()=>S.galjoenen>=200],['meester','👑','Meester-tovenares',()=>lvl()>=7]];
@@ -134,19 +134,19 @@ V.kas=()=>{const kl=['#c8b6ff','#f4a6c0','#9fd8cb','#fff1b8','#e6c35c','#88c999'
 // Groei
 V.groei=()=>{const l=lvl(),nx=LEVELS[l+1];const pct=nx?Math.round((S.xp-LEVELS[l][0])/(nx[0]-LEVELS[l][0])*100):100;
  app(`<h1>🎓 Jouw ontwikkeling</h1><div class="kaart"><h3>${LEVELS[l][1]}</h3><div class="balk"><div style="width:${pct}%"></div></div><p>${S.xp} XP ${nx?'– nog '+(nx[0]-S.xp)+' tot '+nx[1]:'– hoogste niveau bereikt! 👑'}</p>
- <p>${HUIZEN[S.huis].i} ${HUIZEN[S.huis].n}: <b>${S.punten}</b> afdelingspunten · 🪙 ${S.galjoenen} Galjoenen · 🔥 reeks ${S.streak}</p></div>
+ <p>${HUIZEN[S.huis].i} ${HUIZEN[S.huis].n}: <b>${S.punten}</b> afdelingspunten · 🪙 ${S.galjoenen} Smekkies · 🔥 reeks ${S.streak}</p></div>
  <div class="kaart"><h3>🏅 Badges</h3>${BADGES.map(b=>`<div class="badge ${S.badges.includes(b[0])?'ja':''}"><b>${b[1]}</b>${b[2]}</div>`).join('')}</div>
- <div class="kaart"><h3>🎁 Ingewisselde beloningen</h3>${S.gekocht.length?S.gekocht.map(g=>`<div>${g.ico} ${g.naam} <small>(${g.d})</small></div>`).join(''):'<i>Nog niets – spaar je Galjoenen!</i>'}</div>
+ <div class="kaart"><h3>🎁 Ingewisselde beloningen</h3>${S.gekocht.length?S.gekocht.map(g=>`<div>${g.ico} ${g.naam} <small>(${g.d})</small></div>`).join(''):'<i>Nog niets – spaar je Smekkies!</i>'}</div>
  <p><small>Niveaus: ${LEVELS.map(x=>x[1]).join(' → ')}</small></p>`)};
 // Winkel
-V.winkel=()=>{app(`<h1>🛍️ Goudgrijp-beloningswinkel</h1><p>Je hebt <b>🪙 ${S.galjoenen}</b> Galjoenen.</p>${tilly('Ooh, wat ga je kiezen? Je hebt het écht verdiend, Luna.')}
+V.winkel=()=>{app(`<h1>🛍️ Smekkies-beloningswinkel</h1><p>Je hebt <b>🪙 ${S.galjoenen}</b> Smekkies.</p>${tilly('Ooh, wat ga je kiezen? Je hebt het écht verdiend, Luna.')}
  <div class="raster">${S.beloningen.map(b=>`<div class="tegel"><div class="ico">${b.ico}</div><b>${b.naam}</b><p>🪙 ${b.prijs}</p><button class="knop" data-id="${b.id}" ${S.galjoenen<b.prijs?'disabled':''}>Inwisselen</button></div>`).join('')}</div>`);
- document.querySelectorAll('[data-id]').forEach(k=>k.onclick=()=>{const b=S.beloningen.find(x=>x.id==k.dataset.id);if(S.galjoenen<b.prijs)return;if(!confirm('“'+b.naam+'” inwisselen voor '+b.prijs+' Galjoenen?'))return;S.galjoenen-=b.prijs;S.gekocht.push({naam:b.naam,ico:b.ico,d:new Date().toLocaleDateString('nl-NL')});bewaar();stats();V.winkel();fx.levelup('🎁 '+b.naam);toast('🎁 '+b.naam+' ingewisseld! Laat dit scherm zien aan de maker.')})};
+ document.querySelectorAll('[data-id]').forEach(k=>k.onclick=()=>{const b=S.beloningen.find(x=>x.id==k.dataset.id);if(S.galjoenen<b.prijs)return;if(!confirm('“'+b.naam+'” inwisselen voor '+b.prijs+' Smekkies?'))return;S.galjoenen-=b.prijs;S.gekocht.push({naam:b.naam,ico:b.ico,d:new Date().toLocaleDateString('nl-NL')});bewaar();stats();V.winkel();fx.levelup('🎁 '+b.naam);toast('🎁 '+b.naam+' ingewisseld! Laat dit scherm zien aan de maker.')})};
 // Maker
 V.maker=()=>{app(lijst(`<h2>🔐 Makerscherm</h2><p>Voeg echte beloningen toe of pas ze aan.</p><div id="bl">${S.beloningen.map((b,i)=>`<div style="display:flex;gap:6px;margin:4px 0;flex-wrap:wrap"><input style="width:60px" value="${b.ico}" data-k="ico" data-i="${i}"><input value="${b.naam.replace(/"/g,'&quot;')}" data-k="naam" data-i="${i}"><input style="width:90px" type="number" value="${b.prijs}" data-k="prijs" data-i="${i}"><button class="knop" onclick="S.beloningen.splice(${i},1);bewaar();V.maker()">🗑️</button></div>`).join('')}</div>
  <button class="knop" id="nw">+ Nieuwe beloning</button><button class="knop" id="ops">💾 Opslaan</button>
  <h3>Ingewisseld</h3>${S.gekocht.map(g=>`<div>${g.ico} ${g.naam} – ${g.d}</div>`).join('')||'<i>niets</i>'}
- <h3>Extra</h3><button class="knop" onclick="S.galjoenen+=50;bewaar();stats();toast('+50 Galjoenen')">+50 Galjoenen cadeau</button><button class="knop" onclick="if(confirm('Alles wissen?')){localStorage.removeItem(SK);location.reload()}">Alles resetten</button>`));
+ <h3>Extra</h3><button class="knop" onclick="S.galjoenen+=50;bewaar();stats();toast('+50 Smekkies')">+50 Smekkies cadeau</button><button class="knop" onclick="if(confirm('Alles wissen?')){localStorage.removeItem(SK);location.reload()}">Alles resetten</button>`));
  const lees=()=>document.querySelectorAll('#bl input').forEach(e=>{const b=S.beloningen[e.dataset.i];b[e.dataset.k]=e.dataset.k=='prijs'?Math.max(1,+e.value||1):e.value});
  $('#nw').onclick=()=>{lees();S.beloningen.push({id:Date.now(),naam:'Nieuwe beloning',prijs:50,ico:'🎁'});bewaar();V.maker()};
  $('#ops').onclick=()=>{lees();bewaar();toast('Beloningen opgeslagen ✨')}};

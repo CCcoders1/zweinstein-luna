@@ -61,7 +61,7 @@ const BONUS=[['memory','Kruidenkunde-memory','blad','herbologie',2,'Er lag een s
  ['snaai','Snaai vangen','snaai','toverdranken',5,'Er zoemt iets goudkleurigs door de gang…'],['spreuk','Spreuken-raadsels','stok','bezweringen',3,'Professor Banning heeft raadsels over spreuken.'],['toverstok','Spreuken tekenen','stok','bezweringen',5,'Teken een spreuk in de lucht met je toverstok.'],
  ['mysterie','Geheimschrift-mysterie','loep','fabeldieren',5,'Hagrid vond een briefje in vreemde letters bij de Maanbloem…'],['bonen','Smakkerbonen','boon','astronomie',5,'Een zakje Bertie Botts Smakkerbonen. Durf jij?']];
 function bonusVrij(b){if(S.bonusOpen[b[0]])return true;const v=VAK1.find(x=>x.id==b[3]);const n=v.taken.filter(t=>S.taken[t[0]]).length;return n>=b[4]}
-function bonusCheck(){BONUS.forEach(b=>{if(!S.bonusOpen[b[0]]&&bonusVrij(b)){S.bonusOpen[b[0]]=1;bewaar();setTimeout(()=>verhaal([['Tilly',`${b[5]} Luna, we hebben iets nieuws ontdekt: <b>${b[1]}</b>! Je vindt het onder Bonus. Daar verdien je extra Galjoenen, kaarten en soms een ster.`]],()=>{}),700)}})}
+function bonusCheck(){BONUS.forEach(b=>{if(!S.bonusOpen[b[0]]&&bonusVrij(b)){S.bonusOpen[b[0]]=1;bewaar();setTimeout(()=>verhaal([['Tilly',`${b[5]} Luna, we hebben iets nieuws ontdekt: <b>${b[1]}</b>! Je vindt het onder Bonus. Daar verdien je extra Smekkies, kaarten en soms een ster.`]],()=>{}),700)}})}
 /* verhaalmoment */
 const SPREKER={Tilly:'tilly','Professor Stronk':'blad','Professor Sneep':'ketel','Professor Banning':'stok','Hagrid':'huis','Professor Sinistra':'telescoop','Professor Anderling':'hoed'};
 function verhaal(regels,klaar){if(document.querySelector('.modal')){return setTimeout(()=>verhaal(regels,klaar),800)}let i=0;const o=document.createElement('div');o.className='modal verhaalm';document.body.appendChild(o);
@@ -83,7 +83,7 @@ function dagDoelen(){const d=vandaag(),{v}=huidigVak();const t=v.taken.find(x=>!
   S.bonusOpen.drank?['Brouw een drankje voor '+v.prof,tv('drank'),1,()=>ga('drank'),'ketel']:S.bonusOpen.memory?['Help Professor Stronk met de plantenkaartjes',tv('memory'),1,()=>ga('memory'),'blad']:['Speel 2 levels',tv('m3'),2,()=>ga('match3'),'spel'],
   [`Voltooi een taak in ${v.lokaal.replace(/^De |^Het /,'de ').toLowerCase()}`,tv('taak'),1,()=>{const b=$('#taakknop');b?b.click():ga('home')},'huis']];
  return lijst.map(([n,h,m,f,i],k)=>({n,h:Math.min(h,m),m,f,i,af:h>=m,k:d+k}))}
-function dagBeloon(){dagDoelen().forEach(g=>{if(g.af&&!S.dagBel[g.k]){S.dagBel[g.k]=1;S.sterren++;S.galjoenen+=15;bewaar();stats();toast('Dagdoel gehaald: +1 ster, +15 Galjoenen');fx.speel('munt')}})}
+function dagBeloon(){dagDoelen().forEach(g=>{if(g.af&&!S.dagBel[g.k]){S.dagBel[g.k]=1;S.sterren++;S.galjoenen+=15;bewaar();stats();toast('Dagdoel gehaald: +1 ster, +15 Smekkies');fx.speel('munt')}})}
 // polish/welkomRitueel gebruikt doelen(): koppel aan de nieuwe dagdoelen
 doelen=function(){return dagDoelen().map(g=>[g.n,g.af,g.f,g.i])};
 /* beloon-koppeling: bonusspellen leveren extra's en soms een ster */
@@ -130,7 +130,7 @@ V.pad=()=>{const j=Math.max(1,Math.ceil(S.m3lvl/30));const start=(j-1)*30+1;cons
  document.querySelectorAll('.padlvl').forEach(b=>b.onclick=()=>{const L=+b.dataset.l;if(L<=S.m3lvl)ga('match3',L);else toast('Speel eerst level '+S.m3lvl)});
  setTimeout(()=>{const nu=$('.padlvl.nu');nu&&nu.scrollIntoView({block:'center'})},RMP?0:350)};
 /* ---------- bonus ---------- */
-V.bonus=()=>{app(`<h2>Bonusspellen</h2>${tilly('Hier spelen we tussendoor. Niet nodig voor de lokalen, maar wel goed voor Galjoenen, kaarten en soms een ster.')}
+V.bonus=()=>{app(`<h2>Bonusspellen</h2>${tilly('Hier spelen we tussendoor. Niet nodig voor de lokalen, maar wel goed voor Smekkies, kaarten en soms een ster.')}
  <div class="raster bonusraster">${BONUS.map(b=>{const open=S.bonusOpen[b[0]];const v=VAK1.find(x=>x.id==b[3]);return `<button class="tegel ${open?'':'deur-dicht'}" data-b="${b[0]}"><span class="ico">${icoon(open?b[2]:'slot')}</span><b>${b[1]}</b><small>${open?b[5]:`Ontgrendel via ${v.n} (${b[4]} ${b[4]==1?'taak':'taken'})`}</small></button>`}).join('')}</div>`);
  document.querySelectorAll('[data-b]').forEach(t=>t.onclick=()=>{if(S.bonusOpen[t.dataset.b])ga(t.dataset.b);else{t.classList.remove('schud');void t.offsetWidth;t.classList.add('schud');toast('Deze deur is nog op slot. Knap eerst het lokaal verder op!')}})};
 const BONUSID=new Set(BONUS.map(b=>b[0]));
