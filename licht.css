@@ -196,3 +196,25 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .modal.wacht,.ritueel.wacht{visibility:hidden!important;pointer-events:none!important;animation:none!important}
 .modal.weg,.ritueel.weg{opacity:0!important;transition:opacity .35s ease!important}
 .p-verder{position:absolute;right:max(12px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:5;min-height:44px;padding:8px 16px;border-radius:22px;border:1.5px solid #c9a227;background:rgba(250,238,210,.95);color:#3a2410;font:600 15px Georgia,serif;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+/* ====== Laadschermen ====== */
+#laadscherm{position:fixed;inset:0;z-index:60;background:#2a2a3a;opacity:0;transition:opacity .6s ease;overflow:hidden;touch-action:none}
+#laadscherm.aan{opacity:1}#laadscherm.uit{opacity:0;transition:opacity .75s ease;pointer-events:none}
+.ls-beeld{position:absolute;inset:0;background:var(--ls0) 50%/cover no-repeat;will-change:background-position,transform,opacity;opacity:0;transition:opacity .9s ease}#laadscherm.beeld .ls-beeld{opacity:1}
+#laadscherm.beeld .ls-beeld{animation:lsPan var(--lsduur) cubic-bezier(.45,.05,.55,.95) forwards}
+@keyframes lsPan{from{background-position:var(--ls0) 50%;transform:scale(1.04)}to{background-position:var(--ls1) 50%;transform:scale(1.1)}}
+@media(min-aspect-ratio:4/3){.ls-beeld{background-size:contain;background-color:#0c1124}#laadscherm.aan .ls-beeld{animation:lsZoom var(--lsduur) ease forwards}@keyframes lsZoom{to{transform:scale(1.06)}}}
+.ls-vignet{position:absolute;inset:0;background:linear-gradient(rgba(8,12,30,.72),rgba(8,12,30,0) 30%,rgba(8,12,30,0) 62%,rgba(8,12,30,.8));pointer-events:none}
+.ls-kop{position:absolute;left:0;right:0;top:max(28px,env(safe-area-inset-top));text-align:center;color:#fff3cf;padding:0 20px;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.ls-kop small{font-variant:small-caps;letter-spacing:.12em;color:#ffe08a;font-size:15px}
+.ls-kop h2{margin:2px 0 6px;font-size:34px;color:#ffe9a8;font-family:inherit}
+.ls-doel{margin:0 0 12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.ls-doel span{background:rgba(20,16,8,.55);border:1px solid rgba(255,216,120,.6);border-radius:12px;padding:3px 10px;font-size:14px}
+.ls-balk{width:min(260px,70vw);height:5px;margin:0 auto;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden;box-shadow:0 0 0 1px rgba(255,216,120,.5)}
+.ls-balk i{display:block;height:100%;width:0;background:linear-gradient(90deg,#b8860b,#ffe58a,#c9a227);box-shadow:0 0 8px #ffd84a}
+#laadscherm.aan .ls-balk i{animation:lsBalk var(--lsduur) linear forwards}@keyframes lsBalk{to{width:100%}}
+.ls-strook{position:absolute;left:14px;right:14px;bottom:max(22px,env(safe-area-inset-bottom));padding:12px 16px 10px;border-radius:12px;background:linear-gradient(#fbf1d8,#ecd8aa);border:2px solid #c9a227;box-shadow:0 6px 20px rgba(0,0,0,.45);text-align:center;color:#3a2410}
+.ls-strook p{margin:0;font-style:italic;font-size:16px;line-height:1.35}
+.ls-tik{display:block;margin-top:6px;font-variant:small-caps;color:#7a4a10;opacity:0;transition:opacity .5s}
+#laadscherm.tikbaar .ls-tik{opacity:1;animation:lsTik 1.6s ease-in-out infinite}@keyframes lsTik{50%{opacity:.45}}
+@media(prefers-reduced-motion:reduce){#laadscherm.aan .ls-beeld{animation:none;background-position:50% 50%}#laadscherm.tikbaar .ls-tik{animation:none}}
+#laadscherm .ls-strook p{color:#3a2410!important;text-shadow:none!important}#laadscherm .ls-strook .ls-tik{color:#7a4a10!important}
+#laadscherm .ls-kop h2{color:#ffe9a8!important}#laadscherm .ls-doel span{color:#fff3cf!important}

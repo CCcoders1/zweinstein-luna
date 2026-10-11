@@ -184,3 +184,5 @@ Match-3 voorwerpen (mandragora, maanbloem, flesjes, ketel, toverstaf, uil, Goude
 
 
 Speelstukken match-3 (img/stukken/): Speelstukken ontworpen door de maker. Uitgeknipt en geschaald voor de app.
+
+Laadscherm Herbologie (img/laadschermen/herbologie*.webp): Laadscherm Herbologie ontworpen door de maker.
