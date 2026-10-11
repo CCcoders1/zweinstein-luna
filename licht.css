@@ -574,21 +574,22 @@ body[data-view=mijnkas]{overflow:hidden}
 .mk-kamer{aspect-ratio:2.4/1}
 body[data-view=mijnkas] #gids{z-index:40!important}body[data-view=mijnkas] .modal{z-index:50!important}body[data-view=mijnkas] #gids{bottom:calc(64px + env(safe-area-inset-bottom))!important}
 /* 2 silo's links, 2 knoppen ernaast, blok op de actieve knop */
-.mk-leviosa{left:.3%;width:19.2%;height:76%;bottom:12%}
-.mk-mega{left:20.6%;width:16%}
-.mk-tafel.groot{right:42%;width:22%}
-.mk-tafel.klein{right:18%;width:21%}
-.mk-hint.t{right:48%}
+.mk-scroll{container-type:inline-size}
+.mk-leviosa{left:0;bottom:7%;height:90%;width:min(34%,100cqw)}
+.mk-mega{left:35%;width:13%}
+.mk-tafel.groot{right:28%;width:20%}
+.mk-tafel.klein{right:10%;width:17%}
+.mk-hint.t{right:36%}
 .mk-tafel .mk-rij,.mk-tafel.klein .mk-rij{position:absolute;left:2%;right:2%;bottom:calc(100% - 8px);margin:0;z-index:2}
 .mk-tafel .mk-lab{position:absolute;left:50%;top:auto;bottom:-4px;transform:translate(-50%,100%);margin:0;z-index:3}
-.mk-silos{position:absolute;left:0;width:54%;top:6%;bottom:1%;display:flex;align-items:flex-end;justify-content:space-between;gap:2%;z-index:1}
+.mk-silos{position:absolute;left:0;width:76%;top:0;bottom:0;display:flex;align-items:flex-end;justify-content:space-between;gap:1%;z-index:1}
 .mk-silos .mk-unit{position:relative;left:auto;bottom:auto;width:auto;height:100%;flex:1 1 0}
 .mk-silos .mk-silo{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;aspect-ratio:552/1103;max-height:100%;background:none;border:none;box-shadow:none;border-radius:0;overflow:visible}
 .mk-silo img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:2;pointer-events:none;filter:drop-shadow(0 8px 6px rgba(20,10,0,.35))}
 .mk-glas{position:absolute;left:20.5%;width:60%;bottom:17.5%;height:58.5%;border-radius:42% 42% 48% 48%/7% 7% 16% 16%;overflow:hidden;z-index:1}
 .mk-silo i{left:0;right:0;bottom:0;background:linear-gradient(#c5ecff,#3d92d6 42%,#1c5c9c)}
-.mk-silo span{z-index:3;top:48%;font-size:11px}
-.mk-knoppen{position:absolute;left:52%;right:0;bottom:7%;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:flex-end;justify-content:space-between;gap:4%;z-index:4}
+.mk-silo span{z-index:3;top:46%;font-size:14px}
+.mk-knoppen{position:absolute;left:77%;right:0;bottom:5%;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:flex-end;justify-content:space-between;gap:5%;z-index:5}
 .mk-knoop{flex:1 1 0;min-width:0;width:auto;position:relative}
 .mk-knoppen .mk-plaat,.mk-leviosa.aan .mk-plaat{position:relative;left:auto;width:100%;height:auto;bottom:auto;background:none;border:none;box-shadow:none;border-radius:0;padding:0;overflow:visible}
 .mk-plaat img{display:block;width:100%;height:auto;pointer-events:none;filter:drop-shadow(0 5px 4px rgba(20,10,0,.45))}
@@ -596,13 +597,13 @@ body[data-view=mijnkas] #gids{z-index:40!important}body[data-view=mijnkas] .moda
 @keyframes knopgloed{50%{filter:drop-shadow(0 0 10px rgba(200,90,255,.95)) drop-shadow(0 0 22px rgba(150,50,255,.8)) brightness(1.2)}}
 .mk-plaat.aan::after{content:'';position:absolute;left:-8%;right:-8%;top:-55%;height:80%;background:radial-gradient(ellipse at 50% 90%,rgba(196,86,255,.72),rgba(196,86,255,0) 70%);pointer-events:none;animation:knoplicht 1.35s ease-in-out infinite}
 @keyframes knoplicht{50%{opacity:.4;transform:scale(1.06)}}
-.mk-leviosa .mk-blok,.mk-leviosa.aan .mk-blok{width:11%;height:auto;aspect-ratio:420/470;bottom:10%;background:none;border:none;box-shadow:none;border-radius:0;padding:0;z-index:6;transition:none}
+.mk-leviosa .mk-blok,.mk-leviosa.aan .mk-blok{width:11%;height:auto;aspect-ratio:420/470;bottom:8%;background:none;border:none;box-shadow:none;border-radius:0;padding:0;z-index:6;transition:none}
 .mk-blok img{display:block;width:100%;height:100%;object-fit:fill;pointer-events:none;filter:drop-shadow(0 4px 3px rgba(0,0,0,.5))}
-.mk-leviosa[data-b="0"] .mk-blok{left:61%}.mk-leviosa[data-b="1"] .mk-blok{left:83.5%}
+.mk-leviosa[data-b="0"] .mk-blok{left:76.5%}.mk-leviosa[data-b="1"] .mk-blok{left:88%}
 .mk-leviosa .mk-meld{left:0;right:auto;bottom:-9%;width:max-content;white-space:nowrap}
 .mk-leviosa .mk-meld input{padding:0;width:14px;height:14px;flex:none}
-.mk-levtxt{top:-4%;font-size:11px}
+.mk-levtxt{top:2%;left:2%;right:2%;font-size:13px}
 .mk-blok.zweefR{animation:zwR 1.5s ease-in-out forwards}.mk-blok.zweefL{animation:zwL 1.5s ease-in-out forwards}
-@keyframes zwR{0%{left:61%;bottom:10%}35%{left:61%;bottom:52%;transform:rotate(-8deg)}75%{left:83.5%;bottom:52%;transform:rotate(7deg)}100%{left:83.5%;bottom:10%;transform:none}}
-@keyframes zwL{0%{left:83.5%;bottom:10%}35%{left:83.5%;bottom:52%;transform:rotate(8deg)}75%{left:61%;bottom:52%;transform:rotate(-7deg)}100%{left:61%;bottom:10%;transform:none}}
+@keyframes zwR{0%{left:76.5%;bottom:8%}35%{left:76.5%;bottom:46%;transform:rotate(-8deg)}75%{left:88%;bottom:46%;transform:rotate(7deg)}100%{left:88%;bottom:8%;transform:none}}
+@keyframes zwL{0%{left:88%;bottom:8%}35%{left:88%;bottom:46%;transform:rotate(8deg)}75%{left:76.5%;bottom:46%;transform:rotate(-7deg)}100%{left:76.5%;bottom:8%;transform:none}}
 @media (prefers-reduced-motion:reduce){.mk-plaat.aan img,.mk-plaat.aan::after{animation:none}}
