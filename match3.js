@@ -173,7 +173,7 @@ class Bord{
      let rr=r,nn=leeg;while(nn>0){rr++;if(!this.kist[rr][c])nn--}this.g[rr][c]=t;this.g[r][c]=null}}
    let n=0;for(let r=RIJEN-1;r>=0;r--)if(!this.kist[r][c]&&!this.g[r][c])n++;let i=0;
    for(let r=0;r<RIJEN;r++)if(!this.kist[r][c]&&!this.g[r][c]){let k=this.rng()*this.L.kleuren|0;
-     if(this.potGeplaatst<this.L.pot&&this.rng()<.08&&!this.potOpBord()){k=-1;this.potGeplaatst++}
+     if(this.potGeplaatst<this.L.pot){const op=this.g.flat().filter(t=>t&&t.k<0).length;if(op<2&&this.rng()<(op?.1:.45)){k=-1;this.potGeplaatst++}}
      const t=this.tegel(k,r,c);t.y=sim0(this)?r:(-n+i-.2);i++;this.g[r][c]=t}}}
  potOpBord(){return this.g.flat().some(t=>t&&t.k<0)}
  potten(){for(let c=0;c<KOL;c++){let r=RIJEN-1;while(r>=0&&this.kist[r][c])r--;const t=r>=0&&this.g[r][c];if(t&&t.k<0){this.g[r][c]=null;this.telDoel('p');this.fx.push({t:'pot',r,c});this.val()}}}

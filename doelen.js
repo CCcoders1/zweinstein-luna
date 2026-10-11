@@ -55,6 +55,7 @@ const _lv=m3Level;m3Level=function(n){const L=_lv(n);if(n<=30)return L;const T=v
   else if(kans<.75&&(d>=15||n>100)){L.kistSoort='d';L.doelen[i]=['d'];const dd=DIEREN[t];L.kistInh=[dd[n%dd.length][0]]}}
  const p=L.doelen.findIndex(x=>x[0]=='p');
  if(p<0&&L.doelen.length<3&&r()<.3){L.pot=3+(n>200?1:0);L.doelen.push(['p',L.pot])}
+ L.doelen.forEach(x=>{if(x[0]=='p'){x[1]=Math.min(x[1],3+(n>300?1:0));L.pot=x[1]}});
  if(L.doelen.some(x=>x[0]=='p')){const it=ITEMS[t];L.dropInh=[it[(n*3)%it.length][0],it[(n*3+2)%it.length][0]]}
  return L};
 if(!S.kalV3){S.kalV3=1;if(S.m3kal)Object.keys(S.m3kal).forEach(n=>{try{const L=m3Level(+n);if(L.kistSoort||L.dropInh)delete S.m3kal[n]}catch(e){}});bewaar()}
