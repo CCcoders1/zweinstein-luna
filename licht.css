@@ -299,3 +299,31 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .padkopbeeld h2{margin:0;color:#ffe58a!important;font-size:1.35em}.padkopbeeld p{margin:0;color:#fff3cf!important}.padkopbeeld small{color:#ffe58a;letter-spacing:.1em;text-transform:uppercase}
 .paddeur{text-align:center;padding:12px;margin:0 0 10px;border-radius:14px;background:linear-gradient(#fff6dc,#ecd9a8);border:2px solid #c9a227;color:#3a240c}
 .paddeur p{color:#3a240c!important;margin:4px 0}.pd-deur .icn{width:28px;height:28px}
+/* ====== personages ====== */
+.tportret,.pportret{display:block;width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35));transform-origin:50% 90%}
+.tavatar{width:58px!important;height:auto!important;background:none!important;border:0!important;flex:0 0 58px}
+.tavatar svg{display:none}
+.tportret.m-blij{animation:pHup .6s cubic-bezier(.3,1.6,.5,1)}.tportret.m-denk,.tportret.m-zacht{animation:pKnik .8s ease}
+@keyframes pHup{30%{transform:translateY(-8px) scale(1.04,.97)}60%{transform:translateY(0) scale(.98,1.03)}}
+@keyframes pKnik{40%{transform:rotate(-6deg)}}
+.tstaand{display:block;height:auto;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));transform-origin:50% 100%;animation:tIn .8s cubic-bezier(.2,1,.3,1) both,tAdem 4.5s ease-in-out .8s infinite}
+@keyframes tIn{from{opacity:0;transform:translateX(-60px)}}@keyframes tAdem{50%{transform:scale(1.012,1.018) rotate(.6deg)}}
+#gids.metstaand .gav{width:84px!important;height:auto!important;background:none!important;border:0!important;box-shadow:none!important;align-self:flex-end;margin-top:-50px;overflow:visible!important}
+#gids.metstaand .gav .tstaand{width:84px}
+.r-brief .r-tilly{position:absolute;left:-18px;bottom:-10px;width:92px;z-index:2}.r-brief{position:relative}
+.r-gast{display:flex;gap:10px;align-items:center;text-align:left;margin:10px 0;padding:8px;border-radius:12px;background:rgba(255,248,225,.75);border:1px solid #d8bd72}
+.r-gast img{width:54px;flex:0 0 54px}.r-gast p{margin:2px 0 0;font-size:.92em;color:#3a240c!important}.r-gast b{color:#6b1d0e}
+.afsch-tilly{width:110px;margin:0 auto 6px}
+.vh-p .vh-port{width:92px}.vh-p{flex:0 0 auto}
+.feli{display:flex;gap:10px;align-items:center;text-align:left;margin:8px 0;padding:8px 10px;border-radius:12px;background:rgba(255,250,232,.9);border:1px solid #d8bd72;animation:kzIn .6s .3s both}
+.feli img{width:50px;flex:0 0 50px}.feli p{margin:0;color:#3a240c!important;font-size:.95em}
+.lesdeur{overflow:visible}.ld-tilly{position:absolute;left:-6px;bottom:-6px;width:88px;z-index:3}
+.ld-prof{position:absolute;right:8px;top:150px;width:86px;z-index:3;animation:kzIn .8s 1.4s both}
+.dd{position:relative}.dd-wie{width:30px;flex:0 0 30px;margin-right:2px}.dd-wie img{width:30px}
+.ls-prof{width:74px;margin:0 auto 4px}.ls-strook{display:flex;align-items:center;gap:10px}.ls-strook .ls-wie{width:46px;flex:0 0 46px}
+.vrkop{margin:16px 0 6px}
+.vrkaart{display:flex;gap:12px;align-items:flex-start;padding:12px;margin:8px 0;border-radius:16px;background:linear-gradient(#fff8e2,#f0dfb4);border:2px solid #c9a227;color:#3a240c;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.vrkaart img{width:84px;flex:0 0 84px}.vrkaart h3{margin:0;color:#6b1d0e}.vrkaart small{color:#7a5a20}.vrkaart p{margin:4px 0;color:#3a240c!important;font-size:.95em}
+.vrniv{font-weight:bold;color:#6b1d0e}.vrniv .harten{color:#d23a5a;letter-spacing:2px}.vrniv .harten i{color:rgba(120,80,40,.3);font-style:normal}
+#meervr{display:flex;align-items:center;gap:4px;margin:6px auto 10px}#meervr .mini{width:30px;margin-right:-8px}#meervr .mini:last-of-type{margin-right:6px}
+.r-gast{flex-direction:row-reverse;margin-left:44px}
