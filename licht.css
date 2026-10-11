@@ -192,3 +192,7 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .pipbubbel::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;margin-left:-6px;background:#f3e3c0;border-right:1.5px solid #c9a227;border-bottom:1.5px solid #c9a227;transform:rotate(45deg)}
 .pipbubbel.weg{opacity:0;transform:translateY(-6px);transition:.45s}@keyframes pipIn{from{opacity:0;transform:scale(.6) translateY(8px)}}
 @media(prefers-reduced-motion:reduce){.pipbubbel{animation:none}}
+/* popup-wachtrij: wachtende popups onzichtbaar en niet aanklikbaar (geen display:none → geen flits) */
+.modal.wacht,.ritueel.wacht{visibility:hidden!important;pointer-events:none!important;animation:none!important}
+.modal.weg,.ritueel.weg{opacity:0!important;transition:opacity .35s ease!important}
+.p-verder{position:absolute;right:max(12px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:5;min-height:44px;padding:8px 16px;border-radius:22px;border:1.5px solid #c9a227;background:rgba(250,238,210,.95);color:#3a2410;font:600 15px Georgia,serif;box-shadow:0 2px 8px rgba(0,0,0,.35)}
