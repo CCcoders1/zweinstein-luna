@@ -37,6 +37,7 @@ const LES_KOSTEN=false;
   if(!L.doelen.some(x=>x[0]=='o'))L.onkruid=0;if(!L.doelen.some(x=>x[0]=='k'))L.kist=0;if(!L.doelen.some(x=>x[0]=='p'))L.pot=0;
   L.doelen.forEach(x=>{if(typeof x[0]=='number'){x[0]=x[0]%L.kleuren;x[1]=Math.min(45,x[1]+vi*2+(d/25|0))}});
   return L};
+ if(!S.kalV2){S.kalV2=1;if(S.m3kal)Object.keys(S.m3kal).forEach(n=>{try{if(m3Level(+n).kist)delete S.m3kal[n]}catch(e){}});bewaar()}
  /* --- betaalde lessen --- */
  S.lesBetaald=S.lesBetaald||{};
  M3VAKKEN.forEach(v=>{if(v.prijs&&(S.m3lvl||1)>v.van)S.lesBetaald[v.id]=1});bewaar();   // migratie: al voorbij het begin → open

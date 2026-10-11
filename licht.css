@@ -335,3 +335,32 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 @keyframes spelZoom{to{transform:scale(1.06)}}
 @media(prefers-reduced-motion:reduce){#spelbg i{animation:none}}
 body[data-view=match3] #decor{opacity:0;transition:opacity .9s}
+/* korte level-intro */
+#spelbg i{transition:filter .4s ease}
+#spelbg.intro{opacity:1}#spelbg.intro i{filter:none;animation:introKB 3.2s ease-out both}#spelbg.intro:after{opacity:0}
+#spelbg:after{transition:opacity .4s}
+@keyframes introKB{from{transform:scale(1.12) translateX(1.5%)}to{transform:scale(1.03)}}
+#app.lvverborgen{opacity:0!important;pointer-events:none}
+#app.lvfade{animation:lvFade .38s ease-out both}@keyframes lvFade{from{opacity:0;transform:scale(.985)}}
+#lvintro{position:fixed;inset:0;z-index:31;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 50%,rgba(10,8,20,.35),transparent 60%);opacity:0;transition:opacity .4s}
+#lvintro.zicht{opacity:1}#lvintro.uit{opacity:0;transition:opacity .35s}
+.lvi-in{text-align:center;position:relative;transform:scale(.8);transition:transform .6s cubic-bezier(.2,1.4,.4,1)}#lvintro.zicht .lvi-in{transform:none}
+.lvi-in small{display:block;font:italic 18px Georgia,serif;color:#fff3cf;text-shadow:0 2px 6px #000}
+.lvi-in h2{margin:0;font:bold 60px 'Cinzel',Georgia,serif;letter-spacing:.04em;color:transparent;background:linear-gradient(100deg,#b8860b 0%,#ffe58a 30%,#fffbe0 45%,#ffe58a 55%,#b8860b 100%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-stroke:1px rgba(90,55,5,.6);filter:drop-shadow(0 3px 8px rgba(0,0,0,.7)) drop-shadow(0 0 18px rgba(255,200,80,.5));animation:lviGlans 1.4s ease-in-out .2s both}
+@keyframes lviGlans{from{background-position:100% 0}to{background-position:0 0}}
+.lvi-v{position:absolute;inset:-20px;pointer-events:none;background:radial-gradient(circle,#fff 0 1.5px,transparent 2.5px) 10% 20%/40px 40px,radial-gradient(circle,#ffe58a 0 1.5px,transparent 2.5px) 70% 60%/55px 55px;opacity:0;animation:lviVonk 1.2s ease-out .3s both;mix-blend-mode:screen}
+@keyframes lviVonk{30%{opacity:1}to{opacity:0;transform:translateY(-14px) scale(1.1)}}
+@media(prefers-reduced-motion:reduce){#spelbg.intro i,.lvi-in h2,.lvi-v{animation:none}}
+body #app,body #nav,body header,body #sterbadge,body #smekbadge{transition:opacity .36s ease-out}
+body.lvintro #app,body.lvintro #nav,body.lvintro header,body.lvintro #sterbadge,body.lvintro #smekbadge,body.lvintro #luid{opacity:0!important;pointer-events:none}
+/* pixel-art zwevende kaarsen (ontworpen door de maker) */
+.zkaars.pix{width:auto;mix-blend-mode:normal;opacity:1;display:flex;flex-direction:column;align-items:center;animation:zweef 6s ease-in-out infinite alternate!important;--s:1}
+.zkaars.pix img{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+.zkaars.pix .klijf{width:calc(34px*var(--s));height:auto;margin-top:-1px}
+.zkaars.pix .kvlam{width:calc(34px*var(--s));height:auto;transform-origin:50% 100%;animation:kvlam .18s steps(2) infinite alternate,kvlam2 1.7s ease-in-out infinite alternate;filter:drop-shadow(0 0 4px rgba(255,190,80,.9))}
+.zkaars.pix .kgloed{position:absolute;left:50%;top:calc(10px*var(--s));width:calc(70px*var(--s));height:calc(70px*var(--s));transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(rgba(255,200,110,.55),rgba(255,170,60,.15) 45%,transparent 70%);animation:kgloed 2.3s ease-in-out infinite alternate;pointer-events:none}
+.zkaars.pix.d0{--s:.55;opacity:.75;filter:blur(.4px)}.zkaars.pix.d1{--s:.75;opacity:.9}.zkaars.pix.d2{--s:1}
+@keyframes kvlam{from{transform:scale(1,1)}to{transform:scale(.92,1.08)}}
+@keyframes kvlam2{0%{opacity:.85}50%{opacity:1}100%{opacity:.9;translate:0 -1px}}
+@keyframes kgloed{from{opacity:.7;transform:translate(-50%,-50%) scale(.92)}to{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+@media(prefers-reduced-motion:reduce){.zkaars.pix,.zkaars.pix .kvlam,.zkaars.pix .kgloed{animation:none!important}}

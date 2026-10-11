@@ -193,3 +193,4 @@ Level-gehaald-achtergrond (img/winst/): Level-gehaald-achtergrond ontworpen door
 Laadschermen Bezweringen, Toverdranken, Gedaanteverwisselingen, Astronomie en Verweer tegen de Zwarte Kunsten (img/laadschermen/): ontworpen door de maker.
 Personage-illustraties (img/personages/): Personage-illustraties ontworpen door de maker.
 Level-gehaald-achtergronden en spel-achtergronden per vak (img/winst/, img/spel/): ontworpen door de maker.
+Pixel-art kaars (img/kaars-lijf.png, img/kaars-vlam.png) en onkruid-ranken (img/stukken/rank*): ontworpen door de maker.

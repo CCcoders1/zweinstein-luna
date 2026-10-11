@@ -24,5 +24,5 @@ const LAADSCHERM={
   let weg=false;const t0=performance.now();const sluit=()=>{if(weg)return;weg=true;o.classList.add('uit');setTimeout(()=>o.remove(),800)};
   const tm=setTimeout(sluit,c.duur);setTimeout(()=>o.classList.add('tikbaar'),2000);
   o.addEventListener('pointerdown',()=>{if(performance.now()-t0>=2000){clearTimeout(tm);sluit()}})};
- const _sp=m3Speel;m3Speel=function(n,thema,...r){if(!LAADSCHERM[thema]||document.getElementById('laadscherm'))return _sp(n,thema,...r);toonLaadscherm(thema,n,()=>_sp(n,thema,...r))};
+ const _sp=m3Speel;m3Speel=function(n,thema,...r){if(window._geenLaadscherm||!LAADSCHERM[thema]||document.getElementById('laadscherm'))return _sp(n,thema,...r);toonLaadscherm(thema,n,()=>_sp(n,thema,...r))};
 })();
