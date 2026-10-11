@@ -3,7 +3,7 @@
 const PERS={
  tilly:{n:'Tilly',rol:'Je klasgenoot',b:'Dol op planten, rococo en mysteries. Ze heeft altijd aarde onder haar nagels en een bloemetje op haar hoed.'},
  ron:{n:'Ron Wemel',rol:'Vriend · Griffoendor',b:'Zesde zoon van de Wemels, onverslaanbaar met toverschaak, bang voor spinnen en altijd trek. Zijn oude toverstok zat ooit vast met plakband.'},
- hermelien:{n:'Hermelien Griffel',rol:'Vriendin · Griffoendor',b:'De slimste heks van haar jaar. Ze heeft alle schoolboeken al uit vóór 1 september en richtte de S.H.I.T. op, voor de rechten van huiselfen.'},
+ hermelien:{n:'Hermelien Griffel',rol:'Vriendin · Griffoendor',b:'De slimste heks van haar jaar. Ze heeft alle schoolboeken al uit vóór 1 september en komt op voor de rechten van huiselfen.'},
  hagrid:{n:'Hagrid',rol:'Hoeder van de Sleutels',b:'Halfreus, hoeder van de sleutels en terreinen van Zweinstein. Hij heeft een zwak voor “onbegrepen” beesten: Pluisje, Norbert, Scheurbek…'},
  sneep:{n:'Professor Sneep',rol:'Toverdranken · hoofd van Zwadderich',b:'Streng, sarcastisch en meester in de toverdrankkunst. Achter die zwarte gewaden zit meer dan iedereen denkt.',vak:'toverdranken'},
  anderling:{n:'Professor Anderling',rol:'Gedaanteverwisselingen · hoofd van Griffoendor',b:'Adjunct-schoolhoofd, streng maar rechtvaardig, en een Faunaat: ze kan in een cyperse kat veranderen.',vak:'gedaante'},

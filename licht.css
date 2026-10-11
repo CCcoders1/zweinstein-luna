@@ -327,3 +327,11 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .vrniv{font-weight:bold;color:#6b1d0e}.vrniv .harten{color:#d23a5a;letter-spacing:2px}.vrniv .harten i{color:rgba(120,80,40,.3);font-style:normal}
 #meervr{display:flex;align-items:center;gap:4px;margin:6px auto 10px}#meervr .mini{width:30px;margin-right:-8px}#meervr .mini:last-of-type{margin-right:6px}
 .r-gast{flex-direction:row-reverse;margin-left:44px}
+/* spel-achtergrond per vak */
+#spelbg{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .9s ease;overflow:hidden;background:#1a1410}
+#spelbg.aan{opacity:1}
+#spelbg i{position:absolute;inset:-3%;background:center/cover no-repeat;filter:brightness(.82) saturate(.95) blur(1.2px);animation:spelZoom 60s ease-in-out infinite alternate}
+#spelbg:after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,rgba(10,8,20,.35),rgba(10,8,20,.1) 70%)}
+@keyframes spelZoom{to{transform:scale(1.06)}}
+@media(prefers-reduced-motion:reduce){#spelbg i{animation:none}}
+body[data-view=match3] #decor{opacity:0;transition:opacity .9s}
