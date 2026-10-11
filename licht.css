@@ -142,7 +142,7 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 #sterbadge{position:fixed!important;top:calc(6px + env(safe-area-inset-top));right:calc(58px + env(safe-area-inset-right));z-index:35;margin:0!important}
 #stats{padding-right:120px}
 /* ===== flitsvrij ===== */
-#overgang.speel{display:block!important;animation:ovZacht .9s ease forwards!important}@keyframes ovZacht{0%{opacity:0}35%{opacity:.6}100%{opacity:0}}
+#overgang.speel{display:block!important;animation:ovZacht .9s ease forwards!important}@keyframes ovZacht{0%{opacity:0}45%{opacity:.25}100%{opacity:0}}
 #app.inkomen{animation:inkomenZacht .4s ease-out!important}@keyframes inkomenZacht{from{opacity:.55;transform:translateY(6px)}}
 #decor .bg{will-change:opacity}#decor .bgoud{pointer-events:none}
 #app.vervaag{filter:none!important;transition:none!important}
@@ -150,7 +150,7 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .kpot.mooi{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:linear-gradient(rgba(36,58,48,.82),rgba(24,40,36,.88))!important}
 .m3mid,.kweekbalk .voorraad{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .m3mid{background:rgba(24,30,66,.82)!important}
-.kz-paneel{animation:kzIn .45s .1s cubic-bezier(.2,.8,.2,1) both}@keyframes kzIn{from{opacity:0;transform:translateY(24px)}}
+.kz-paneel{animation:kzIn .8s .1s cubic-bezier(.4,.2,.4,1) both}@keyframes kzIn{from{opacity:0;transform:translateY(24px)}}
 .appgeest{animation:none!important;transition:none!important}
 .appgeest *{animation:none!important;transition:none!important}
 /* ===== Toverpoeder-ampul ===== */
@@ -238,3 +238,42 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 @media(prefers-reduced-motion:reduce){.smekgroot,.smaak,#smekbadge .zak,.m3eind h2.barst{animation-duration:.01s!important}}
 #smekbadge{position:fixed!important;top:calc(6px + env(safe-area-inset-top));right:calc(138px + env(safe-area-inset-right));z-index:35;margin:0!important}
 .bonen{display:flex!important;flex-wrap:wrap;justify-content:center;gap:10px}.bonen .boon{width:68px!important;height:56px!important;transition:transform .2s}.bonen .boon:active{transform:scale(.9)}
+/* ====== Menu/HUD-knoppen van de maker ====== */
+#nav.uinav{background:url(img/ui/perkament.webp) center/cover,linear-gradient(#f4e8c8,#e6d3a3)!important;border-top:2px solid #c9a227!important}
+#nav.uinav button{background:none!important;box-shadow:none!important;border:0!important}
+#nav.uinav .rond,#nav.uinav .halknop{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;display:block;border-radius:50%;transition:transform .2s,filter .3s}
+#nav.uinav .rond{width:46px;height:46px}#nav.uinav .rond img.uiico{width:46px;height:46px}
+#nav.uinav .halknop{width:68px;height:68px;margin-top:-26px}#nav.uinav .halknop img.uiico{width:68px;height:68px}
+#nav.uinav img.uiico{display:block;border-radius:50%;filter:drop-shadow(0 2px 3px rgba(60,35,5,.45))}
+#nav.uinav span:not(.halknop){font-family:'Cinzel','Trajan Pro',Georgia,serif!important;font-variant:small-caps;letter-spacing:.06em;color:#4a2e0c!important;font-weight:bold;text-shadow:0 1px 0 rgba(255,250,230,.7)}
+#nav.uinav .hal>span:not(.halknop){font-size:1.12em}
+#nav.uinav button.actief .rond,#nav.uinav button.actief .halknop{filter:drop-shadow(0 0 7px rgba(255,205,70,.95)) drop-shadow(0 0 14px rgba(255,190,40,.6));transform:translateY(-2px) scale(1.06)}
+#nav.uinav button:active .rond,#nav.uinav button:active .halknop{transform:scale(.92)}
+#nav.uinav button.actief span:not(.halknop){color:#7a4a00!important}
+@media(max-width:370px){#nav.uinav .rond,#nav.uinav .rond img.uiico{width:42px;height:42px}#nav.uinav .halknop,#nav.uinav .halknop img.uiico{width:62px;height:62px}}
+#logo img.uiframe{height:42px;width:auto;display:block;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}#logo{font-size:0!important;padding:0!important}
+#stats .schild-t{background:url(img/ui/schild-128.webp) center/contain no-repeat;width:30px;height:38px;display:inline-flex!important;align-items:center;justify-content:center;padding:0 0 4px!important}
+#stats .schild-t b{font-size:13px;color:#ffe08a;text-shadow:0 1px 2px #000;margin-right:5px}
+#stats .vuur-t{display:inline-flex!important;align-items:center;gap:1px}#stats .vuur-t img{width:26px;height:auto;filter:drop-shadow(0 0 4px rgba(190,120,255,.6))}
+#sterbadge{background:url(img/ui/pil-320.webp) center/100% 100% no-repeat!important;border:0!important;box-shadow:0 2px 6px rgba(0,0,0,.3)!important;padding:4px 14px 4px 38px!important;min-height:34px;box-sizing:border-box}
+#sterbadge>svg{display:none!important}
+#smekbadge{background:url(img/ui/pil-leeg-320.webp) center/100% 100% no-repeat!important;border:0!important;box-shadow:0 2px 6px rgba(0,0,0,.3)!important;padding:2px 14px 2px 8px!important;min-height:34px;box-sizing:border-box}
+#luid.uiluid{background:url(img/ui/luidspreker-128.webp) center/contain no-repeat!important;border:0!important;box-shadow:none!important;width:40px!important;height:40px!important}
+#luid.uiluid>svg{opacity:0}
+/* level-gehaald-achtergrond */
+.modal.metwinbg{background:rgba(12,17,36,.55)!important;overflow:hidden}
+.winbg{position:absolute;inset:0;z-index:0;pointer-events:none;background:#2a1c10 center/cover no-repeat;opacity:0;transition:opacity .9s ease;background-position:30% 50%}
+.winbg.zicht{opacity:1;animation:winPan 14s ease-in-out infinite alternate}
+.winbg:after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(10,8,20,.15),rgba(10,8,20,0) 35%,rgba(10,8,20,.55) 85%,rgba(10,8,20,.75))}
+.modal.metwinbg>.modalin{position:relative;z-index:1}
+@keyframes winPan{0%{background-position:22% 50%;transform:scale(1.04)}100%{background-position:82% 50%;transform:scale(1.1)}}
+@media(prefers-reduced-motion:reduce){.winbg.zicht{animation:none}}
+.modal.metwinbg{display:flex!important;align-items:flex-end!important;justify-content:center}
+.modal.metwinbg>.modalin{margin:0 auto calc(78px + env(safe-area-inset-bottom))!important;max-height:58vh;overflow:auto;padding-top:10px!important;padding-bottom:10px!important}
+.modal.metwinbg .m3eind .tilly,.modal.metwinbg .tillyrij{display:none}
+.winbg{background-size:auto 100%!important}
+@keyframes winPan{0%{background-position:8% 40%}100%{background-position:92% 40%}}
+.winbg{background-size:auto 54vh!important;background-repeat:no-repeat;background-color:#1a120b}
+@keyframes winPan{0%{background-position:12% 0}100%{background-position:88% 0}}
+.winbg:after{background:linear-gradient(rgba(10,8,20,.1),rgba(10,8,20,0) 30%,rgba(26,18,11,.0) 40%,rgba(26,18,11,.85) 54vh,#1a120b 60vh)!important}
+.modal.metwinbg>.modalin{max-height:50vh}
