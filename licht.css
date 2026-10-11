@@ -387,3 +387,12 @@ img.m3ico-it{object-fit:contain;padding:2px;box-sizing:border-box}
 img.m3spoor{height:auto}
 img.plantimg{width:100%;height:auto;max-height:100%;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(40,20,0,.35))}
 img.plantimg.st3{transform:scale(.8);transform-origin:50% 100%}
+/* === scroll-soepelheid: alleen compositor-animaties, vaste lagen eigen laag === */
+@keyframes twinkel{0%,100%{opacity:.2}50%{opacity:1}}
+.ster{box-shadow:0 0 4px #fff;will-change:opacity}
+#sterren,#decor,#amb,#tint,#vignet,#flakker,.kasdecor,#spelbg{transform:translateZ(0);backface-visibility:hidden;contain:strict}
+#decor{isolation:isolate}
+#flakker{will-change:opacity}
+@media (pointer:coarse){.scene-mist,.voorraad,.kpot.mooi{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
+.m3vlinder{position:fixed;width:28px;z-index:61;pointer-events:none;animation:vlind 1.8s ease-out forwards}
+@keyframes vlind{0%{transform:translate(0,0) scaleX(1)}10%{transform:translate(calc(var(--dx)*.1),calc(var(--dy)*.1)) scaleX(.3)}20%{transform:translate(calc(var(--dx)*.2),calc(var(--dy)*.25)) scaleX(1)}30%{transform:translate(calc(var(--dx)*.35),calc(var(--dy)*.35)) scaleX(.3)}40%{transform:translate(calc(var(--dx)*.45),calc(var(--dy)*.5)) scaleX(1)}55%{transform:translate(calc(var(--dx)*.6),calc(var(--dy)*.6)) scaleX(.3)}70%{transform:translate(calc(var(--dx)*.75),calc(var(--dy)*.8)) scaleX(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scaleX(.3);opacity:0}}

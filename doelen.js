@@ -3,19 +3,19 @@
 const W='Wingardium Leviosa!',A='Accio!',AL='Alohomora!',L='Lumos!',R='Reparo!',RI='Riddikulus!',P='Protego!';
 // [id, naam, emoji, soort, spreuk]
 const ITEMS={
- herbologie:[['mandr','Mandragora','🌱','ding',W],['oorw','Oorwarmers','🎧','ding',A],['gieter','Gieter','🪣','fles',W],['zaad','Zaadzakje','🌰','ding',A],['duiv','Duivelsstrik-takje','🌿','veer',L],['hboek','Duizend Magische Kruiden en Zwammen','📗','boek',W],['p-kieuwkruid','Kieuwwier','🌿','veer',A],['p-tentacula','Giftige Tentacula','🌿','ding',P],['p-monnikskap','Monnikskap','🌿','veer',A],['p-snargaluff','Snargaluff-peul','🌿','ding',R],['p-wolfskers','Wolfskers','🌿','ding',A],['p-fladderstruik','Fladderstruik','🌸','veer',W],['p-springbol','Springbol','🌰','ding',A],['p-valeriaan','Valeriaanwortel','🌿','ding',A]],
+ herbologie:[['mandr','Mandragora','🌱','ding',W],['oorw','Oorwarmers','🎧','ding',A],['gieter','Gieter','🪣','fles',W],['zaad','Zaadzakje','🌰','ding',A],['duiv','Duivelsstrik-takje','🌿','veer',L],['hboek','Duizend Magische Kruiden en Zwammen','📗','boek',W],['p-kieuwkruid','Kieuwwier','🌿','veer',A],['p-tentacula','Giftige Tentacula','🌿','ding',P],['p-monnikskap','Monnikskap','🌿','veer',A],['p-snargaluff','Snargaluff-peul','🌿','ding',R],['p-wolfskers','Wolfskers','🌿','ding',A],['p-fladderstruik','Fladderstruik','🌸','veer',W],['p-springbol','Springbol','🌰','ding',A],['p-valeriaan','Valeriaanwortel','🌿','ding',A],['p-builenzwam','Builenzwam','🍄','ding',R],['p-builenzwam2','Groene builenzwam','🍄','ding',A],['p-niesgras','Niesgras','🌿','veer',W]],
  bezweringen:[['veer','Veer','🪶','veer',W],['sleutel','Gevleugelde sleutel','🗝️','sleutel',AL],['ananas','Ananas','🍍','ding',A],['kopje','Theekopje','☕','ding',R],['bboek','Standaardspreukenboek','📘','boek',A]],
- toverdranken:[['bezoar','Bezoar','🪨','ding',A],['gaas','Potje gaasvliegjes','🫙','fles',W],['twee','Tweehoornpoeder','🧂','fles',A],['felix','Felix Fortunatis','🧪','fles',L],['d-wisseldrank','Wisseldrank','🧪','fles',A],['d-amortentia','Amortentia','🧪','fles',W],['d-veritaserum','Veritaserum','🧪','fles',A],['d-levendedood','Vocht van de Levende Dood','🧪','fles',W]],
+ toverdranken:[['bezoar','Bezoar','🪨','ding',A],['gaas','Potje gaasvliegjes','🫙','fles',W],['twee','Tweehoornpoeder','🧂','fles',A],['felix','Felix Fortunatis','🧪','fles',L],['d-wisseldrank','Wisseldrank','🧪','fles',A],['d-amortentia','Amortentia','🧪','fles',W],['d-veritaserum','Veritaserum','🧪','fles',A],['d-levendedood','Vocht van de Levende Dood','🧪','fles',W],['d-groeidrank','Krimpdrank','🧪','fles',A],['d-lila','Zwelsap','🧪','fles',W],['d-pepper','Peperdrank','🧪','fles',A],['d-kalmerings','Kalmeerdrank','🧪','fles',L],['d-vergeet','Denkdrank','🧪','fles',A],['d-zeewier','Dorstlesser','🧪','fles',W]],
  gedaante:[['theekop','Theekopje','🫖','ding',R],['lucifer','Luciferhoutje','🪵','veer',A],['naald','Naald','🪡','veer',A],['kever','Kever','🪲','ding',W],['knoop','Knoop','🔘','ding',A]],
  astronomie:[['kaart','Sterrenkaart','🗺️','boek',A],['telescoop','Telescoop','🔭','ding',R],['bol','Kristallen bol','🔮','fles',L]],
  verweer:[['choco','Chocolade','🍫','ding',A],['kast','Boeman-kastsleutel','🔑','sleutel',RI],['amulet','Schildamulet','🧿','ding',P],['d-wolfswortel','Wolfsworteldrank','🧪','fles',A]]};
 const DIEREN={
- herbologie:[['bowtruckle','Bowtruckle','🌿','spring'],['pufpeul','Pufpeul','🐹','rol'],['niffler','Niffler','🦡','ren']],
- bezweringen:[['fwooper','Fwooper','🐦','vlieg'],['jobberknoll','Jobberknoll','🐦','vlieg'],['dwergpluisje','Dwergpluisje','🐹','rol']],
+ herbologie:[['aragog','Aragog-kindje','🕷️','kruip'],['bowtruckle','Bowtruckle','🌿','spring'],['pufpeul','Pufpeul','🐹','rol'],['niffler','Niffler','🦡','ren']],
+ bezweringen:[['slang','Braziliaanse boa','🐍','kronkel'],['fwooper','Fwooper','🐦','vlieg'],['jobberknoll','Jobberknoll','🐦','vlieg'],['dwergpluisje','Dwergpluisje','🐹','rol']],
  toverdranken:[['eenhoorn','Eenhoornveulen','🦄','ren'],['augurey','Augurey','🐦','vlieg'],['kneazel','Kneazel','🐈','ren']],
  gedaante:[['kneazel','Kneazel','🐈','ren'],['snuffel','Snuffel','🐕','ren'],['vogeltje','Pluizig vogeltje','🐦','vlieg']],
  astronomie:[['maankalf','Maankalf','🐄','ren'],['thestral','Thestral','🐴','vlieg'],['felix-feniks','Felix de feniks','🐦','vlieg']],
- verweer:[['scheurbek','Scheurbek','🦅','vlieg'],['norbert','Norbert','🐉','vlieg'],['erumpent','Erumpent','🦏','ren'],['graphorn','Graphorn','🦏','ren']]};
+ verweer:[['aragog','Aragog-kindje','🕷️','kruip'],['slang','Braziliaanse boa','🐍','kronkel'],['scheurbek','Scheurbek','🦅','vlieg'],['norbert','Norbert','🐉','vlieg'],['erumpent','Erumpent','🦏','ren'],['graphorn','Graphorn','🦏','ren']]};
 /* eigen ontwerpen van de maker: img/doel/<id>.webp */
 const IMG={};const laad=id=>{if(IMG[id])return IMG[id];const i=new Image();i.decoding='async';i.src='img/doel/'+id+'.webp';i.onload=()=>{Object.keys(SC).forEach(k=>{if(k.includes(id))delete SC[k]})};return IMG[id]=i};
 window.doelImg=laad;const ok=i=>i&&i.complete&&i.naturalWidth;
@@ -81,10 +81,13 @@ window.m3VliegItem=function(id,x,y,doelEl,zweef){const d=alle[id]||{soort:'ding'
    if(s=='fles'){rot=Math.sin(t/200)*10}
    if(b=='vlieg'){sy=.8+.2*Math.abs(Math.sin(t/70));py+=Math.sin(t/70)*4}
    if(b=='spring'){py=y0+(y1-y0)*e-Math.abs(Math.sin(k*Math.PI*3))*60;sy=1-.15*Math.abs(Math.cos(k*Math.PI*3))}
+   if(b=='kruip'){py=y0+(y1-y0)*e;rot=Math.sin(t/22)*9+(x1<x?-90:90)*0;sy=1-.08*Math.abs(Math.sin(t/30));px+=Math.sin(t/18)*1.5;sx=x1<x?-1:1}
+   if(b=='kronkel'){const nx=-(y1-y0),ny=x1-x,L=Math.hypot(nx,ny)||1,w=Math.sin(k*Math.PI*5)*14*(1-k);py=y0+(y1-y0)*e+ny/L*w;px+=nx/L*w;rot=Math.cos(k*Math.PI*5)*22;sx=x1<x?-1:1}
    if(b=='rol')rot=k*720;if(b=='ren'){py+=-Math.abs(Math.sin(t/60))*6;sx=x1<x?-1:1}
    if(nu-laatst>45){laatst=nu;spoor(px,py,s=='veer'||(s!='dier'&&Math.random()<.25))}
-   if(k>=1){el.remove();if(doelEl){const kt=doelEl.closest('.m3kaart')||doelEl;kt.classList.remove('m3pop');void kt.offsetWidth;kt.classList.add('m3pop')}try{fx.speel('munt')}catch(e){}return}}
+   if(k>=1){el.remove();if(/^p-/.test(id)||id=='mandr')vlinders(x1,y1);if(doelEl){const kt=doelEl.closest('.m3kaart')||doelEl;kt.classList.remove('m3pop');void kt.offsetWidth;kt.classList.add('m3pop')}try{fx.speel('munt')}catch(e){}return}}
   el.style.transform=`rotate(${rot}deg) scale(${sc*sx},${sc*sy})`;requestAnimationFrame(stap)};requestAnimationFrame(stap)};
+function vlinders(x,y){if(RMP())return;for(let i=0;i<2;i++){const v=document.createElement('img');v.src='img/doel/vlinder'+(i+1)+'.webp';v.className='m3vlinder';v.style.cssText=`left:${x-14}px;top:${y-14}px;--dx:${(i?1:-1)*(40+Math.random()*40)}px;--dy:${-60-Math.random()*60}px`;document.body.appendChild(v);setTimeout(()=>v.remove(),1800)}}
 let rij=0;
 window.m3Spreuk=function(id,x,y,doelEl){const d=alle[id]||{spreuk:W};const wacht=Math.max(0,rij-performance.now());rij=performance.now()+wacht+350;
  setTimeout(()=>{spreukTekst(d.spreuk,x,y);m3VliegItem(id,x,y,doelEl,RMP()?0:(wacht?600:850))},wacht)};
@@ -103,3 +106,6 @@ window.m3Bevrijd=function(id,x,y,doelEl){const wacht=Math.max(0,rij-performance.
 
 /* opruimen: achtergebleven vliegers bij (her)start van een level */
 (function(){const _s=m3Speel;m3Speel=function(){document.querySelectorAll('.m3vlieg,.m3item,.m3spoor,.m3spreuk,.m3flits').forEach(e=>e.remove());return _s.apply(this,arguments)}})();
+
+/* afbeeldingen in menu's direct gedecodeerd tonen (geen lege flits bij scrollen) */
+(function(){const zet=r=>r.querySelectorAll&&r.querySelectorAll('img').forEach(i=>{if(i.decoding!='sync')i.decoding='sync'});const app=document.getElementById('app');if(!app)return;zet(app);new MutationObserver(m=>m.forEach(x=>x.addedNodes.forEach(n=>{if(n.tagName=='IMG')n.decoding='sync';else zet(n)}))).observe(app,{childList:true,subtree:true})})();
