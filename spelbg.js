@@ -22,3 +22,34 @@
  const _ga=ga;ga=function(s,...a){if(s==='match3'){try{laad(info(a[0]).u)}catch(e){}}else weg();return _ga(s,...a)};
  setTimeout(()=>{try{laad(info(S.m3lvl).u)}catch(e){}},3000);
 })();
+/* Eenmalig op deze telefoon: alles open om te testen, met 10.000 Smekkies. */
+function proefKist(){
+ if(S.proefKist)return;
+ S.proefKist=1;
+ S.galjoenen=Math.max(S.galjoenen|0,10000);
+ S.m3lvl=Math.max(S.m3lvl|0,560);
+ S.potUpgrade=Math.max(S.potUpgrade|0,4);
+ S.vloerpot=1;S.groteTafel=1;S.mkUitleg=1;S.kasVerhuisMeld=1;S.groenPoortUitleg=1;S.levUitleg=1;
+ S.mest=Math.max(S.mest|0,15);
+ S.harten=S.harten||{n:5,t:Date.now()};S.harten.n=5;S.harten.t=Date.now();
+ S.ampul=S.ampul||{n:0,vol:0};S.ampul.vol=Math.max(S.ampul.vol|0,8);
+ S.elfjes=S.elfjes||{};if((S.elfjes.pip||0)<Date.now())S.elfjes.pip=Date.now()+864e5;
+ S.zaden=S.zaden||{};
+ ['varkensgras','valeriaan','wolfsmelk','alsem','affodil','sodejus','kieuwwier','mandragora','tentacula','duivelsstrik'].forEach(z=>{S.zaden[z]=Math.max(S.zaden[z]|0,3)});
+ S.kweek=S.kweek||{};
+ if(!S.kweek[100])S.kweek[100]={z:'mandragora',t:Date.now()-8*36e5,bonus:0};
+ if(!S.kweek[101])S.kweek[101]={z:'valeriaan',t:Date.now()-8*36e5,bonus:0};
+ S.superzaad=S.superzaad||{};
+ ['flessenbes','bomlicht','bliksemkristal','goudkristal','eigoud','spreukvaren'].forEach(z=>{S.superzaad[z]=Math.max(S.superzaad[z]|0,1)});
+ S.bo=S.bo||{};
+ ['basis','bom','bliksem','kristal','ei','verdwijn'].forEach(k=>{S.bo[k]=Math.max(S.bo[k]|0,3)});
+ S.bonusOpen=S.bonusOpen||{};
+ ['memory','drank','lessen','snaai','spreuk','toverstok','mysterie','bonen'].forEach(k=>{S.bonusOpen[k]=1});
+ S.lesBetaald=S.lesBetaald||{};S.vakIntro=S.vakIntro||{};
+ try{M3VAKKEN.forEach(v=>{S.lesBetaald[v.id]=1;S.vakIntro[v.id]=1})}catch(e){}
+ S.mega=S.mega||[];
+ bewaar();
+ try{stats()}catch(e){}
+ if(S.naam&&S.huis){try{V.home()}catch(e){}}
+}
+proefKist();

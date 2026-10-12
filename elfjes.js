@@ -8,22 +8,33 @@ const ELFJES_ALLE=[
  {id:'lotje',n:'Lotje',k:'#ffe28a',kar:'nieuwsgierig, verzamelt glimmers',plant:'wolfsmelk'},
  {id:'mier',n:'Miertje',k:'#d6b0ff',kar:'precies en een tikje bazig',plant:'mandragora'},
  {id:'roosje',n:'Roosje',k:'#ffb48a',kar:'zingt zachtjes tijdens het werk',plant:'valeriaan'}];
-/* config: voorlopig 1 elfje actief (data van de rest blijft bewaard) */
-const ELF_ACTIEF=1;const ELF_CAPACITEIT=3;/* 1 elfje helpt tot 3 groeiende planten */
-const ELFJES=ELFJES_ALLE.slice(0,ELF_ACTIEF);
-(()=>{let m=0;Object.keys(S.elfjes||{}).forEach(id=>{if(!ELFJES.some(e=>e.id==id)){delete S.elfjes[id];m=1}});if(m)bewaar()})();
+/* Pip is er vanaf level 16. Daarna één elfje per 100 levels: 150, 250, 350… */
+const ELF_VRIJ=[16,150,250,350,450,550];
+const ELF_GRENS=3; /* vanaf 3 potten per werkend elfje, of 1 megaplant per elfje, wordt het te veel */
+(()=>{let m=0;Object.keys(S.elfjes||{}).forEach(id=>{if(!ELFJES_ALLE.some(e=>e.id==id)){delete S.elfjes[id];m=1}});if(m)bewaar()})();
+function elfRoster(){return ELFJES_ALLE.filter((_,i)=>(S.m3lvl||1)>=ELF_VRIJ[i]||(i===0&&S.elfOpen))}
+function volgendElf(){const n=elfRoster().length;return n<ELFJES_ALLE.length?{e:ELFJES_ALLE[n],lvl:ELF_VRIJ[n]}:null}
 const ampulDoel=()=>{let j=1;try{j=jaar()}catch(e){}return Math.max(3,(+S.ampulBasis||20)+2*(j-1)+actieveElfjes().length)};
-const elfjesOpen=()=>!!S.elfOpen||(S.m3lvl||1)>15;
-const actieveElfjes=()=>ELFJES.filter(e=>(S.elfjes[e.id]||0)>Date.now());
-const groeiend=()=>Object.values(S.kweek||{}).filter(p=>p&&stadium(p)<4).length;
-function elfBalans(){const a=actieveElfjes().length,p=groeiend(),cap=a*ELF_CAPACITEIT,een=ELF_ACTIEF==1;
- if(!a)return{z:'geen',f:1,t:p?(een?'Pip fladdert onderaan het hoofdscherm. Met een volle ampul vliegt ze levend in de kas.':'Nog geen elfjes aan het werk. Met een volle ampul huur je er één in.'):'Plant iets, dan heeft Pip straks werk. Tot die tijd fladdert ze onderaan het hoofdscherm.'};
- if(!p)return{z:'veel',f:1,t:een?'Pip verveelt zich: er groeit niets! Plant snel een zaadje.':'De elfjes vervelen zich: er groeit niets!'};
- if(p>cap)return{z:'weinig',f:1+.6*cap/p,t:`${een?'Pip':'De elfjes'} kan maar ${cap} planten tegelijk verzorgen; je hebt er ${p}. Het groeit wat sneller, maar niet overal.`};
- return{z:'goed',f:1.6,goud:.12,t:een?`Perfecte balans! Pip verzorgt je ${p} plant${p>1?'en':''}: gouden glans en meer kans op een gouden oogst.`:'Perfecte balans! Gouden glans op je planten en meer kans op een gouden oogst.'}}
-/* groeibonus toepassen */
-function elfTick(){const nu=Date.now(),dt=Math.min(864e5,nu-(S.elfT||nu));S.elfT=nu;if(!elfjesOpen()||dt<=0)return;const b=elfBalans();if(b.f<=1)return;
- Object.values(S.kweek||{}).forEach(p=>{if(!p||stadium(p)>=4)return;p.bonus=(p.bonus||0)+Math.min(rest(p),dt*(b.f-1));if(b.goud&&!p.elfRol){p.elfRol=1;if(Math.random()<b.goud)p.goud=true}});bewaar()}
+const elfjesOpen=()=>!!S.elfOpen||(S.m3lvl||1)>=ELF_VRIJ[0];
+const elfAan=e=>(S.elfjes[e.id]||0)>Date.now();
+const actieveElfjes=()=>elfRoster().filter(elfAan);
+const pottenMetPlant=()=>Object.keys(S.kweek||{}).filter(i=>S.kweek[i]&&S.kweek[i].z).length;
+const megaAantal=()=>(S.mega||[]).filter(Boolean).length;
+function elfLast(){const a=Math.max(1,actieveElfjes().length||(elfRoster().length?1:1));return {potten:pottenMetPlant(),mega:megaAantal(),n:actieveElfjes().length||1,teVeel:pottenMetPlant()>=a*ELF_GRENS||megaAantal()>=a}}
+function elfBalans(){const a=actieveElfjes().length,L=elfLast(),volg=volgendElf(),een=a<=1,wie=a===1?actieveElfjes()[0].n:'De elfjes';
+ const werk=[L.potten?`${L.potten} pot${L.potten===1?'':'ten'}`:'',L.mega?`${L.mega} megaplant${L.mega>1?'en':''}`:''].filter(Boolean).join(' en ');
+ const extra=volg?` ${volg.e.n} komt erbij op level ${volg.lvl}.`:'';
+ if(!a)return{z:L.teVeel?'weinig':L.potten||L.mega?'goed':'veel',f:1,t:L.teVeel
+  ?`De tijd is om. ${werk} is te veel voor één elfje: met een ampul zou alles langzamer groeien.${extra}`
+  :(werk?'De tijd is om. Gebruik een volle ampul, dan vliegt het elfje weer in je eigen kas. Het blijft tevreden tot 2 potten.':'De tijd is om. Plant iets, en gebruik een volle ampul. Dan heeft het elfje werk in je eigen kas.')};
+ if(L.teVeel)return{z:'weinig',f:.7,t:`${wie} heeft te veel werk: ${werk}. Alles groeit langzamer.${extra||' Maak een pot leeg, dan wordt het weer lichter.'}`};
+ if(!L.potten&&!L.mega)return{z:'veel',f:1,t:een?`${wie} verveelt zich: er staat niets in de potten. Plant een zaadje.`:'De elfjes vervelen zich: er staat niets in de potten.'};
+ return{z:'goed',f:1.6,goud:.12,t:`${wie} is tevreden en helpt je ${werk}. Vanaf ${a*ELF_GRENS} potten of ${a} megaplant${a>1?'en':''} wordt het te veel.`}}
+function megaRestElf(p){const d=window.SUPERPLANTEN&&SUPERPLANTEN[p.z];if(!d)return 0;return Math.max(0,d.uren*36e5-(Date.now()-p.t+(p.bonus||0)))}
+/* groeibonus of vertraging zolang een elfje aan het werk is */
+function elfTick(){const nu=Date.now(),dt=Math.min(864e5,nu-(S.elfT||nu));S.elfT=nu;if(!elfjesOpen()||dt<=0||!actieveElfjes().length)return;const b=elfBalans();if(b.f===1)return;const stap=dt*(b.f-1);
+ Object.values(S.kweek||{}).forEach(p=>{if(!p||stadium(p)>=4)return;p.bonus=(p.bonus||0)+(stap>0?Math.min(rest(p),stap):stap);if(b.goud&&!p.elfRol){p.elfRol=1;if(Math.random()<b.goud)p.goud=true}});
+ (S.mega||[]).forEach(p=>{if(!p||megaRestElf(p)<=0)return;p.bonus=(p.bonus||0)+(stap>0?Math.min(megaRestElf(p),stap):stap)});bewaar()}
 setInterval(()=>{try{elfTick()}catch(e){}},5000);setTimeout(()=>{try{elfTick()}catch(e){}},500);
 /* ---------- ampul ---------- */
 function ampulSVG(cls=''){const d=ampulDoel(),p=Math.min(1,S.ampul.n/d);return `<div class="ampul ${cls}" title="Toverpoeder ${S.ampul.n}/${d}"><svg viewBox="0 0 40 64"><defs><linearGradient id="apg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7a2ad0"/><stop offset=".6" stop-color="#c58aff"/><stop offset="1" stop-color="#ffe58a"/></linearGradient><clipPath id="apc"><path d="M15 14v8C7 26 5 33 5 41c0 10 7 18 15 18s15-8 15-18c0-8-2-15-10-19v-8z"/></clipPath></defs>
@@ -44,41 +55,43 @@ function ampulLaad(punten){const a=document.querySelector('.m3 .ampul')||documen
 /* HUD in match-3 */
 const _m3s=m3Speel;m3Speel=function(...a){_m3s(...a);const m=document.querySelector('.m3mid');if(m){m.insertAdjacentHTML('afterbegin',ampulSVG('m3amp'))}};
 /* Hal: ampulkaartje + inactieve elfjes onderaan */
-function elfOpHome(){if(document.body.dataset.view!=='home')return;const app=$('#app');if(!app)return;if(!app.querySelector('.ampulkaart')){const dd=app.querySelector('.dagdoelen');const html=`<div class="ampulkaart">${ampulSVG('klein')}<div><b>Toverpoeder</b><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'}</small><small class="klein2">Wis 5+ voorwerpen in één keer om te vullen</small></div></div>`;dd?dd.insertAdjacentHTML('afterend',html):app.insertAdjacentHTML('afterbegin',html)}elfStart('home')}
+function elfOpHome(){if(document.body.dataset.view!=='home')return;const app=$('#app');if(!app||app.querySelector('.ampulkaart'))return;const dd=app.querySelector('.dagdoelen');const html=`<div class="ampulkaart">${ampulSVG('klein')}<div><b>Toverpoeder</b><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'}</small><small class="klein2">Wis 5+ voorwerpen in één keer om te vullen</small></div></div>`;dd?dd.insertAdjacentHTML('afterend',html):app.insertAdjacentHTML('afterbegin',html)}
 const _homeE=V.home;V.home=(...a)=>{_homeE(...a);elfOpHome()};
 /* ---------- Kas: paneel ---------- */
 const _kasE=V.kas;V.kas=(...a)=>{_kasE(...a);const app=$('#app');if(!app.querySelector('.kweekbalk')&&!app.querySelector('.kassen'))return;elfTick();
- const open=elfjesOpen(),b=elfBalans(),act=actieveElfjes();
- const meter=`<div class="balans"><div class="bzones"><span>te veel planten</span><span>goed</span><span>verveelt zich</span></div><div class="bbalk"><i style="left:${{geen:4,weinig:22,goed:50,veel:84}[b.z]}%"></i></div></div>`;
- const kaarten=ELFJES.map(e=>{const t=(S.elfjes[e.id]||0)-Date.now(),aan=t>0;return `<div class="elfkaart ${aan?'aan':'sloom'}" style="--ek:${e.k}"><div class="elfico"><i></i></div><b>${e.n}</b><small>${e.kar}</small><small>Lievelingsplant: ${(ZADEN[e.plant]||[e.plant])[0]}</small>${aan?`<em>aan het werk · nog ${tijd(t)}</em>`:`<button class="knop klein huur" data-e="${e.id}" ${S.ampul.vol?'':'disabled'}>Inhuren · 1 ampul</button>`}</div>`}).join('');
- const html=open?`<section class="elfpaneel rococo"><div class="elfkop">${ampulSVG('klein')}<div><h3>${ELF_ACTIEF==1?"Pip, het kaself":"Elfjes van de kas"}</h3><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> poeder · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'} · ${act.length} aan het werk</small></div></div>${meter}<p class="balanstekst">${b.t}</p><div class="elfrij">${kaarten}</div><p class="klein">1 volle ampul = 1 dag hulp. Pip verzorgt tot ${ELF_CAPACITEIT} groeiende planten. Zonder poeder fladdert ze onderaan het hoofdscherm. Is de ampul gebruikt, dan vliegt ze levend in de kas.</p></section>`
+ const open=elfjesOpen(),b=elfBalans(),act=actieveElfjes(),volg=volgendElf();
+ const meter=`<div class="balans"><div class="bzones"><span>te veel planten</span><span>tevreden</span><span>verveelt zich</span></div><div class="bbalk"><i style="left:${{geen:50,weinig:22,goed:50,veel:84}[b.z]||50}%"></i></div></div>`;
+ const kaarten=elfRoster().map(e=>{const t=(S.elfjes[e.id]||0)-Date.now(),aan=t>0;return `<div class="elfkaart ${aan?'aan':'sloom'}" style="--ek:${e.k}"><div class="elfico"><i></i></div><b>${e.n}</b><small>${e.kar}</small><small>Lievelingsplant: ${(ZADEN[e.plant]||[e.plant])[0]}</small>${aan?`<em>in je eigen kas · nog ${tijd(t)}</em>`:`<button class="knop klein huur" data-e="${e.id}" ${S.ampul.vol?'':'disabled'}>Ampul gebruiken</button>`}</div>`}).join('')+(volg?`<div class="elfkaart sloom" style="--ek:${volg.e.k}"><div class="elfico"><i></i></div><b>${volg.e.n}</b><small>Komt erbij op level ${volg.lvl}</small></div>`:'');
+ const html=open?`<section class="elfpaneel rococo"><div class="elfkop">${ampulSVG('klein')}<div><h3>${elfRoster().length>1?"Elfjes van de kas":"Pip, het kaself"}</h3><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> poeder · ${S.ampul.vol} volle ampul${S.ampul.vol==1?'':'len'} · ${act.length} in de kas</small></div></div>${meter}<p class="balanstekst">${b.t}</p><div class="elfrij">${kaarten}</div><p class="klein">1 volle ampul = 1 dag hulp. Tot 2 potten per elfje blijft het tevreden. Vanaf 3 potten, of 1 megaplant per elfje, groeit alles langzamer. Zonder ampul vliegt het elfje donker in dit menu. Met een ampul vliegt het in je eigen kas.</p></section>`
   :`<section class="elfpaneel teaser rococo"><div class="elfkop">${ampulSVG('klein')}<div><h3>Er fladdert iets…</h3><small><span class="aptekst">${S.ampul.n}/${ampulDoel()}</span> toverpoeder verzameld</small></div></div><p class="balanstekst">Tilly: "Zag je dat lichtje bij de potten? Ik denk dat er elfjes wonen! Speel verder (level 16) en spaar toverpoeder, dan durven ze misschien te blijven."</p></section>`;
  const anker=app.querySelector('.kweekbalk')||app.querySelector('.kassen');anker.insertAdjacentHTML('afterend',html);
- app.querySelectorAll('.huur').forEach(k=>k.onclick=()=>{if(S.ampul.vol<1){toast('Je hebt nog geen volle ampul.');return}const e=ELFJES.find(x=>x.id==k.dataset.e);S.ampul.vol--;S.elfjes[e.id]=Math.max(Date.now(),S.elfjes[e.id]||0)+864e5;S.elfT=Date.now();sessionStorage.pipDans=1;bewaar();try{fx.speel('goed')}catch(x){}vib(30);toast(`${e.n} komt helpen! ${e.n} houdt van ${(ZADEN[e.plant]||[e.plant])[0]}.`);V.kas()});
+ app.querySelectorAll('.huur').forEach(k=>k.onclick=()=>{if(S.ampul.vol<1){toast('Je hebt nog geen volle ampul.');return}const e=elfRoster().find(x=>x.id==k.dataset.e);if(!e)return;S.ampul.vol--;S.elfjes[e.id]=Math.max(Date.now(),S.elfjes[e.id]||0)+864e5;S.elfT=Date.now();sessionStorage.pipDans=e.id;bewaar();try{fx.speel('goed')}catch(x){}vib(30);toast(`${e.n} vliegt nu in je eigen kas. ${e.n} houdt van ${(ZADEN[e.plant]||[e.plant])[0]}.`);V.kas()});
  elfStart('kas')};
 /* ---------- elfjes-animatie (canvas) ---------- */
 const GLOED={};function elfGloed(k){if(GLOED[k])return GLOED[k];const c=document.createElement('canvas');c.width=c.height=48;const x=c.getContext('2d');const g=x.createRadialGradient(24,24,0,24,24,24);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,k);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,48,48);return GLOED[k]=c}
 let elfRaf=0;
-/* Inactief: onderaan het hoofdscherm. Ampul gebruikt: levend in de kas. */
+/* Tijd om: donker model in het kasmenu, bij de ampulknop. Ampul in gebruik: levend in de eigen kas. */
 function elfStart(plek){if(window._elfStop)window._elfStop();
- const view=plek==='home'?'home':'kas';const open=elfjesOpen();let lijst;
- if(view==='home'){if(!open)return;lijst=ELFJES.filter(e=>!((S.elfjes[e.id]||0)>Date.now())).map(e=>({e,aan:false,rust:true}));if(!lijst.length)return}
- else if(!open)lijst=[{e:{id:'teaser',n:'?',k:'#bff7ff'},aan:true,teaser:true}];
- else{lijst=ELFJES.filter(e=>(S.elfjes[e.id]||0)>Date.now()).map(e=>({e,aan:true}));if(!lijst.length)return}
- const cv=document.createElement('canvas');cv.id='elfcv';document.body.appendChild(cv);const ctx=cv.getContext('2d');const dpr=Math.min(2,devicePixelRatio||1);let W,H;const maat=()=>{W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)};maat();addEventListener('resize',maat);
+ const view=plek==='mijnkas'?'mijnkas':plek==='home'?'home':'kas';if(view==='home')return;const open=elfjesOpen();let lijst;
+ if(view==='mijnkas'){lijst=elfRoster().filter(elfAan).map(e=>({e,aan:true}));if(!lijst.length)return}
+ else if(!open)lijst=[{e:{id:'teaser',n:'?',k:'#bff7ff'},aan:false,teaser:true}];
+ else{lijst=elfRoster().filter(e=>!elfAan(e)).map(e=>({e,aan:false,donker:true}));if(!lijst.length)return}
+ const cv=document.createElement('canvas');cv.id='elfcv';if(view==='mijnkas')cv.classList.add('in-kas');document.body.appendChild(cv);const ctx=cv.getContext('2d');const dpr=Math.min(2,devicePixelRatio||1);let W,H;const maat=()=>{W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)};maat();addEventListener('resize',maat);
  const band=()=>{const nav=document.querySelector('#nav');const top=nav?nav.getBoundingClientRect().top:H-88;const onder=Math.max(130,top-52);const boven=Math.max(88,onder-Math.min(150,H*.18));return [boven,onder]};
  const [b0,o0]=band();
  const elf=lijst.map((o,i)=>({...o,x:o.rust?W*(.18+.64*i/Math.max(1,lijst.length-1||1)):Math.random()*W,y:o.rust?b0+Math.random()*Math.max(24,o0-b0):H*.3+Math.random()*H*.4,vx:0,vy:0,tx:0,ty:0,fase:Math.random()*9,spoor:[],wacht:0,mode:'vlieg',t0:performance.now()+(o.teaser?3000:0),zit:null}));
- const potDoelen=()=>[...document.querySelectorAll('.kpot')].map(p=>{const r=p.getBoundingClientRect();return[r.left+r.width/2+(Math.random()-.5)*r.width*.3,r.top+r.height*.35]}).filter(([x,y])=>y>60&&y<H-90);
+ const potDoelen=()=>[...document.querySelectorAll('.kpot,.mk-vloer,.megapot')].map(p=>{const r=p.getBoundingClientRect();return[r.left+r.width/2+(Math.random()-.5)*r.width*.3,r.top+r.height*.35]}).filter(([x,y])=>y>60&&y<H-90);
  const nieuwDoel=f=>{const pd=potDoelen();if(f.teaser){f.tx=Math.random()<.5?-40:W+40;f.ty=H*(.25+Math.random()*.4);return}
+  if(f.donker){const paneel=document.querySelector('.elfpaneel');const r=paneel&&paneel.getBoundingClientRect();const zicht=r&&r.bottom>80&&r.top<H-40;f.mode='vlieg';
+   if(zicht&&Math.random()<.75){f.tx=Math.max(28,Math.min(W-28,r.left+24+Math.random()*Math.max(36,r.width-48)));f.ty=Math.max(88,Math.min(H-96,r.top+36+Math.random()*Math.min(150,Math.max(48,r.height*.45))))}else{f.tx=36+Math.random()*(W-72);f.ty=96+Math.random()*Math.max(40,H-210)}return}
   if(f.rust){const [boven,onder]=band();f.mode=Math.random()<.18?'zwaai':'vlieg';f.tx=28+Math.random()*Math.max(40,W-56);f.ty=boven+Math.random()*Math.max(20,onder-boven);return}
   if(!f.aan){const p=pd[f.e.id.length%Math.max(1,pd.length)];[f.tx,f.ty]=p||[W*.2+Math.random()*W*.6,H*.6];f.mode='naarzit';return}
   const r=Math.random();if(r<.12){f.mode='zwaai';f.tx=W*(.35+Math.random()*.3);f.ty=H*.42;return}if(r<.5&&pd.length){[f.tx,f.ty]=pd[Math.random()*pd.length|0];f.mode='land';return}f.mode='vlieg';f.tx=W*(.1+Math.random()*.8);f.ty=H*(.18+Math.random()*.5)};
  elf.forEach(nieuwDoel);const vonk=[];let laatst=performance.now();
- if(view==='kas'&&sessionStorage.pipDans){const f=elf.find(x=>x.aan&&!x.teaser);if(f){sessionStorage.removeItem('pipDans');f.x=W/2;f.y=H*.42;f.t0=0;f.dans=performance.now()+2400;f.mode='zwaai';f.tx=W/2;f.ty=H*.42;f.wacht=2400;setTimeout(()=>pipBubbel(f,'Joepie! Ik ga voor je planten zorgen!'),400)}}
- const tik=ev=>{const p=ev.touches?ev.touches[0]:ev;for(const f of elf){if(performance.now()<f.t0)continue;if(Math.hypot(p.clientX-f.x,p.clientY-(f.y-8))<34){if(f.teaser){pipBubbel(f,'…?');f.tx=f.x<W/2?-40:W+40;return}pipGiechel();vib(15);if(f.aan){f.pir=performance.now()+900;for(let i=0;i<10;i++)vonk.push({x:f.x+(Math.random()-.5)*30,y:f.y+(Math.random()-.5)*30,vy:-.3+Math.random()*.8,l:1,k:f.e.k})}pipBubbel(f,(f.aan?PIPZIN:PIPSLAAP)[Math.random()*(f.aan?PIPZIN:PIPSLAAP).length|0]);ev.stopPropagation();return}}};
+ if(view==='mijnkas'&&sessionStorage.pipDans){const f=elf.find(x=>x.aan&&x.e.id===sessionStorage.pipDans)||elf.find(x=>x.aan);if(f){sessionStorage.removeItem('pipDans');f.x=W/2;f.y=H*.42;f.t0=0;f.dans=performance.now()+2400;f.mode='zwaai';f.tx=W/2;f.ty=H*.42;f.wacht=2400;setTimeout(()=>pipBubbel(f,'Joepie! Ik ga voor je planten zorgen!'),400)}}
+ const tik=ev=>{const p=ev.touches?ev.touches[0]:ev;for(const f of elf){if(performance.now()<f.t0)continue;if(Math.hypot(p.clientX-f.x,p.clientY-(f.y-8))<34){if(f.teaser){pipBubbel(f,'…?');f.tx=f.x<W/2?-40:W+40;return}if(f.donker){pipBubbel(f,PIPDONKER[Math.random()*PIPDONKER.length|0]);ev.stopPropagation();return}pipGiechel();vib(15);if(f.aan){f.pir=performance.now()+900;for(let i=0;i<10;i++)vonk.push({x:f.x+(Math.random()-.5)*30,y:f.y+(Math.random()-.5)*30,vy:-.3+Math.random()*.8,l:1,k:f.e.k})}pipBubbel(f,(f.aan?PIPZIN:PIPSLAAP)[Math.random()*(f.aan?PIPZIN:PIPSLAAP).length|0]);ev.stopPropagation();return}}};
  document.addEventListener('pointerdown',tik,true);window._pipTik=elf;
- const ruim=()=>{cancelAnimationFrame(elfRaf);cv.remove();removeEventListener('resize',maat);document.removeEventListener('pointerdown',tik,true);document.querySelectorAll('.pipbubbel').forEach(e=>e.remove());if(window._elfStop===stop)window._elfStop=null};
+ const ruim=()=>{cancelAnimationFrame(elfRaf);cv.remove();removeEventListener('resize',maat);document.removeEventListener('pointerdown',tik,true);document.querySelectorAll('.pipbubbel').forEach(e=>e.remove());if(window._pipTik===elf)window._pipTik=null;if(window._elfStop===stop)window._elfStop=null};
  const stop=()=>ruim();window._elfStop=stop;
  const frame=nu=>{if(document.body.dataset.view!==view||!document.body.contains(cv)){ruim();return}const dt=Math.min(40,nu-laatst)/16.7;laatst=nu;ctx.clearRect(0,0,W,H);
   for(const f of elf){if(nu<f.t0)continue;
@@ -86,10 +99,11 @@ function elfStart(plek){if(window._elfStop)window._elfStop();
    const dx=f.tx-f.x,dy=f.ty-f.y,d=Math.hypot(dx,dy);
    if(f.wacht>0){f.wacht-=dt*16.7;if(f.mode=='land'&&Math.random()<.15)vonk.push({x:f.x+(Math.random()-.5)*14,y:f.y+4,vy:.4+Math.random()*.6,l:1,k:f.e.k});if(f.wacht<=0)nieuwDoel(f)}
    else if(d<8){if(f.mode=='land'){f.wacht=1500+Math.random()*2000}else if(f.mode=='zwaai'){f.wacht=1600}else if(f.mode=='naarzit'){f.mode='zit';f.wacht=1e12}else nieuwDoel(f)}
-   else{const sp=f.teaser?2.4:f.aan?1.7:f.rust?1.25:.6;const ax=dx/d*sp-f.vx,ay=dy/d*sp-f.vy;f.vx+=ax*.04*dt;f.vy+=ay*.04*dt;f.vx+=Math.sin(nu/400+f.fase)*.03;f.vy+=Math.cos(nu/330+f.fase)*.03}
+   else{const sp=f.teaser?2.4:f.donker?1.5:f.aan?1.7:f.rust?1.25:.6;const ax=dx/d*sp-f.vx,ay=dy/d*sp-f.vy;f.vx+=ax*.04*dt;f.vy+=ay*.04*dt;f.vx+=Math.sin(nu/400+f.fase)*.03;f.vy+=Math.cos(nu/330+f.fase)*.03}
    if(f.wacht>0&&f.mode!=='zit'){f.vx*=.85;f.vy*=.85}if(f.mode=='zit'){f.vx=0;f.vy=0}
    f.x+=f.vx*dt;f.y+=f.vy*dt+(f.wacht>0&&f.mode!=='zit'?Math.sin(nu/300+f.fase)*.25:0);
    if(f.rust){const [boven,onder]=band();if(f.y<boven){f.y=boven;f.vy=Math.abs(f.vy)*.4}if(f.y>onder){f.y=onder;f.vy=-Math.abs(f.vy)*.4}if(f.x<18){f.x=18;f.vx=Math.abs(f.vx)}if(f.x>W-18){f.x=W-18;f.vx=-Math.abs(f.vx)}}
+   if(f.donker){if(f.x<24){f.x=24;f.vx=Math.abs(f.vx)}if(f.x>W-24){f.x=W-24;f.vx=-Math.abs(f.vx)}if(f.y<84){f.y=84;f.vy=Math.abs(f.vy)}if(f.y>H-96){f.y=H-96;f.vy=-Math.abs(f.vy)}}
    if(f.aan&&!RMP){f.spoor.push([f.x,f.y+6]);if(f.spoor.length>22)f.spoor.shift();if(Math.random()<.35*dt||f.extraVonk){f.extraVonk=0;vonk.push({x:f.x+(Math.random()-.5)*10,y:f.y+8,vy:.25+Math.random()*.4,l:1,k:Math.random()<.5?'#ffe58a':f.e.k})}}else if(f.rust&&!RMP){f.spoor.push([f.x,f.y+6]);if(f.spoor.length>8)f.spoor.shift()}else f.spoor.length=0;
    ctx.globalCompositeOperation='lighter';f.spoor.forEach(([x,y],i)=>{const a=i/f.spoor.length;ctx.globalAlpha=a*.5;const z=4+a*10;ctx.drawImage(elfGloed(f.teaser?'#bff7ff':f.e.k),x-z/2,y-z/2,z,z)});ctx.globalAlpha=1;
    const sc=f.mode=='zwaai'&&f.wacht>0?1.7:1;elfTeken(ctx,f,nu,sc)}
@@ -136,7 +150,7 @@ function pipVleugels(c,nu,f,sl,ts){const fl=sl?Math.sin(nu/900)*.12:Math.sin(nu/
    if(!ts){c.strokeStyle='rgba(255,255,255,.4)';c.lineWidth=.35;c.beginPath();c.moveTo(1,0);c.lineTo(rx*1.6,Math.sin(ang)*rx*.8-ry*.3);c.moveTo(1,0);c.lineTo(rx*1.7,Math.sin(ang)*rx*.9+ry*.2);c.stroke();c.fillStyle='rgba(255,255,255,.7)';c.beginPath();c.arc(rx*1.3,Math.sin(ang)*rx*.6-ry*.3,.8,0,7);c.fill()}
    c.restore()};
   vl(-.35-fl*.25,.55,10,5,-.55,1);vl(.25-fl*.18,.45,7.5,3.6,.45,.9);c.restore()})}
-function elfTeken(c,f,nu,sc){const ts=!!f.teaser,sl=!f.aan&&!f.rust&&!ts,zw=f.mode=='zwaai'&&f.wacht>0;const k=f.e.k||'#ffb0e0';
+function elfTeken(c,f,nu,sc){const ts=!!(f.teaser||f.donker),sl=!f.aan&&!f.rust&&!ts,zw=f.mode=='zwaai'&&f.wacht>0;const k=f.e.k||'#ffb0e0';
  c.save();c.translate(f.x,f.y);const S2=(f.rust?.95:window.innerWidth<370?1.05:1.15)*sc;c.scale(S2,S2);
  /* aura */
  c.globalCompositeOperation='lighter';c.globalAlpha=sl?.3:f.rust?.55:ts?.85:.75;const z=sl?40:f.rust?44:ts?46:58;c.drawImage(elfGloed(ts?'#bff7ff':k),-z/2,-z/2-4,z,z);c.globalCompositeOperation='source-over';c.globalAlpha=1;
@@ -156,6 +170,7 @@ function elfTeken(c,f,nu,sc){const ts=!!f.teaser,sl=!f.aan&&!f.rust&&!ts,zw=f.mo
 /* tik op Pip: giechel + pirouette + zinnetje */
 const PIPZIN=['Hihi, dat kietelt!','Je mandragora zegt hallo!','Ik heb glinster gestrooid, zie je het?','Psst… de valeriaan groeit lekker.','Nog even, dan bloeit hij!','Ik ben Pip! Fijn dat je er bent.'];
 const PIPSLAAP=['Mmm… vijf minuutjes nog…','Zzz… toverpoeder… zzz','*gaapt* Een volle ampul en ik vlieg weer!'];
+const PIPDONKER=['Mijn tijd is om…','Een nieuwe ampul, alsjeblieft.','Tik op Ampul gebruiken, dan vlieg ik weer in je kas.'];
 function pipGiechel(){try{const A=window._pipAc||(window._pipAc=new (window.AudioContext||window.webkitAudioContext)());const t=A.currentTime;[0,.07,.14,.22].forEach((d,i)=>{const o=A.createOscillator(),g=A.createGain();o.type='sine';o.frequency.setValueAtTime(1400+i*180,t+d);o.frequency.exponentialRampToValueAtTime(1900+i*200,t+d+.05);g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.06,t+d+.01);g.gain.exponentialRampToValueAtTime(.001,t+d+.07);o.connect(g).connect(A.destination);o.start(t+d);o.stop(t+d+.08)})}catch(e){}}
 function pipBubbel(f,t){document.querySelectorAll('.pipbubbel').forEach(e=>e.remove());const b=document.createElement('div');b.className='pipbubbel';b.textContent=t;document.body.appendChild(b);const w=b.offsetWidth;b.style.left=Math.max(8,Math.min(innerWidth-w-8,f.x-w/2))+'px';b.style.top=Math.max(60,f.y-78)+'px';setTimeout(()=>b.classList.add('weg'),2200);setTimeout(()=>b.remove(),2700)}
 /* ---------- makerscherm ---------- */

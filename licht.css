@@ -169,6 +169,7 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .ampulkaart b{display:block;color:#ffe9a8}.ampulkaart small{display:block;color:#f3e9cc}.ampulkaart .klein2{opacity:.8;font-size:.78em}
 /* ===== Elfjes ===== */
 #elfcv{position:fixed;inset:0;width:100vw;height:100vh;z-index:12;pointer-events:none}
+#elfcv.in-kas{z-index:33}
 .elfpaneel{margin:12px 0;padding:12px;border-radius:16px;background:linear-gradient(rgba(250,238,210,.97),rgba(236,214,170,.97));color:#2b1a0b;border:2px solid #c9a227}
 .elfpaneel h3{margin:0;color:#6b1d0e}.elfpaneel small,.elfpaneel p{color:#3a2410!important}
 .elfkop{display:flex;align-items:center;gap:12px}
@@ -573,6 +574,7 @@ body[data-view=mijnkas]{overflow:hidden}
 .mk-deur.open{animation:deurzwaai .8s ease-in forwards}@keyframes deurzwaai{to{transform:scale(1.04)}}
 .mk-kamer{aspect-ratio:2.4/1}
 body[data-view=mijnkas] #gids{z-index:40!important}body[data-view=mijnkas] .modal{z-index:50!important}body[data-view=mijnkas] #gids{bottom:calc(64px + env(safe-area-inset-bottom))!important}
+body[data-view=mijnkas] .pipbubbel{z-index:45}
 /* 2 silo's links, 2 knoppen ernaast, blok op de actieve knop */
 .mk-scroll{container-type:inline-size}
 .mk-leviosa{left:0;bottom:7%;height:90%;width:min(34%,100cqw)}
@@ -617,3 +619,29 @@ body[data-view=mijnkas] #gids{z-index:40!important}body[data-view=mijnkas] .moda
 .mk-pot{cursor:pointer}
 .zkoop img,.zlijst .vanjou img{width:58px;height:64px;object-fit:contain}
 .zkoop:disabled{opacity:.6}
+#toast{z-index:80;max-width:min(92vw,420px);text-align:center}
+.zkoop.potslot,.zkies.potslot,.zakje.potslot{filter:grayscale(.8);opacity:.72}
+.zkoop.opdracht{box-shadow:0 0 0 2px #2f6a32;background:#e7f6df}
+.potmelding{min-height:1.2em;margin:6px 0;color:#7a1f10;font-weight:bold;text-align:center}
+.potmelding:empty{display:none}
+.poortregel{display:block;width:calc(100% - 16px);margin:6px 8px;padding:8px 10px;border-radius:12px;border:1px solid #c9a227;background:#fff6dc;color:#3a240c;font:inherit;text-align:left;cursor:pointer}
+button.poortbanner{font:inherit;cursor:pointer;width:100%;text-align:left}
+.mk-balk button.opdracht{box-shadow:0 0 0 2px #fff6d0,0 0 0 4px #2f6a32}
+.poortkruiden{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.poortkruid{display:flex;flex-direction:column;align-items:center;width:78px;font-size:.8em}
+.poortkruid img,.poortkruid svg{width:48px;height:56px;object-fit:contain}
+.poortles{background:linear-gradient(#fff6dc,#ecd9a8);color:#3a240c;border-radius:16px}
+.poortles p,.poortles h2,.poortles .ld-nr,.poortles .klein{color:#3a240c!important}
+.poortles .ld-bord{height:108px}
+.poortles p{margin:4px 0}
+.poortles #poortpad{display:inline;padding:0;margin-left:4px;min-height:0}
+.poortles h2{font-size:1.45rem;line-height:1.15}
+.poortles .ld-tilly{display:none}
+.poortles .ld-deur,.poortles .ld-slot{display:none}
+.poortpot{position:absolute;left:50%;bottom:4%;width:30%;transform:translateX(-50%);z-index:2;filter:drop-shadow(0 8px 6px rgba(0,0,0,.45))}
+.poortknop{display:block;margin:8px auto}
+/* De kleine tafel steekt links uit beeld als je bij de deur staat. Potten daarom rechts op de tafel, anders valt de groene pot buiten het scherm. */
+.mk-tafel.klein .mk-rij{justify-content:flex-start;gap:2px}
+.mk-tafel.klein .mk-pot{flex:0 1 34%;min-width:0}
+.mk-tafel.klein .mk-rij:has(.mk-pot:nth-child(2)) .mk-pot{flex-basis:27%}
+.mk-tafel.klein .mk-rij:has(.mk-pot:nth-child(3)) .mk-pot{flex-basis:20%}

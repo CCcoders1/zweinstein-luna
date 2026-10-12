@@ -43,7 +43,7 @@ function superModal(mi){const o=document.createElement('div');o.className='modal
  };teken();document.body.appendChild(o);const t=setInterval(()=>{if(!o.isConnected)return clearInterval(t);if(mp(mi)&&mpSt(mi)<4)teken()},5000)}
 const PIDX=i=>100+i; // potindexen van de persoonlijke kas (los van de gewone kassen)
 const POT_UP=[
- {naam:'Kruidenpot',prijs:500,img:'pot1',tekst:'Groene krullen. Een extra pot op je tafel.'},
+ {naam:'Kruidenpot',prijs:500,img:'pot1',tekst:'Groene krullen. Je tweede pot op de tafel. Duivelsstrik, Tentacula en Sodejus groeien alleen hier.'},
  {naam:'Edelsteenpot',prijs:800,img:'pot2',tekst:'Paarse stenen. Weer een plek om te zaaien.'},
  {naam:'Kristalpot',prijs:1200,img:'pot3',tekst:'Blauwe kristallen, voor op de grote tafel.'},
  {naam:'Hartpot',prijs:1600,img:'pot4',tekst:'Donker goud met een hart. De mooiste plek.'}];
@@ -82,12 +82,43 @@ V.mijnkas=()=>{VIEWDECOR.mijnkas='kas';verhuisPotten();const klein=[0,1,2].filte
  const g=t=>setTimeout(()=>{try{gids(t,{})}catch(e){}},700);
  if(window._kasVersMeld){window._kasVersMeld=0;S.kasVerhuisMeld=1;bewaar();const rest=Object.keys(S.kweek||{}).some(i=>+i<100&&S.kweek[i]);toast(rest?'Je planten staan in je eigen kas. De rest schuift op als er een pot vrijkomt.':'Je planten staan nu in de potten van je eigen kas.')}
  if(!S.mkUitleg){S.mkUitleg=1;bewaar();g('Welkom in je eigen kas, Luna! Op het tafeltje bij de deur staat je standaardpot. Tik erop en plant een zaadje uit de zadenwinkel. Mooiere potten en de grote vloerpot koop je met de knop Potten.')}
+ else if(leraarPoort()&&!S.groenPoortUitleg){S.groenPoortUitleg=1;bewaar();g('Professor Stronk houdt het volgende level tegen tot de <b>groene kruidenpot</b> op je tafel staat. Tik op Potten. Die pot wordt je tweede, en daarin groeien de bijzondere kruiden.')}
  else if(lvl()>=MEGA_VANAF[0]&&!S.superOpen){S.superOpen=1;S.superzaad.flessenbes=(S.superzaad.flessenbes||0)+1;S.superzaad.bomlicht=(S.superzaad.bomlicht||0)+1;bewaar();g('Superplanten! Koop de <b>grote vloerpot</b> in Potten voor 300 Smekkies. Ik heb er twee zaadjes bij gelegd.')}
  else if(lvl()>=GROTE_TAFEL&&!S.groteTafel){S.groteTafel=1;bewaar();g('Herbologie afgerond! Je hebt de <b>grote tafel</b> gewonnen. Extra potten koop je in het menu Potten.')}
+ poortBanner();
+ try{ if(typeof elfStart==='function') elfStart('mijnkas') }catch(e){}
 };
-if(typeof ga=='function'){const _ga=ga;ga=function(v,...a){if(v=='mijnkas'){document.body.dataset.view='mijnkas';try{fx.thema('kas')}catch(e){}$('#terug')&&$('#terug').classList.add('zien');window.scrollTo(0,0);return V.mijnkas()}return _ga(v,...a)}}
-// kweek-functies roepen V.kas() aan: in de eigen kas blijven we daar
-const _kasOrig=V.kas;V.kas=(...a)=>{if(document.body.dataset.view=='mijnkas')return V.mijnkas();_kasOrig(...a);deur()};
+/* Leraar-opdrachten: eerst afronden, dan pas het volgende level.
+   Een nieuwe mijlpaal is een extra regel in deze lijst. */
+const LERAAR_OPDRACHTEN=[
+ {id:'groene-pot',na:30,prof:'Professor Stronk',titel:'De groene kruidenpot',
+  zin:'Level 30 is gehaald. Voor we verdergaan wil ik eerst iets in de kas.',
+  uitleg:'Koop de groene kruidenpot. Die wordt je tweede pot op de tafel. Deze drie kruiden groeien alleen daarin.',
+  knop:'Naar de potten',klaar:()=>heeftGroenePot(),
+  ga:()=>{ga('mijnkas');setTimeout(()=>{try{potWinkel()}catch(e){}},700)}}];
+function leraarPoort(){const n=S.m3lvl||1;return LERAAR_OPDRACHTEN.find(o=>n>o.na&&!o.klaar())||null}
+function poortBanner(){const p=leraarPoort();if(!p)return;const a=$('#app');if(!a||a.querySelector('#poortbanner'))return;const h=a.querySelector('h2');if(!h)return;
+ const inKas=document.body.dataset.view==='mijnkas';
+ h.insertAdjacentHTML('afterend',inKas?`<button type="button" class="poortregel" id="poortbanner"><b>${p.prof}:</b> ${p.titel}. Daarna gaat level ${p.na+1} open.</button>`:`<button type="button" class="kweekopdr stronkbord poortbanner" id="poortbanner"><small>Opdracht · daarna level ${p.na+1}</small><b>${p.titel}</b><small>Tik op het bord</small></button>`);
+ $('#poortbanner').onclick=()=>ga('leraarpoort');const pw=$('#potwinkel');if(pw)pw.classList.add('opdracht')}
+V.leraarpoort=()=>{const p=leraarPoort();if(!p)return ga('match3');try{nav('kas')}catch(e){}VIEWDECOR.leraarpoort='kas';
+ const heb=S.galjoenen||0,prijs=POT_UP[0].prijs,kan=heb>=prijs;
+ const kruiden=[...GROEN_KRUID].filter(z=>ZADEN[z]).map(z=>`<span class="poortkruid">${plantSVG(4,ZADEN[z][4],z)}<small>${ZADEN[z][0]}</small></span>`).join('');
+ app(`<section class="lesdeur rococo poortles"><div class="ld-bord" style="background-image:url('img/laadschermen/herbologie${innerWidth<=600?'-klein':''}.webp')"><img class="poortpot" src="img/kas/pot1.webp" alt="Groene kruidenpot"></div>
+  <small class="ld-nr">Opdracht van ${p.prof} · na level ${p.na}</small><h2>${p.titel}</h2>
+  <p><b>${p.prof}:</b> ${p.zin} ${p.uitleg}</p>
+  <button class="knop volgende" id="poortga">${p.knop}</button>
+  <div class="poortkruiden">${kruiden}</div>
+  <p class="klein">Je hebt ${heb} Smekkies. De pot kost ${prijs}. <button type="button" class="linkknop" id="poortpad">Eerdere levels</button></p>
+  ${kan?'':`<p class="klein">Nog ${prijs-heb} Smekkies. Herhaal een eerder level, die geven ook Smekkies.</p>`}</section>`);
+ $('#poortga').onclick=()=>p.ga();$('#poortpad').onclick=()=>ga('pad')};
+let kasNaarMenu=0;
+if(typeof ga=='function'){const _ga=ga;ga=function(v,...a){if(v=='match3'){const n=a[0]||S.m3lvl||1,p=leraarPoort();if(p&&n>=(S.m3lvl||1)&&n>p.na)return _ga('leraarpoort')}if(v=='mijnkas'){document.body.dataset.view='mijnkas';try{fx.thema('kas')}catch(e){}$('#terug')&&$('#terug').classList.add('zien');window.scrollTo(0,0);V.mijnkas();poortBanner();return}if(v=='kas')kasNaarMenu=1;try{return _ga(v,...a)}finally{kasNaarMenu=0}}}
+// kweek-functies roepen V.kas() aan: in de eigen kas blijven we daar. ga('kas') zet kasNaarMenu, anders bleef de kas staan.
+const _kasOrig=V.kas;V.kas=(...a)=>{if(document.body.dataset.view=='mijnkas'&&!kasNaarMenu)return V.mijnkas();_kasOrig(...a);deur();poortBanner()};
+const _homePoort=V.home;V.home=function(...a){const r=_homePoort.apply(this,a);const p=leraarPoort();if(p){const b=$('#speelknop');if(b){b.textContent='Eerst: '+p.titel;b.classList.add('volgende');b.onclick=()=>ga('leraarpoort')}const hs=document.querySelector('.hs-hoofd');if(hs){const sm=hs.querySelector('small');if(sm)sm.textContent=p.prof;const bt=hs.querySelector('b');if(bt)bt.textContent='Opdracht';hs.onclick=()=>ga('leraarpoort')}}return r};
+const _padPoort=V.pad;V.pad=function(...a){const r=_padPoort.apply(this,a);const p=leraarPoort();if(p){const kop=document.querySelector('.padkopbeeld')||document.querySelector('h2');if(kop){kop.insertAdjacentHTML('afterend',`<button class="knop volgende poortknop" id="poortknop">Opdracht van ${p.prof}</button>`);const k=$('#poortknop');if(k)k.onclick=()=>ga('leraarpoort')}}return r};
+if(typeof m3Winst==='function'){const _mw=m3Winst;m3Winst=function(n,b){const r=_mw(n,b);try{const p=LERAAR_OPDRACHTEN.find(o=>n===o.na&&!o.klaar());if(p){const btn=$('#m3volg');if(btn){btn.textContent='Eerst naar '+p.prof;btn.onclick=()=>{const m=btn.closest('.modal');if(m)m.remove();ga('leraarpoort')}}}}catch(e){}return r}}
 /* ---- 2 silo's links, 2 knoppen ernaast, 1 blok ---- */
 const VUL=2*36e5,LEEG=30*6e4;
 S.water=S.water||{blok:0,sinds:Date.now(),lvl:[0,0]};delete S.silo;
@@ -131,9 +162,11 @@ function deur(){const a=$('#app');if(!a||a.querySelector('.kasdeur'))return;cons
   setTimeout(()=>{ga('mijnkas');requestAnimationFrame(()=>ov.classList.add('uit'));setTimeout(()=>ov.remove(),900)},matchMedia('(prefers-reduced-motion: reduce)').matches?50:850)};
  if(!S.deurUitleg){S.deurUitleg=1;bewaar();setTimeout(()=>{try{gids('Zie je die grote deur? Daarachter ligt je <b>eigen kas</b>. Tik erop!',{})}catch(e){}},1200)}}
 function potWinkel(){const o=document.createElement('div');o.className='modal';const teken=()=>{const n=S.potUpgrade|0;
- o.innerHTML=`<div class="modalin rococo"><h2>Potten</h2><p class="klein">Je hebt ${S.galjoenen} Smekkies. De standaardpot staat al op je tafel.</p><div class="zlijst"><div class="zkoop vanjou"><img src="img/kas/pot0.webp" alt=""><b>Standaardpot</b><small>van jou</small><small>Tik erop en plant een zaadje uit de winkel.</small></div>${POT_UP.map((d,i)=>{const heb=n>i,aan=n===i;return `<button class="zkoop" data-up="${i}" ${heb||!aan?'disabled':''}><img src="img/kas/${d.img}.webp" alt=""><b>${d.naam}</b><small>${heb?'in je kas':d.prijs+' Smekkies'}</small><small>${d.tekst}</small></button>`}).join('')}<button class="zkoop" data-vloer="1" ${S.vloerpot?'disabled':''}><img src="img/kas/grotepot.webp" alt=""><b>Grote vloerpot</b><small>${S.vloerpot?'in je kas':VLOERPOT_PRIJS+' Smekkies'}</small><small>Staat links naast je tafel. Voor superplanten.</small></button></div><button class="knop" id="potdicht">Klaar</button></div>`;
- o.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.up,d=POT_UP[i];if((S.potUpgrade|0)!==i)return;if(S.galjoenen<d.prijs){toast('Niet genoeg Smekkies. Speel een level!');fx.speel('fout');return}S.galjoenen-=d.prijs;S.potUpgrade=i+1;bewaar();stats();fx.speel('munt');vib(15);toast(d.naam+' staat in je kas');teken()});
+ o.innerHTML=`<div class="modalin rococo"><h2>Potten</h2><p class="klein">Je hebt ${S.galjoenen} Smekkies. De standaardpot staat al op je tafel.</p><div class="zlijst"><div class="zkoop vanjou"><img src="img/kas/pot0.webp" alt=""><b>Standaardpot</b><small>van jou</small><small>Tik erop en plant een zaadje uit de winkel.</small></div>${POT_UP.map((d,i)=>{const heb=n>i,aan=n===i,teVroeg=i===0&&!heb&&(S.m3lvl||1)<=30,opdracht=i===0&&aan&&!teVroeg;return `<button class="zkoop ${teVroeg?'potslot':''} ${opdracht?'opdracht':''}" data-up="${i}" ${heb||(!aan&&!teVroeg)?'disabled':''}><img src="img/kas/${d.img}.webp" alt=""><b>${d.naam}</b><small>${heb?'in je kas':teVroeg?'na level 30':d.prijs+' Smekkies'}</small><small>${teVroeg?'Opdracht van professor Stronk':opdracht?'Dit vraagt professor Stronk':d.tekst}</small></button>`}).join('')}<button class="zkoop" data-vloer="1" ${S.vloerpot?'disabled':''}><img src="img/kas/grotepot.webp" alt=""><b>Grote vloerpot</b><small>${S.vloerpot?'in je kas':VLOERPOT_PRIJS+' Smekkies'}</small><small>Staat links naast je tafel. Voor superplanten.</small></button></div><button class="knop" id="potdicht">Klaar</button></div>`;
+ o.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.up,d=POT_UP[i];if(i===0&&(S.potUpgrade|0)<1&&(S.m3lvl||1)<=30){toast('Professor Stronk vraagt deze pot pas na level 30.');try{fx.speel('fout')}catch(e){}return}if((S.potUpgrade|0)!==i)return;if(S.galjoenen<d.prijs){toast(i===0&&(S.m3lvl||1)>30?'Nog '+(d.prijs-S.galjoenen)+' Smekkies. Herhaal een eerder level, die geven ook Smekkies.':'Niet genoeg Smekkies. Speel een level!');fx.speel('fout');return}const wasOpdracht=i===0&&!!leraarPoort();S.galjoenen-=d.prijs;S.potUpgrade=i+1;bewaar();stats();fx.speel('munt');vib(15);if(wasOpdracht){o.remove();if(document.body.dataset.view==='mijnkas')V.mijnkas();verhaal([['Professor Stronk','Prachtig. De groene pot staat als tweede op je tafel. Duivelsstrik, de Giftige Tentacula en de Sodejusplant willen nergens anders groeien.'],['Tilly','Nu kunnen we door naar het volgende level.']],()=>ga('match3'));return}toast(d.naam+' staat in je kas');teken()});
  const vb=o.querySelector('[data-vloer]');if(vb)vb.onclick=()=>{if(S.vloerpot)return;if(S.galjoenen<VLOERPOT_PRIJS){toast('Niet genoeg Smekkies. Speel een level!');fx.speel('fout');return}S.galjoenen-=VLOERPOT_PRIJS;S.vloerpot=1;bewaar();stats();fx.speel('munt');vib(15);toast('De grote vloerpot staat naast je tafel');teken()};
  o.querySelector('#potdicht').onclick=()=>{o.remove();if(document.body.dataset.view==='mijnkas')V.mijnkas();else V.kas()}};teken();document.body.appendChild(o)}
 window.potWinkel=potWinkel;
+window.leraarPoort=leraarPoort;
+if(document.body.dataset.view==='home'&&leraarPoort()){try{V.home()}catch(e){}}
 })();
