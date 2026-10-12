@@ -607,3 +607,13 @@ body[data-view=mijnkas] #gids{z-index:40!important}body[data-view=mijnkas] .moda
 @keyframes zwR{0%{left:76.5%;bottom:8%}35%{left:76.5%;bottom:46%;transform:rotate(-8deg)}75%{left:88%;bottom:46%;transform:rotate(7deg)}100%{left:88%;bottom:8%;transform:none}}
 @keyframes zwL{0%{left:88%;bottom:8%}35%{left:88%;bottom:46%;transform:rotate(8deg)}75%{left:76.5%;bottom:46%;transform:rotate(-7deg)}100%{left:76.5%;bottom:8%;transform:none}}
 @media (prefers-reduced-motion:reduce){.mk-plaat.aan img,.mk-plaat.aan::after{animation:none}}
+.mk-vloer{position:absolute;right:29%;bottom:12%;width:11%;z-index:4;background:none;border:none;padding:0;display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.mk-vloer .gpimg{width:100%;height:auto;filter:drop-shadow(0 8px 6px rgba(40,20,5,.45))}
+.mk-vloer .superimg{width:120%;margin-bottom:-42%;position:relative;z-index:2;pointer-events:none}
+.mk-vloer .gplabel{font-size:11px;background:rgba(40,30,15,.75);color:#ffe9b0;border-radius:9px;padding:1px 7px;margin-top:2px;white-space:nowrap}
+.mk-vloer.rijp .gplabel{background:#e8b839;color:#3a2410}
+.mk-kamer:has(.mk-tafel.groot) .mk-vloer{right:auto;left:50%;width:9%}
+.mk-balk button{flex:0 0 auto;border:none;border-radius:12px;background:#e8b839;color:#3a2410;font-weight:700;font-size:13px;padding:4px 10px;cursor:pointer}
+.mk-pot{cursor:pointer}
+.zkoop img,.zlijst .vanjou img{width:58px;height:64px;object-fit:contain}
+.zkoop:disabled{opacity:.6}
