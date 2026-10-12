@@ -1,6 +1,6 @@
 'use strict';
 /* ====== Buit, verzamelboek en voorleesstem ====== */
-const ITEMS={
+var ITEMS={
  // ingrediënten (canon)
  affodil:['i','Poeder van affodilwortel','G','blad','Fijngemalen wortel van de affodil. Met een aftreksel van alsem vormt het de basis van het Vocht van de Levende Dood.'],
  alsem:['i','Alsemaftreksel','G','fles','Een bittere, groene vloeistof getrokken uit alsem. Professor Sneep noemde het al in zijn allereerste les.'],
@@ -15,6 +15,8 @@ const ITEMS={
  bezoar:['i','Bezoar','Z','steen','Een steen uit de maag van een geit. Hij beschermt tegen de meeste vergiften.'],
  mandragora:['i','Mandragorawortel','L','blad','De wortel van een volgroeide Mandragora. Het sap herstelt wie versteend is.'],
  kieuwwier:['i','Kieuwwier','Z','blad','Wie het eet, krijgt kieuwen en zwemvliezen – voor ongeveer een uur.'],
+ tentacula:['i','Tentaculablad','Z','blad','Een blad van de giftige tentacula. Voorzichtig aanraken.'],
+ duivelsstrik:['i','Duivelsstrikscheut','Z','blad','Een scheut duivelsstrik. Blijf kalm, dan laat hij los.'],
  feniksveer:['i','Feniksveer','L','veer','Een gloeiende veer van een feniks. Fenikstranen genezen, en een veer kan de kern van een toverstok zijn.'],
  // verzamelvoorwerpen
  smakker:['v','Bertie Botts Smakkerbonen','G','boon','Echt élke smaak: van aardbei tot oorsmeer. Perkamentus at eens een met de smaak van oorsmeer.'],

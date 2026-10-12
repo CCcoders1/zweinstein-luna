@@ -42,13 +42,18 @@ function superModal(mi){const o=document.createElement('div');o.className='modal
   toast('Geoogst: '+d.oogstTekst+'!');setTimeout(()=>{try{gids(`Kijk eens, Luna! ${d.oogstTekst}. Bij het begin van een level kun je ze kiezen. ${BOOSTERS[Object.keys(d.oogst)[0]].uitleg}`,{})}catch(e){}},900);teken()};
  };teken();document.body.appendChild(o);const t=setInterval(()=>{if(!o.isConnected)return clearInterval(t);if(mp(mi)&&mpSt(mi)<4)teken()},5000)}
 const PIDX=i=>100+i; // potindexen van de persoonlijke kas (los van de gewone kassen)
+function verhuisPotten(){if(!S.kweek)return 0;const vrij=[];for(let i=0;i<7;i++)if(!S.kweek[100+i])vrij.push(100+i);
+ const oud=Object.keys(S.kweek).map(Number).filter(i=>i<100&&S.kweek[i]).sort((a,b)=>a-b);let n=0;
+ oud.forEach(i=>{if(!vrij.length)return;const naar=vrij.shift();S.kweek[naar]=S.kweek[i];delete S.kweek[i];n++});
+ if(n){bewaar();if(!S.kasVerhuisMeld)window._kasVersMeld=1}return n}
+verhuisPotten();
 function potHTML(i){const p=pot(PIDX(i)),st=p?stadium(p):-1;return `<div class="kpot mk-pot ${st==4?'rijp':''}" data-i="${PIDX(i)}"><div class="kplant">${p?plantSVG(Math.max(0,st),ZADEN[p.z][4],p.z):''}</div><img class="potimg" src="img/kas/pot${i==0?0:i==1?1:i<5?2:i<7?3:4}.webp" alt=""><small class="mk-lab">${p?(st==4?'Oogsten!':ZADEN[p.z][0]):'Tik om te planten'}</small></div>`}
-function plek(i){return lvl()>=(PLEK_VANAF[i]||GROTE_TAFEL)?potHTML(i):`<div class="mk-leeg"><span>Level ${PLEK_VANAF[i]||GROTE_TAFEL}</span></div>`}
-V.mijnkas=()=>{VIEWDECOR.mijnkas='kas';const gt=lvl()>=GROTE_TAFEL;
+function plek(i){return pot(PIDX(i))||lvl()>=(PLEK_VANAF[i]||GROTE_TAFEL)?potHTML(i):`<div class="mk-leeg"><span>Level ${PLEK_VANAF[i]||GROTE_TAFEL}</span></div>`}
+V.mijnkas=()=>{VIEWDECOR.mijnkas='kas';verhuisPotten();const gt=lvl()>=GROTE_TAFEL||[3,4,5,6].some(i=>pot(PIDX(i)));const groot=[3,4,5,6].filter(i=>lvl()>=GROTE_TAFEL||pot(PIDX(i)));
  app(`<h2 class="mk-titel">Mijn eigen kas</h2>
  <div class="mk-scroll" id="mkscroll"><div class="mk-kamer ${siloAan()?'sproei':''}"><div class="mk-sproeiers"></div>
   <div class="mk-tafel klein"><div class="mk-rij">${[0,1,2].map(plek).join('')}</div><img src="img/kas/tafel1.webp" alt=""></div>
-  ${gt?`<div class="mk-tafel groot"><div class="mk-rij">${[3,4,5,6].map(plek).join('')}</div><img src="img/kas/tafel2.webp" alt=""></div>`:`<div class="mk-hint t"><span>Hier is nog plek voor iets groots…</span></div>`}
+  ${gt?`<div class="mk-tafel groot"><div class="mk-rij">${groot.map(plek).join('')}</div><img src="img/kas/tafel2.webp" alt=""></div>`:`<div class="mk-hint t"><span>Hier is nog plek voor iets groots…</span></div>`}
   ${levHTML()}<button class="mk-deur" id="mkterug" aria-label="Door de deur terug naar de kassen"><span>Terug</span></button>
   <div class="mk-mega">${MEGA_VANAF.map((v,i)=>lvl()>=v?`<button class="megapot ${mpSt(i)==4?'rijp':''}" data-m="${i}">${mp(i)?spImg(mp(i).z,mpSt(i)):''}<img class="gpimg" src="img/kas/grotepot.webp" alt=""><span class="gplabel">${mp(i)?(mpSt(i)==4?'Oogsten!':SUPERPLANTEN[mp(i).z].naam):'Megapot'}</span></button>`:`<div class="megapot dicht"><img class="gpimg" src="img/kas/grotepot.webp" alt=""><span class="gplabel">${i==0?'Een plek voor een megapot':'…'}</span></div>`).join('')}</div>
  </div></div>
@@ -63,9 +68,10 @@ V.mijnkas=()=>{VIEWDECOR.mijnkas='kas';const gt=lvl()>=GROTE_TAFEL;
  const sc=$('#mkscroll');sc.scrollLeft=S.mkScroll!=null?S.mkScroll:sc.scrollWidth-sc.clientWidth-sc.scrollWidth*.012;sc.addEventListener('scroll',()=>{S.mkScroll=sc.scrollLeft;const v=$('.mk-veeg');if(v&&sc.scrollWidth-sc.clientWidth-sc.scrollLeft>40)v.classList.add('weg')},{passive:true});
  // Tilly-uitleg door progressie
  const g=t=>setTimeout(()=>{try{gids(t,{})}catch(e){}},700);
+ if(window._kasVersMeld){window._kasVersMeld=0;S.kasVerhuisMeld=1;bewaar();const rest=Object.keys(S.kweek||{}).some(i=>+i<100&&S.kweek[i]);toast(rest?'Je planten staan in je eigen kas. De rest schuift op als er een pot vrijkomt.':'Je planten staan nu in de potten van je eigen kas.')}
  if(!S.mkUitleg){S.mkUitleg=1;bewaar();g('Welkom in je eigen kas, Luna! Professor Stronk heeft deze ruimte speciaal voor jou vrijgemaakt. Op het tafeltje bij de deur staat je eerste pot; de andere plekjes speel je vrij. Loop maar eens verder de kas in, naar links: daar is ruimte voor megapotten, en helemaal achterin staat iets wat je misschien kent…')}
  else if(lvl()>=MEGA_VANAF[0]&&!S.superOpen){S.superOpen=1;S.superzaad.flessenbes=(S.superzaad.flessenbes||0)+1;S.superzaad.bomlicht=(S.superzaad.bomlicht||0)+1;bewaar();g('Kijk eens rechts in je kas: je eerste <b>megapot</b>! Daarin groeien superplanten met boosters voor je levels. Ik heb er alvast twee zaadjes bij gelegd.');setTimeout(()=>{const m=$('.mk-mega');m&&sc.scrollTo({left:m.offsetLeft-40,behavior:'smooth'})},900)}
- else if(gt&&!S.groteTafel){S.groteTafel=1;bewaar();g('Herbologie afgerond! Je hebt de <b>grote tafel</b> gewonnen, met plek voor nog vier potten.')}
+ else if(lvl()>=GROTE_TAFEL&&!S.groteTafel){S.groteTafel=1;bewaar();g('Herbologie afgerond! Je hebt de <b>grote tafel</b> gewonnen, met plek voor nog vier potten.')}
 };
 if(typeof ga=='function'){const _ga=ga;ga=function(v,...a){if(v=='mijnkas'){document.body.dataset.view='mijnkas';try{fx.thema('kas')}catch(e){}$('#terug')&&$('#terug').classList.add('zien');window.scrollTo(0,0);return V.mijnkas()}return _ga(v,...a)}}
 // kweek-functies roepen V.kas() aan: in de eigen kas blijven we daar

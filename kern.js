@@ -74,9 +74,7 @@ V.kas=()=>{VIEWDECOR.kas='kas';const n=kweekPotten();const kl=['#c8b6ff','#f4a6c
  app(`<h2>De Kassen</h2>${tilly(n==1?'Eén pot om mee te beginnen. Wat we hierin kweken, wordt iets heel bijzonders. Meer potten komen als we de lokalen opknappen.':`${n} potten al! Ik praat elke ochtend even tegen ze. Dat helpt echt, zegt Professor Stronk.`)}
  <div class="kas">${Array.from({length:n},(_,i)=>{const pt=POTSOORT[Math.min(POTSOORT.length-1,Math.floor(i/2))];const f=Math.max(0,Math.min(4,Math.floor((S.xp-i*40)/25)));return `<div class="pot" style="--pot:${pt[1]}">${plantSVG(f,kl[i%kl.length])}<div><b>${(PLANT_NAMEN[i%PLANT_NAMEN.length])}</b><br><small>${pt[0]} · ${['Zaadje','Kiemplantje','Jonge plant','Knop','Bloeiend'][f]}</small></div></div>`}).join('')}</div>
  <p class="klein">Volgende pot na ${3-takenKlaar()%3} voltooide ${3-takenKlaar()%3==1?'taak':'taken'}.</p>`)};
-function potCheck(){const n=kweekPotten();if(n>S.pottenGezien){const eerste=!S.pottenGezien;S.pottenGezien=n;bewaar();if(eerste)return;const pt=POTSOORT[Math.min(POTSOORT.length-1,Math.floor((n-1)/2))];
- const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo nieuwepot"><h2>Een nieuwe pot!</h2><div class="np-pot" style="--pot:${pt[1]}">${plantSVG(0,'#9fd8cb')}</div><p><b>${pt[0]}</b></p>${tilly('Kijk wat ik vond achter de kas, Luna! Nog een pot. Wat zullen we erin zaaien?')}<button class="knop volgende" id="npok">Naar mijn potten</button><button class="linkknop" id="npl">Later</button></div>`;document.body.appendChild(o);fx.speel('fanfare');vib([40,30,80]);try{const r=o.querySelector('.np-pot').getBoundingClientRect();vonk(r.left+r.width/2,r.top+r.height/2,40)}catch(e){}
- $('#npok').onclick=()=>{o.remove();ga('kas')};$('#npl').onclick=()=>o.remove()}}
+function potCheck(){const n=kweekPotten();if(n>(S.pottenGezien||0)){S.pottenGezien=n;bewaar()}}
 /* dagdoelen (3) */
 function dagDoelen(){const d=vandaag(),{v}=huidigVak();const t=v.taken.find(x=>!S.taken[x[0]]);const tv=k=>((S.tel[d]||{})[k]||0);
  const lijst=[[`Verdien 2 sterren${t?' voor “'+t[1].toLowerCase()+'”':''}`,tv('sterren'),2,()=>ga('match3'),'ster'],
@@ -101,7 +99,7 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home='zaal';try{zetDecor('zaal')
  <button class="knop speel ${vol&&S.sterren<vol[2]?'volgende':''}" id="speelknop">Spelen · Level ${S.m3lvl}</button></section>
  ${spellenHal()}
  ${tilly(tillyZin(v,vol))}
- <div class="kleinrij"><button class="linkknop" onclick="ga('kas')">Naar de Kassen (${kweekPotten()} ${kweekPotten()==1?'pot':'potten'})</button><button class="linkknop" id="afscheid">Voor nu stoppen</button></div>
+ <div class="kleinrij"><button class="linkknop" onclick="ga('kas')">Naar de Kassen</button><button class="linkknop" id="afscheid">Voor nu stoppen</button></div>
  <p class="bronlink"><a href="CREDITS.txt" target="_blank">Bronnen & licenties</a> · weer: <a href="https://open-meteo.com/" target="_blank">Open-Meteo</a></p>`);
  M3.nieuw=null;
  document.querySelectorAll('.dd').forEach(b=>b.onclick=()=>{const g=dd.find(x=>x.k==b.dataset.k);if(!g.af)g.f()});
