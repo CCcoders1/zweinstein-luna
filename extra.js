@@ -241,6 +241,6 @@ const _home=V.home;V.home=()=>{_home();const f=feestdag();const ex=`<div class="
  $('#app').insertAdjacentHTML('beforeend',`${kistMeter()}<div class="raster"><div class="tegel" onclick="ga('kaart')"><div class="ico">🗺️</div>Sluipwegwijzer</div><div class="tegel" onclick="ga('quests')"><div class="ico">📋</div>Opdrachten</div><div class="tegel" onclick="ga('beker')"><div class="ico">🏆</div>Afdelingsbeker</div><div class="tegel" onclick="ga('kikker')"><div class="ico">🐸</div>Chocokikkers</div><div class="tegel" onclick="ga('kamer')"><div class="ico">🛏️</div>Mijn kamer</div><div class="tegel" onclick="ga('verhaal')"><div class="ico">📖</div>Verhaal</div><div class="tegel" onclick="ga('bertie')"><div class="ico">🎮</div>Mini-games</div><div class="tegel" onclick="V.login()"><div class="ico">📅</div>Dagbeloning</div></div><p class="bronlink"><a href="CREDITS.txt" target="_blank">Bronnen &amp; licenties</a> · weer: <a href="https://open-meteo.com" target="_blank">Open-Meteo</a></p>`)};
 TABS.splice(0,TABS.length,['kaart','🗺️','Kaart'],['home','🏰','Hal'],['spel','🧩','Spellen'],['lessen','📚','Lessen'],['winkel','🛍️','Winkel']);
 zetTijd();setInterval(zetTijd,6e4);haalWeer();setInterval(haalWeer,15*6e4);
-startApp();
-if(S.naam&&S.huis){loginCheck();setTimeout(()=>verjaardag(),800)}
+const startZweinstein=()=>{startApp();if(S.naam&&S.huis){loginCheck();setTimeout(()=>verjaardag(),800)}};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startZweinstein,{once:true});else startZweinstein();
 window.testVerjaardag=()=>verjaardag(true);

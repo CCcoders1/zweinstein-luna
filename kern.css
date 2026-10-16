@@ -32,6 +32,14 @@
 .padlvl{position:absolute;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;font:inherit;font-weight:bold;font-size:1.15em;cursor:inherit;border:3px solid #c9a227;background:radial-gradient(#5a3a1a,#2a180a);color:#ffe9a8;box-shadow:0 4px 10px rgba(0,0,0,.6)}
 .padlvl.af{background:radial-gradient(#f6e3a1,#b8860b);color:#3a2205}.padlvl.dicht{opacity:.55;border-color:#776}.padlvl.dicht .icn{width:20px;height:20px;stroke:#ccc}
 .padlvl.nu{width:68px;height:68px;animation:pols 1.8s infinite;background:radial-gradient(#ffe58a,#d4a017);color:#3a2205;box-shadow:0 0 24px rgba(255,215,90,.8)}
+.schooldag-voortgang{margin:4px 0;color:#f3dfa0;text-align:center;font-size:.86em}
+.schooldoelenlijst{margin:6px 0;border-top:1px dotted #c9a227;padding-top:6px;text-align:left}
+.schooldoelenlijst summary{cursor:pointer;color:#f3dfa0;font-weight:bold}
+.schooldoelenlijst ol{display:grid;gap:4px;margin:8px 0;padding-left:24px}
+.schooldoelenlijst li{display:flex;justify-content:space-between;gap:10px;align-items:start;color:#f3e9cc;font-size:.88em}
+.schooldoelenlijst li b{white-space:nowrap;color:#f3dfa0}
+.schooldoelenlijst li .icn{width:14px;height:14px;vertical-align:middle}
+.schooldoelenlijst li.af{opacity:.65;text-decoration:line-through}
 .luna{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:32px;height:32px;border-radius:50%;background:#2a1d4a;border:2px solid #f6e3a1;color:#f6e3a1;line-height:28px;font-size:16px;animation:zweef 2.4s ease-in-out infinite}
 @keyframes zweef{50%{transform:translate(-50%,-5px)}}
 .padvak{position:absolute;left:0;right:0;text-align:center;font-variant:small-caps;color:#efd27a;font-size:.9em;letter-spacing:.08em;text-shadow:0 0 8px #000}

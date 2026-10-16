@@ -31,6 +31,7 @@ const fx=(()=>{let ac,master,muz,muzOn=window.MUZIEK_UIT?false:JSON.parse(localS
   goed:()=>{const t=ac.currentTime;[72,76,79,84].forEach((m,i)=>toon(N(m+12),t+i*.09,1,{type:'triangle',g:.2}))},
   fout:()=>{const t=ac.currentTime;toon(196,t,.35,{type:'sawtooth',g:.08});toon(185,t+.18,.45,{type:'sawtooth',g:.08})},
   fanfare:()=>{const t=ac.currentTime;[[60,0],[64,.15],[67,.3],[72,.45],[67,.7],[72,.85]].forEach(([m,d])=>{toon(N(m),t+d,.5,{type:'square',g:.08});toon(N(m+12),t+d,.5,{type:'triangle',g:.1})})},
+  tover:()=>{const t=ac.currentTime;[72,76,79,84,88].forEach((m,i)=>toon(N(m+12),t+i*.07,.62,{type:'triangle',g:.18}))},
   klik:()=>toon(1800,ac.currentTime,.08,{g:.06})};
  const laatstGespeeld={};const speel=n=>{try{init();if(ac.state==='suspended')ac.resume();const nu=performance.now();if(nu-(laatstGespeeld[n]||0)<90)return;if(live>28)return;laatstGespeeld[n]=nu;S[n]()}catch(e){}};
  return{debug:()=>({tracks,live,state:ac&&ac.state}),duik:on=>{if(!ac)return;const t=ac.currentTime;muz.gain.cancelScheduledValues(t);muz.gain.setValueAtTime(muz.gain.value,t);muz.gain.linearRampToValueAtTime(on?.06:(muzOn?.35:0),t+.5)},thema:wissel,bloei,spanning:v=>{spanning=v?1:0},ctx:()=>{init();if(ac.state==='suspended')ac.resume();return{ac,master}},init,speel,muz:a=>{muzOn=a;localStorage.setItem('zw_muz',a);if(muz)muz.gain.value=a?.35:0},vol:v=>{vol=v;localStorage.setItem('zw_vol',v);if(master)master.gain.value=v},get muzOn(){return muzOn},get volv(){return vol}}})();

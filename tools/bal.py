@@ -1,5 +1,8 @@
 from playwright.sync_api import sync_playwright
 import json,time
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+TOOLS=Path(__file__).resolve().parent
 JS="""async([a,b])=>{const SEEDS=8;const sim=async(L,th)=>{let w=0,rest=0;for(let p=1;p<=SEEDS;p++){const bd=new Bord(L,th,p);let v=0;while(bd.zet>0&&!bd.klaar()&&v++<160){const z=m3BesteZet(bd);if(!z)break;await bd.wissel(z[0],z[1])}if(bd.klaar()){w++;rest+=bd.zet}}return [w/SEEDS,rest]};
  const doel=n=>{const d=(n-1)%100;if(d<8)return .5;if(n%100==0)return .125;if(n%10==6)return .125;if(n%10==7)return .5;return .25};
  const ES=[-10,-8,-6,-4,-2,0,2,4,6,9,12,16,20,25,30,40,55];const out={};
@@ -10,9 +13,9 @@ JS="""async([a,b])=>{const SEEDS=8;const sim=async(L,th)=>{let w=0,rest=0;for(le
   out[n]=[Math.max(12,base+ES[lo])-base,(await f(lo))[0],T,base]}
  return out}"""
 with sync_playwright() as p:
- b=p.chromium.launch();pg=b.new_page();pg.goto('file:///workspace/magische-app/index.html');pg.wait_for_timeout(2500)
+ b=p.chromium.launch();pg=b.new_page();pg.goto((ROOT/'index.html').as_uri());pg.wait_for_timeout(2500)
  pg.evaluate("S.m3kal={}")
  res={};t=time.time()
  for a in range(1,601,25):
   res.update(pg.evaluate(JS,[a,a+24]));print(a,round(time.time()-t),flush=True)
- json.dump(res,open('bal.json','w'))
+ json.dump(res,(TOOLS/'bal.json').open('w'))

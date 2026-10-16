@@ -300,6 +300,46 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .padkopbeeld h2{margin:0;color:#ffe58a!important;font-size:1.35em}.padkopbeeld p{margin:0;color:#fff3cf!important}.padkopbeeld small{color:#ffe58a;letter-spacing:.1em;text-transform:uppercase}
 .paddeur{text-align:center;padding:12px;margin:0 0 10px;border-radius:14px;background:linear-gradient(#fff6dc,#ecd9a8);border:2px solid #c9a227;color:#3a240c}
 .paddeur p{color:#3a240c!important;margin:4px 0}.pd-deur .icn{width:28px;height:28px}
+.pad.thema{max-width:440px;border-radius:22px;overflow:hidden;box-shadow:inset 0 0 0 3px rgba(232,196,106,.72),0 12px 28px rgba(0,0,0,.35);background-color:#142016;background-position:center top;background-size:cover;color:#f3e6b8}
+.pad.thema-herbologie{background-image:linear-gradient(rgba(12,32,16,.42),rgba(8,20,10,.78)),url(img/laadschermen/herbologie-klein.webp);--pad-rand:#d5e7a4;--pad-licht:#4e7a38;--pad-donker:#173016;--pad-lijn:#e7f0c4}
+.pad.thema-bezweringen{background-image:linear-gradient(rgba(28,18,48,.45),rgba(16,10,32,.8)),url(img/laadschermen/bezweringen-klein.webp);--pad-rand:#e4d2ff;--pad-licht:#6a4a92;--pad-donker:#241438;--pad-lijn:#efe4ff}
+.pad.thema-toverdranken{background-image:linear-gradient(rgba(10,28,16,.5),rgba(6,14,10,.82)),url(img/laadschermen/toverdranken-klein.webp);--pad-rand:#c8e2b0;--pad-licht:#2f5a3a;--pad-donker:#101c14;--pad-lijn:#d5ecc4}
+.pad.thema-gedaante{background-image:linear-gradient(rgba(48,28,16,.42),rgba(24,12,8,.78)),url(img/laadschermen/gedaanteverwisselingen-klein.webp);--pad-rand:#f0d2a4;--pad-licht:#8a5a32;--pad-donker:#2c160c;--pad-lijn:#f6e2c4}
+.pad.thema-astronomie{background-image:linear-gradient(rgba(10,16,40,.5),rgba(6,8,22,.82)),url(img/laadschermen/astronomie-klein.webp);--pad-rand:#d5e4ff;--pad-licht:#3a4e86;--pad-donker:#101628;--pad-lijn:#e4eeff}
+.pad.thema-verweer{background-image:linear-gradient(rgba(40,12,14,.48),rgba(16,6,8,.82)),url(img/laadschermen/verweer-klein.webp);--pad-rand:#f0c8b4;--pad-licht:#7a342c;--pad-donker:#240c0c;--pad-lijn:#f6d8cc}
+.pad .padlijn{color:var(--pad-lijn,#f6e3a1)}
+.pad .sluierlijn{opacity:.85;-webkit-mask-image:linear-gradient(#000 0,#000 28%,transparent 92%);mask-image:linear-gradient(#000 0,#000 28%,transparent 92%)}
+.pad .padlvl{width:54px;height:54px;border-width:3px;border-color:var(--pad-rand,#e8c56a);background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.38),transparent 42%),radial-gradient(var(--pad-licht,#6a4a22),var(--pad-donker,#2a180c));color:#fff6df;box-shadow:0 5px 0 rgba(0,0,0,.28),inset 0 0 0 2px rgba(255,255,255,.16)}
+.pad .padlvl.af{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.55),transparent 40%),radial-gradient(#f8e7b0,#c4962a);color:#3a2408;border-color:#ffe9a8}
+.pad .padlvl.nu{width:68px;height:68px;background:radial-gradient(circle at 35% 30%,#fff6c8,transparent 42%),radial-gradient(#ffe58a,#d4a017);color:#3a2408;border-color:#fff1b0;box-shadow:0 0 22px rgba(255,214,90,.85),0 5px 0 rgba(0,0,0,.25)}
+.pad .padlvl.vooruit{opacity:calc(1 - var(--v) * .14)}
+.pad .padlvl.plaag{background:radial-gradient(circle at 35% 30%,#f4e2ff,transparent 42%),radial-gradient(#c084fc,#5b217f);color:#fff8ff;border-color:#f0d0ff;box-shadow:0 0 16px rgba(176,80,230,.8),0 5px 0 rgba(40,10,60,.35)}
+.pad .padlvl.nu.plaag{background:radial-gradient(circle at 35% 30%,#fff,transparent 36%),radial-gradient(#e2b6ff,#6d28a0);color:#fff}
+.pad .padlvl.af.plaag{background:radial-gradient(circle at 35% 30%,#f7e8ff,transparent 42%),radial-gradient(#b48ad4,#6a3a90);color:#fff}
+.pad .padlvl.cadeau{border-color:#ffe7a0;box-shadow:0 0 0 3px rgba(255,214,90,.55),0 0 16px rgba(255,196,60,.85),0 5px 0 rgba(0,0,0,.28)}
+.pad .padlvl.cadeau::before{content:'✦';position:absolute;left:50%;top:-13px;transform:translateX(-50%);color:#ffe58a;font-size:16px;text-shadow:0 0 6px #ffbf3a;line-height:1}
+.pad .padlvl.zwaar:not(.plaag){border-color:#e07a55;box-shadow:0 0 0 3px rgba(176,54,28,.55),0 5px 0 rgba(0,0,0,.28)}
+.pad .padlvl.zwaar:not(.plaag)::after{content:'!';position:absolute;right:-4px;top:-6px;width:18px;height:18px;border-radius:50%;background:#8d2c16;color:#fff6ea;font-size:12px;line-height:18px;box-shadow:0 0 0 2px #f6d2b8}
+.pad .padlvl.lang{font-size:.82em}
+.pad.met-nevel::after{content:"";position:absolute;left:0;right:0;top:0;height:108px;background:linear-gradient(to bottom,rgba(6,8,14,.62),transparent);pointer-events:none;z-index:1}
+.pad.met-nevel .padlijn{-webkit-mask-image:linear-gradient(transparent 0,#000 120px);mask-image:linear-gradient(transparent 0,#000 120px)}
+.pad .padlvl{z-index:2}
+.schooldag-kaart{margin:0 0 10px;padding:8px 4px;border-block:1px dotted #d4af37;color:#f3e9cc}
+.schooldag-kaart small{color:#ffe58a;text-transform:uppercase}
+.schooldag-kaart h3{margin:3px 0;color:#ffe58a}
+.schooldag-kaart p{margin:3px 0 8px}
+.pad .padlvl.schooldag-einde{border-color:#ffe58a;box-shadow:0 0 0 3px rgba(212,175,55,.38),0 5px 0 rgba(0,0,0,.28)}
+.pad .padlvl.schooldag-poort{border-style:dashed;border-color:#d4af37;background:radial-gradient(#493614,#201405);color:#ffe58a}
+.pad-nevel{position:absolute;left:6%;right:6%;top:10px;z-index:4;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;text-align:left;color:#fff8e8;text-shadow:0 1px 4px #000;pointer-events:none}
+.pad-teken{display:inline-flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border-radius:999px;background:rgba(8,6,16,.62);border:1px solid rgba(255,244,210,.38)}
+.pad-gloed{width:44px;height:44px;border-radius:50%;flex:0 0 44px}
+.pad-gloed.plaag{background:radial-gradient(circle at 35% 30%,#fff,#d8b4fe 38%,#7e22ce 72%);box-shadow:0 0 18px 8px rgba(176,80,230,.9)}
+.pad-gloed.cadeau{background:radial-gradient(circle at 35% 30%,#fff,#ffe58a 40%,#e0a020 74%);box-shadow:0 0 18px 8px rgba(255,196,60,.85)}
+.pad-teken b{display:block;font-size:14px;line-height:1.15}.pad-teken small{display:block;font-size:11px;opacity:.92}
+.pv.wacht{box-shadow:0 0 0 2px rgba(255,214,120,.9)}
+.pv.wacht-plaag{box-shadow:0 0 0 2px #d7a6ff,0 0 12px rgba(170,70,230,.75)}
+.pv.actief.wacht-plaag{box-shadow:0 0 0 3px #ffe58a,0 0 0 6px #d7a6ff,0 0 14px rgba(170,70,230,.75)}
+.pv small:empty{display:none}
 /* ====== personages ====== */
 .tportret,.pportret{display:block;width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.35));transform-origin:50% 90%}
 .tavatar{width:58px!important;height:auto!important;background:none!important;border:0!important;flex:0 0 58px}
@@ -583,15 +623,15 @@ body[data-view=mijnkas] .pipbubbel{z-index:45}
 .mk-tafel.klein{right:10%;width:17%}
 .mk-hint.t{right:36%}
 .mk-tafel .mk-rij,.mk-tafel.klein .mk-rij{position:absolute;left:2%;right:2%;bottom:calc(100% - 8px);margin:0;z-index:2}
-.mk-tafel .mk-lab{position:absolute;left:50%;top:auto;bottom:-4px;transform:translate(-50%,100%);margin:0;z-index:3}
-.mk-silos{position:absolute;left:0;width:76%;top:0;bottom:0;display:flex;align-items:flex-end;justify-content:space-between;gap:1%;z-index:1}
+.mk-tafel .mk-lab{position:absolute;left:50%;top:auto;bottom:-4px;transform:translate(-50%,100%);margin:0;z-index:3;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.mk-silos{position:absolute;left:0;width:58%;top:0;bottom:0;display:flex;align-items:flex-end;justify-content:space-between;gap:1%;z-index:1}
 .mk-silos .mk-unit{position:relative;left:auto;bottom:auto;width:auto;height:100%;flex:1 1 0}
 .mk-silos .mk-silo{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;aspect-ratio:552/1103;max-height:100%;background:none;border:none;box-shadow:none;border-radius:0;overflow:visible}
 .mk-silo img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:2;pointer-events:none;filter:drop-shadow(0 8px 6px rgba(20,10,0,.35))}
 .mk-glas{position:absolute;left:20.5%;width:60%;bottom:17.5%;height:58.5%;border-radius:42% 42% 48% 48%/7% 7% 16% 16%;overflow:hidden;z-index:1}
 .mk-silo i{left:0;right:0;bottom:0;background:linear-gradient(#c5ecff,#3d92d6 42%,#1c5c9c)}
 .mk-silo span{z-index:3;top:46%;font-size:14px}
-.mk-knoppen{position:absolute;left:77%;right:0;bottom:5%;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:flex-end;justify-content:space-between;gap:5%;z-index:5}
+.mk-knoppen{position:absolute;left:59%;right:1%;bottom:6%;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:flex-end;justify-content:space-between;gap:4%;z-index:5}
 .mk-knoop{flex:1 1 0;min-width:0;width:auto;position:relative}
 .mk-knoppen .mk-plaat,.mk-leviosa.aan .mk-plaat{position:relative;left:auto;width:100%;height:auto;bottom:auto;background:none;border:none;box-shadow:none;border-radius:0;padding:0;overflow:visible}
 .mk-plaat img{display:block;width:100%;height:auto;pointer-events:none;filter:drop-shadow(0 5px 4px rgba(20,10,0,.45))}
@@ -602,7 +642,7 @@ body[data-view=mijnkas] .pipbubbel{z-index:45}
 .mk-leviosa .mk-blok,.mk-leviosa.aan .mk-blok{width:11%;height:auto;aspect-ratio:420/470;bottom:8%;background:none;border:none;box-shadow:none;border-radius:0;padding:0;z-index:6;transition:none}
 .mk-blok img{display:block;width:100%;height:100%;object-fit:fill;pointer-events:none;filter:drop-shadow(0 4px 3px rgba(0,0,0,.5))}
 .mk-leviosa[data-b="0"] .mk-blok{left:76.5%}.mk-leviosa[data-b="1"] .mk-blok{left:88%}
-.mk-leviosa .mk-meld{left:0;right:auto;bottom:-9%;width:max-content;white-space:nowrap}
+.mk-leviosa .mk-meld{left:2%;right:auto;bottom:auto;top:12%;width:max-content;white-space:nowrap}
 .mk-leviosa .mk-meld input{padding:0;width:14px;height:14px;flex:none}
 .mk-levtxt{top:2%;left:2%;right:2%;font-size:13px}
 .mk-blok.zweefR{animation:zwR 1.5s ease-in-out forwards}.mk-blok.zweefL{animation:zwL 1.5s ease-in-out forwards}
@@ -612,7 +652,7 @@ body[data-view=mijnkas] .pipbubbel{z-index:45}
 .mk-vloer{position:absolute;right:29%;bottom:12%;width:11%;z-index:4;background:none;border:none;padding:0;display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .mk-vloer .gpimg{width:100%;height:auto;filter:drop-shadow(0 8px 6px rgba(40,20,5,.45))}
 .mk-vloer .superimg{width:120%;margin-bottom:-42%;position:relative;z-index:2;pointer-events:none}
-.mk-vloer .gplabel{font-size:11px;background:rgba(40,30,15,.75);color:#ffe9b0;border-radius:9px;padding:1px 7px;margin-top:2px;white-space:nowrap}
+.mk-vloer .gplabel{font-size:11px;background:rgba(40,30,15,.75);color:#ffe9b0;border-radius:9px;padding:1px 7px;margin-top:2px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .mk-vloer.rijp .gplabel{background:#e8b839;color:#3a2410}
 .mk-kamer:has(.mk-tafel.groot) .mk-vloer{right:auto;left:50%;width:9%}
 .mk-balk button{flex:0 0 auto;border:none;border-radius:12px;background:#e8b839;color:#3a2410;font-weight:700;font-size:13px;padding:4px 10px;cursor:pointer}
@@ -645,27 +685,156 @@ button.poortbanner{font:inherit;cursor:pointer;width:100%;text-align:left}
 .mk-tafel.klein .mk-pot{flex:0 1 34%;min-width:0}
 .mk-tafel.klein .mk-rij:has(.mk-pot:nth-child(2)) .mk-pot{flex-basis:27%}
 .mk-tafel.klein .mk-rij:has(.mk-pot:nth-child(3)) .mk-pot{flex-basis:20%}
+/* Duivelsstrik en het ingrediëntenboek */
+.m3auw{position:absolute;z-index:4;transform:translate(-50%,-80%);font:800 36px Georgia,serif;color:#fff8e8;background:#5b188c;border:3px solid #ffe58a;border-radius:14px;padding:1px 12px 4px;letter-spacing:.06em;text-shadow:0 2px 0 #2a0838;box-shadow:0 4px 0 #2a0838,0 0 16px rgba(190,120,255,.9);animation:m3auw 1.15s ease-out forwards;pointer-events:none}
+.m3auw.brand{font-size:22px;letter-spacing:.02em;background:#143028;border-color:#d7ffe4;text-shadow:0 2px 0 #06140e;box-shadow:0 4px 0 #06140e,0 0 16px rgba(80,220,140,.85)}
+@keyframes m3auw{0%{transform:translate(-50%,-40%) scale(.45) rotate(-8deg);opacity:0}18%{transform:translate(-50%,-95%) scale(1.18) rotate(5deg);opacity:1}42%{transform:translate(-56%,-88%) rotate(-5deg);opacity:1}64%{transform:translate(-44%,-96%) rotate(4deg);opacity:1}100%{transform:translate(-50%,-100%) scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.m3auw{animation:none!important;opacity:1}}
+.plaagregel{margin:6px 0;color:#5a2a86;font-weight:700}
+.reekswinst{margin:6px 0;color:#6b3a08;font-weight:700}
+.stronk-in,.kasblad{background:linear-gradient(rgba(250,238,210,.98),rgba(236,214,170,.98));color:#3a240c;border-radius:10px}
+.stronk-in{padding-top:0;overflow:hidden}
+.stronk-beeld{height:150px;margin:-16px -16px 10px;background:#1c2438 center 30%/cover no-repeat;border-bottom:3px solid #c9a227}
+.stronk-in h2,.kasblad h2{margin:0 0 6px;color:#6b1d0e;-webkit-text-fill-color:#6b1d0e;font-size:1.55rem}
+.stronk-in p{color:#3a240c}
+.stronk-knoppen{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.mk-tafel.klein .mk-schrift{position:absolute;right:28%;bottom:112%;z-index:7;display:flex;gap:6px}
+.mk-schrift button{width:52px;background:rgba(36,24,12,.62);border:1px solid rgba(232,184,57,.75);border-radius:12px;padding:4px 2px 3px;color:#fff6dc;font-size:10px;cursor:pointer}
+.mk-schrift small{display:block;margin-top:2px}
+.mk-logo{display:block;width:28px;height:22px;margin:0 auto;position:relative}
+.mk-logo.boek{background:linear-gradient(#f6e7c2,#e4c98a);border-radius:1px 3px 3px 1px;box-shadow:inset 7px 0 #5b2d86,0 1px 2px rgba(0,0,0,.45)}
+.mk-logo.boek:before{content:'';position:absolute;left:9px;right:3px;top:4px;height:2px;background:#c9a06a;box-shadow:0 4px 0 #c9a06a,0 8px 0 #c9a06a}
+.mk-logo.kist{background:linear-gradient(#c4894a,#8a5528);border-radius:2px;box-shadow:inset 0 7px #e8b56a,0 1px 2px rgba(0,0,0,.45)}
+.mk-logo.kist:before{content:'';position:absolute;left:50%;top:2px;width:8px;height:6px;margin-left:-4px;border:2px solid #5a3010;border-bottom:none;border-radius:4px 4px 0 0}
+.mk-balk .mk-logo{width:24px;height:18px}
+.zkoop.klaar{box-shadow:0 0 0 2px #2f6a32;background:#e7f6df}
+.zkoop.dicht{opacity:.55}
+.mixheb{display:block;font-weight:700;color:#2f6a32}
+.zkoop:not(.klaar) .mixheb{color:#7a1f10}
+.mixnodig{display:flex;gap:6px;justify-content:center;align-items:flex-end;margin:4px 0;flex-wrap:wrap}
+.mixnodig span{display:flex;flex-direction:column;align-items:center;font-size:11px;min-width:46px}
+.mixnodig img{width:36px;height:40px;object-fit:contain}
+.flesje{width:16px;height:26px;border-radius:2px 2px 7px 7px;background:linear-gradient(#d7b0ff,#6a3a9a);box-shadow:inset 0 0 0 2px #3a1860;position:relative}
+.flesje:before{content:'';position:absolute;left:4px;right:4px;top:-5px;height:5px;background:#e8dcc0;border-radius:1px}
+/* Eén tafel: klein maximaal 3 potten, groot 5 en die vervangt de kleine. */
+.mk-tafel.groot{right:8%;width:28%;bottom:12%}
+.mk-tafel.klein{right:9%;width:18%;bottom:12%}
+.mk-tafel.groot .mk-rij{justify-content:flex-start;gap:2px}
+.mk-tafel.groot .mk-pot{flex:1 1 0;max-width:20%;min-width:0}
+.mk-tafel.klein .mk-pot{flex:1 1 0;max-width:34%;min-width:0}
+/* Elke groeifase zit met de voet in de potmond, horizontaal in het midden. */
+.mk-pot .kplant{position:absolute;left:50%;bottom:50%;width:72%;margin:0!important;transform:translateX(-50%);z-index:2;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}
+.mk-pot .kplant:has(.kst0){width:40%}
+.mk-pot .kplant:has(.kst1){width:52%}
+.mk-pot .kplant:has(.kst2){width:64%}
+.mk-pot .kplant:has(.kst3){width:78%}
+.mk-pot .kplant:has(.kst4){width:92%}
+.mk-pot .plantimg,.mk-pot .plantimg.kst0,.mk-pot .plantimg.kst1,.mk-pot .plantimg.kst2,.mk-pot .plantimg.kst3,.mk-pot .plantimg.kst4{width:100%;height:auto;display:block;transform:none!important}
+.mk-pot .kplant svg{width:100%;height:auto;display:block;transform:translateY(16%)}
+.mk-pot .kplant svg>path:first-of-type,.mk-pot .kplant svg>ellipse:first-of-type{display:none}
+/* De vloerpot is de megapot: één rij, ruimer, zonder overlap met de tafel. */
+.mk-megas{position:absolute;z-index:4;left:22%;right:36%;bottom:18%;display:flex;justify-content:space-evenly;align-items:flex-end;gap:5%;pointer-events:none}
+.mk-kamer:has(.mk-tafel.klein) .mk-megas{left:24%;right:34%}
+.mk-kamer:has(.mk-tafel.groot) .mk-megas{left:22%;right:36%}
+.mk-kamer .mk-megas .mk-vloer,.mk-kamer:has(.mk-tafel.groot) .mk-megas .mk-vloer{pointer-events:auto;position:relative;left:auto;right:auto;bottom:auto;flex:1 1 0;width:auto;max-width:340px;min-width:0;background:none;border:none;padding:0;display:flex;flex-direction:column;align-items:center}
+.mk-megas .gpimg{width:100%}
+.mk-vloer .superimg{position:absolute;left:50%;bottom:76%;margin:0!important;transform:translateX(-50%);z-index:2;pointer-events:none;width:78%}
+.mk-vloer .superimg.kst0{width:42%}
+.mk-vloer .superimg.kst1{width:54%}
+.mk-vloer .superimg.kst2{width:66%}
+.mk-vloer .superimg.kst3{width:84%}
+.mk-vloer .superimg.kst4{width:108%}
+.mk-balk{justify-content:stretch;gap:8px;overflow:hidden}
+.mk-balk button{flex:1 1 0;font-size:14px;padding:8px 4px;min-height:40px}
+.mk-leviosa .mk-blok,.mk-leviosa.aan .mk-blok{width:17%;bottom:6%}
+.mk-leviosa[data-b="0"] .mk-blok{left:60%}
+.mk-leviosa[data-b="1"] .mk-blok{left:79%}
+.mk-blok.spreekt img{filter:drop-shadow(0 0 12px rgba(255,220,120,.95)) drop-shadow(0 4px 3px rgba(0,0,0,.5))}
+@keyframes zwR{0%{left:60%;bottom:6%}30%{left:60%;bottom:32%;transform:rotate(-8deg)}70%{left:79%;bottom:32%;transform:rotate(7deg)}100%{left:79%;bottom:6%;transform:none}}
+@keyframes zwL{0%{left:79%;bottom:6%}30%{left:79%;bottom:32%;transform:rotate(8deg)}70%{left:60%;bottom:32%;transform:rotate(-7deg)}100%{left:60%;bottom:6%;transform:none}}
+.mk-toverspreuk{position:fixed;z-index:80;pointer-events:none;transform:translate(-50%,-120%);font:italic 700 26px Georgia,'Times New Roman',serif;color:#fff8e0;background:rgba(36,22,8,.9);border:2px solid #e8b839;border-radius:16px;padding:8px 16px;letter-spacing:.02em;box-shadow:0 0 18px rgba(255,210,100,.75);white-space:nowrap}
+.voorraadstrip{flex-wrap:wrap;justify-content:flex-start;gap:8px 10px;margin:8px 0 12px}
+.voorraadstrip b,.mixnodig b{display:block;font-size:14px;color:#2f6a32}
+.smekwinkel img{width:22px;height:22px;vertical-align:-5px}
 
-/* lange kamer (kamer-lang.webp): rechts verankerd, zelfde pixelmaat */
-.mk-kamer{aspect-ratio:2850/714!important;background:url(img/kas/kamer-lang.webp) 0 0/100% 100% no-repeat!important}
-.mk-tafel.klein{left:auto!important;right:6.03%!important;width:10.21%!important}
-.mk-tafel.groot{left:auto!important;right:16.83%!important;width:12.02%!important}
-.mk-vloer{left:auto!important;right:24.67%!important;width:5.40%!important}
-.mk-mega{left:auto!important;right:31.26%!important;width:7.81%!important}
-.mk-deur{left:auto!important;right:0.42%!important;width:4.99%!important}
-.mk-leviosa{left:0.4%!important;width:11.58%!important}
-.mk-sproeiers{display:none}
-.mk-leiding{position:absolute;inset:0;pointer-events:none;z-index:2}
-.mk-leiding .lv{position:absolute;left:5.6%;top:9%;bottom:62%;width:14px;border-radius:7px;background:linear-gradient(90deg,#6b3e1c,#d08a4a 45%,#8a5226);box-shadow:0 2px 4px rgba(0,0,0,.35)}
-.mk-leiding .lh{position:absolute;left:5.6%;right:7%;top:9%;height:14px;border-radius:7px;background:linear-gradient(#d08a4a,#8a5226 60%,#5a3416);box-shadow:0 3px 5px rgba(0,0,0,.35)}
-.mk-leiding .kop{position:absolute;top:calc(9% + 10px);width:22px;height:16px;margin-left:-11px;border-radius:3px 3px 11px 11px;background:linear-gradient(#e0a060,#7a4a20);box-shadow:0 2px 3px rgba(0,0,0,.4)}
-.mk-kamer.sproei .mk-leiding .kop::after{content:'';position:absolute;left:50%;top:14px;width:150px;height:46vh;transform:translateX(-50%);background:repeating-linear-gradient(100deg,transparent 0 9px,rgba(170,220,255,.55) 9px 11px,transparent 11px 20px),repeating-linear-gradient(80deg,transparent 0 12px,rgba(170,220,255,.45) 12px 14px,transparent 14px 24px);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);-webkit-mask:linear-gradient(#000 40%,transparent);mask:linear-gradient(#000 40%,transparent);animation:spray .5s linear infinite}
-@keyframes spray{from{background-position:0 0,0 0}to{background-position:0 24px,0 24px}}
-@media (prefers-reduced-motion:reduce){.mk-kamer.sproei .mk-leiding .kop::after{animation:none}}
-.mk-knoppen .mk-plaat img{min-width:64px}
-.mk-leviosa{width:16.6%!important}.mk-silos{width:60%!important}.mk-knoppen{left:63%!important;gap:8%!important}
-.mk-knoppen .mk-plaat img{min-width:0}
-.mk-pot .kplant{margin-bottom:-52%!important}
-.mk-kamer.sproei .mk-leiding .kop::after{opacity:1;filter:drop-shadow(0 0 2px rgba(120,190,255,.8))}
-.mk-leiding .lv{bottom:56%}
-.mk-pot .kplant{display:flex!important;flex-direction:column;justify-content:flex-end;align-items:center;margin-bottom:-28%!important}
+/* Kascompositie: scroll blijft vrij; meubels delen de kamerbreedte. */
+.mk-kamer .mk-megas,.mk-kamer:has(.mk-tafel.klein) .mk-megas,.mk-kamer:has(.mk-tafel.groot) .mk-megas{left:36%;right:auto;bottom:16%;width:14%;display:flex;justify-content:space-between;gap:8%;align-items:flex-end}
+.mk-kamer .mk-megas .mk-vloer{flex:1 1 0;width:auto;min-width:0;max-width:none}
+.mk-megas .gpimg{width:100%;height:auto}
+.mk-vloer .superimg{width:76%;bottom:70%;margin:0!important}
+.mk-vloer .superimg.kst0{width:42%}.mk-vloer .superimg.kst1{width:52%}.mk-vloer .superimg.kst2{width:62%}.mk-vloer .superimg.kst3{width:74%}.mk-vloer .superimg.kst4{width:88%}
+.mk-vloer .gplabel{max-width:none;overflow:visible;font-size:clamp(9px,1.1cqw,12px);padding:2px 6px}
+.mk-tafel.groot{right:20%;width:30%;bottom:19%}
+.mk-tafel.klein{right:20%;width:28%;bottom:19%}
+.mk-tafel .mk-rij{bottom:calc(100% - 5px)}
+.mk-leviosa{left:1%;bottom:12%;width:38%;height:86%}
+.mk-silos{left:0;width:58%;height:100%}
+.mk-leviosa .mk-silos .mk-silo{aspect-ratio:552/1325;max-height:100%}
+.mk-knoppen{left:63%;right:2%;bottom:9%;gap:5%;align-items:center}
+.mk-leviosa .mk-blok,.mk-leviosa.aan .mk-blok{left:65%;bottom:8%;width:12%;height:auto;aspect-ratio:420/470;transform:none;z-index:6}
+.mk-leviosa[data-b="0"] .mk-blok{left:65%}.mk-leviosa[data-b="1"] .mk-blok{left:85%}
+.mk-levtxt{top:2%;left:2%;right:2%;text-align:center;font-size:clamp(11px,1.2cqw,15px);z-index:6}
+.mk-meld{top:10%;bottom:auto;left:3%;right:auto;z-index:6}
+@keyframes zwR{0%{left:65%;bottom:8%}30%{left:65%;bottom:48%;transform:rotate(-8deg)}70%{left:85%;bottom:48%;transform:rotate(7deg)}100%{left:85%;bottom:8%;transform:none}}
+@keyframes zwL{0%{left:85%;bottom:8%}30%{left:85%;bottom:48%;transform:rotate(8deg)}70%{left:65%;bottom:48%;transform:rotate(-7deg)}100%{left:65%;bottom:8%;transform:none}}
+.mk-pot .kplant{bottom:48%;z-index:4;clip-path:inset(0 0 40% 0)}
+.mk-pot .kplant:has(.kst0){clip-path:inset(0 0 16% 0)}
+.mk-pot .kplant:has(.kst1){clip-path:inset(0 0 26% 0)}
+.mk-pot .kplant:has(.kst2){clip-path:inset(0 0 32% 0)}
+.mk-pot .kplant:has(.kst3){clip-path:inset(0 0 38% 0)}
+.mk-pot .kplant:has(.kst4){clip-path:inset(0 0 42% 0)}
+.mk-pot .potimg{position:relative;z-index:3}
+.mk-pot .mk-lab{z-index:4}
+.mk-kamer>#elfcv.in-kas{position:absolute;inset:0 auto auto 0;width:100%;height:100%;z-index:20;pointer-events:none}
+#app.elf-host{position:relative}
+#elfcv.in-menu{position:absolute;inset:0 auto auto 0;width:100%;z-index:12;pointer-events:none}
+@media(max-width:600px){
+ .mk-tafel.groot{right:20%;width:30%;bottom:19%}
+ .mk-tafel.klein{right:20%;width:28%;bottom:19%}
+ .mk-leviosa{width:40%;height:84%}
+ .mk-kamer .mk-megas{left:36%;width:14%;bottom:17%}
+ .mk-balk{gap:5px;padding-inline:5px}
+ .mk-balk button{font-size:12px;padding:7px 3px}
+}
+
+/* Water and levitation controls share one compact, spacious station. */
+.mk-leviosa{left:8%;bottom:12%;width:min(28%,100cqw);height:86%}
+.mk-silos{left:0;width:44%;height:100%}
+.mk-leviosa .mk-silos .mk-silo{aspect-ratio:552/2600;max-height:100%}
+.mk-knoppen{left:46%;right:1%;bottom:9%;gap:4%;align-items:center}
+.mk-leviosa .mk-blok,.mk-leviosa.aan .mk-blok{left:50.5%;bottom:14%;width:14%;height:auto;aspect-ratio:420/470;transform:none;z-index:6}
+.mk-leviosa[data-b="0"] .mk-blok{left:50.5%}.mk-leviosa[data-b="1"] .mk-blok{left:79.5%}
+@keyframes zwR{0%{left:50.5%;bottom:14%}30%{left:50.5%;bottom:50%;transform:rotate(-8deg)}70%{left:79.5%;bottom:50%;transform:rotate(7deg)}100%{left:79.5%;bottom:14%;transform:none}}
+@keyframes zwL{0%{left:79.5%;bottom:14%}30%{left:79.5%;bottom:50%;transform:rotate(8deg)}70%{left:50.5%;bottom:50%;transform:rotate(-7deg)}100%{left:50.5%;bottom:14%;transform:none}}
+.mk-kamer.sproei .mk-sproeiers::after{left:42%;right:1%;top:4px;height:min(58vh,460px);background-image:radial-gradient(ellipse 9px 4px at 50% 0,rgba(229,249,255,.85) 0 45%,transparent 100%),radial-gradient(circle,rgba(248,253,255,.98) 0 1.8px,transparent 3px),repeating-linear-gradient(104deg,transparent 0 20px,rgba(213,242,255,.42) 21px,transparent 24px 44px);background-size:60px 10px,38px 25px,44px 34px;background-position:0 0,13px -25px,0 -34px;background-repeat:repeat-x,repeat,repeat;-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.16) 0,#000 16%,#000 66%,transparent 94%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.16) 0,#000 16%,#000 66%,transparent 94%);opacity:.82;filter:drop-shadow(0 1px 4px rgba(170,225,255,.5));mix-blend-mode:screen;animation:kasregen 1.05s linear infinite;pointer-events:none}
+@keyframes kasregen{0%{background-position:0 0,13px -32px,0 -42px;opacity:.28}28%{opacity:.58}100%{background-position:0 0,13px 28px,0 0;opacity:.38}}
+@media(max-width:600px){.mk-leviosa{left:8%;width:min(28%,100cqw);height:86%}}
+
+/* Definitieve Kas-camera: waterstation, tafel en planten blijven afzonderlijke leesbare zones. */
+.mk-leviosa{left:17%;bottom:12%;width:25%;height:86%}
+.mk-silos{left:0;width:52%;height:100%}
+.mk-leviosa .mk-silos .mk-silo{aspect-ratio:552/1800;max-height:100%}
+.mk-knoppen{left:55%;right:1%;bottom:9%;gap:4%;align-items:center}
+.mk-leviosa .mk-blok,.mk-leviosa.aan .mk-blok{left:58.5%;bottom:14%;width:13%;height:auto;aspect-ratio:420/470;transform:none;z-index:6}
+.mk-leviosa[data-b="0"] .mk-blok{left:58.5%}.mk-leviosa[data-b="1"] .mk-blok{left:82.5%}
+@keyframes zwR{0%{left:58.5%;bottom:14%}30%{left:58.5%;bottom:50%;transform:rotate(-8deg)}70%{left:82.5%;bottom:50%;transform:rotate(7deg)}100%{left:82.5%;bottom:14%;transform:none}}
+@keyframes zwL{0%{left:82.5%;bottom:14%}30%{left:82.5%;bottom:50%;transform:rotate(8deg)}70%{left:58.5%;bottom:50%;transform:rotate(-7deg)}100%{left:58.5%;bottom:14%;transform:none}}
+.mk-kamer .mk-megas,.mk-kamer:has(.mk-tafel.klein) .mk-megas,.mk-kamer:has(.mk-tafel.groot) .mk-megas{left:41%;right:auto;bottom:16%;width:11%;gap:8%}
+.mk-tafel.groot{right:15%;width:30%;bottom:19%}
+.mk-tafel.klein{right:18%;width:28%;bottom:19%}
+.mk-vloer .superimg{bottom:58%;clip-path:inset(0 0 18% 0)}
+.mk-vloer .superimg.kst0{clip-path:inset(0 0 4% 0)}
+.mk-vloer .superimg.kst1{clip-path:inset(0 0 10% 0)}
+.mk-vloer .superimg.kst2{clip-path:inset(0 0 14% 0)}
+.mk-vloer .superimg.kst3,.mk-vloer .superimg.kst4{clip-path:inset(0 0 18% 0)}
+.mk-pot .kplant{z-index:4;clip-path:inset(0 0 40% 0)}
+.mk-pot .kplant:has(.kst0){clip-path:inset(0 0 16% 0)}
+.mk-pot .kplant:has(.kst1){clip-path:inset(0 0 26% 0)}
+.mk-pot .kplant:has(.kst2){clip-path:inset(0 0 32% 0)}
+.mk-pot .kplant:has(.kst3){clip-path:inset(0 0 38% 0)}
+.mk-pot .kplant:has(.kst4){clip-path:inset(0 0 42% 0)}
+.mk-pot .potimg{z-index:3}
+.mk-kamer.sproei .mk-sproeiers::after{left:0;right:1%;top:4px;height:min(58vh,460px);background-image:radial-gradient(circle,rgba(250,254,255,.98) 0 2px,transparent 3.2px),radial-gradient(circle,rgba(210,240,255,.92) 0 1.5px,transparent 2.8px),repeating-linear-gradient(103deg,transparent 0 29px,rgba(215,243,255,.3) 30px,transparent 33px 64px);background-size:28px 22px,37px 27px,64px 38px;background-position:0 -22px,13px -27px,0 -38px;background-repeat:repeat,repeat,repeat;-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.35) 0,#000 12%,#000 64%,transparent 94%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.35) 0,#000 12%,#000 64%,transparent 94%);opacity:.9;mix-blend-mode:screen;animation:kasregen .95s linear infinite}
+@keyframes kasregen{0%{background-position:0 -22px,13px -27px,0 -38px;opacity:.68}100%{background-position:0 0,13px 27px,0 0;opacity:.92}}
+@media(prefers-reduced-motion:reduce){.mk-kamer.sproei .mk-sproeiers::after{animation:none!important}}
+@media(max-width:600px){.mk-leviosa{left:17%;width:25%;height:86%}}

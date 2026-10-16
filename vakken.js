@@ -46,13 +46,13 @@ const LES_KOSTEN=false;
  const ls=v=>`img/laadschermen/${v.ls}${innerWidth<=600?'-klein':''}.webp`;
  V.lesdeur=(id)=>{const v=M3VAKKEN.find(x=>x.id==(id||vakVan(S.m3lvl).id))||M3VAKKEN[1];if(!LES_KOSTEN)return nieuwVak(v);const heb=S.galjoenen||0;const p=Math.min(100,Math.round(heb/v.prijs*100));const kan=heb>=v.prijs;
   app(`<section class="lesdeur rococo"><div class="ld-bord" style="background-image:url('${ls(v)}')"><div class="ld-deur l"></div><div class="ld-deur r"></div><div class="ld-slot">${icoon('slot')}</div></div>
-   <small class="ld-nr">Les ${M3VAKKEN.indexOf(v)+1} · levels ${v.van}–${v.van+VAK_LEVELS-1}</small><h2>${v.n}</h2><p>${v.prof} wacht achter deze deur. Koop de les en de volgende ${VAK_LEVELS} levels gaan open.</p>
+   <small class="ld-nr">Les ${M3VAKKEN.indexOf(v)+1}</small><h2>${v.n}</h2><p>${v.prof} wacht achter deze deur. Koop de les, dan gaat het lokaal open.</p>
    <div class="ld-zak"><img src="img/smekkies/zak-${heb<50?'leeg':heb<300?'half':'vol'}-128.webp" alt=""><div class="ld-balk"><i style="width:${p}%"></i></div><b>${heb} / ${v.prijs}</b></div>
    <button class="knop ${kan?'volgende':''}" id="ldkoop">Les ontgrendelen · ${v.prijs} Smekkies</button>${kan?'':`<p class="klein">Nog ${v.prijs-heb} Smekkies nodig. Speel bonusspellen of oogst in de kas, dan heb je ze zo.</p>`}</section>`);
   $('#ldkoop').onclick=()=>{if((S.galjoenen||0)<v.prijs){toast(`Nog ${v.prijs-(S.galjoenen||0)} Smekkies nodig voor deze les.`);try{fx.fout()}catch(e){}const z=document.querySelector('.ld-zak');z.classList.remove('schud');void z.offsetWidth;z.classList.add('schud');return}
    const bord=document.querySelector('.ld-bord').getBoundingClientRect();window._smekDoel=[bord.left+bord.width/2,bord.top+bord.height/2];
    S.galjoenen-=v.prijs;S.lesBetaald[v.id]=1;bewaar();stats();ontgrendel(v)}};
- function nieuwVak(v){app(`<section class="lesdeur rococo gratis"><div class="ld-bord" style="background-image:url('${ls(v)}')"><div class="ld-deur l"></div><div class="ld-deur r"></div></div><small class="ld-nr">Nieuw vak! · levels ${v.van}–${v.van+VAK_LEVELS-1}</small><h2>${v.n}</h2><p>${v.prof} opent de deur van het lokaal…</p></section>`);
+ function nieuwVak(v){app(`<section class="lesdeur rococo gratis"><div class="ld-bord" style="background-image:url('${ls(v)}')"><div class="ld-deur l"></div><div class="ld-deur r"></div></div><small class="ld-nr">Nieuw vak!</small><h2>${v.n}</h2><p>${v.prof} opent de deur van het lokaal…</p></section>`);
   S.vakIntro[v.id]=1;bewaar();ontgrendel(v)}
  function ontgrendel(v){const sec=document.querySelector('.lesdeur');setTimeout(()=>{sec.classList.add('open');try{fx.speel('fanfare')}catch(e){}try{navigator.vibrate&&navigator.vibrate([30,40,90])}catch(e){}},900);
   setTimeout(()=>{try{confetti&&confetti()}catch(e){}const k=document.createElement('div');k.className='ld-feest';k.innerHTML=`<h3>${v.n} is open!</h3><p><b>${v.prof}:</b> “Welkom in mijn les, juffrouw Leeflang. Ik heb er zin in.”</p><p class="klein">Tilly: “Luna! Een heel nieuw vak, en nieuwe voorwerpen op het bord. Kom op!”</p><button class="knop volgende" id="ldverder">Naar level ${v.van}</button>`;sec.appendChild(k);
@@ -66,17 +66,58 @@ const LES_KOSTEN=false;
  const PAN={bezweringen:[34,86],toverdranken:[8,60],gedaanteverwisselingen:[8,66],astronomie:[40,92],verweer:[6,62]};
  const thLS={bezweringen:'bezweringen',toverdranken:'toverdranken',gedaante:'gedaanteverwisselingen',astronomie:'astronomie',verweer:'verweer'};
  Object.entries(thLS).forEach(([th,f])=>{LAADSCHERM[th]={img:'img/laadschermen/'+f,klein:'img/laadschermen/'+f+'-klein',pan:PAN[f],duur:6000,tips:TIPS[f]}});
- /* --- levelpad met secties per vak --- */
+ /* --- levelpad: per les een thema, vijf levels vooruit, daarna nevel --- */
+ const PAD_VOORUIT=19;
+ function padCadeau(n){if(n===22)return 'Lichtbrouwsel';if(n===222)return 'Vocht van de Levende Dood';if(n===16)return 'Een elfje';if(n===30)return 'Groene pot';if(n===60)return 'Diep Lichtbrouwsel';if(n===150||n===250||n===350||n===450||n===550)return 'Een nieuw elfje';return ''}
+ function padPlaag(n){return window.plaagVan&&plaagVan(n)}
+ function padZwaar(n){const e=window.M3BAL&&M3BAL[n];if(e)return +e[2]<=.5;let L;try{L=m3Level(n)}catch(err){return false}const d=L.doelen||[];const soorten=new Set(d.map(x=>typeof x[0]=='number'?'kleur':x[0]));return soorten.size>=3&&(L.onkruid=='vol'||L.onkruid=='dambord'||L.kist=='dubbel')}
+ function padScan(v,van,tot,fn){for(let L=van;L<=tot;L++){const r=fn(L);if(r)return r}return null}
+ function padTeken(soort,titel,sub){return `<span class="pad-teken ${soort}"><i class="pad-gloed ${soort}" aria-hidden="true"></i><span><b>${titel}</b>${sub?`<small>${sub}</small>`:''}</span></span>`}
  let padVak=null;
- V.pad=(vid)=>{const nu=vakVan(S.m3lvl);const v=M3VAKKEN.find(x=>x.id==(vid||padVak))||nu;padVak=v.id;
-  const kop=M3VAKKEN.map(x=>{const bereikt=S.m3lvl>=x.van;const st=x===v?'actief':S.m3lvl>x.van+VAK_LEVELS-1?'af':(open(x)&&bereikt)?'open':'dicht';return `<button class="pv ${st}" data-v="${x.id}"><img src="img/laadschermen/${x.ls}-klein.webp" alt="" loading="lazy"><span>${x.n}</span><small>${st=='dicht'?(LES_KOSTEN?`${icoon('slot')} ${x.prijs} Smekkies`:`${icoon('slot')} vanaf level ${x.van}`):st=='af'?'Voltooid':`${x.van}–${x.van+99}`}</small></button>`}).join('');
-  const isOpen=open(v);const N=VAK_LEVELS;const pts=[];for(let i=0;i<N;i++)pts.push([50+Math.sin(i*.9)*28,60+i*86]);pts.reverse();const H=60+N*86;
-  const knoppen=pts.map((p,i)=>{const L=v.van+i;const st=!isOpen?'dicht':L<S.m3lvl?'af':L==S.m3lvl?'nu':'dicht';return `<button class="padlvl ${st}" data-l="${L}" style="left:${p[0]}%;top:${p[1]}px">${st=='dicht'?icoon('slot'):L}${st=='nu'?'<span class="luna">L</span>':''}</button>`}).join('');
+ V.pad=(vid)=>{const hier=S.m3lvl||1;const nu=vakVan(hier);const v=M3VAKKEN.find(x=>x.id==(vid||padVak))||nu;padVak=v.id;
+  const eindex=v.van+VAK_LEVELS-1,bereikt=hier>=v.van,klaar=hier>eindex,bezig=bereikt&&!klaar;
+  const kop=M3VAKKEN.map(x=>{const xEinde=x.van+VAK_LEVELS-1;const xBereikt=hier>=x.van,xKlaar=hier>xEinde;const st=x===v?'actief':xKlaar?'af':xBereikt?'open':'dicht';
+   const pestVooruit=xBereikt&&!xKlaar&&padScan(x,Math.max(x.van,hier+1),xEinde,L=>padPlaag(L));
+   const wacht=!xBereikt||!!pestVooruit;
+   const klein=st=='af'?'klaar':st=='dicht'?'nog dicht':st=='actief'?'nu':'';
+   return `<button class="pv ${st}${wacht?' wacht':''}${pestVooruit?' wacht-plaag':''}" data-v="${x.id}"><img src="img/laadschermen/${x.ls}-klein.webp" alt="" loading="lazy"><span>${x.n}</span><small>${klein}</small></button>`}).join('');
+  const isOpen=open(v);
+  let knoppen='',lijn='',nevel='',H=300,metNevel=false;
+  if(!bereikt||!isOpen){
+   const eerstPlaag=padScan(v,v.van,eindex,L=>padPlaag(L));
+   metNevel=true;
+   nevel=`<div class="pad-nevel">${padTeken('cadeau','Er wacht iets','in deze les')}${eerstPlaag?padTeken('plaag',eerstPlaag.kaart+' nadert',''):''}</div>`;
+   lijn=`<svg class="padlijn sluierlijn" viewBox="0 0 100 240" preserveAspectRatio="none" aria-hidden="true"><path d="M50 210 C 28 170, 74 140, 50 100 C 30 70, 70 40, 50 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="2 2.6" vector-effect="non-scaling-stroke"/></svg>`;
+   H=320;
+  }else{
+  const dag=window.schoolDagen&&schoolDagen.huidig();
+  const dagActief=dag&&dag.vak.id===v.id;
+  const begin=dagActief?dag.begin:v.van;
+  const grens=dagActief?dag.einde:eindex;
+  const tot=klaar?eindex:Math.min(grens,hier+PAD_VOORUIT);
+  const niveaus=[];for(let L=begin;L<=tot;L++)niveaus.push(L);
+   const mist=!klaar&&tot<eindex;
+   let plaagVer=null,giftVer='';
+   if(mist){const verderVan=tot+1;plaagVer=padScan(v,verderVan,eindex,L=>padPlaag(L));giftVer=padScan(v,verderVan,eindex,L=>padCadeau(L))||'';metNevel=true}
+   const top=mist?(plaagVer&&giftVer?176:128):52,rij=82,n=niveaus.length;
+   const pts=niveaus.map((L,i)=>{const vanOnder=n-1-i;return {L,x:50+Math.sin(vanOnder*.95)*22,y:top+vanOnder*rij}});
+   H=top+Math.max(0,n-1)*rij+64;
+  lijn=`<svg class="padlijn" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="M${pts.map(p=>p.x+' '+p.y).join(' L')}" fill="none" stroke="#d4af37" stroke-width="1.8" stroke-dasharray="2 2.4" vector-effect="non-scaling-stroke"/></svg>`;
+   knoppen=pts.map(p=>{const L=p.L,d=L-hier;const st=L<hier?'af':L==hier?'nu':'vooruit';
+    const plaag=padPlaag(L),cadeau=padCadeau(L),zwaar=!plaag&&padZwaar(L);
+    const cls=[st,plaag?'plaag':'',cadeau?'cadeau':'',zwaar?'zwaar':'',L>=100?'lang':'','v'+Math.max(0,d)].filter(Boolean).join(' ');
+    const tip=plaag&&cadeau?(plaag.soort==='damp'?plaag.kaart+', recept: '+cadeau:'Duivelsstrik, recept: '+cadeau):plaag?(plaag.soort==='damp'?'Plaaglevel, '+plaag.kaart:'Plaaglevel, Duivelsstrik'):cadeau?('Hier krijg je: '+cadeau):zwaar?'Extra lastig level':'';
+    return `<button class="padlvl ${cls}" data-l="${L}"${tip?` title="${tip}"`:''} style="left:${p.x}%;top:${p.y}px${d>0?';--v:'+d:''}">${L}${L==hier?'<span class="luna">L</span>':''}</button>`}).join('');
+   if(mist)nevel=`<div class="pad-nevel">${plaagVer?padTeken('plaag',plaagVer.kaart+' nadert',''):''}${giftVer?padTeken('cadeau',giftVer,'dat krijg je'):''}</div>`;
+  }
+  const deur=!isOpen?`<div class="paddeur"><div class="pd-deur">${icoon('slot')}</div><p>Deze les is nog dicht.</p><b>${S.galjoenen||0} / ${v.prijs} Smekkies</b><div class="ld-balk"><i style="width:${Math.min(100,(S.galjoenen||0)/v.prijs*100)}%"></i></div><button class="knop volgende" id="naardeur">Bekijk de les</button></div>`:(!bereikt?`<div class="paddeur"><div class="pd-deur">${icoon('slot')}</div><p>Deze les is nog dicht. Maak eerst de les ervoor af.</p></div>`:'');
   app(`<div class="vakbalk">${kop}</div><div class="padkopbeeld" style="background-image:url('img/laadschermen/${v.ls}-klein.webp')"><div><small>Les ${M3VAKKEN.indexOf(v)+1}</small><h2>${v.n}</h2><p>${v.prof}</p></div></div>
-   ${isOpen?(S.m3lvl<v.van?`<div class="paddeur"><div class="pd-deur">${icoon('slot')}</div><p>Dit vak gaat open als je level ${v.van-1} haalt.</p></div>`:''):`<div class="paddeur"><div class="pd-deur">${icoon('slot')}</div><p>Deze les is nog dicht.</p><b>${S.galjoenen||0} / ${v.prijs} Smekkies</b><div class="ld-balk"><i style="width:${Math.min(100,(S.galjoenen||0)/v.prijs*100)}%"></i></div><button class="knop volgende" id="naardeur">Bekijk de les</button></div>`}
-   <div class="pad" style="height:${H}px"><svg class="padlijn" viewBox="0 0 100 ${H}" preserveAspectRatio="none"><path d="M${pts.map(p=>p.join(' ')).join(' L')}" fill="none" stroke="rgba(246,227,161,.55)" stroke-width="1.6" stroke-dasharray="2 2.5" vector-effect="non-scaling-stroke"/></svg>${knoppen}</div>`);
-  document.querySelectorAll('.pv').forEach(b=>b.onclick=()=>{const x=M3VAKKEN.find(y=>y.id==b.dataset.v);if(!open(x)&&x.van>S.m3lvl+0&&vakVan(S.m3lvl)!==x&&M3VAKKEN.indexOf(x)>M3VAKKEN.indexOf(vakVan(S.m3lvl))+1){toast('Eerst de vorige les afmaken.');}V.pad(x.id)});
-  const nd=$('#naardeur');if(nd)nd.onclick=()=>{if(M3VAKKEN.indexOf(v)>M3VAKKEN.indexOf(vakVan(S.m3lvl))&&S.m3lvl<v.van){toast(`Speel eerst tot level ${v.van}.`);return}ga('lesdeur',v.id)};
-  document.querySelectorAll('.padlvl').forEach(b=>b.onclick=()=>{const L=+b.dataset.l;if(!open(vakVan(L)))return ga('lesdeur',vakVan(L).id);if(L<=S.m3lvl)ga('match3',L);else toast('Speel eerst level '+S.m3lvl)});
-  setTimeout(()=>{const a=document.querySelector('.pv.actief');a&&a.scrollIntoView({inline:'center',block:'nearest'});const n=$('.padlvl.nu');n&&n.scrollIntoView({block:'center'})},RMP?0:350)};
+   ${deur}<div class="pad thema thema-${v.id}${metNevel?' met-nevel':''}" style="height:${H}px">${lijn}${knoppen}${nevel}</div>`);
+  document.querySelectorAll('.pv').forEach(b=>b.onclick=()=>{const x=M3VAKKEN.find(y=>y.id==b.dataset.v);if(!open(x)&&x.van>hier&&vakVan(hier)!==x&&M3VAKKEN.indexOf(x)>M3VAKKEN.indexOf(vakVan(hier))+1){toast('Eerst de vorige les afmaken.');}V.pad(x.id)});
+  const nd=$('#naardeur');if(nd)nd.onclick=()=>{if(M3VAKKEN.indexOf(v)>M3VAKKEN.indexOf(nu)&&hier<v.van){toast('Eerst de vorige les afmaken.');return}ga('lesdeur',v.id)};
+  document.querySelectorAll('.padlvl').forEach(b=>b.onclick=()=>{const L=+b.dataset.l;if(!open(vakVan(L)))return ga('lesdeur',vakVan(L).id);if(L<=hier)ga('match3',L);else{const p=padPlaag(L),c=padCadeau(L);toast(p&&c?(p.soort==='damp'?'Hier bevrijd je het recept voor '+c+'. Eerst level '+hier+' afmaken.':'Hier bevrijd je het recept tegen de duivelsstrik. Eerst level '+hier+' afmaken.'):p?(p.soort==='damp'?'Dit is een plaaglevel. Gestold brouwsel groeit over het bord.':'Dit is een plaaglevel. Duivelsstrik groeit over het bord.'):c?('Hier krijg je: '+c+'. Eerst level '+hier+' afmaken.'):padZwaar(L)?'Dit level is extra lastig. Eerst level '+hier+' afmaken.':'Speel eerst level '+hier)}});
+  setTimeout(()=>{const a=document.querySelector('.pv.actief');a&&a.scrollIntoView({inline:'center',block:'nearest'});
+   const n=$('.padlvl.nu');
+   if(n){const nav=$('#nav');const onder=nav?nav.getBoundingClientRect().height:0;const r=n.getBoundingClientRect();window.scrollTo(0,Math.max(0,window.scrollY+r.bottom-(window.innerHeight-onder-18)))}
+   else{const m=$('.pad-nevel');m&&m.scrollIntoView({block:'center'})}},RMP?0:350)};
 })();
