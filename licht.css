@@ -645,3 +645,27 @@ button.poortbanner{font:inherit;cursor:pointer;width:100%;text-align:left}
 .mk-tafel.klein .mk-pot{flex:0 1 34%;min-width:0}
 .mk-tafel.klein .mk-rij:has(.mk-pot:nth-child(2)) .mk-pot{flex-basis:27%}
 .mk-tafel.klein .mk-rij:has(.mk-pot:nth-child(3)) .mk-pot{flex-basis:20%}
+
+/* lange kamer (kamer-lang.webp): rechts verankerd, zelfde pixelmaat */
+.mk-kamer{aspect-ratio:2850/714!important;background:url(img/kas/kamer-lang.webp) 0 0/100% 100% no-repeat!important}
+.mk-tafel.klein{left:auto!important;right:6.03%!important;width:10.21%!important}
+.mk-tafel.groot{left:auto!important;right:16.83%!important;width:12.02%!important}
+.mk-vloer{left:auto!important;right:24.67%!important;width:5.40%!important}
+.mk-mega{left:auto!important;right:31.26%!important;width:7.81%!important}
+.mk-deur{left:auto!important;right:0.42%!important;width:4.99%!important}
+.mk-leviosa{left:0.4%!important;width:11.58%!important}
+.mk-sproeiers{display:none}
+.mk-leiding{position:absolute;inset:0;pointer-events:none;z-index:2}
+.mk-leiding .lv{position:absolute;left:5.6%;top:9%;bottom:62%;width:14px;border-radius:7px;background:linear-gradient(90deg,#6b3e1c,#d08a4a 45%,#8a5226);box-shadow:0 2px 4px rgba(0,0,0,.35)}
+.mk-leiding .lh{position:absolute;left:5.6%;right:7%;top:9%;height:14px;border-radius:7px;background:linear-gradient(#d08a4a,#8a5226 60%,#5a3416);box-shadow:0 3px 5px rgba(0,0,0,.35)}
+.mk-leiding .kop{position:absolute;top:calc(9% + 10px);width:22px;height:16px;margin-left:-11px;border-radius:3px 3px 11px 11px;background:linear-gradient(#e0a060,#7a4a20);box-shadow:0 2px 3px rgba(0,0,0,.4)}
+.mk-kamer.sproei .mk-leiding .kop::after{content:'';position:absolute;left:50%;top:14px;width:150px;height:46vh;transform:translateX(-50%);background:repeating-linear-gradient(100deg,transparent 0 9px,rgba(170,220,255,.55) 9px 11px,transparent 11px 20px),repeating-linear-gradient(80deg,transparent 0 12px,rgba(170,220,255,.45) 12px 14px,transparent 14px 24px);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);-webkit-mask:linear-gradient(#000 40%,transparent);mask:linear-gradient(#000 40%,transparent);animation:spray .5s linear infinite}
+@keyframes spray{from{background-position:0 0,0 0}to{background-position:0 24px,0 24px}}
+@media (prefers-reduced-motion:reduce){.mk-kamer.sproei .mk-leiding .kop::after{animation:none}}
+.mk-knoppen .mk-plaat img{min-width:64px}
+.mk-leviosa{width:16.6%!important}.mk-silos{width:60%!important}.mk-knoppen{left:63%!important;gap:8%!important}
+.mk-knoppen .mk-plaat img{min-width:0}
+.mk-pot .kplant{margin-bottom:-52%!important}
+.mk-kamer.sproei .mk-leiding .kop::after{opacity:1;filter:drop-shadow(0 0 2px rgba(120,190,255,.8))}
+.mk-leiding .lv{bottom:56%}
+.mk-pot .kplant{display:flex!important;flex-direction:column;justify-content:flex-end;align-items:center;margin-bottom:-28%!important}

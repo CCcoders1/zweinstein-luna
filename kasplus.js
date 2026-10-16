@@ -62,7 +62,7 @@ function vloerHTML(){if(!S.vloerpot&&!mp(0))return '';const st=mp(0)?mpSt(0):-1;
 function megaZicht(i){return !!(mp(i)||(S.vloerpot&&lvl()>=MEGA_VANAF[i]))}
 V.mijnkas=()=>{VIEWDECOR.mijnkas='kas';verhuisPotten();const klein=[0,1,2].filter(slotOpen),groot=[3,4,5,6].filter(slotOpen);const gt=lvl()>=GROTE_TAFEL||groot.length;
  app(`<h2 class="mk-titel">Mijn eigen kas</h2>
- <div class="mk-scroll" id="mkscroll"><div class="mk-kamer ${siloAan()?'sproei':''}"><div class="mk-sproeiers"></div>
+ <div class="mk-scroll" id="mkscroll"><div class="mk-kamer ${siloAan()?'sproei':''}"><div class="mk-leiding"><b class="lv"></b><b class="lh"></b><i class="kop" style="left:16%"></i><i class="kop" style="left:24%"></i><i class="kop" style="left:32%"></i><i class="kop" style="left:40%"></i><i class="kop" style="left:48%"></i><i class="kop" style="left:56%"></i><i class="kop" style="left:64%"></i><i class="kop" style="left:72%"></i><i class="kop" style="left:80%"></i><i class="kop" style="left:88%"></i></div>
   <div class="mk-tafel klein"><div class="mk-rij">${klein.map(plek).join('')}</div><img src="img/kas/tafel1.webp" alt=""></div>
   ${gt?`<div class="mk-tafel groot"><div class="mk-rij">${groot.map(plek).join('')}</div><img src="img/kas/tafel2.webp" alt=""></div>`:(S.vloerpot?'':`<div class="mk-hint t"><span>De grote vloerpot koop je in Potten, voor 300 Smekkies.</span></div>`)}
   ${vloerHTML()}${levHTML()}<button class="mk-deur" id="mkterug" aria-label="Door de deur terug naar de kassen"><span>Terug</span></button>
@@ -121,7 +121,7 @@ const _padPoort=V.pad;V.pad=function(...a){const r=_padPoort.apply(this,a);const
 if(typeof m3Winst==='function'){const _mw=m3Winst;m3Winst=function(n,b){const r=_mw(n,b);try{const p=LERAAR_OPDRACHTEN.find(o=>n===o.na&&!o.klaar());if(p){const btn=$('#m3volg');if(btn){btn.textContent='Eerst naar '+p.prof;btn.onclick=()=>{const m=btn.closest('.modal');if(m)m.remove();ga('leraarpoort')}}}}catch(e){}return r}}
 /* ---- 2 silo's links, 2 knoppen ernaast, 1 blok ---- */
 const VUL=2*36e5,LEEG=30*6e4;
-S.water=S.water||{blok:0,sinds:Date.now(),lvl:[0,0]};delete S.silo;
+S.water=S.water||{blok:0,sinds:Date.now(),lvl:[1,1]};delete S.silo;
 (function(){const w=S.water;if(!w.modus){const oud=2*36e5,nu=Date.now();w.lvl=[0,1].map(i=>Math.min(1,Math.max(0,i==w.blok?(w.lvl&&w.lvl[i]||0)+(nu-(w.sinds||nu))/oud:(w.lvl&&w.lvl[i]||0))));w.blok=w.blok?1:0;w.modus=w.lvl.map((n,i)=>i==w.blok&&n>=.999?'leeg':'vul');w.sinds=nu;w.gemeld=w.modus[w.blok]==='leeg'?w.blok:-1;delete w.tot}if(!w.modus||w.modus.length<2)w.modus=['vul','vul'];if(!w.lvl||w.lvl.length<2)w.lvl=[0,0]})();
 const W=()=>S.water;
 function niveau(i){const w=W(),dt=Date.now()-w.sinds;if(w.modus[i]==='leeg')return Math.max(0,w.lvl[i]-dt/LEEG);return Math.min(1,w.lvl[i]+dt/VUL)}
