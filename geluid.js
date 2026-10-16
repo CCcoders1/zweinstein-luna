@@ -68,7 +68,7 @@ const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{const m=document.getE
 /* Spreukstemmen (Engels, uit het pakket): zacht, hooguit eens per 12 s en niet elke keer. */
 let stemT=0;window.zwStem=s=>{const k=/wervel/.test(s)?'leviosa':/bliksem/.test(s)?'flipendo':/bom/.test(s)?'incendio':/verdwijn/.test(s)?'lumos':/drank|kristal/.test(s)?'alohomora':null;if(!k||S.stemmen===false)return;const n=Date.now();if(n-stemT<12000||Math.random()>.4)return;const naam='stem-'+k+(Math.random()<.5&&buf['stem-'+k+'2']?'2':'');if(buf[naam]){stemT=n;setTimeout(()=>speelPak(naam,.4),120)}};
 /* Telefoon-stappenplan. Alleen de LINK staat in de code, nooit audio. Vul de Drive-id in zodra het bestand gedeeld is. */
-const GELUID_LINK='';
+const GELUID_LINK='https://drive.google.com/uc?export=download&id=1D62HNPcHEF3S9rQ_hbAwfk2l-O51DAUG';
 V.geluidstap=()=>{const heeft=Object.keys(buf).length>0;const L=GELUID_LINK;app(`<div class="perkament" style="max-width:560px;margin:0 auto;font-size:1.15em"><h2>🔊 Geluiden toevoegen</h2>${heeft?'<p><b>Er is al een geluidspakket geladen.</b> Je kunt het opnieuw doen als je wilt.</p>':''}
 <p><b>Stap 1</b></p>${L?`<a class="knop volgende" style="font-size:1.2em;display:inline-block" href="${L}" target="_blank" rel="noopener">Download geluidspakket</a>`:'<p class="klein">De downloadlink is nog niet ingesteld.</p>'}
 <p style="margin-top:1.2em"><b>Stap 2</b></p><p style="font-size:1.3em"><b>Het bestand staat in Downloads</b><br>(zweinstein-geluiden.zip)</p><input type="file" id="gsbestand" accept=".zip,application/zip" hidden><button class="knop volgende" style="font-size:1.2em" id="gskies">Kies het gedownloade bestand</button>
