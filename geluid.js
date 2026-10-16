@@ -20,7 +20,7 @@ function speelPak(k,vol){const b=buf[k];if(!b||S.geluid===false||S.stil)return f
 window.pakSpeel=speelPak;
 /* fx.speel omleiden als het pakket dit geluid heeft */
 let klaar=false;const start=()=>{if(klaar)return;klaar=true;laadBuffers().then(n=>{if(n)pas()}).catch(()=>0)};
-const hang=()=>{if(!window.fx||fx._pak)return;const org=fx.speel;fx.speel=n=>{if(speelPak(n))return;const FB={splat:'whoosh',kassa:'munt',kaart:'goed',winst:'fanfare',verlies:'fout',vuurwerk:'tover',combi:'tover',kist:'klik',kikker:'goed'};if(FB[n])return org(FB[n]);return org(n)};fx._pak=1};
+const hang=()=>{if(!window.fx||fx._pak)return;const org=fx.speel;fx.speel=n=>{if(speelPak(n))return;if(/^stem-/.test(n))return;const FB={splat:'whoosh',kassa:'munt',kaart:'goed',winst:'fanfare',verlies:'fout',vuurwerk:'tover',combi:'tover',kies:'klik',spreuk:'tover',kist:'klik',kikker:'goed'};if(FB[n])return org(FB[n]);return org(n)};fx._pak=1};
 hang();addEventListener('pointerdown',start,{once:true});
 /* extra momenten in het spel */
 try{const _td=Bord.prototype.telDoel;Bord.prototype.telDoel=function(t){if(!this.sim&&typeof M3!='undefined'&&this===M3.b&&t===this.ksoort&&buf.kist)speelPak('kist',.5);return _td.apply(this,arguments)};
@@ -65,6 +65,8 @@ V.geluid=()=>{app(`<div class="perkament" style="max-width:560px;margin:0 auto">
  $('#gpwis').onclick=async()=>{await wis();kanZet('amb',null,0);kanZet('mus',null,0);buf={};st('Pakket verwijderd. De gewone geluiden zijn terug.')}};
 const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{const m=document.getElementById('meermt')||document.querySelector('#app h1,#app h2');if(m&&!document.getElementById('meergp'))m.insertAdjacentHTML('afterend',`<button class="knop volgende" id="meergp" style="font-size:1.25em;padding:.7em 1.2em" onclick="ga('geluidstap')">🔊 Geluiden toevoegen</button>`)}catch(e){}return r};
 
+/* Spreukstemmen (Engels, uit het pakket): zacht, hooguit eens per 12 s en niet elke keer. */
+let stemT=0;window.zwStem=s=>{const k=/wervel/.test(s)?'leviosa':/bliksem/.test(s)?'flipendo':/bom/.test(s)?'incendio':/verdwijn/.test(s)?'lumos':/drank|kristal/.test(s)?'alohomora':null;if(!k||S.stemmen===false)return;const n=Date.now();if(n-stemT<12000||Math.random()>.4)return;const naam='stem-'+k+(Math.random()<.5&&buf['stem-'+k+'2']?'2':'');if(buf[naam]){stemT=n;setTimeout(()=>speelPak(naam,.4),120)}};
 /* Telefoon-stappenplan. Alleen de LINK staat in de code, nooit audio. Vul de Drive-id in zodra het bestand gedeeld is. */
 const GELUID_LINK='';
 V.geluidstap=()=>{const heeft=Object.keys(buf).length>0;const L=GELUID_LINK;app(`<div class="perkament" style="max-width:560px;margin:0 auto;font-size:1.15em"><h2>🔊 Geluiden toevoegen</h2>${heeft?'<p><b>Er is al een geluidspakket geladen.</b> Je kunt het opnieuw doen als je wilt.</p>':''}
