@@ -927,3 +927,6 @@ body[data-view=mijnkas] .pipbubbel{z-index:45}
 .mk-balk .mk-tel img{width:24px;height:24px;object-fit:contain}.mk-balk .mk-tel svg{width:18px;height:18px;color:#2f6a32}
 @media(max-width:600px){.mk-balk .mk-tel{padding:0 7px 0 4px;font-size:13px;gap:3px}.mk-balk .mk-tel img{width:20px;height:20px}}
 @media(max-width:380px){.mk-balk .mk-tel{font-size:12px}.mk-balk button{font-size:11px!important}}
+.vakjes .kserie{grid-column:1/-1;margin:14px 0 2px;font-family:inherit;font-size:1.05em;letter-spacing:.04em;color:#6b3a12;border-bottom:1px solid rgba(107,58,18,.3)}
+.vakje .kimg{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.detail .kgroot{display:block;width:min(220px,60vw);height:auto;margin:0 auto 8px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
