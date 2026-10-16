@@ -29,7 +29,7 @@ const ITEMS=[
  {id:'kikker',naam:'Chocokikker',prijs:25,img:'img/stukken/chocokikker-128.webp',tekst:'Een extra hart én een tovenaarskaart.',soort:'nu'},
  {id:'fopstok',naam:'Fopstokje',prijs:10,img:'img/stukken/toverstaf-128.webp',tekst:'Lijkt een echte toverstok… tot je zwaait.',soort:'nu'},
  {id:'pluis',naam:'Dwergpluisje',prijs:40,img:'',tekst:'Een zacht huisdiertje in je eigen kleur. Woont op de toonbank.',soort:'pluis'}];
-function kassa(){const k=document.getElementById('fgkassa');if(k){k.classList.remove('rinkel');void k.offsetWidth;k.classList.add('rinkel')}try{fx.speel('munt')}catch(e){}}
+function kassa(){const k=document.getElementById('fgkassa');if(k){k.classList.remove('rinkel');void k.offsetWidth;k.classList.add('rinkel')}try{fx.speel('kassa')}catch(e){}}
 function zeg(i){const g=i!=null?GRAP[i]:GRAP[Math.random()*GRAP.length|0];const el=document.getElementById('fgpraat');if(el)el.innerHTML=`<b>${g[0]}:</b> ${g[1]}`}
 function koop(it,kl){if(S.galjoenen<it.prijs){zeg();const el=document.getElementById('fgpraat');if(el)el.innerHTML='<b>George:</b> Daar heb je niet genoeg Smekkies voor. Geen zorgen, wij geven ook geen krediet.';return}
  S.galjoenen-=it.prijs;

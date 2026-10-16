@@ -1,0 +1,8 @@
+
+# auteursrechtelijk beschermde game-geluiden: nooit committen
+*.uax
+*_uax
+zweinstein-geluiden*.zip
+geluiden/
+sounds/
+*.wav
