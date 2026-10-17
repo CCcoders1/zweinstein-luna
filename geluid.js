@@ -33,8 +33,8 @@ if(S.sfeerAan==null)S.sfeerAan=true;if(S.sfeerVol==null)S.sfeerVol=.5;if(S.muzie
 const SCENE={hal:['amb-hal',.35,'mus-hal',1],kas:['amb-kas',1,'mus-kas',.25],winkel:['amb-winkel',.6,'mus-winkel',.8],moestuin:['amb-buiten',.5,'mus-moestuin',1],
  level:['amb-level',.8,'mus-level',.35],bos:['donker-bos',1,'mus-donker',.3],plaag:['donker-plaag',1,'mus-plaag',.35],kerker:['donker-kerker',1,'mus-kerker',.3]};
 const TIJD={gesprek:[.35,'mus-gesprek',1],intro:[.3,'mus-intro',1]};
-const KAN={amb:{k:null,n:null,niv:0},mus:{k:null,n:null,niv:0}};
-function doel(kan){return kan==='amb'?(S.sfeerAan?.4*S.sfeerVol:0):(S.muziekAan?.45*S.muziekVol:0)}
+const KAN={amb:{k:null,n:null,niv:0},mus:{k:null,n:null,niv:0},rz:{k:null,n:null,niv:0}};/* rz = leerlingen-geroezemoes in de Hal */
+function doel(kan){return kan!=='mus'?(S.sfeerAan?.4*S.sfeerVol:0):(S.muziekAan?.45*S.muziekVol:0)}
 function kanZet(kan,k,niv,fade){const K=KAN[kan];fade=fade||1.8;try{const c=ctx(),t=c.currentTime;
  if(K.k===k&&K.n){K.niv=niv;K.n.g.gain.cancelScheduledValues(t);K.n.g.gain.setValueAtTime(K.n.g.gain.value,t);K.n.g.gain.linearRampToValueAtTime(doel(kan)*niv,t+fade);return}
  if(K.n){const o=K.n;o.g.gain.cancelScheduledValues(t);o.g.gain.setValueAtTime(o.g.gain.value,t);o.g.gain.linearRampToValueAtTime(0,t+fade);setTimeout(()=>{try{o.s.stop()}catch(e){}},fade*1000+200);K.n=null}
@@ -46,7 +46,7 @@ const NACHTMUS={};/* Hal/menu's houden 's nachts hun eigen (thema)muziek, alleen
 function variant(k){const d=dagdeel();if(d=='ochtend'&&buf[k+'-ochtend'])return k+'-ochtend';if((d=='avond'||d=='nacht')&&buf[k+'-nacht'])return k+'-nacht';return k}
 function tint(){const d=dagdeel();if(!document.getElementById('zwtint')){const t=document.createElement('div');t.id='zwtint';document.body.appendChild(t)}document.body.classList.toggle('zw-avond',d=='avond');document.body.classList.toggle('zw-nacht',d=='nacht')}
 function pas(){tint();if(!Object.keys(buf).length)return;const sc=SCENE[basis]||SCENE.hal;const tmp=stapel.length?TIJD[stapel[stapel.length-1]]:null;const laat=/avond|nacht/.test(dagdeel());
- const ak=variant(sc[0]);kanZet('amb',ak,sc[1]*(tmp?tmp[0]:1)*(/hal-nacht/.test(ak)?.45:1));const mk=sc[2]=='mus-hal'&&buf['mus-titel']?'mus-titel':sc[2];kanZet('mus',tmp?tmp[1]:mk,(tmp?tmp[2]:sc[3])*(laat&&!tmp?.8:1))}
+ const ak=variant(sc[0]);kanZet('amb',ak,sc[1]*(tmp?tmp[0]:1)*(/hal-nacht/.test(ak)?.45:1));const dd=dagdeel(),rzN=basis=='hal'?({ochtend:.27,middag:.27,avond:.16,nacht:0})[dd]*(tmp?tmp[0]:1):0;kanZet('rz',rzN?'amb-winkel':null,rzN,2.5);const mk=sc[2]=='mus-hal'&&buf['mus-titel']?'mus-titel':sc[2];kanZet('mus',tmp?tmp[1]:mk,(tmp?tmp[2]:sc[3])*(laat&&!tmp?.8:1))}
 setInterval(()=>{try{pas()}catch(e){}},300000);setTimeout(tint,500);
 /* Verrassingsgeluiden: zeldzaam, zacht, per locatie, nooit tijdens gesprekken */
 const VERR={hal:['spook1','spook2','henk','foppe1','foppe2','foppe3','uil1','bel','deur1','deur2','kat'],level:['spook1','foppe1','foppe2','uil2','deur1','kat','bel'],kas:['uil1','uil2','kikker','vleugels','deur2'],moestuin:['fang1','fang2','norbert','uil3','vleugels'],winkel:['deur1','deur2','foppe1','kat','bel'],kerker:['drup1','drup2','drup3','spook2'],plaag:['drup1','drup2','drup3'],bos:['uil1','uil3','krekel','vleugels']};
@@ -56,7 +56,7 @@ function verrassing(){setTimeout(verrassing,45000+Math.random()*75000);try{if(S.
 setTimeout(verrassing,60000);
 const sfeer=sc=>{basis=sc;pas()};
 function tijdelijk(k){stapel.push(k);pas()}function terug(){stapel.pop();pas()}
-function volNu(){['amb','mus'].forEach(k=>{const K=KAN[k];if(K.n){const c=ctx();K.n.g.gain.setTargetAtTime(doel(k)*K.niv,c.currentTime,.3)}})}
+function volNu(){['amb','mus','rz'].forEach(k=>{const K=KAN[k];if(K.n){const c=ctx();K.n.g.gain.setTargetAtTime(doel(k)*K.niv,c.currentTime,.3)}})}
 window.zwSfeer={zet:sfeer,tijdelijk,terug};
 const SCHERM={kas:'kas',mijnkas:'kas',leraarpoort:'kas',kruidwinkel:'winkel',fopshop:'winkel',moestuin:'moestuin',kaart:'moestuin'};
 const _ga=window.ga;window.ga=function(s,...a){if(stapel.length&&!document.querySelector('.verhaal,.modal'))stapel.length=0;sfeer(SCHERM[s]||'hal');return _ga.call(this,s,...a)};
