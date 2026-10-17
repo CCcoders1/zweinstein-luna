@@ -21,7 +21,7 @@ V.bonuskamer=(test)=>{stop();const a=$('#app');a.innerHTML=`<div class="bk" id="
  <div class="bk-combo" id="bkcombo"></div>
  <div class="bk-joy" id="bkjoy"><i></i></div><div class="bk-kaart" id="bkkaart"></div>
  <div class="bk-intro" id="bkintro"><div class="bk-perk"><h2>Smekkies-bonuskamer</h2><p>Verzamel in <b>${DUUR} seconden</b> zoveel mogelijk Smekkies in de lange gang van Zweinstein!</p>
- <ul><li>Lopen: duim op de <b>joystick linksonder</b>. Of tik ergens op de vloer.</li><li>Bij een kist of een deur: tik erop voor <b>Alohomora</b> (staat ze te ver weg, dan loopt ze er eerst heen). Achter de deuren liggen kamers vol Smekkies.</li><li>Bij een geel-roze kussen: <b>Spongify</b>. Loop erop en spring naar het podium!</li><li>Snel achter elkaar toveren geeft een combo.</li></ul><button class="knop volgende" id="bkstart">Start!</button></div></div></div>`;
+ <ul><li>Lopen: zet je duim ergens op het scherm en schuif in een richting. Of tik kort op de vloer.</li><li>Bij een kist of een deur: tik erop voor <b>Alohomora</b> (staat ze te ver weg, dan loopt ze er eerst heen). Achter de deuren liggen kamers vol Smekkies.</li><li>Bij een geel-roze kussen: <b>Spongify</b>. Loop erop en spring naar het podium!</li><li>Snel achter elkaar toveren geeft een combo.</li></ul><button class="knop volgende" id="bkstart">Start!</button></div></div></div>`;
  G=bouw(!!test);const cv=$('#bkc');cv.onpointerdown=neer;cv.onpointermove=beweeg;cv.onpointerup=cv.onpointercancel=los;
  $('#bkstop').onclick=()=>{if(G&&G.fase=='spel')einde();else{stop();ga('home')}};
  $('#bkstart').onclick=()=>{$('#bkintro').remove();G.fase='spel';G.t0=performance.now();if(!G.test){S.bonusKamer.gebruikt=(S.bonusKamer.gebruikt|0)+1;bewaar()}snd('whoosh')};
@@ -63,10 +63,9 @@ function botst(g,x,y,r,lv){if(!loopbaar(g,lv,x-r,y-r*.5)||!loopbaar(g,lv,x+r,y-r
 
 /* ---------- invoer: vaste joystick linksonder, tikken = lopen/toveren ---------- */
 function scherm2wereld(x,y){return {x:x/G.s+G.cam.x,y:y/G.s+G.cam.y}}
-function joyMidden(){const j=$('#bkjoy');if(!j)return null;const r=j.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,r:r.width/2}}
-function neer(e){if(!G||G.fase!='spel')return;try{e.target.setPointerCapture(e.pointerId)}catch(x){}
- const jm=joyMidden();if(jm&&Math.hypot(e.clientX-jm.x,e.clientY-jm.y)<jm.r+30){G.joy={id:e.pointerId,x0:jm.x,y0:jm.y,x:e.clientX,y:e.clientY};G.tocht=null;toonJoy();return}
- const w=scherm2wereld(e.clientX,e.clientY);const d=deurOp(w.x,w.y)||dichtbij(w.x,w.y,40);
+/* overal op het scherm: duim neer en schuiven = zwevende stick vanaf dat punt; kort tikken = toveren / erheen lopen */
+function neer(e){if(!G||G.fase!='spel')return;try{e.target.setPointerCapture(e.pointerId)}catch(x){}if(G.joy)return;G.druk={id:e.pointerId,x0:e.clientX,y0:e.clientY,t0:performance.now()}}
+function tik(cx,cy){if(!G||G.fase!='spel')return;const w=scherm2wereld(cx,cy);
  const o=raak(w.x,w.y);if(o){const lv=soort(o)=='kist'?o.lv:0;if(lv==G.p.lv&&!G.p.sprong&&Math.hypot(o.x-G.p.x,o.y-G.p.y)<110&&(lv||regio(o.x,o.y)==regio(G.p.x,G.p.y))){G.tocht=null;tover(o);return}
   if(soort(o)=='kus'&&o.actief){plan(o.x,o.y,0,null);return}plan(o.x,o.y,lv,o);return}
  const t=tegel(G,w.x,w.y);plan(w.x,w.y,t>=20&&t<30?t-19:0,null)}
@@ -106,9 +105,9 @@ function tochtStap(dt){const tc=G.tocht,p=G.p;if(!tc||p.sprong)return null;
  if(q.act&&Math.hypot(q.act.x-p.x,q.act.y-p.y)<95&&!(q.act.open||q.act.actief)){tover(q.act);tc.pts.shift();tc.wacht=.8;tc.stil=0;return null}
  if(Math.hypot(q.x-p.x,q.y-p.y)<(q.kus?6:12)){if(q.act&&!(q.act.open||q.act.actief)){tover(q.act);tc.wacht=.8}tc.pts.shift();tc.stil=0;if(!tc.pts.length&&!o){G.tocht=null}return null}
  return q}
-function beweeg(e){if(G&&G.joy&&G.joy.id==e.pointerId){G.joy.x=e.clientX;G.joy.y=e.clientY;toonJoy()}}
-function los(e){if(G&&G.joy&&G.joy.id==e.pointerId){G.joy=null;toonJoy()}}
-function toonJoy(){const j=$('#bkjoy');if(!j)return;j.classList.toggle('aan',!!(G&&G.joy));let dx=0,dy=0;if(G&&G.joy){dx=G.joy.x-G.joy.x0;dy=G.joy.y-G.joy.y0;const m=Math.hypot(dx,dy);if(m>42){dx*=42/m;dy*=42/m}}j.firstChild.style.transform=`translate(${dx}px,${dy}px)`}
+function beweeg(e){if(!G)return;if(G.joy&&G.joy.id==e.pointerId){G.joy.x=e.clientX;G.joy.y=e.clientY;toonJoy();return}const d=G.druk;if(d&&d.id==e.pointerId&&Math.hypot(e.clientX-d.x0,e.clientY-d.y0)>10){G.joy={id:d.id,x0:d.x0,y0:d.y0,x:e.clientX,y:e.clientY};G.druk=null;G.tocht=null;toonJoy()}}
+function los(e){if(!G)return;if(G.joy&&G.joy.id==e.pointerId){G.joy=null;toonJoy();return}const d=G.druk;if(d&&d.id==e.pointerId){G.druk=null;if(e.type!='pointercancel'&&performance.now()-d.t0<350&&Math.hypot(e.clientX-d.x0,e.clientY-d.y0)<=10)tik(d.x0,d.y0)}}
+function toonJoy(){const j=$('#bkjoy');if(!j)return;if(!G||!G.joy){j.classList.remove('aan');return}j.classList.add('aan');j.style.left=G.joy.x0+'px';j.style.top=G.joy.y0+'px';let dx=G.joy.x-G.joy.x0,dy=G.joy.y-G.joy.y0;const m=Math.hypot(dx,dy);if(m>42){dx*=42/m;dy*=42/m}j.firstChild.style.transform=`translate(${dx}px,${dy}px)`}
 function deurOp(x,y){for(const d of G.deuren)if(!d.open&&x>d.c*T-8&&x<d.c*T+T+8&&y>d.r0*T-10&&y<d.r0*T+2*T+20)return d;return null}
 function dichtbij(x,y,max){let best=null,bd=max;const p=G.p;
  for(const k of G.kist){if(k.open||k.lv!=p.lv)continue;const d=Math.hypot(k.x-x,k.y-y);if(d<bd){bd=d;best=k}}
