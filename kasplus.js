@@ -157,7 +157,7 @@ function simuleer(tot){let g=0;while(g++<2000){const w=W(),b=1-w.blok;if(w.modus
 function statusTekst(){const w=W(),i=w.blok,n=niveau(i);const stand=w.modus[i]==='leeg'?(n<=0.01?`Silo ${i+1} is leeg`:`Silo ${i+1} loopt leeg · nog ${tijd(n*LEEG)}`):`Silo ${i+1} vult zich · nog ${tijd(Math.max(0,1-n)*VUL)}`;return stand+' · tik op het blok'}
 function plaatAan(i){const w=W();return w.blok==i&&w.modus[i]==='leeg'&&niveau(i)>0.01}
 function levHTML(){if(!W().zweeft)simuleer(Date.now());const w=W();return `<div class="mk-leviosa ${siloAan()?'aan':''}" data-b="${w.blok}"><div class="mk-silos">${[0,1].map(i=>{const pct=Math.round(niveau(i)*100);return `<div class="mk-unit u${i}" data-i="${i}"><div class="mk-silo"><div class="mk-glas"><i style="height:${pct}%"></i></div><img src="img/kas/silo.webp" alt=""><span>${pct}%</span></div></div>`}).join('')}</div><div class="mk-knoppen">${[0,1].map(i=>{const aan=plaatAan(i);return `<div class="mk-knoop k${i}"><div class="mk-plaat ${w.blok==i?'in':''} ${aan?'aan':''}"><img src="img/kas/knop-${aan?'aan':'uit'}.webp" alt="${aan?'Knop aan':'Knop uit'}"></div></div>`}).join('')}</div>
- <button type="button" class="mk-blok" aria-label="Wingardium Leviosa-blok"><img src="img/kas/leviosa-blok.webp" alt=""></button><small class="mk-levtxt">${statusTekst()}</small>
+ <button type="button" class="mk-blok" aria-label="Wingardium Leviosa-blok"><img src="img/kas/leviosa-blok.webp" alt="">${S.kooiOpen?'':'<span class="mk-kooi"><i class="mk-ketting"></i></span>'}</button>${S.kooiOpen?'':'<button type="button" class="knop mk-kooiknop">🔒 Kooiknop: Flipendo</button>'}<button type="button" class="mk-terug" title="Blok terug">↺</button><small class="mk-levtxt">${statusTekst()}</small>
  <label class="mk-meld"><input type="checkbox" id="mkmeld" ${S.siloMeld?'checked':''}> Seintje als een silo vol is</label></div>`}
 function levitatieAuto(){const blok=$('.mk-blok');if(!blok){afrondenWissel();return}blok.classList.add('spreekt');const r=blok.getBoundingClientRect();const t=document.createElement('div');t.className='mk-toverspreuk';t.textContent='Wingardium Leviosa';const cx=Math.max(150,Math.min(innerWidth-150,r.left+r.width/2));t.style.cssText=`left:${cx}px;top:${Math.max(88,r.top-8)}px`;document.body.appendChild(t);
  try{fx.speel('tover')}catch(e){}try{vib([16,40,20])}catch(e){}
@@ -175,7 +175,25 @@ function tekenStand(){document.querySelectorAll('.mk-silos .mk-unit').forEach(u=
 function sleutel(){const w=W();return w.blok+'|'+w.modus.join(',')+'|'+(siloAan()?1:0)}
 function tik(){const w=W();if(w.zweeft){const b=$('.mk-blok');if(b&&(b.classList.contains('spreekt')||b.classList.contains('zweefR')||b.classList.contains('zweefL')))return;afrondenWissel();return}const voor=sleutel();simuleer(Date.now());sproei();if(document.body.dataset.view=='mijnkas'&&!document.querySelector('.modal')){meldVol();if(sleutel()!=voor){bewaar();ververs()}else tekenStand()}}
 setInterval(tik,1000);setTimeout(tik,400);
-function bindLev(){const b=$('.mk-blok');if(b)b.onclick=()=>{const w=W();if(w.zweeft)return;simuleer(Date.now());w.zweeft=1;levitatieAuto()};
+let pakbaar=false;
+function bevrijd(){const k=$('.mk-kooi');try{fx.speel('kist')}catch(e){}vib([20,30,20]);if(k)k.classList.add('op');const kb=$('.mk-kooiknop');if(kb)kb.classList.add('in');S.kooiOpen=1;bewaar();toast('De kooi gaat omhoog. Nu kun je Wingardium Leviosa doen op het blok!');setTimeout(()=>{if(document.body.dataset.view=='mijnkas')ververs()},2700)}
+function sleepStart(e){const b=$('.mk-blok');if(!b)return;e.preventDefault();const r=b.getBoundingClientRect();const c=document.createElement('img');c.src='img/kas/leviosa-blok.webp';c.className='mk-sleepblok';c.style.width=r.width+'px';document.body.appendChild(c);b.style.visibility='hidden';
+ const P=zwPendel(),L=r.height*.9;let fx0=e.clientX,fy0=e.clientY,los=false;const draad=document.createElement('i');draad.className='mk-draad';document.body.appendChild(draad);
+ const zet=()=>{if(los)return;const th=P.stap(fx0,fy0,L);c.style.transform=`translate(${fx0-r.width/2}px,${fy0}px) rotate(${-th}rad)`;draad.style.cssText=`left:${fx0}px;top:${fy0-40}px`;requestAnimationFrame(zet)};zet();
+ const mv=ev=>{fx0=ev.clientX;fy0=ev.clientY};
+ const up=()=>{los=true;removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);draad.remove();pakbaar=false;
+  const br={l:fx0-r.width/2,t:fy0,r:fx0+r.width/2,b:fy0+r.height},A=r.width*r.height;let beste=-1,ov=0;
+  document.querySelectorAll('.mk-knoop').forEach((k,i)=>{const q=(k.querySelector('.mk-plaat')||k).getBoundingClientRect();const q2={l:q.left,r:q.right,t:q.top-r.height*.6,b:q.bottom};const o=Math.max(0,Math.min(br.r,q2.r)-Math.max(br.l,q2.l))*Math.max(0,Math.min(br.b,q2.b)-Math.max(br.t,q2.t));if(o>ov){ov=o;beste=i}});
+  const w=W();const terug=(msg)=>{c.style.transition='transform .9s ease-in-out';c.style.transform=`translate(${r.left}px,${r.top}px)`;setTimeout(()=>{c.remove();b.style.visibility=''},950);if(msg)toast(msg)};
+  if(beste<0||ov/A<.5){terug(ov>0?'Het blok staat niet genoeg op de knop (minder dan de helft). Het zweeft terug.':'Het blok zweeft terug naar zijn plek.');return}
+  if(beste==w.blok){terug('Het blok staat weer op dezelfde knop.');return}
+  const q=document.querySelectorAll('.mk-knoop')[beste].getBoundingClientRect();c.style.transition='transform .5s ease-in';c.style.transform=`translate(${q.left+q.width/2-r.width/2}px,${q.top-r.height*.75}px)`;
+  setTimeout(()=>{try{fx.speel('klik');fx.speel('kist')}catch(e){}vib(30);c.remove();b.style.visibility='';w.zweeft=1;afrondenWissel();setTimeout(()=>{if(siloAan())toast('Klik! De knop is ingedrukt en de sproeiers gaan aan.');else toast('Klik! De knop is ingedrukt. Deze silo moet eerst nog vollopen.')},300)},520)};
+ addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)}
+function bindLev(){const b=$('.mk-blok');if(b){b.onclick=()=>{if(!S.kooiOpen){toast('Bevrijd het blok eerst met Flipendo op de knop.');return}if(pakbaar)return;zwSpreuk('leviosa',80,ok=>{if(!ok){toast('Geen zorgen, probeer het nog eens.');return}pakbaar=true;b.classList.add('pakbaar');toast('Het blok zweeft! Pak het vast en sleep het naar een knop.')})};
+  b.onpointerdown=e=>{if(pakbaar)sleepStart(e)}}
+ const kb=$('.mk-kooiknop');if(kb)kb.onclick=()=>zwSpreuk('flipendo',50,ok=>{if(ok)bevrijd();else toast('Bijna! Probeer Flipendo nog eens op de knop.')});
+ const tr=$('.mk-terug');if(tr)tr.onclick=()=>{pakbaar=false;ververs();toast('Het blok staat weer op zijn plek.')};
  const m=$('#mkmeld');if(m)m.onchange=e=>{S.siloMeld=e.target.checked;bewaar();if(S.siloMeld&&window.Notification&&Notification.permission=='default')Notification.requestPermission().catch(()=>0)};
  const k=$('.mk-kamer');k&&k.classList.toggle('sproei',siloAan())}
 /* ---- de deur in de originele kas ---- */

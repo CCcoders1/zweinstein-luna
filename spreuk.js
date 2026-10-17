@@ -44,7 +44,7 @@ V.spreukles=(li,key,opt)=>{li=+li||0;key=LES[key]?key:'flipendo';const L=LES[key
  const pos=e=>{const r=cv.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
  cv.onpointerdown=e=>{if(fase!='teken'||inkt>=110)return;cv.setPointerCapture(e.pointerId);huidig=[pos(e)];lijnen.push(huidig);window.zwKies&&zwKies.start(.6)};
  cv.onpointermove=e=>{if(!huidig||fase!='teken')return;const p=pos(e),q=huidig[huidig.length-1],d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(d<2)return;inkt+=d*T/(opp/sc/sc)*100;huidig.push(p);ux.beginPath();ux.moveTo(...q);ux.lineTo(...p);ux.stroke();teken();inktUI();if(huidig.length%3==0)meet();if(inkt>=110){huidig=null;meet();klaar('inkt')}};
- cv.onpointerup=cv.onpointercancel=()=>{if(huidig){huidig=null;meet();if(bed>=lv.nodig&&bed>=98)klaar()}};
+ cv.onpointerup=cv.onpointercancel=()=>{if(huidig){huidig=null;meet();if(bed>=lv.nodig)klaar()}};
  const knop=$('.spl-knop');knop.insertAdjacentHTML('afterbegin','<button class="knop volgende" id="splklaar">Klaar!</button> ');$('#splklaar').onclick=()=>fase=='teken'&&klaar();
  function klaar(why){if(fase!='teken')return;fase='uit';clearInterval(tmr);meet();const ok=bed>=lv.nodig;const v=sp()[key]=sp()[key]||{s:[]};
   if(ok){const ster=1+(bed>=Math.min(99,lv.nodig+8)?1:0)+(bed>=Math.min(100,lv.nodig+15)||bed>=97?1:0);const nieuw=Math.max(0,ster-(v.s[li]|0));v.s[li]=Math.max(v.s[li]|0,ster);const gal=host?0:lv.beloning+nieuw*5;S.galjoenen+=gal;bewaar();try{stats()}catch(e){}
@@ -65,6 +65,11 @@ V.spreukles=(li,key,opt)=>{li=+li||0;key=LES[key]?key:'flipendo';const L=LES[key
  function zweef(){const b=document.createElement('div');b.className='spl-zweef';b.textContent='📦';cv.parentElement.appendChild(b);setTimeout(()=>b.remove(),2200)}
  function golf(){const b=document.createElement('div');b.className='spl-boek';b.textContent='📕';cv.parentElement.appendChild(b);const g=document.createElement('div');g.className='spl-golf';cv.parentElement.appendChild(g);setTimeout(()=>{b.remove();g.remove()},1800)}
 };
+/* Spreuk-overlay voor andere schermen: zwSpreuk('flipendo'|'leviosa', nodig, cb(ok)) */
+window.zwSpreuk=(key,nodig,cb)=>{const o=document.createElement('div');o.className='spl-modal';o.innerHTML='<div class="spl-host"></div>';document.body.appendChild(o);
+ V.spreukles(0,key,{host:o.firstChild,lv:{nodig,tijd:20,beloning:0},klaar:ok=>{o.remove();cb&&cb(ok)}})};
+/* Slinger: blok hangt met de bovenkant aan je vinger en zwengelt bij snel bewegen */
+window.zwPendel=()=>{const P={th:0,om:0,vx:0,x:null,y:null,t:0};P.stap=(x,y,L)=>{const nu=performance.now(),dt=Math.min(.05,P.t?(nu-P.t)/1000:.016);P.t=nu;if(P.x==null){P.x=x;P.y=y}const vx=(x-P.x)/Math.max(dt,.001),ax=(vx-P.vx)/Math.max(dt,.001);P.vx=vx;P.x=x;P.y=y;const g=2200;P.om+=(-(g/L)*Math.sin(P.th)-3.2*P.om-Math.max(-6000,Math.min(6000,ax))*Math.cos(P.th)/L*.5)*dt;P.th=Math.max(-1.2,Math.min(1.2,P.th+P.om*dt));return P.th};return P};
 /* Wingardium Leviosa in de match-3-levels: ladingen, teken de W (80%), dan blok laten zweven */
 const LAD_MAX=5;const lad=()=>{if(S.levLad==null)S.levLad=3;return S.levLad};
 function levKnop(){const bd=document.querySelector('.m3bord');if(!bd||document.getElementById('m3lev'))return;bd.insertAdjacentHTML('afterend',`<div class="m3levrij"><button class="knop" id="m3lev">🪶 Wingardium Leviosa <b id="m3levn"></b></button></div>`);const n=()=>{$('#m3levn').textContent=lad()>0?'×'+lad():'(40 Smekkies)'};n();
