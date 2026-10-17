@@ -20,7 +20,7 @@ function speelPak(k,vol){const b=buf[k];if(!b||S.geluid===false||S.stil)return f
 window.pakSpeel=speelPak;
 /* fx.speel omleiden als het pakket dit geluid heeft */
 let klaar=false;const start=()=>{if(klaar)return;klaar=true;laadBuffers().then(n=>{if(n)pas()}).catch(()=>0)};
-const hang=()=>{if(typeof fx==='undefined'||fx._pak)return;const org=fx.speel;fx.speel=n=>{if(speelPak(n))return;if(/^stem-/.test(n))return;const FB={splat:'whoosh',kassa:'munt',kaart:'goed',winst:'fanfare',verlies:'fout',vuurwerk:'tover',combi:'tover',kies:'klik',spreuk:'tover',kist:'klik',kikker:'goed'};if(FB[n])return org(FB[n]);return org(n)};fx._pak=1};
+const hang=()=>{if(typeof fx==='undefined'||fx._pak)return;const org=fx.speel;const KEYVOL={klik:.245};/* klik ~35% van standaard 0.7 (-9 dB) */fx.speel=n=>{if(speelPak(n,KEYVOL[n]))return;if(/^stem-/.test(n))return;const FB={splat:'whoosh',kassa:'munt',kaart:'goed',winst:'fanfare',verlies:'fout',vuurwerk:'tover',combi:'tover',kies:'klik',spreuk:'tover',kist:'klik',kikker:'goed'};if(FB[n])return org(FB[n]);return org(n)};fx._pak=1};
 hang();addEventListener('pointerdown',start,{once:true});
 /* extra momenten in het spel */
 try{const _td=Bord.prototype.telDoel;Bord.prototype.telDoel=function(t){if(!this.sim&&typeof M3!='undefined'&&this===M3.b&&t===this.ksoort&&buf.kist)speelPak('kist',.5);return _td.apply(this,arguments)};
