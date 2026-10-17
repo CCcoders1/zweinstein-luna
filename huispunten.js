@@ -10,8 +10,10 @@ const PUNT={3:10,2:5,1:1},DOEL=.75*10+.25*5;
 S.lvSter=S.lvSter&&typeof S.lvSter=='object'?S.lvSter:{};
 /* bestaande levels zonder sterrendata tellen als 2 sterren */
 (function(){const t=(S.m3lvl|0)-1;let g=0;for(let n=1;n<=t;n++)if(!S.lvSter[n]){S.lvSter[n]=2;g=1}if(g)bewaar()})();
+/* huisschilden per level = beste aantal sterren (max 3); bij opnieuw spelen alleen het verschil */
+if(!S.lvSchild||typeof S.lvSchild!='object'){S.lvSchild={};Object.keys(S.lvSter).forEach(k=>S.lvSchild[k]=S.lvSter[k]|0);bewaar()}
 const sterVan=b=>{const z=b&&b.zet|0;return z>=5?3:z>=2?2:1};
-if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...a){const st=sterVan(b),oud=S.lvSter[n]|0;if(st>oud){S.lvSter[n]=st;if(st==3&&oud>0){S.schilden=(S.schilden|0)+1;setTimeout(()=>{try{toast('Nu 3 sterren! +1 extra huisschild')}catch(e){}},2600)}bewaar()}const r=_w.call(this,n,b,...a);
+if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...a){const st=sterVan(b),oud=S.lvSter[n]|0;if(st>oud)S.lvSter[n]=st;const al=S.lvSchild[n]|0,sch=Math.max(0,st-al);S.lvSchild[n]=Math.max(al,st);S.schilden=(S.schilden|0)+sch;bewaar();window._schildTekst=sch?`<b>+${sch} ${sch==1?'huisschild':'huisschilden'}</b> voor de lokalen · `:`<b>Maximaal aantal huisschilden voor dit level al gehaald</b> · `;const r=_w.call(this,n,b,...a);
  try{const h=HP[S.huis];const p=document.querySelector('.m3eind p');if(p&&h){const erbij=Math.max(0,PUNT[st]-(PUNT[oud]||0));p.insertAdjacentHTML('afterend',`<p class="hp-winst"><span class="hp-sterren">${'★'.repeat(st)}${'☆'.repeat(3-st)}</span><br>${erbij?`+${erbij} huispunten voor ${h.naam}`:`Je beste score blijft ${'★'.repeat(oud)}`}<br><small>3 sterren: win met 5 of meer zetten over · 2 sterren: 2 of meer</small></p>`)}}catch(e){}return r}}
 function stand(){const L=Object.keys(S.lvSter).filter(k=>S.lvSter[k]>0);const n=L.length;let eigen=0,c3=0,c2=0;L.forEach(k=>{const s=S.lvSter[k];eigen+=PUNT[s]||0;if(s==3)c3++;if(s==2)c2++});
  const hash=x=>{x=Math.sin(x*12.9898+78.233)*43758.5453;return x-Math.floor(x)};const f=[.965,.94,.915];const pts={};let j=0;
