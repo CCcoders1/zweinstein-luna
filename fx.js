@@ -63,7 +63,7 @@ const luid=document.getElementById('luid');luid.onclick=e=>{e.stopPropagation();
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('#geluid,#luid'))gp.classList.remove('open')});
 document.getElementById('mzk').onclick=e=>{e.stopPropagation();fx.init();fx.muz(!fx.muzOn);e.target.textContent=fx.muzOn?'Aan':'Uit';e.target.setAttribute('aria-pressed',fx.muzOn);luid.classList.toggle('stil',!fx.muzOn)};luid.classList.toggle('stil',!fx.muzOn);
 document.getElementById('vol').oninput=e=>fx.vol(+e.target.value);
-addEventListener('click',e=>{if(e.target.closest('nav button'))fx.speel('whoosh');else if(e.target.closest('button,.tegel,.memk,.ingr'))fx.speel('klik')});
+addEventListener('click',e=>{if(e.target.closest('nav button,button,.tegel,.memk,.ingr'))fx.speel('klik')});
 // intro
 fx.intro=klaar=>{const o=document.createElement('div');o.id='intro';o.innerHTML=`<div class="uil"><img class="uilfoto" src="img/sneeuwuil.webp" alt="Sneeuwuil"><div class="env"><img class="zg" src="img/lakzegel.webp" alt="Lakzegel"></div></div><p class="tik">Een uil brengt post voor jou…<br><b>Tik om de brief te openen</b></p>`;document.body.appendChild(o);
  o.onclick=()=>{fx.init();fx.speel('whoosh');o.classList.add('breek');setTimeout(()=>fx.speel('kras'),500);setTimeout(()=>{o.classList.add('weg');klaar();setTimeout(()=>o.remove(),800)},RM?100:1300)}};
