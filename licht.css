@@ -1043,3 +1043,6 @@ body[data-view=mijnkas] .pipbubbel{z-index:45}
 .spl-golf{position:absolute;left:20%;top:40%;width:80px;height:80px;border-radius:50%;border:6px solid rgba(90,170,255,.9);box-shadow:0 0 30px #4af;animation:splGolf .9s ease-out forwards}
 @keyframes splGolf{to{transform:scale(6);opacity:0}}
 @keyframes splBoek{0%{transform:none}25%{transform:translate(0,0) rotate(0)}100%{transform:translate(260px,-120px) rotate(540deg);opacity:0}}
+.spl-msg{font-size:1.05em;line-height:1.25}
+.spl-knop{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding-bottom:4px}.spl-knop .knop{margin:0;font-size:.92em}
+.spl-knop .knop::before,.spl-knop .knop::after{display:none!important}.spl-knop .knop{padding-left:.9em!important;padding-right:.9em!important}

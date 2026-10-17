@@ -16,7 +16,7 @@ V.spreukles=(li)=>{li=+li||0;const L=LES.flipendo,lv=L.levels[li];
  <div class="spl-meters"><div>Bedekt <b id="splbed">0%</b></div><div>Inkt <b id="splinkt">110%</b><i class="spl-balk"><i id="splinktb"></i></i></div><div>⏳ <b id="spltijd">${lv.tijd}</b></div></div>
  <canvas id="splc"></canvas><div class="spl-msg" id="splmsg">Kijk goed…</div>
  <div class="spl-knop"><button class="knop" onclick="ga('spreuken')">Stoppen</button></div></div>`);
- const cv=$('#splc'),W=Math.min(innerWidth-16,520),H=Math.round(W*1.05),dpr=devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';const c=cv.getContext('2d');c.scale(dpr,dpr);
+ const cv=$('#splc'),W=Math.min(innerWidth-16,520),H=Math.round(Math.min(W*1.05,innerHeight-400)),dpr=devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';const c=cv.getContext('2d');c.scale(dpr,dpr);
  const T=W*.1,P=L.pad.map(([x,y])=>[x*W,y*H]);
  const sc=.25,mw=Math.round(W*sc),mh=Math.round(H*sc);const mk=()=>{const o=document.createElement('canvas');o.width=mw;o.height=mh;const x=o.getContext('2d');x.scale(sc,sc);x.lineCap=x.lineJoin='round';x.lineWidth=T;return [o,x]};
  const [tm,tx]=mk();tx.beginPath();P.forEach((p,i)=>i?tx.lineTo(...p):tx.moveTo(...p));tx.stroke();
@@ -45,7 +45,7 @@ V.spreukles=(li)=>{li=+li||0;const L=LES.flipendo,lv=L.levels[li];
  function klaar(why){if(fase!='teken')return;fase='uit';clearInterval(tmr);meet();const ok=bed>=lv.nodig;const v=sp().flipendo=sp().flipendo||{s:[]};
   if(ok){const ster=1+(bed>=Math.min(99,lv.nodig+8)?1:0)+(bed>=Math.min(100,lv.nodig+15)||bed>=97?1:0);const nieuw=Math.max(0,ster-(v.s[li]|0));v.s[li]=Math.max(v.s[li]|0,ster);const gal=lv.beloning+nieuw*5;S.galjoenen+=gal;bewaar();try{stats()}catch(e){}
    speel('spreuk');setTimeout(()=>speel('stem-flipendo'),150);setTimeout(()=>speel(rnd('lof',9)),1500);vier(true);setTimeout(golf,RM?200:1300);
-   $('#splmsg').innerHTML=`Flipendo! ${bed}% bedekt. ${'★'.repeat(ster)} +${gal} Smekkies`;knop.innerHTML=`${li<2?`<button class="knop volgende" onclick="ga('spreukles',${li+1})">Volgende les</button> `:''}<button class="knop" onclick="ga('spreukles',${li})">Nog eens</button> <button class="knop" onclick="ga('spreuken')">Terug</button>`}
+   $('#splmsg').innerHTML=`Flipendo! ${bed}% · ${'★'.repeat(ster)} · +${gal} Smekkies`;knop.innerHTML=`${li<2?`<button class="knop volgende" onclick="ga('spreukles',${li+1})">Volgende les</button> `:''}<button class="knop" onclick="ga('spreukles',${li})">Nog eens</button> <button class="knop" onclick="ga('spreuken')">Terug</button>`}
   else{speel(rnd('aanm',6));vier(false);$('#splmsg').innerHTML=(why=='inkt'?'De inkt is op! ':'')+`${bed}% bedekt, je had ${lv.nodig}% nodig. Bijna! Probeer het nog eens.`;knop.innerHTML=`<button class="knop volgende" onclick="ga('spreukles',${li})">Opnieuw</button> <button class="knop" onclick="ga('spreuken')">Terug</button>`}}
  const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const mini=(x,y,r,rot,kleur,a)=>{c.save();c.translate(x,y);c.rotate(rot);c.globalAlpha=a;c.strokeStyle=kleur;c.lineWidth=Math.max(1.8,r*.22);c.lineCap='round';c.beginPath();L.pad.forEach(([px,py],i)=>{const X=(px-.5)*r*2,Y=(py-.5)*r*2;i?c.lineTo(X,Y):c.moveTo(X,Y)});c.stroke();c.restore()};
