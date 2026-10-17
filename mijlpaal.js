@@ -42,7 +42,7 @@ const _een=eenmalig;eenmalig=function(key){const r=_een(key);const k=huidig();if
 /* ketel: eerste drankje telt */
 setInterval(()=>{if(open('drank')&&!S.mpAf.drank&&S.drank&&Object.values(S.drank).some(x=>x>0))klaar('drank')},1500);
 /* niet open: niet speelbaar */
-const _ga=ga;ga=function(s,...a){if(s=='ketel'&&!open('drank')&&S.huis){toast('De ketel komt vrij na level '+MPK.drank[1]+'.');return}return _ga(s,...a)};
+const _ga=ga;ga=function(s,...a){if(s=='ketel'&&!open('drank')&&S.huis){toast('De ketel komt vrij vanaf level '+(MPK.drank[1]+1)+'.');return}return _ga(s,...a)};
 /* Hal: knop + uitnodiging */
 function nodig(m){const o=modal(`<h2>Een bijzonder moment!</h2><p>${port(m[2])} <b>${m[3]}:</b> ${m[4]}</p><p class="mpcadeau">🎁 De eerste keer: ${cadeauTekst(m[5])}</p><button class="knop volgende" id="mpja">Speel nu</button><button class="linkknop" id="mpnee">Straks</button>`);
  o.querySelector('#mpja').onclick=()=>{o.remove();ga(m[0])};o.querySelector('#mpnee').onclick=()=>o.remove()}
@@ -53,10 +53,24 @@ const _home=V.home;V.home=(...a)=>{const r=_home(...a);try{zetOpen();const m=wac
   if(!S.mpPop[m[0]]){let p=0;const toon=()=>{if(S.mpPop[m[0]]||S.mpAf[m[0]])return;if(document.querySelector('.modal,.verhaal')||document.body.dataset.view!=='home'){if(p++<40)setTimeout(toon,3000);return}S.mpPop[m[0]]=1;bewaar();nodig(m)};setTimeout(toon,2500)}}}catch(e){console.warn(e)}return r};
 /* Spellen-rij in De Hal */
 spellenHal=function(){const L=MP.filter(m=>m[0]!=='drank');const o=L.filter(m=>open(m[0]));const d=L.find(m=>!open(m[0]));
- return `<section class="halspel"><h3>Spellen</h3><div class="hs-rij"><button class="hs hs-hoofd" onclick="ga('match3')"><i class="rond">${icoon('ster')}</i><b>Level ${S.m3lvl}</b><small>${m3VakVoor(S.m3lvl).n}</small></button>${o.map(m=>{const b=BONUS.find(x=>x[0]==m[0]);return `<button class="hs" onclick="ga('${m[0]}')"><i class="rond">${icoon(b?b[2]:'ster')}</i><b>${m[6]}</b><small>${S.mpAf[m[0]]?'oefenen':'nieuw!'}</small></button>`}).join('')}${d?`<button class="hs dicht" onclick="toast('${d[6]} komt na level ${d[1]}.')"><i class="rond">${icoon('slot')}</i><b>${d[6]}</b><small>na level ${d[1]}</small></button>`:''}</div></section>`};
+ return `<section class="halspel"><h3>Spellen</h3><div class="hs-rij"><button class="hs hs-hoofd" onclick="ga('match3')"><i class="rond">${icoon('ster')}</i><b>Level ${S.m3lvl}</b><small>${m3VakVoor(S.m3lvl).n}</small></button>${o.map(m=>{const b=BONUS.find(x=>x[0]==m[0]);return `<button class="hs" onclick="ga('${m[0]}')"><i class="rond">${icoon(b?b[2]:'ster')}</i><b>${m[6]}</b><small>${S.mpAf[m[0]]?'oefenen':'nieuw!'}</small></button>`}).join('')}${d?`<button class="hs dicht" onclick="toast('${d[6]} komt vanaf level ${d[1]+1}.')"><i class="rond">${icoon('slot')}</i><b>${d[6]}</b><small>🔒 Vanaf level ${d[1]+1}</small></button>`:''}</div></section>`};
 V.bonus=()=>{app(`<h2>Spellen</h2>${tilly('Elk spel komt op een vast moment in je avontuur. De eerste keer krijg je een cadeau. Daarna kun je het oefenen, gewoon voor de lol. Smekkies verdien je met levels.')}
- <div class="raster bonusraster">${MP.filter(m=>m[0]!=='drank').map(m=>{const op=open(m[0]);const b=BONUS.find(x=>x[0]==m[0]);return `<button class="tegel ${op?'':'deur-dicht'}" data-mp="${m[0]}"><span class="ico">${icoon(op?(b?b[2]:'ster'):'slot')}</span><b>${m[6]}</b><small>${op?(S.mpAf[m[0]]?'Oefenen':'Nieuw! Eerste keer: '+cadeauTekst(m[5])):'Na level '+m[1]}</small></button>`}).join('')}</div>`);
- document.querySelectorAll('[data-mp]').forEach(t=>t.onclick=()=>{const k=t.dataset.mp;if(open(k))ga(k);else toast(MPK[k][6]+' komt na level '+MPK[k][1]+'.')})};
-/* Meer: ketel op slot tot level 5 */
-const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{const b=document.getElementById('meerkt');if(b&&!open('drank')){b.classList.add('mpdicht');b.innerHTML='🔒 Toverdranken brouwen <small>(na level '+MPK.drank[1]+')</small>'}}catch(e){}return r};
+ <div class="raster bonusraster">${MP.filter(m=>m[0]!=='drank').map(m=>{const op=open(m[0]);const b=BONUS.find(x=>x[0]==m[0]);return `<button class="tegel ${op?'':'deur-dicht zwdicht'}" data-mp="${m[0]}"><span class="ico">${icoon(op?(b?b[2]:'ster'):'slot')}</span><b>${m[6]}</b><small>${op?(S.mpAf[m[0]]?'Oefenen':'Nieuw! Eerste keer: '+cadeauTekst(m[5])):'🔒 Vanaf level '+(m[1]+1)}</small></button>`}).join('')}</div>`);
+ document.querySelectorAll('[data-mp]').forEach(t=>t.onclick=()=>{const k=t.dataset.mp;if(open(k))ga(k);else toast(MPK[k][6]+' komt vanaf level '+(MPK[k][1]+1)+'.')})};
+/* ---------- nog niet van toepassing: gedimd, niet tikbaar, slotje + 'Vanaf level X' ---------- */
+window.zwDicht=(el,label,hint)=>{if(!el||el.classList.contains('zwdicht'))return;el.classList.add('zwdicht');el.removeAttribute('onclick');el.onclick=null;el.setAttribute('aria-disabled','true');
+ el.insertAdjacentHTML('beforeend',`<small class="zwslot">🔒 ${label}</small>`);el.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();toast(hint||label)},true)};
+const VL=n=>'Vanaf level '+n;
+const lesOpen=()=>!window.spreukOpen||spreukOpen('flipendo');
+const lesVan=()=>(window.SPREUK_VAN&&SPREUK_VAN.flipendo)||3;
+const moestuinOpen=()=>!!(S.pomp&&(S.pomp.melding||S.pomp.inh||(S.pomp.g||[]).every(x=>x>=20)));
+const heeftKaart=()=>Object.keys(S.kaarten||{}).length>0;
+function dimMeer(){const q=s=>document.querySelector(s);
+ if(!open('drank'))zwDicht(q('#meerkt'),VL(MPK.drank[1]+1),'De ketel komt vrij vanaf level '+(MPK.drank[1]+1)+'.');
+ if(!lesOpen())zwDicht(q('#meerspreuk'),VL(lesVan()),'Professor Banning geeft je eerste les vanaf level '+lesVan()+'.');
+ if(!moestuinOpen())zwDicht(q('#meermt'),'Als de pompoenmeter vol is','Maak pompoen-combi’s in de levels. Als de pompoenmeter bovenin vol is, mag je naar Hagrids moestuin.');
+ if(!heeftKaart())zwDicht(q('#app [onclick="ga(\'album\')"]'),VL(10),'Je eerste tovenaarskaart krijg je bij level 10.')}
+const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{dimMeer()}catch(e){console.warn(e)}return r};
+const _home2=V.home;V.home=(...a)=>{const r=_home2(...a);try{if(!lesOpen())document.querySelectorAll('#app [onclick="ga(\'spreuken\')"]').forEach(b=>zwDicht(b,VL(lesVan()),'Professor Banning geeft je eerste les vanaf level '+lesVan()+'.'))}catch(e){}return r};
+if(V.mijnkas){const _mk=V.mijnkas;V.mijnkas=(...a)=>{const r=_mk(...a);try{if(!(S.receptOpen&&S.receptOpen.licht))zwDicht(document.getElementById('balkrecept'),VL(23),'Recepten komen in je boek als je de eerste Duivelsstrik-les haalt (level 22).')}catch(e){}return r}}
 })();

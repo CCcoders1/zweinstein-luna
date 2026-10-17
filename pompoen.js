@@ -16,8 +16,14 @@ window.pompGroei=groei;
 function thVan(b){return Object.keys(M3THEMA).find(k=>M3THEMA[k]===b.T)}
 const _td=Bord.prototype.telDoel;Bord.prototype.telDoel=function(t){try{if(!this.sim&&typeof M3!="undefined"&&this===M3.b&&typeof t=='number'){if(this._pi==null)this._pi=pompIdx(thVan(this));if(t===this._pi)groei()}}catch(e){}return _td.apply(this,arguments)};
 const _opl=Bord.prototype.oplossen;Bord.prototype.oplossen=async function(){const r=await _opl.apply(this,arguments);if(!this.sim)bewaar();return r};
-const POMP=['Pompoen','#ff8a1a',c=>{const i=window._ppImg||(window._ppImg=Object.assign(new Image(),{src:'img/stukken/pompoen-256.webp'}));if(i.complete&&i.naturalWidth)c.drawImage(i,-50,-50,100,100)},'pompoen'];
+/* pompoenplaatje vooraf laden; zodra het binnen is de sprite-cache legen, anders blijft een lege tegel bewaard (iPhone) */
+const ppI=window._ppImg||(window._ppImg=new Image());if(!ppI.getAttribute('src'))ppI.src='img/stukken/pompoen-256.webp';
+const ppKlaar=()=>{try{KU.wis()}catch(e){}};if(ppI.complete&&ppI.naturalWidth)ppKlaar();else{ppI.addEventListener('load',ppKlaar);if(ppI.decode)ppI.decode().then(ppKlaar,()=>0)}
+const POMP=['Pompoen','#ff8a1a',c=>{if(ppI.complete&&ppI.naturalWidth){c.drawImage(ppI,-50,-50,100,100);return}
+ c.fillStyle='#ff8a1a';c.strokeStyle='#a84a0a';c.lineWidth=3;[-18,18,0].forEach((x,i)=>{c.beginPath();c.ellipse(x,8,i==2?24:20,30,0,0,7);c.fill();c.stroke()});c.fillStyle='#4e7a22';c.fillRect(-4,-30,8,12);ppI.addEventListener('load',ppKlaar,{once:true})},'pompoen'];
 function zorgPomp(th){const l=KU.RECEPT[th];if(!l)return;let p=pompIdx(th);if(p<0){l[0]=POMP;p=0}else if(p>4){[l[4],l[p]]=[l[p],l[4]]}else return;if(M3THEMA[th])M3THEMA[th].t=l.map(r=>[r[0],r[1],'M12 4v16']);try{KU.wis()}catch(e){}}
+/* meteen in alle sets, zodat het levelscherm vooraf hetzelfde doel toont als het bord */
+try{Object.keys(KU.RECEPT).forEach(zorgPomp)}catch(e){}
 const _sp=m3Speel;m3Speel=function(n,thema){try{zorgPomp(thema)}catch(e){}const r=_sp.apply(this,arguments);let t=0;const zet=()=>{const h=document.querySelector('.m3hud');if(h){if(!document.getElementById('pompmeter'))h.insertAdjacentHTML('afterend',meterHTML())}else if(t++<40)setTimeout(zet,150)};zet();return r};
 const _w=m3Winst;m3Winst=function(n,b){const r=_w.apply(this,arguments);if(vol()&&!S.pomp.melding){S.pomp.melding=1;bewaar();setTimeout(()=>hagridRijp(),2600)}return r};
 function hagridRijp(){if(document.querySelector('.modal'))return setTimeout(hagridRijp,900);const o=document.createElement('div');o.className='modal';

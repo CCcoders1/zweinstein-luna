@@ -1254,3 +1254,8 @@ p.harten,div.harten{display:flex;flex-wrap:wrap;align-items:center;justify-conte
 .mpmodal p,.mpmodal b,.mpmodal .klein{color:#2b1a0b!important;text-shadow:none!important}
 .mpmodal h2{color:#7a4a00!important;text-shadow:none!important}
 .mpmodal .linkknop{color:#7a4a00!important}
+
+/* v104: nog niet van toepassing = gedimd */
+.zwdicht,.hs.dicht,.fgitem.dicht,.kritem.slot,.bochip.dicht,.zkoop.potslot,.zkoop.dicht,.deur-dicht,.mpdicht{opacity:.35!important;filter:grayscale(1)!important}
+.zwdicht{cursor:default}
+.zwslot{display:block;font-size:.72em;font-weight:400;margin-top:2px;letter-spacing:0;text-transform:none;font-variant:normal}

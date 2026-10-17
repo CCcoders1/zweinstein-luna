@@ -128,7 +128,8 @@ function kistCheck(){if(S.kist>=5){S.kist=2;S.kikkers=(S.kikkers|0)+1;bewaar();s
 const kistMeter=()=>`<div class="kaart kist"><b>🎁 Beloningskist</b> <small>nog ${5-S.kist} puzzel${5-S.kist==1?'':'s'} tot een Chocokikker voor in je tas</small><div class="balk"><div style="width:${S.kist/5*100}%"></div></div></div>`;
 /* ---------- quests ---------- */
 const QPOOL=[['oogst',2,'Oogst 2 planten in je kas',20],['eet',1,'Eet een Chocokikker',15],['m3',1,'Win een level',10],['m3',2,'Win 2 levels',15],['les',1,'Volg een les',15],['kas',1,'Bezoek de Magische Kas',5]];
-function dagQuests(){const n=+vandaag().replace(/-/g,'');return[0,1,2].map(i=>QPOOL[(n+i*2)%QPOOL.length])}
+const QMAG={eet:()=>(S.kikkers|0)>0,les:()=>!!(S.bonusOpen&&S.bonusOpen.lessen)};
+function dagQuests(){const n=+vandaag().replace(/-/g,'');const pool=QPOOL.filter(q=>!QMAG[q[0]]||QMAG[q[0]]());const uit=[],soort=new Set();for(let i=0;i<pool.length&&uit.length<3;i++){const q=pool[(n+i*2+(i*2>=pool.length?1:0))%pool.length];if(!soort.has(q[0])){soort.add(q[0]);uit.push(q)}}for(let i=0;i<pool.length&&uit.length<3;i++){const q=pool[i];if(!soort.has(q[0])){soort.add(q[0]);uit.push(q)}}return uit}
 const WEEKQ=[['oogst',10,'Oogst deze week 10 planten',80],['m3',8,'Win deze week 8 levels',60]];
 function questCheck(){const qs=[...dagQuests().map(q=>[q,vandaag()]),...WEEKQ.map(q=>[q,'w'+weekNr()])];qs.forEach(([q,d])=>{const k=d+q[0];if(!S.questKlaar[k]&&telV(q[0],d[0]=='w')>=q[1]){S.questKlaar[k]=1;bewaar();stats();setTimeout(()=>{toast('✅ Quest voltooid: '+q[2]);fx.speel('munt');vib(40)},3200)}})}
 V.quests=()=>{const qr=(q,w)=>{const v=Math.min(q[1],telV(q[0],w));return `<div class="quest ${v>=q[1]?'klaar':''}"><span>${v>=q[1]?'✅':'🔸'} ${q[2]}</span><div class="balk"><div style="width:${v/q[1]*100}%"></div></div><small>${v}/${q[1]}</small></div>`};
