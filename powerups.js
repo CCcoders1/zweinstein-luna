@@ -9,7 +9,7 @@ window.BOOSTERS={
  bliksem:{prijs:60,naam:'Bliksemschicht',kort:'kruis wissen',img:'bliksem',uitleg:'De Bliksemschicht wist een hele rij én kolom tegelijk, in de vorm van een kruis. Net als Harry’s litteken, maar dan nuttig.'},
  kristal:{prijs:40,naam:'Magische kristallen',kort:'3 kristallen',img:'kristal-blauw',uitleg:'Magische kristallen! Raak ze twee keer met een match ernaast: eerst barsten ze, dan springen ze open met Smekkies of iets moois erin.'},
  ei:{prijs:60,naam:'Gouden ei',kort:'gouden ei',img:'ei-dicht',uitleg:'Een gouden ei, net als bij het Toverschool Toernooi! Eén tik en het gaat open, de tweede tik geeft je de schat die erin zit.'},
- verdwijn:{prijs:120,naam:'Zware Verdwijnspreuk',kort:'half bord weg',img:'verdwijn',uitleg:'De Zware Verdwijnspreuk! Verschuif hem en bijna de helft van het bord verdwijnt in één keer. Gebruik hem op het juiste moment.'}};
+ verdwijn:{prijs:120,naam:'Evanesco Maxima',kort:'zware spreuk: half bord weg',img:'verdwijn',uitleg:'Evanesco Maxima, de zware verdwijnspreuk! Verschuif hem en bijna de helft van het bord verdwijnt in één keer. Gebruik hem op het juiste moment.'}};
 S.bo=S.bo||{};S.uitlegPU=S.uitlegPU||{};
 /* migratie v92: Toverdrankbasissen bestaan niet meer; elke basis wordt 30 Smekkies terug */
 if(S.bo.basis!=null){const n=S.bo.basis|0;delete S.bo.basis;if(n>0){S.galjoenen=(S.galjoenen|0)+n*30;setTimeout(()=>{try{toast('De Toverdrankbasissen zijn uit het spel. Je kreeg '+n*30+' Smekkies terug.')}catch(e){}},4000)}bewaar()}
