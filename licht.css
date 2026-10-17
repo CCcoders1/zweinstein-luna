@@ -1065,3 +1065,5 @@ body.zw-nacht #zwtint{background:rgba(40,70,160,.09)}
 @keyframes pakgloed{50%{transform:translateY(-6px)}}
 .mk-sleepblok{position:fixed;left:0;top:0;z-index:9500;pointer-events:none;transform-origin:50% 0;filter:drop-shadow(0 0 14px #ffd76a)}
 .mk-draad{position:fixed;width:2px;height:40px;margin-left:-1px;background:linear-gradient(rgba(255,220,120,0),rgba(255,220,120,.9));z-index:9501;pointer-events:none}
+.mk-kooiknop{top:auto;padding:6px 10px;line-height:1.1;display:flex;flex-direction:column;align-items:center;font-size:18px}.mk-kooiknop small{font-size:12px}
+.mk-terug{right:auto}.mk-blok.pakbaar{touch-action:none}
