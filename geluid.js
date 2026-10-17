@@ -79,8 +79,8 @@ const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{const m=document.getE
 
 /* Selecteergeluid in 2 delen: kies-loop zolang ze vasthoudt, kies-uit bij loslaten. Zonder die bestanden: gewone 'kies'. */
 const KIES={n:null,t0:0};
-window.zwKies={start(){if(KIES.n)return;if(!buf['kies-loop']||!buf['kies-uit']||S.geluid===false||S.stil){try{fx.speel('kies')}catch(e){}return}
- const c=ctx(),s=c.createBufferSource(),g=c.createGain(),v=.7*(S.fxVol==null?.8:S.fxVol)/.8;s.buffer=buf['kies-loop'];s.loop=true;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(v,c.currentTime+.012);s.connect(g).connect(c.destination);s.start();KIES.n={s,g,v};KIES.t0=performance.now()},
+window.zwKies={start(f){f=f||1;if(KIES.n)return;if(!buf['kies-loop']||!buf['kies-uit']||S.geluid===false||S.stil){try{fx.speel('kies')}catch(e){}return}
+ const c=ctx(),s=c.createBufferSource(),g=c.createGain(),v=f*.7*(S.fxVol==null?.8:S.fxVol)/.8;s.buffer=buf['kies-loop'];s.loop=true;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(v,c.currentTime+.012);s.connect(g).connect(c.destination);s.start();KIES.n={s,g,v};KIES.t0=performance.now()},
  stop(){const k=KIES.n;if(!k)return;KIES.n=null;const wacht=Math.max(0,130-(performance.now()-KIES.t0));setTimeout(()=>{try{const c=ctx(),t=c.currentTime,u=c.createBufferSource(),g=c.createGain();k.g.gain.cancelScheduledValues(t);k.g.gain.setValueAtTime(k.g.gain.value,t);k.g.gain.linearRampToValueAtTime(0,t+.06);k.s.stop(t+.08);u.buffer=buf['kies-uit'];g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(k.v,t+.04);u.connect(g).connect(c.destination);u.start(t)}catch(e){}},wacht)},
  tik(){this.start();this.stop()}};
 ['pointerup','pointercancel'].forEach(ev=>addEventListener(ev,()=>zwKies.stop(),true));

@@ -38,13 +38,13 @@ V.spreukles=(li)=>{li=+li||0;const L=LES.flipendo,lv=L.levels[li];
  const ds=performance.now();(function anim(n){if(fase!='demo')return;demoT=(n-ds)/2200;teken();if(demoT<1.15)requestAnimationFrame(anim);else{fase='teken';t0=Date.now();$('#splmsg').textContent='Nu jij! Begin bij de toverstok.';teken();tik()}})(ds);
  let tmr;const tik=()=>{tmr=setInterval(()=>{if(!document.body.contains(cv))return clearInterval(tmr);const r=lv.tijd-Math.floor((Date.now()-t0)/1000);$('#spltijd').textContent=Math.max(0,r);if(r<=0)klaar()},250)};
  const pos=e=>{const r=cv.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
- cv.onpointerdown=e=>{if(fase!='teken'||inkt>=110)return;cv.setPointerCapture(e.pointerId);huidig=[pos(e)];lijnen.push(huidig);window.zwKies&&zwKies.start()};
+ cv.onpointerdown=e=>{if(fase!='teken'||inkt>=110)return;cv.setPointerCapture(e.pointerId);huidig=[pos(e)];lijnen.push(huidig);window.zwKies&&zwKies.start(.6)};
  cv.onpointermove=e=>{if(!huidig||fase!='teken')return;const p=pos(e),q=huidig[huidig.length-1],d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(d<2)return;inkt+=d*T/(opp/sc/sc)*100;huidig.push(p);ux.beginPath();ux.moveTo(...q);ux.lineTo(...p);ux.stroke();teken();inktUI();if(huidig.length%3==0)meet();if(inkt>=110){huidig=null;meet();klaar('inkt')}};
  cv.onpointerup=cv.onpointercancel=()=>{if(huidig){huidig=null;meet();if(bed>=lv.nodig&&bed>=98)klaar()}};
  const knop=$('.spl-knop');knop.insertAdjacentHTML('afterbegin','<button class="knop volgende" id="splklaar">Klaar!</button> ');$('#splklaar').onclick=()=>fase=='teken'&&klaar();
  function klaar(why){if(fase!='teken')return;fase='uit';clearInterval(tmr);meet();const ok=bed>=lv.nodig;const v=sp().flipendo=sp().flipendo||{s:[]};
   if(ok){const ster=1+(bed>=Math.min(99,lv.nodig+8)?1:0)+(bed>=Math.min(100,lv.nodig+15)||bed>=97?1:0);const nieuw=Math.max(0,ster-(v.s[li]|0));v.s[li]=Math.max(v.s[li]|0,ster);const gal=lv.beloning+nieuw*5;S.galjoenen+=gal;bewaar();try{stats()}catch(e){}
-   speel('spreuk');setTimeout(()=>speel('stem-flipendo'),150);setTimeout(()=>speel(rnd('lof',9)),1500);vier(true);setTimeout(golf,RM?200:1300);
+   speel('tover');setTimeout(()=>speel('stem-flipendo'),300);setTimeout(()=>speel(rnd('lof',9)),1500);vier(true);setTimeout(golf,RM?200:1300);
    $('#splmsg').innerHTML=`Flipendo! ${bed}% · ${'★'.repeat(ster)} · +${gal} Smekkies`;knop.innerHTML=`${li<2?`<button class="knop volgende" onclick="ga('spreukles',${li+1})">Volgende les</button> `:''}<button class="knop" onclick="ga('spreukles',${li})">Nog eens</button> <button class="knop" onclick="ga('spreuken')">Terug</button>`}
   else{speel(rnd('aanm',6));vier(false);$('#splmsg').innerHTML=(why=='inkt'?'De inkt is op! ':'')+`${bed}% bedekt, je had ${lv.nodig}% nodig. Bijna! Probeer het nog eens.`;knop.innerHTML=`<button class="knop volgende" onclick="ga('spreukles',${li})">Opnieuw</button> <button class="knop" onclick="ga('spreuken')">Terug</button>`}}
  const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
