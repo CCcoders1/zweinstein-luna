@@ -69,7 +69,7 @@ V.spreukles=(li,key,opt)=>{li=+li||0;key=LES[key]?key:'flipendo';const L=LES[key
 const LAD_MAX=5;const lad=()=>{if(S.levLad==null)S.levLad=3;return S.levLad};
 function levKnop(){const bd=document.querySelector('.m3bord');if(!bd||document.getElementById('m3lev'))return;bd.insertAdjacentHTML('afterend',`<div class="m3levrij"><button class="knop" id="m3lev">🪶 Wingardium Leviosa <b id="m3levn"></b></button></div>`);const n=()=>{$('#m3levn').textContent=lad()>0?'×'+lad():'(40 Smekkies)'};n();
  $('#m3lev').onclick=()=>{if(typeof M3=='undefined'||!M3.leviosa)return;if(lad()<1){if(S.galjoenen<40){toast('Je hebt 40 Smekkies nodig voor een lading. Je krijgt er ook één bij elk gewonnen level.');return}S.galjoenen-=40;S.levLad=1;bewaar();try{stats()}catch(e){}n()}
-  const o=document.createElement('div');o.className='modal spl-modal';o.innerHTML='<div class="spl-host"></div>';document.body.appendChild(o);
+  const o=document.createElement('div');o.className='spl-modal';o.innerHTML='<div class="spl-host"></div>';document.body.appendChild(o);
   V.spreukles(0,'leviosa',{host:o.firstChild,lv:{nodig:80,tijd:20,beloning:0},klaar:(ok)=>{o.remove();if(ok){S.levLad=lad()-1;bewaar();n();M3.leviosa()}else toast('Geen zorgen, je lading is bewaard. Probeer het straks nog eens!')}})}}
 setInterval(()=>{try{if(typeof M3!=='undefined'&&M3.leviosa)levKnop()}catch(e){}},700);
 if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(...a){S.levLad=Math.min(LAD_MAX,lad()+1);return _w.apply(this,a)}}
