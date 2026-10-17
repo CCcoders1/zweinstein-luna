@@ -1092,3 +1092,4 @@ body.zw-nacht #zwtint{background:rgba(40,70,160,.09)}
 .kt-ovi{position:relative;width:40px;height:40px;filter:drop-shadow(0 3px 3px rgba(0,0,0,.7))}.kt-ovi>img,.kt-ovi>svg{width:40px;height:40px;object-fit:contain}
 .kt-ovi b{position:absolute;right:-4px;bottom:-4px;background:#2c1c10;color:#ffe9a0;border-radius:8px;font-size:11px;padding:0 4px}
 .kt-terug{box-shadow:0 3px 10px rgba(0,0,0,.5)}
+.kt-kaart p,.kt-kaart li,.kt-kaart small{color:#3a2812}.kt-stappen li{opacity:.75}.kt-stappen li.af{opacity:.55}

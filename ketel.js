@@ -63,7 +63,7 @@ function pak(e,i,el){if(!K||K.modus!='cl')return;e.preventDefault();const c=docu
   else{const r=el.getBoundingClientRect();c.style.transition='transform .4s ease-out';c.style.transform=`translate(${r.left+r.width/2-30}px,${r.top}px) scale(.6)`;setTimeout(()=>c.remove(),420)}};
  addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)}
 function erin(i,x,y){if(!K)return;const E=K.E;let u=(x-E.cx)/E.rx,v=(y-E.cy)/E.ry;const m=Math.hypot(u,v);if(m>.85){u*=.85/m;v*=.85/m}
- plons(u,v,2.6,kleurI(i));if(!geluid('verr-drup'+(1+Math.random()*3|0),.5))geluid('splat',.3);
+ plons(u,v,1.4,kleurI(i));if(!geluid('verr-drup'+(1+Math.random()*3|0),.5))geluid('splat',.3);
  if(!K.r){K.doel=meng(K.doel,hex(kleurI(i)),.35);tip('Kies eerst een drankje, dan weet je wat erin moet.');return}
  const s=K.r.stap[K.stap];if(!s||s[0]!='in'||s[1]!=i){tip(s&&s[0]=='in'?'Dat hoort er nu niet in. Nu moet er '+naam(s[1]).toLowerCase()+' in.':'Eerst roeren!');K.doel=meng(K.doel,hex(kleurI(i)),.15);return}
  if(S.oogst&&S.oogst[i]>0){S.oogst[i]--;bewaar()}
@@ -87,20 +87,20 @@ function tekenVloeistof(ctx,t,dt){const {GW,GH,h,mask,id}=K,D=id.data,E=K.E;
  K.cur=meng(K.cur,K.doel,Math.min(1,dt*1.6));const [cr,cg,cb]=K.cur,vd=Math.min(.7,Math.abs(K.vort)/5),sw=Math.min(1,Math.abs(K.vort)/2.2),gl=K.glans,tw=K.twist;
  for(let y=0;y<GH;y++){const v=(y+.5)/GH*2-1;for(let x=0;x<GW;x++){const i=y*GW+x,p=i*4;if(!mask[i]){D[p+3]=0;continue}const u=(x+.5)/GW*2-1,r2=u*u+v*v,r=Math.sqrt(r2);
   const dx=(x>0&&x<GW-1)?h[i+1]-h[i-1]:0,dy=(y>0&&y<GH-1)?h[i+GW]-h[i-GW]:0;
-  let li=.82-dy*.9-dx*.35+vd*v*.55-vd*(1-r2)*.25+.05*Math.sin(u*3.1+t*.5)*Math.sin(v*4.3-t*.4);
-  const th=Math.atan2(v,u),st=sw>.02?(.5+.5*Math.sin(th*3-tw*(1.6-r)*2.2+r*5))*sw*(1-r2)*.5:0;
+  let li=.82-Math.max(-.35,Math.min(.35,dy*.32+dx*.12))+vd*v*.45-vd*(1-r2)*.25+.05*Math.sin(u*3.1+t*.5)*Math.sin(v*4.3-t*.4);
+  const th=Math.atan2(v,u),st=sw>.02?(.5+.5*Math.sin(th*3-tw*(1.6-r)*2.2+r*5))*sw*(1-r2)*.32:0;
   const rand=Math.min(1,Math.max(0,(r2-.62)/.42)),achter=v<0?.45:.25;li*=1-rand*achter;
-  const spec=Math.max(0,li-1.02)*2.4+Math.max(0,1-Math.hypot(u+.28,v+.42)*3.2)*.18;
+  const spec=Math.max(0,li-1.0)*1.6+Math.max(0,1-Math.hypot(u+.28,v+.42)*3.2)*.18;
   const vuur=(v>.3?(v-.3)*.25*(.8+.2*Math.sin(t*9+u*4)):0);
-  D[p]=Math.min(255,cr*li+st*90+spec*230+vuur*120+gl*90);D[p+1]=Math.min(255,cg*li+st*80+spec*225+vuur*60+gl*70);D[p+2]=Math.min(255,cb*li+st*70+spec*215+gl*10);D[p+3]=255}}
+  D[p]=Math.min(255,cr*li+st*90+spec*230+vuur*120+gl*30);D[p+1]=Math.min(255,cg*li+st*80+spec*225+vuur*60+gl*24);D[p+2]=Math.min(255,cb*li+st*70+spec*215+gl*4);D[p+3]=255}}
  K.ox.putImageData(id,0,0);ctx.save();ctx.beginPath();ctx.ellipse(E.cx,E.cy,E.rx,E.ry,0,0,6.283);ctx.clip();ctx.imageSmoothingEnabled=true;ctx.drawImage(K.oc,E.cx-E.rx,E.cy-E.ry,E.rx*2,E.ry*2);
  // binnenrand-schaduw
  const g=ctx.createRadialGradient(E.cx,E.cy+E.ry*.2,E.ry*.5,E.cx,E.cy,E.rx*1.02);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(.85,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.45)');ctx.save();ctx.translate(E.cx,E.cy);ctx.scale(1,E.ry/E.rx);ctx.translate(-E.cx,-E.cy);ctx.fillStyle=g;ctx.fillRect(E.cx-E.rx,E.cy-E.rx,E.rx*2,E.rx*2);ctx.restore();
- if(gl>0){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=gl*(.35+.15*Math.sin(t*3));ctx.fillStyle='#ffcf5a';ctx.fillRect(E.cx-E.rx,E.cy-E.ry,E.rx*2,E.ry*2);ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1}
+ if(gl>0){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=gl*(.1+.05*Math.sin(t*3));ctx.fillStyle='#ffcf5a';ctx.fillRect(E.cx-E.rx,E.cy-E.ry,E.rx*2,E.ry*2);ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1}
  ctx.restore()}
 function tekenBellen(ctx,dt){const E=K.E,w=K.vort*dt;if(Math.random()<dt*(K.modus=='cl'?5:2.5)*(1+Math.abs(K.vort)*.3))K.bub.push(nieuweBel());
  const [cr,cg,cb]=K.cur.map(x=>Math.min(255,x*1.5+40));K.bub=K.bub.filter(b=>{b.l+=dt;const r=Math.hypot(b.u,b.v)||.01,a=w*(1.3-r);const ca=Math.cos(a),sa=Math.sin(a);const u=b.u*ca-b.v*sa,v=b.u*sa+b.v*ca;b.u=u+(Math.random()-.5)*.004;b.v=v;
-  const f=b.l/b.dur;if(f>=1){stoot(b.u,b.v,.5,2.2);return false}const R=E.ry*.07*b.max*Math.min(1,f*3),x=E.cx+b.u*E.rx,y=E.cy+b.v*E.ry;
+  const f=b.l/b.dur;if(f>=1){stoot(b.u,b.v,.18,2.2);return false}const R=E.ry*.07*b.max*Math.min(1,f*3),x=E.cx+b.u*E.rx,y=E.cy+b.v*E.ry;
   ctx.beginPath();ctx.ellipse(x,y,R,R*.72,0,0,6.283);ctx.fillStyle=`rgba(${cr|0},${cg|0},${cb|0},.55)`;ctx.fill();ctx.lineWidth=1;ctx.strokeStyle='rgba(255,255,255,.35)';ctx.stroke();ctx.beginPath();ctx.arc(x-R*.35,y-R*.3,R*.22,0,6.283);ctx.fillStyle='rgba(255,255,255,.7)';ctx.fill();return true})}
 let STOOMSPR=null;function stoomSprite(){if(STOOMSPR)return STOOMSPR;const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(235,235,240,.9)');g.addColorStop(1,'rgba(235,235,240,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return STOOMSPR=c}
 function tekenStoom(ctx,dt,t){const E=K.E,sp=stoomSprite();if(!rustig&&Math.random()<dt*(K.modus=='cl'?6:3))K.stoom.push({x:E.cx+(Math.random()-.5)*E.rx*1.5,y:E.cy+(Math.random()-.3)*E.ry*.8,r:E.ry*(.25+Math.random()*.3),l:0,dur:3+Math.random()*2,ph:Math.random()*6});
@@ -113,12 +113,12 @@ function lepelStap(dt){const p=K.lepel,E=K.E;if(!p)return;let tx=p.x,ty=p.y;if(K
  let u=(tx-E.cx)/E.rx,v=(ty-E.cy)/E.ry;const m=Math.hypot(u,v),M=.8;if(m>M){u*=M/m;v*=M/m}tx=E.cx+u*E.rx;ty=E.cy+v*E.ry;
  const k=1-Math.exp(-dt*12),ox=p.x,oy=p.y;p.x+=(tx-p.x)*k;p.y+=(ty-p.y)*k;const vx=(p.x-ox)/Math.max(dt,.001),vy=(p.y-oy)/Math.max(dt,.001),sp=Math.hypot(vx,vy);
  const pu=(p.x-E.cx)/E.rx,pv=(p.y-E.cy)/E.ry,pr=Math.hypot(pu,pv);
- if(sp>8){stoot(pu,pv,Math.min(1.6,sp/260),K.GW*.035);const bu=pu-vx/E.rx*.04,bv=pv-vy/E.ry*.04;stoot(bu,bv,-Math.min(1,sp/400),K.GW*.03)}
+ if(sp>8){stoot(pu,pv,Math.min(.28,sp/1800),K.GW*.04);const bu=pu-vx/E.rx*.05,bv=pv-vy/E.ry*.05;stoot(bu,bv,-Math.min(.2,sp/2400),K.GW*.035)}
  const th=Math.atan2(pv,pu);if(p.th!=null&&pr>.15){let d=th-p.th;if(d>Math.PI)d-=6.283;if(d<-Math.PI)d+=6.283;K.acc+=d;const av=d/Math.max(dt,.001);K.vort+=(av*.55-K.vort)*Math.min(1,dt*1.6*(K.vinger?1:0));
   if(Math.abs(av)>2.5&&performance.now()-(K.roerT||0)>950){K.roerT=performance.now();geluid('verr-drup'+(1+Math.random()*3|0),.18)}}
  p.th=th;K.vort*=Math.exp(-dt*(K.vinger?.25:.55));K.twist+=K.vort*dt;K.twist*=Math.exp(-dt*.08);
  // handvat: helt naar boven-rechts, met wat traagheid
- const ex=E.cx+(p.x-E.cx)*.45+E.rx*.42,ey=E.cy-E.ry*2.7+(p.y-E.cy)*.35;if(!p.eind)p.eind={x:ex,y:ey};const k2=1-Math.exp(-dt*6);p.eind.x+=(ex-p.eind.x)*k2;p.eind.y+=(ey-p.eind.y)*k2;
+ const ex=E.cx+(p.x-E.cx)*.35+E.rx*1.05,ey=E.cy-E.ry*2.1+(p.y-E.cy)*.4;if(!p.eind)p.eind={x:ex,y:ey};const k2=1-Math.exp(-dt*6);p.eind.x+=(ex-p.eind.x)*k2;p.eind.y+=(ey-p.eind.y)*k2;
  // roer-stap tellen
  const s=K.r&&!K.klaarT&&K.r.stap[K.stap];if(s&&s[0]=='roer'){const n=Math.floor(K.acc*s[2]/6.283);if(K.acc*s[2]<-6.283*.75&&!K.wTip){K.wTip=1;tip('Andersom! Roer '+(s[2]>0?'met de klok mee ↻':'tegen de klok in ↺')+'.');K.acc=0}
   if(n!==K.lastN){K.lastN=n;kaart();if(n>0&&n<s[1])try{fx.speel('klik')}catch(e){}}if(n>=s[1]){K.wTip=0;K.lastN=-1;volgende()}}}
@@ -127,7 +127,7 @@ function hout(ctx,ax,ay,bx,by,w0,w1,nat){const dx=bx-ax,dy=by-ay,L=Math.hypot(dx
  const g=ctx.createLinearGradient(ax+nx*w0/2,ay+ny*w0/2,ax-nx*w0/2,ay-ny*w0/2);g.addColorStop(0,'#5a3a1e');g.addColorStop(.35,'#b07c46');g.addColorStop(.55,'#c99358');g.addColorStop(1,'#4a2e16');ctx.fillStyle=g;ctx.fill();
  ctx.save();ctx.clip();ctx.strokeStyle='rgba(60,35,15,.45)';ctx.lineWidth=.8;for(let j=-2;j<=2;j++){ctx.beginPath();for(let s=0;s<=1.0001;s+=.05){const w=(w0+(w1-w0)*s)*.18*j+Math.sin(s*23+j*2)*.8,x=ax+dx*s+nx*w,y=ay+dy*s+ny*w;s?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
  if(nat){const gw=ctx.createLinearGradient(ax,ay,ax+dx*.35,ay+dy*.35);gw.addColorStop(0,'rgba(20,10,5,.55)');gw.addColorStop(1,'rgba(20,10,5,0)');ctx.fillStyle=gw;ctx.fillRect(Math.min(ax,bx)-30,Math.min(ay,by)-30,Math.abs(dx)+60,Math.abs(dy)+60)}ctx.restore()}
-function tekenLepel(ctx){const p=K.lepel,E=K.E;if(!p||!p.eind)return;const ex=p.eind.x,ey=p.eind.y,dx=ex-p.x,dy=ey-p.y,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,sc=E.rx/300;
+function tekenLepel(ctx){const p=K.lepel,E=K.E;if(!p||!p.eind)return;const ex=p.eind.x,ey=p.eind.y,dx=ex-p.x,dy=ey-p.y,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L,sc=E.rx/170;
  const sub=Math.min(L*.4,E.ry*.42),sx=p.x+ux*sub,sy=p.y+uy*sub,an=Math.atan2(uy,ux);
  // onder water: verschoven, donker en doorschijnend
  ctx.save();ctx.beginPath();ctx.ellipse(E.cx,E.cy,E.rx,E.ry,0,0,6.283);ctx.clip();ctx.translate(0,3*sc);ctx.globalAlpha=.5;
