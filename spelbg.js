@@ -42,7 +42,7 @@ function proefKist(){
  S.superzaad=S.superzaad||{};
  ['flessenbes','bomlicht','bliksemkristal','goudkristal','eigoud','spreukvaren'].forEach(z=>{S.superzaad[z]=Math.max(S.superzaad[z]|0,1)});
  S.bo=S.bo||{};
- ['basis','bom','bliksem','kristal','ei','verdwijn'].forEach(k=>{S.bo[k]=Math.max(S.bo[k]|0,3)});
+ ['bom','bliksem','kristal','ei','verdwijn'].forEach(k=>{S.bo[k]=Math.max(S.bo[k]|0,3)});
  S.bonusOpen=S.bonusOpen||{};
  ['memory','drank','lessen','snaai','spreuk','toverstok','mysterie','bonen'].forEach(k=>{S.bonusOpen[k]=1});
  S.lesBetaald=S.lesBetaald||{};S.vakIntro=S.vakIntro||{};

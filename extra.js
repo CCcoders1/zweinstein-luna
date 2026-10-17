@@ -122,7 +122,7 @@ beloon=function(id,pt,gal,tekst){const m=1+Math.min(2,Math.floor(S.combo/3))*.5;
 const _goed=fx.goed,_fout=fx.fout;fx.goed=()=>{S.combo++;_goed();comboToon()};fx.fout=()=>{S.combo=0;_fout();comboToon()};
 function comboToon(){let e=$('#combo');if(!e){document.body.insertAdjacentHTML('beforeend','<div id="combo"></div>');e=$('#combo')}if(S.combo<2){e.classList.remove('zien');return}e.textContent='🔥 '+S.combo+' op rij'+(S.combo>=3?' · ×'+(1+Math.min(2,Math.floor(S.combo/3))*.5):'');e.classList.remove('pop');void e.offsetWidth;e.classList.add('zien','pop')}
 /* beloningskist: altijd bijna vol (start op 2/5) */
-function kistCheck(){if(S.kist>=5){S.kist=2;S.kikkersTegoed=(S.kikkersTegoed||0)+1;bewaar();setTimeout(()=>toast('🎁 Beloningskist vol! Gratis Chocokikker in Zweinsveld.'),2600)}}
+function kistCheck(){if(S.kist>=5){S.kist=2;S.kikkersTegoed=(S.kikkersTegoed||0)+1;bewaar();setTimeout(()=>toast('🎁 Beloningskist vol! Gratis Chocokikker in Zweinsveld.'),2600);if(Math.random()<.3&&(S.m3lvl|0)>=40&&window.zeldzaamZaad)zeldzaamZaad('beloningskist',{wacht:5200})}}
 const kistMeter=()=>`<div class="kaart kist"><b>🎁 Beloningskist</b> <small>nog ${5-S.kist} puzzel${5-S.kist==1?'':'s'} tot een gratis Chocokikker</small><div class="balk"><div style="width:${S.kist/5*100}%"></div></div></div>`;
 /* ---------- quests ---------- */
 const QPOOL=[['opgelost',2,'Los 2 puzzels of lessen op',20],['kikker',1,'Open een Chocokikker',15],['dier',1,'Verzorg je huisdier',10],['mini',2,'Speel 2 mini-games',15],['les',1,'Volg een les',15],['kas',1,'Bezoek de Magische Kas',5]];

@@ -2,7 +2,7 @@
 (function(){
 /* ---- ÉÉN CONFIG voor de superplanten: namen/oogst hier aanpassen ---- */
 window.SUPERPLANTEN={
- flessenbes:{naam:'Flessenbessenstruik',latijn:'Ampulla Fructus',oogst:{basis:3},oogstTekst:'3 Toverdrankbasissen voor 3 verschillende drankjes',info:'Elke basis hoort bij een ander recept. Gebruik ze bij het mixen van drie toverdranken.',beeld:'flessenbes',uren:2,prijs:60,vanaf:60},
+ flessenbes:{naam:'Knalbessenstruik',latijn:'Bacca Fragorosa',oogst:{bom:1},oogstTekst:'Knalbessen: 3 gekleurde bommen',info:'Rijpe knalbessen knallen open als drie gekleurde bommen op het bord. Niet te hard knijpen!',beeld:'flessenbes',uren:2,prijs:60,vanaf:60},
  bomlicht:{naam:'Bliksemstruik',latijn:'Fulmen Frutex',oogst:{bliksem:1},oogstTekst:'Bliksemschicht',info:'Een kruisvormige bliksemschicht voor een volgende ronde.',beeld:'bomlicht',uren:3,prijs:80,vanaf:60},
  bliksemkristal:{naam:'Kristalplant',latijn:'Crystallum Magicum',oogst:{kristal:3},oogstTekst:'3 Magische Kristallen',info:'Raak elk kristal twee keer om het te openen voor Smekkies of een voorwerp.',beeld:'bliksemkristal',uren:3,prijs:90,vanaf:70},
  goudkristal:{naam:'Goudkristalstruik',latijn:'Aureum Crystallum',oogst:{kristal:3},oogstTekst:'3 Magische Kristallen',info:'Kunnen Smekkies of verzamelitems bevatten.',beeld:'goudkristal',uren:4,prijs:100,vanaf:80},
@@ -11,7 +11,17 @@ window.SUPERPLANTEN={
 const GROTEPOT_VANAF=60,GROTE_TAFEL_VANAF=101;
 const KAMERS=[{id:'oefen',naam:'Stronks oefenkas',van:1,filter:''},{id:'zon',naam:'De Zonnekas',van:200,filter:'sepia(.25) saturate(1.2) brightness(1.04)'},{id:'maan',naam:'De Maanlichtkas',van:350,filter:'hue-rotate(185deg) saturate(.7) brightness(.62)'}];
 const POWERUP_ZADEN=new Set(Object.keys(SUPERPLANTEN));
-const MEGAPOT_ZADEN=new Set(['tentacula','duivelsstrik']);
+const MEGAPOT_ZADEN=new Set(['tentacula','duivelsstrik']);window.MEGAPOT_ZADEN=MEGAPOT_ZADEN;window.POWERUP_ZADEN=POWERUP_ZADEN;
+/* Booster-planten koop je niet: ze komen uit kisten, pompoenen en als cadeau van personages. */
+const ZELDZAAM={flessenbes:30,bomlicht:24,bliksemkristal:18,goudkristal:14,eigoud:9,spreukvaren:5};window.ALLEEN_CADEAU='Alleen te vinden in kisten, pompoenen of als cadeau.';
+window.zeldzaamKies=()=>{const L=Object.entries(ZELDZAAM);let r=Math.random()*L.reduce((a,b)=>a+b[1],0),z=L[0][0];for(const [k,w] of L){if((r-=w)<0){z=k;break}}return z};
+window.zeldzaamZaad=(bron,opt={})=>{const z=opt.z||zeldzaamKies();
+ S.zaden=S.zaden||{};S.zaden[z]=(S.zaden[z]|0)+1;S.zaadVondst=S.zaadVondst||{};S.zaadVondst[bron]=(S.zaadVondst[bron]|0)+1;bewaar();const d=SUPERPLANTEN[z];
+ if(!opt.stil)setTimeout(()=>{try{toast('🌱 Zeldzaam zaadje gevonden: '+d.naam+'!')}catch(e){}},opt.wacht||0);return {z,naam:d.naam,img:`img/kas/${d.beeld}-4.webp`,filter:d.filter||''}};
+const CADEAU=[[10,'Hagrid','Ik vond dit zaadje achter mijn pompoenen. Plant het maar, hè. Geen draken, dat beloof ik.'],[25,'Fred en George','Psst! Uit onze geheime voorraad. Niet aan Ma vertellen, en niet aan Filch.'],[50,'Mevrouw Varenkamp','Voor mijn beste klant. Deze verkoop ik niet in de winkel, liefje.'],[75,'Professor Stronk','Prachtig gewerkt! Een zeldzaam zaadje uit mijn eigen kas, voor jou.']];
+function cadeauNa(n){S.zaadCadeau=S.zaadCadeau||{};let c=CADEAU.find(x=>x[0]==n);if(!c&&n>=100&&n%50==0){const r=CADEAU[(n/50)%CADEAU.length|0];c=[n,r[1],r[2]]}if(!c||S.zaadCadeau[n])return;S.zaadCadeau[n]=1;const g=zeldzaamZaad('cadeau',{stil:1});
+ setTimeout(()=>{try{gids(`<b>${c[1]}</b> geeft je een cadeautje: een <b>${g.naam}</b>-zaadje! “${c[2]}” Het ligt bij je zaadjes in de kas.`,{})}catch(e){toast(c[1]+' geeft je een '+g.naam+'-zaadje!')}},3200)}
+if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,...a){const r=_w.call(this,n,...a);try{cadeauNa(n)}catch(e){}return r}}
 const lvl=()=>S.m3lvl||1;
 S.superzaad=S.superzaad||{};S.superpot=S.superpot||null;
 /* ---- nieuwe zaden + plaatjes per groeistadium ---- */
@@ -36,7 +46,7 @@ const mpRest=i=>{const p=mp(i);return Math.max(0,SUPERPLANTEN[p.z].uren*36e5-(Da
 const spImg=(z,st)=>{const d=SUPERPLANTEN[z];const s=Math.max(0,st);return `<img class="superimg kst${s}" src="img/kas/${d.beeld}-${s}.webp" alt="" style="${d.filter?'filter:'+d.filter:''}">`};
 function superModal(mi){const o=document.createElement('div');o.className='modal';const teken=()=>{const p=mp(mi),st=mpSt(mi);
  o.innerHTML=`<div class="modalin rococo supermodal"><h2>Megapot</h2>${p?`<div class="spnu">${spImg(p.z,st)}<h3>${SUPERPLANTEN[p.z].naam} <small><i>${SUPERPLANTEN[p.z].latijn}</i></small></h3><p>Oogst: <b>${SUPERPLANTEN[p.z].oogstTekst}</b></p>${st==4?'<button class="knop volgende" id="spoogst">Oogsten</button>':`<p class="klein">${FASEN[Math.max(0,st)]} · nog ${tijd(mpRest(mi))}</p><button class="knop klein" id="spmest" ${S.mest?'':'disabled'}>Drakenmest (${S.mest})</button>`}</div>`:
- `<p class="klein">Superplanten groeien alleen in een megapot. Hun oogst neem je mee een level in.</p><div class="splijst">${Object.entries(SUPERPLANTEN).map(([z,d])=>{const open=lvl()>=d.vanaf,heb=S.superzaad[z]||0;return `<div class="spkaart ${open?'':'dicht'}">${spImg(z,4)}<b>${d.naam}</b><small><i>${d.latijn}</i></small><small>Oogst: ${d.oogstTekst} · ${d.uren} uur</small><small class="spinfo">${d.info}</small>${open?(heb?`<button class="knop klein" data-plant="${z}">Planten (×${heb})</button>`:`<button class="knop klein" data-koop="${z}">Zaadje ${d.prijs} Smekkies</button>`):`<span class="slot">Vrij bij level ${d.vanaf}</span>`}</div>`}).join('')}</div>`}<button class="knop klein" id="spdicht">Sluiten</button></div>`;
+ `<p class="klein">Superplanten groeien alleen in een megapot. Hun oogst neem je mee een level in.</p><div class="splijst">${Object.entries(SUPERPLANTEN).map(([z,d])=>{const open=lvl()>=d.vanaf,heb=S.superzaad[z]||0;return `<div class="spkaart ${open?'':'dicht'}">${spImg(z,4)}<b>${d.naam}</b><small><i>${d.latijn}</i></small><small>Oogst: ${d.oogstTekst} · ${d.uren} uur</small><small class="spinfo">${d.info}</small>${open?(heb?`<button class="knop klein" data-plant="${z}">Planten (×${heb})</button>`:`<span class="slot">${ALLEEN_CADEAU}</span>`):`<span class="slot">Vrij bij level ${d.vanaf}</span>`}</div>`}).join('')}</div>`}<button class="knop klein" id="spdicht">Sluiten</button></div>`;
  o.querySelector('#spdicht').onclick=()=>{o.remove();V.mijnkas()};
  o.querySelectorAll('[data-koop]').forEach(b=>b.onclick=()=>{const z=b.dataset.koop,d=SUPERPLANTEN[z];if(S.galjoenen<d.prijs)return toast('Niet genoeg Smekkies.');S.galjoenen-=d.prijs;S.superzaad[z]=(S.superzaad[z]||0)+1;bewaar();stats();fx.speel('munt');teken()});
  o.querySelectorAll('[data-plant]').forEach(b=>b.onclick=()=>{const z=b.dataset.plant;S.superzaad[z]--;S.mega[mi]={z,t:Date.now(),bonus:0};bewaar();fx.speel('goed');vib(30);toast(SUPERPLANTEN[z].naam+' geplant!');teken()});

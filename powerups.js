@@ -5,16 +5,18 @@ const PU=n=>{const i=new Image();i.src='img/pu/'+n+'.webp';return i};const IM={}
 const ok=i=>i&&i.complete&&i.naturalWidth;
 /* één config: boosters (oogst van superplanten) */
 window.BOOSTERS={
- basis:{prijs:30,naam:'Toverdrankbasissen',kort:'3 drankbasissen',img:'drank-blauw',uitleg:'Drie toverdrankbasissen staan klaar op het bord: blauw wist een rij, paars een kolom en rood ontploft als een kleine ketelbom.'},
  bom:{prijs:50,naam:'Gekleurde bommen',kort:'3 bommen',img:'bom-rood',uitleg:'Na je eerste zet verschijnen er drie gekleurde bommen op het veld. Laat ze ontploffen met een match ernaast of door ze te verschuiven!'},
  bliksem:{prijs:60,naam:'Bliksemschicht',kort:'kruis wissen',img:'bliksem',uitleg:'De Bliksemschicht wist een hele rij én kolom tegelijk, in de vorm van een kruis. Net als Harry’s litteken, maar dan nuttig.'},
  kristal:{prijs:40,naam:'Magische kristallen',kort:'3 kristallen',img:'kristal-blauw',uitleg:'Magische kristallen! Raak ze twee keer met een match ernaast: eerst barsten ze, dan springen ze open met Smekkies of iets moois erin.'},
  ei:{prijs:60,naam:'Gouden ei',kort:'gouden ei',img:'ei-dicht',uitleg:'Een gouden ei, net als bij het Toverschool Toernooi! Eén tik en het gaat open, de tweede tik geeft je de schat die erin zit.'},
  verdwijn:{prijs:120,naam:'Zware Verdwijnspreuk',kort:'half bord weg',img:'verdwijn',uitleg:'De Zware Verdwijnspreuk! Verschuif hem en bijna de helft van het bord verdwijnt in één keer. Gebruik hem op het juiste moment.'}};
 S.bo=S.bo||{};S.uitlegPU=S.uitlegPU||{};
+/* migratie v92: Toverdrankbasissen bestaan niet meer; elke basis wordt 30 Smekkies terug */
+if(S.bo.basis!=null){const n=S.bo.basis|0;delete S.bo.basis;if(n>0){S.galjoenen=(S.galjoenen|0)+n*30;setTimeout(()=>{try{toast('De Toverdrankbasissen zijn uit het spel. Je kreeg '+n*30+' Smekkies terug.')}catch(e){}},4000)}bewaar()}
+if(S.pomp&&Array.isArray(S.pomp.inh))S.pomp.inh.forEach(b=>{if(b&&b.t=='bo'&&!BOOSTERS[b.n]){b.n='bom';b.img='img/pu/bom-rood.webp';b.zin='Booster: '+BOOSTERS.bom.naam}});
 const SPEC={rh:'drank-blauw',rv:'drank-paars',bom:'bom-rood',bom2:'bom-goud',dblauw:'drank-blauw',dpaars:'drank-paars',drood:'drank-rood',gbom:'bom-goud',kruis:'bliksem',kruis3:'bliksem',verdwijn:'verdwijn'};
-const UITLEG={rh:'Vier op een rij maakt een toverstaf. Die wist vijf vakjes in een lijn, met de staf in het midden. Een hele rij veeg je leeg met een toverdrankbasis uit de kas.',rv:'Vier op een rij maakt een toverstaf. Die wist vijf vakjes in een lijn, met de staf in het midden. Een hele kolom veeg je leeg met een toverdrankbasis uit de kas.',bom:'Een T- of L-vorm maakt een rode bom. Die blaast alles om zich heen weg.',gbom:'Een gouden bom! Die maak je vanaf nu met een grote T- of L-vorm van zeven stukjes. Hij blaast een flink vierkant van vijf bij vijf weg.',kruis:'Een Bliksemschicht! Een T- of L-vorm van zes stukjes maakt er een. Hij wist een rij en een kolom tegelijk.',
- kristal:BOOSTERS.kristal.uitleg,ei:BOOSTERS.ei.uitleg,kbom:'Daar zijn je gekleurde bommen uit de kas! Laat ze ontploffen met een match ernaast of door ze te verschuiven.',dblauw:BOOSTERS.basis.uitleg,verdwijn:BOOSTERS.verdwijn.uitleg,
+const UITLEG={rh:'Vier op een rij maakt een toverstaf. Die wist vijf vakjes in een lijn, met de staf in het midden.',rv:'Vier op een rij maakt een toverstaf. Die wist vijf vakjes in een lijn, met de staf in het midden.',bom:'Een T- of L-vorm maakt een rode bom. Die blaast alles om zich heen weg.',gbom:'Een gouden bom! Die maak je vanaf nu met een grote T- of L-vorm van zeven stukjes. Hij blaast een flink vierkant van vijf bij vijf weg.',kruis:'Een Bliksemschicht! Een T- of L-vorm van zes stukjes maakt er een. Hij wist een rij en een kolom tegelijk.',
+ kristal:BOOSTERS.kristal.uitleg,ei:BOOSTERS.ei.uitleg,kbom:'Daar zijn je gekleurde bommen uit de kas! Laat ze ontploffen met een match ernaast of door ze te verschuiven.',verdwijn:BOOSTERS.verdwijn.uitleg,
  combi:'Tip: verschuif twee power-ups tegen elkaar voor een extra sterke combinatie. Een Bliksemschicht met een bom wist zelfs drie rijen en drie kolommen!'};
 let uq=[],ut=0;window.puUitleg=k=>{if(!UITLEG[k]||S.uitlegPU[k]||uq.includes(k))return;uq.push(k);loop()};
 function loop(){if(!uq.length||Date.now()<ut)return;const k=uq.shift();S.uitlegPU[k]=1;bewaar();ut=Date.now()+7000;try{gids(UITLEG[k],{})}catch(e){}setTimeout(loop,7200)}
@@ -30,7 +32,7 @@ window.m3PuFx=(f,x,y,cel)=>{const RM=matchMedia('(prefers-reduced-motion: reduce
  if(f.t=='pu'){try{fx.speel('spreuk');window.zwStem&&zwStem(f.s)}catch(e){}if(f.s=='wervel'){beeldFlits('wervel',innerWidth/2,y,Math.min(innerWidth,520),1300,'draai');try{fx.speel('tover')}catch(e){}}else if(f.s=='bliksem'){beeldFlits('bliksem',x,y,cel*3.2,600,'schok')}else beeldFlits(f.s,x,y,cel*2,500,'boem')}
  if(f.t=='tik'){beeldFlits('wervel',x,y,cel*.9,350,'boem klein')}
  if(f.t=='schat'){beeldFlits(f.s=='x'?'kristal-'+(f.kl||'blauw')+'-b':'ei-open',x,y,cel*1.3,700,'open');
-  const smk=f.s=='x'?3:8;S.galjoenen+=smk;bewaar();try{stats()}catch(e){}tekst('+'+smk+' Smekkies',x,y-cel*.4);
+  if(Math.random()<(f.s=='e'?.08:.03)&&(S.m3lvl|0)>=40&&window.zeldzaamZaad){const g=zeldzaamZaad('schat',{stil:1});setTimeout(()=>tekst('🌱 '+g.naam+'-zaadje!',x,y-cel*1.3),500)}const smk=f.s=='x'?3:8;S.galjoenen+=smk;bewaar();try{stats()}catch(e){}tekst('+'+smk+' Smekkies',x,y-cel*.4);
   if(Math.random()<(f.s=='e'?.6:.3)&&window.m3VliegItem&&window.M3ITEMS){const v=(window.vakVan&&M3.b)?vakVan(M3.b.L.n).id:'herbologie';const L=M3ITEMS[v]||M3ITEMS.herbologie;const it=L[Math.random()*L.length|0];S.verzameld=S.verzameld||{};S.verzameld[it[0]]=(S.verzameld[it[0]]||0)+1;bewaar();setTimeout(()=>{m3VliegItem(it[0],x,y,document.getElementById('tasknop')||document.querySelector('#m3d .m3ico'),RM?0:500);tekst(it[1]+'!',x,y-cel*.9)},250)}}};
 /* boosters bij levelstart */
 const rnd=a=>a[Math.random()*a.length|0];
@@ -44,7 +46,6 @@ window.m3NaBord=(b,boost)=>{uq=[];b.kt=b.kt||Array.from({length:RIJEN},()=>Array
  try{reeksOpBord(b)}catch(e){}
  const bo=(boost&&boost.bo)||[];if(!bo.length)return;
  bo.forEach(k=>{if(!(S.bo[k]>0))return;S.bo[k]--;
-  if(k=='basis')['dblauw','dpaars','drood'].forEach(s=>{const v=rnd(vrij(b));if(v)b.g[v[0]][v[1]].s=s});
   if(k=='bliksem'){const v=rnd(vrij(b));if(v)b.g[v[0]][v[1]].s='kruis'}
   if(k=='verdwijn'){const v=rnd(vrij(b).filter(([r])=>r>=2&&r<=5));if(v)b.g[v[0]][v[1]].s='verdwijn'}
   if(k=='kristal'||k=='ei'){const n=k=='ei'?1:3;for(let i=0;i<n;i++){const v=rnd(vrij(b).filter(([r])=>r>=1&&r<=RIJEN-2));if(!v)break;const[r,c]=v;b.g[r][c]=null;b.kist[r][c]=2;b.kt[r][c]=k=='ei'?'e':'x';b.ktk[r][c]=rnd(['paars','blauw','groen'])}setTimeout(()=>puUitleg(k=='ei'?'ei':'kristal'),1600)}
