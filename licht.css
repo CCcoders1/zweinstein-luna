@@ -1244,3 +1244,13 @@ p.harten,div.harten{display:flex;flex-wrap:wrap;align-items:center;justify-conte
 .kaartnieuw{font-size:1.2em;padding:.5em;border-radius:12px;background:rgba(255,240,200,.6);box-shadow:inset 0 0 0 1px rgba(160,110,40,.4)}
 .fgcadeau small{display:block;margin-top:2px}
 @media (prefers-reduced-motion: reduce){.fgcico img,.nieuwles{animation:none}}
+
+/* v103 mijlpalen */
+.mpcadeau{font-weight:700;color:#7a4a00;background:#fff4c8;border-radius:12px;padding:.5em .8em;display:inline-block}
+.mpdicht{opacity:.6;filter:grayscale(.6)}
+.mpdicht small{font-weight:400}
+.modalin .pportret.mini{width:64px!important;height:64px!important;border-radius:50%;display:inline-block!important;vertical-align:middle;margin:0 8px 0 0!important;object-fit:cover}
+.modalin.mpmodal{background:linear-gradient(rgba(250,238,210,.99),rgba(236,214,170,.99))!important;color:#2b1a0b!important;padding:16px!important;border-radius:18px}
+.mpmodal p,.mpmodal b,.mpmodal .klein{color:#2b1a0b!important;text-shadow:none!important}
+.mpmodal h2{color:#7a4a00!important;text-shadow:none!important}
+.mpmodal .linkknop{color:#7a4a00!important}

@@ -127,11 +127,11 @@ function comboToon(){let e=$('#combo');if(!e){document.body.insertAdjacentHTML('
 function kistCheck(){if(S.kist>=5){S.kist=2;S.kikkers=(S.kikkers|0)+1;bewaar();setTimeout(()=>toast('🎁 Beloningskist vol! Er zit een Chocokikker in je tas. Tik op je harten om hem op te eten.'),2600);if(Math.random()<.3&&(S.m3lvl|0)>=60&&window.zeldzaamZaad)zeldzaamZaad('beloningskist',{wacht:5200})}}
 const kistMeter=()=>`<div class="kaart kist"><b>🎁 Beloningskist</b> <small>nog ${5-S.kist} puzzel${5-S.kist==1?'':'s'} tot een Chocokikker voor in je tas</small><div class="balk"><div style="width:${S.kist/5*100}%"></div></div></div>`;
 /* ---------- quests ---------- */
-const QPOOL=[['opgelost',2,'Los 2 puzzels of lessen op',20],['eet',1,'Eet een Chocokikker',15],['m3',1,'Win een level',10],['m3',2,'Win 2 levels',15],['les',1,'Volg een les',15],['kas',1,'Bezoek de Magische Kas',5]];
+const QPOOL=[['oogst',2,'Oogst 2 planten in je kas',20],['eet',1,'Eet een Chocokikker',15],['m3',1,'Win een level',10],['m3',2,'Win 2 levels',15],['les',1,'Volg een les',15],['kas',1,'Bezoek de Magische Kas',5]];
 function dagQuests(){const n=+vandaag().replace(/-/g,'');return[0,1,2].map(i=>QPOOL[(n+i*2)%QPOOL.length])}
-const WEEKQ=[['opgelost',12,'Los deze week 12 puzzels of lessen op',80],['m3',8,'Win deze week 8 levels',60]];
+const WEEKQ=[['oogst',10,'Oogst deze week 10 planten',80],['m3',8,'Win deze week 8 levels',60]];
 function questCheck(){const qs=[...dagQuests().map(q=>[q,vandaag()]),...WEEKQ.map(q=>[q,'w'+weekNr()])];qs.forEach(([q,d])=>{const k=d+q[0];if(!S.questKlaar[k]&&telV(q[0],d[0]=='w')>=q[1]){S.questKlaar[k]=1;bewaar();stats();setTimeout(()=>{toast('✅ Quest voltooid: '+q[2]);fx.speel('munt');vib(40)},3200)}})}
-V.quests=()=>{const qr=(q,w)=>{const v=Math.min(q[1],telV(q[0],w));return `<div class="quest ${v>=q[1]?'klaar':''}"><span>${v>=q[1]?'✅':'🔸'} ${q[2]}</span><small>🪙 ${q[3]}</small><div class="balk"><div style="width:${v/q[1]*100}%"></div></div><small>${v}/${q[1]}</small></div>`};
+V.quests=()=>{const qr=(q,w)=>{const v=Math.min(q[1],telV(q[0],w));return `<div class="quest ${v>=q[1]?'klaar':''}"><span>${v>=q[1]?'✅':'🔸'} ${q[2]}</span><div class="balk"><div style="width:${v/q[1]*100}%"></div></div><small>${v}/${q[1]}</small></div>`};
  app(`<h1>📋 Opdrachten</h1>${tilly('Elke dag drie nieuwe opdrachten. Zullen we ze samen afvinken?')}<div class="kaart"><h3>Vandaag</h3>${dagQuests().map(q=>qr(q,0)).join('')}</div><div class="kaart"><h3>Deze week</h3>${WEEKQ.map(q=>qr(q,1)).join('')}</div>`)};
 /* ---------- afdelingsbeker ---------- */
 V.beker=()=>{const dagen=Math.max(1,(Date.now()-new Date(S.start).getTime())/864e5+1);const seed=k=>[...k].reduce((a,c)=>a+c.charCodeAt(0),0);

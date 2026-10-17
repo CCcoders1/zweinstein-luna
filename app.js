@@ -128,7 +128,7 @@ V.winkel=()=>{app(`<h1>🛍️ Smekkies-beloningswinkel</h1><p>Je hebt <b>🪙 $
 V.maker=()=>{app(lijst(`<h2>🔐 Makerscherm</h2><p>Voeg echte beloningen toe of pas ze aan.</p><div id="bl">${S.beloningen.map((b,i)=>`<div style="display:flex;gap:6px;margin:4px 0;flex-wrap:wrap"><input style="width:60px" value="${b.ico}" data-k="ico" data-i="${i}"><input value="${b.naam.replace(/"/g,'&quot;')}" data-k="naam" data-i="${i}"><input style="width:90px" type="number" value="${b.prijs}" data-k="prijs" data-i="${i}"><button class="knop" onclick="S.beloningen.splice(${i},1);bewaar();V.maker()">🗑️</button></div>`).join('')}</div>
  <button class="knop" id="nw">+ Nieuwe beloning</button><button class="knop" id="ops">💾 Opslaan</button>
  <h3>Ingewisseld</h3>${S.gekocht.map(g=>`<div>${g.ico} ${g.naam} – ${g.d}</div>`).join('')||'<i>niets</i>'}
- <h3>Extra</h3><button class="knop" onclick="S.galjoenen+=50;bewaar();stats();toast('+50 Smekkies')">+50 Smekkies cadeau</button><button class="knop" onclick="if(confirm('Alles wissen?')){localStorage.removeItem(SK);location.reload()}">Alles resetten</button>`));
+ <h3>Extra</h3><button class="knop" onclick="S.galjoenen+=50;bewaar();stats();toast('+50 Smekkies')">+50 Smekkies cadeau</button>`));
  const lees=()=>document.querySelectorAll('#bl input').forEach(e=>{const b=S.beloningen[e.dataset.i];b[e.dataset.k]=e.dataset.k=='prijs'?Math.max(1,+e.value||1):e.value});
  $('#nw').onclick=()=>{lees();S.beloningen.push({id:Date.now(),naam:'Nieuwe beloning',prijs:50,ico:'🎁'});bewaar();V.maker()};
  $('#ops').onclick=()=>{lees();bewaar();toast('Beloningen opgeslagen ✨')}};

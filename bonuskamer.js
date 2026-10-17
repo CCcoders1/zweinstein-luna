@@ -135,7 +135,7 @@ function spring(k){const a=Math.random()*6.283,v=55+Math.random()*75;const b=boo
 function openDeur(d){d.t=0;G.deurOpen++;snd(Math.random()<.5?'verr-deur1':'verr-deur2',.8);for(let i=0;i<20;i++)G.part.push({x:d.x,y:d.r0*T+T,z:0,vx:(Math.random()-.5)*120,vy:(Math.random()-.5)*80,l:1,k:i%2?'#fff3b0':'#ffd76a',s:2.5})}
 
 function chocokikker(k){const pool=(window.KAARTEN||[]).filter(x=>x[3]);const kaart=pool.length?pool[Math.random()*pool.length|0]:null;G.tijd+=10;G.kaart=kaart?kaart[0]:'Chocokikker';
- if(kaart){S.kaarten=S.kaarten||{};S.kaarten[kaart[0]]=(S.kaarten[kaart[0]]||0)+1;bewaar()}const el=$('#bkkaart');if(el){el.innerHTML=`${kaart?`<img src="${kaart[3]}" alt="">`:''}<b>Chocokikkerkaart!</b><small>${kaart?kaart[0]:''}</small><i>Speciaal effect: +10 seconden</i>`;el.classList.add('aan');setTimeout(()=>el.classList.remove('aan'),3200)}snd('tover',.8)}
+ if(kaart&&!G.test){S.kaarten=S.kaarten||{};S.kaarten[kaart[0]]=(S.kaarten[kaart[0]]||0)+1;bewaar()}const el=$('#bkkaart');if(el){el.innerHTML=`${kaart?`<img src="${kaart[3]}" alt="">`:''}<b>Chocokikkerkaart!</b><small>${kaart?kaart[0]:''}</small><i>Speciaal effect: +10 seconden</i>`;el.classList.add('aan');setTimeout(()=>el.classList.remove('aan'),3200)}snd('tover',.8)}
 
 
 /* ---------- lus ---------- */
