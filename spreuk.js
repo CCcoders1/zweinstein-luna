@@ -44,9 +44,20 @@ V.spreukles=(li)=>{li=+li||0;const L=LES.flipendo,lv=L.levels[li];
  const knop=$('.spl-knop');knop.insertAdjacentHTML('afterbegin','<button class="knop volgende" id="splklaar">Klaar!</button> ');$('#splklaar').onclick=()=>fase=='teken'&&klaar();
  function klaar(why){if(fase!='teken')return;fase='uit';clearInterval(tmr);meet();const ok=bed>=lv.nodig;const v=sp().flipendo=sp().flipendo||{s:[]};
   if(ok){const ster=1+(bed>=Math.min(99,lv.nodig+8)?1:0)+(bed>=Math.min(100,lv.nodig+15)||bed>=97?1:0);const nieuw=Math.max(0,ster-(v.s[li]|0));v.s[li]=Math.max(v.s[li]|0,ster);const gal=lv.beloning+nieuw*5;S.galjoenen+=gal;bewaar();try{stats()}catch(e){}
-   speel('spreuk');setTimeout(()=>speel('stem-flipendo'),150);setTimeout(()=>speel(rnd('lof',9)),1500);golf();
+   speel('spreuk');setTimeout(()=>speel('stem-flipendo'),150);setTimeout(()=>speel(rnd('lof',9)),1500);vier(true);setTimeout(golf,RM?200:1300);
    $('#splmsg').innerHTML=`Flipendo! ${bed}% bedekt. ${'★'.repeat(ster)} +${gal} Smekkies`;knop.innerHTML=`${li<2?`<button class="knop volgende" onclick="ga('spreukles',${li+1})">Volgende les</button> `:''}<button class="knop" onclick="ga('spreukles',${li})">Nog eens</button> <button class="knop" onclick="ga('spreuken')">Terug</button>`}
-  else{speel(rnd('aanm',6));$('#splmsg').innerHTML=(why=='inkt'?'De inkt is op! ':'')+`${bed}% bedekt, je had ${lv.nodig}% nodig. Bijna! Probeer het nog eens.`;knop.innerHTML=`<button class="knop volgende" onclick="ga('spreukles',${li})">Opnieuw</button> <button class="knop" onclick="ga('spreuken')">Terug</button>`}}
+  else{speel(rnd('aanm',6));vier(false);$('#splmsg').innerHTML=(why=='inkt'?'De inkt is op! ':'')+`${bed}% bedekt, je had ${lv.nodig}% nodig. Bijna! Probeer het nog eens.`;knop.innerHTML=`<button class="knop volgende" onclick="ga('spreukles',${li})">Opnieuw</button> <button class="knop" onclick="ga('spreuken')">Terug</button>`}}
+ const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const mini=(x,y,r,rot,kleur,a)=>{c.save();c.translate(x,y);c.rotate(rot);c.globalAlpha=a;c.strokeStyle=kleur;c.lineWidth=Math.max(1.8,r*.22);c.lineCap='round';c.beginPath();L.pad.forEach(([px,py],i)=>{const X=(px-.5)*r*2,Y=(py-.5)*r*2;i?c.lineTo(X,Y):c.moveTo(X,Y)});c.stroke();c.restore()};
+ function vier(ok){const n0=performance.now(),D=ok?(RM?900:2200):1400,N=ok?(RM?10:48):6,ps=[],gl=[];
+  for(let i=0;i<N;i++){const f=ok?i/(N-1):Math.random(),[x,y]=punt(f),a=Math.random()*6.28,v=40+Math.random()*60;ps.push({x,y,vx:Math.cos(a)*v*.6+(x-W/2)*.25,vy:ok?-60-Math.random()*70:10,d:ok?f*700:i*120,r:ok?10+Math.random()*9:11,rot:Math.random()*6,vr:(Math.random()-.5)*5})}
+  if(ok&&!RM)for(let i=0;i<14;i++){const [x,y]=punt(Math.random());gl.push({x:x+(Math.random()-.5)*T,y:y+(Math.random()-.5)*T,d:300+Math.random()*1400})}
+  (function stap(n){const t=n-n0;if(!document.body.contains(cv))return;teken();
+   if(ok){const g=Math.min(1,t/900);if(g<1||t<1200){const al=t<900?.35:.35*(1-(t-900)/300);c.save();c.lineCap=c.lineJoin='round';c.lineWidth=T*.9;c.strokeStyle=`rgba(255,215,120,${Math.max(0,al)})`;c.beginPath();for(let k=0;k<=60*g;k++){const [x,y]=punt(k/60);k?c.lineTo(x,y):c.moveTo(x,y)}c.stroke();c.restore()}
+    if(!RM&&t>200&&t<1300){const k=(t-200)/1100,[cx,cy]=punt(.5);c.save();c.strokeStyle=`rgba(255,230,170,${.4*(1-k)})`;c.lineWidth=3;c.beginPath();c.arc(W/2,H*.5,30+k*W*.55,0,7);c.stroke();c.restore()}
+    gl.forEach(s=>{const k=(t-s.d)/500;if(k<0||k>1)return;const r=4*Math.sin(k*Math.PI);c.save();c.globalAlpha=.7*Math.sin(k*Math.PI);c.fillStyle='#ffe9a8';c.translate(s.x,s.y);c.beginPath();for(let j=0;j<8;j++){const rr=j%2?r*.35:r*1.6,aa=j*Math.PI/4;c.lineTo(Math.cos(aa)*rr,Math.sin(aa)*rr)}c.fill();c.restore()})}
+   ps.forEach(p=>{const k=(t-p.d)/1000;if(k<0||k>1)return;const x=p.x+p.vx*k,y=p.y+p.vy*k+(ok?110:160)*k*k,s=ok?(1-k*.7):1;mini(x,y,p.r*s,p.rot+p.vr*k,ok?'#f3cf6b':'#9a9a9a',(ok?.85:.6)*(1-k))});
+   if(t<D)requestAnimationFrame(stap);else teken()})(n0)}
  function golf(){const b=document.createElement('div');b.className='spl-boek';b.textContent='📕';cv.parentElement.appendChild(b);const g=document.createElement('div');g.className='spl-golf';cv.parentElement.appendChild(g);setTimeout(()=>{b.remove();g.remove()},1800)}
 };
 const _h=V.home;V.home=(...a)=>{const r=_h(...a);try{if(!document.getElementById('halspreuk'))$('#app').insertAdjacentHTML('beforeend',`<div style="text-align:center;margin:1em 0"><button class="knop volgende" id="halspreuk" onclick="ga('spreuken')">🪄 Spreuklessen</button></div>`)}catch(e){}return r};
