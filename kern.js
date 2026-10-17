@@ -70,18 +70,14 @@ function verhaal(regels,klaar){if(document.querySelector('.modal')){return setTi
 /* kweekpotten */
 const POTSOORT=[['Basispot van terracotta','#b8673a'],['Geglazuurde groene pot','#4f8a5a'],['Koperen pot','#c07a3a'],['Blauw-wit porselein','#4c6fb0'],['Rococo-pot met krullen','#d4af37'],['Gouden pot','#e9c64a']];
 function kweekPotten(){return Math.min(12,1+Math.floor(takenKlaar()/3)+(jaar()-1)*2)}
-V.kas=()=>{VIEWDECOR.kas='kas';const n=kweekPotten();const kl=['#c8b6ff','#f4a6c0','#9fd8cb','#fff1b8','#e6c35c','#88c999','#ff9e6b','#b6c8ff','#ffd1dc','#b0e0a8','#ffe08a','#d0b8ff'];
- app(`<h2>De Kassen</h2>${tilly(n==1?'Eén pot om mee te beginnen. Wat we hierin kweken, wordt iets heel bijzonders. Meer potten komen als we de lokalen opknappen.':`${n} potten al! Ik praat elke ochtend even tegen ze. Dat helpt echt, zegt Professor Stronk.`)}
- <div class="kas">${Array.from({length:n},(_,i)=>{const pt=POTSOORT[Math.min(POTSOORT.length-1,Math.floor(i/2))];const f=Math.max(0,Math.min(4,Math.floor((S.xp-i*40)/25)));return `<div class="pot" style="--pot:${pt[1]}">${plantSVG(f,kl[i%kl.length])}<div><b>${(PLANT_NAMEN[i%PLANT_NAMEN.length])}</b><br><small>${pt[0]} · ${['Zaadje','Kiemplantje','Jonge plant','Knop','Bloeiend'][f]}</small></div></div>`}).join('')}</div>
- <p class="klein">Volgende pot na ${3-takenKlaar()%3} voltooide ${3-takenKlaar()%3==1?'taak':'taken'}.</p>`)};
 function potCheck(){const n=kweekPotten();if(n>(S.pottenGezien||0)){S.pottenGezien=n;bewaar()}}
 /* dagdoelen (3) */
 function dagDoelen(){const d=vandaag(),{v}=huidigVak();const t=v.taken.find(x=>!S.taken[x[0]]);const tv=k=>((S.tel[d]||{})[k]||0);
  const lijst=[[`Verdien 2 sterren${t?' voor “'+t[1].toLowerCase()+'”':''}`,tv('sterren'),2,()=>ga('match3'),'ster'],
-  S.bonusOpen.drank?['Brouw een drankje voor '+v.prof,tv('drank'),1,()=>ga('drank'),'ketel']:S.bonusOpen.memory?['Help Professor Stronk met de plantenkaartjes',tv('memory'),1,()=>ga('memory'),'blad']:['Speel 2 levels',tv('m3'),2,()=>ga('match3'),'spel'],
+  S.bonusOpen.drank?['Brouw een drankje voor '+v.prof,tv('drank'),1,()=>ga('ketel'),'ketel']:S.bonusOpen.memory?['Help Professor Stronk met de plantenkaartjes',tv('memory'),1,()=>ga('memory'),'blad']:['Speel 2 levels',tv('m3'),2,()=>ga('match3'),'spel'],
   [`Voltooi een taak in ${v.lokaal.replace(/^De |^Het /,'de ').toLowerCase()}`,tv('taak'),1,()=>{const b=$('#taakknop');b?b.click():ga('home')},'huis']];
  return lijst.map(([n,h,m,f,i],k)=>({n,h:Math.min(h,m),m,f,i,af:h>=m,k:d+k}))}
-function dagBeloon(){dagDoelen().forEach(g=>{if(g.af&&!S.dagBel[g.k]){S.dagBel[g.k]=1;S.schilden++;S.galjoenen+=15;bewaar();stats();toast('Dagdoel gehaald: +1 huisschild, +15 Smekkies');fx.speel('munt')}})}
+function dagBeloon(){dagDoelen().forEach(g=>{if(g.af&&!S.dagBel[g.k]){S.dagBel[g.k]=1;S.schilden++;bewaar();stats();toast('Dagdoel gehaald: +1 huisschild');fx.speel('munt')}})}
 // polish/welkomRitueel gebruikt doelen(): koppel aan de nieuwe dagdoelen
 doelen=function(){return dagDoelen().map(g=>[g.n,g.af,g.f,g.i])};
 /* beloon-koppeling: bonusspellen leveren extra's en soms een ster */

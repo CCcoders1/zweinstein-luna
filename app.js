@@ -28,9 +28,9 @@ const HOEK='<svg viewBox="0 0 70 70" class="hoek {c}"><g fill="none" stroke="#b8
 const lijst=html=>`<div class="perkament lijst">${['lb','rb','lo','ro'].map(c=>HOEK.replace('{c}',c)).join('')}${html}</div>`;
 function beloon(id,pt,gal,tekst){
  const nieuw=!S.opgelost[id];S.opgelost[id]=(S.opgelost[id]||0)+1;
- if(!nieuw){pt=Math.ceil(pt/3);gal=Math.ceil(gal/3)}
+ if(!nieuw){pt=Math.ceil(pt/3);gal=0}
  const oud=lvl();S.punten+=pt;S.galjoenen+=gal;S.xp+=pt;checkBadges();bewaar();stats();
- fx.goed();setTimeout(()=>fx.speel('munt'),400);toast(`✨ +${pt} punten voor ${S.huis?HUIZEN[S.huis].n:'je afdeling'}, +${gal} Smekkies`);
+ fx.goed();setTimeout(()=>fx.speel('munt'),400);toast(`✨ +${pt} punten voor ${S.huis?HUIZEN[S.huis].n:'je afdeling'}${gal?`, +${gal} Smekkies`:''}`);
  if(lvl()>oud)setTimeout(()=>fx.levelup(LEVELS[lvl()][1]),900);
  return tilly((tekst||'Prachtig gedaan, '+naam()+'!')+' '+gedacht());}
 const BADGES=[['eerste','🌱','Eerste zaadje',()=>Object.keys(S.opgelost).length>=1],['brouw','⚗️','Drankmeester',()=>S.opgelost.drank>=1],['kruid','🌿','Kruidenkenner',()=>S.opgelost.memory>=1],['spreuk','🪄','Spreukenkenner',()=>S.opgelost.spreuk>=1],['mysterie','🔍','Mysterie opgelost',()=>S.cipherHfd>=4],['trivia','🎓','Geslaagd voor een S.L.IJ.M.B.A.L.',()=>S.lessen&&Object.keys(S.lessen).some(k=>k.endsWith('-slijm'))],['puist','🏛️','P.U.I.S.T. behaald',()=>S.lessen&&S.lessen.puist],['streak3','🔥','3 dagen op rij',()=>S.streak>=3],['streak7','🌙','Een week magie',()=>S.streak>=7],['rijk','💰','Goudgrijp-klant',()=>S.galjoenen>=200],['meester','👑','Meester-tovenares',()=>lvl()>=7]];
@@ -74,24 +74,8 @@ V.home=()=>{const h=HUIZEN[S.huis];const klaar=S.dagKlaar===vandaag();
 const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9¾½]/g,'').replace(/^de|^het|^een/,'');
 const SPELLEN=[['drank','⚗️','Toverdrank brouwen','Juiste ingrediënten, juiste volgorde'],['memory','🌿','Kruidenkunde-memory','Vind de magische plantenparen'],['spreuk','🪄','Spreuken-raadsels','Welke spreuk hoort bij de omschrijving?'],['mysterie','🔍','Het Mysterie van de Verdwenen Kas','Ontcijfer de geheime brieven'],['lessen','📚','Lessen & examens','Acht vakken, S.L.IJ.M.B.A.L. en P.U.I.S.T.']];
 V.spel=()=>app(`<h1>🧩 Puzzels & spellen</h1>${tilly('Waar hebben we zin in? Ik heb overal stiekem hints verstopt, voor het geval dat.')}<div class="raster">${SPELLEN.map(s=>`<div class="tegel" onclick="ga('${s[0]}')"><div class="ico">${s[1]}</div><b>${s[2]}</b><br><small>${s[3]}</small>${S.opgelost[s[0]]?'<br>✅':''}</div>`).join('')}</div>`);
-// Toverdrank
-const RECEPTEN=[{n:'Wisseldrank',img:'flesjes-foto',bron:'Harry Potter en de Geheime Kamer',e:'Je neemt een uur lang de gedaante aan van een ander.',r:['🪰 Gaasvliegjes (21 dagen laten trekken)','🩸 Bloedzuigers','🌿 Wolfsmelk (bij volle maan geplukt)','🌾 Varkensgras','🦄 Gemalen hoorn van een Tweehoorn','🐍 Geraspte huid van een boomslang','💇 Een stukje van de ander (bijv. een haar)'],v:'Hermelien vond het recept in “De Vreeswekkendste Toverdranken” in de Verboden Afdeling. Eerst de gaasvliegjes, dan bloedzuigers, de twee kruiden, de hoorn en de slangenhuid – en als allerlaatste een stukje van degene in wie je verandert.'},
-{n:'Vocht van de Levende Dood',img:'ketel-foto',bron:'De Steen der Wijzen & De Halfbloed Prins',e:'Een slaapdrank zo krachtig dat de drinker lijkt te sterven.',r:['🌱 Alsemaftreksel','🌼 Poeder van affodilwortel','🌿 Valeriaanwortels','🫘 Sodejusboon (geplet met de platte kant van het mes)','🔄 Zeven keer tegen de klok in roeren, één keer met de klok mee'],v:'Professor Sneep vroeg in Harry’s allereerste les wat je krijgt als je poeder van affodilwortel toevoegt aan een aftreksel van alsem. Daarna volgen valeriaanwortels en de Sodejusboon, en de Halfbloed Prins wist hoe je moet roeren.'}];
-const HERKEN=[['Na het drinken komt er urenlang stoom uit je oren; madame Plijster geeft het tegen verkoudheid.','Peperdrankje'],['Vloeibaar geluk: alles wat je onderneemt lukt, zolang het werkt. Slakhoorn gaf het als prijs.','Felix Fortunatis'],['Glanst als parelmoer, de damp stijgt in kenmerkende spiralen op en hij ruikt voor iedereen anders: naar wat jij aantrekkelijk vindt.','Amortentia'],['Ziet eruit als dikke modder en smaakt naar wie je wordt; werkt precies één uur.','Wisseldrank'],['Wie het drinkt valt in een slaap zo diep dat het op de dood lijkt.','Vocht van de Levende Dood']];
-const INGR=[...RECEPTEN[0].r,...RECEPTEN[1].r,'🐸 Paddenspawn','🦔 Stekelvarkenstekels','🍯 Honing','🌹 Rozenblaadjes'];
-V.drank=(ri=0)=>{if(ri>=2)return V.herken();const R=RECEPTEN[ri];let k=[];const pool=[...INGR].sort((a,b)=>a.length%3-b.length%3);
- const teken=(msg='')=>app(lijst(`<h2>⚗️ ${R.n}</h2><p><b>${R.e}</b> <small>(${R.bron})</small></p><p><i>${R.v}</i></p><div class="ketelfoto"><img src="img/ketel-foto.webp" alt="Ketel"><span class="damp"></span></div><p><b>In de ketel:</b> ${k.join(' → ')||'<i>nog leeg</i>'}</p>
- <div>${pool.map(x=>`<button class="ingr" data-i="${INGR.indexOf(x)}">${x}</button>`).join('')}</div><p><button class="knop" id="roer">🥄 Roeren & proeven</button><button class="knop" id="leeg">Ketel legen</button><button class="knop" id="hint">💡 Hint</button>
- <button class="knop" onclick="V.drank(0)">Wisseldrank</button><button class="knop" onclick="V.drank(1)">Levende Dood</button><button class="knop" onclick="V.herken()">Herken de drank</button></p>`)+msg);
- const bind=()=>{document.querySelectorAll('.ingr').forEach(b=>b.onclick=()=>{k.push(INGR[b.dataset.i]);teken();bind()});
-  $('#leeg').onclick=()=>{k=[];teken();bind()};$('#hint').onclick=()=>{const n=k.findIndex((x,i)=>x!==R.r[i]);const p=n<0?k.length:n;teken(tilly(p<R.r.length?'Ingrediënt '+(p+1)+' is: '+R.r[p]+'.':'Je hebt alles al! Nu roeren.'));bind()};
-  $('#roer').onclick=()=>{if(k.join()==R.r.join()){teken(beloon('drank',30,20,'De ketel glanst: de '+R.n+' is volmaakt!')+`<button class="knop" onclick="V.drank(${ri+1})">Volgende →</button>`);S.opgelost['drank'+ri]=1;bewaar()}else{k=[];teken(foutT('Pff, er kringelt groene rook op. Ketel geleegd. '+gedacht()));bind()}}};
- teken();bind()};
-V.herken=()=>{let i=0,g=0;const vr=[...HERKEN].sort(()=>Math.random()-.5);
- const toon=(msg='')=>{if(i==vr.length)return app(lijst(`<h2>⚗️ Drankenkenner: ${g}/${vr.length}</h2>${g>=4?beloon('drank',30,20,'Je herkent dranken als een echte Slakhoorn-favoriet! De ketel glanst: volmaakt!'):foutT('Minstens 4 goed voor de beloning.')}<button class="knop" onclick="V.herken()">Opnieuw</button>`));
-  const opts=HERKEN.map(h=>h[1]).sort(()=>Math.random()-.5);
-  app(lijst(`<h2>⚗️ Herken de drank (${i+1}/${vr.length})</h2><div class="flesrij"><img src="img/flesjes-foto.webp" alt=""></div><p>${vr[i][0]}</p>${opts.map(o=>`<button class="optie">${o}</button>`).join('')}`)+msg);
-  document.querySelectorAll('.optie').forEach(b=>b.onclick=()=>{const ok=b.textContent==vr[i][1];if(ok){g++;fx.goed()}const t=ok?tilly('<span class="goed">Juist!</span>'):foutT('Het was <b>'+vr[i][1]+'</b>.');i++;toon(t)})};toon()};
+// Toverdranken: het oude brouwspel is vervangen door de echte ketel (ketel.js)
+V.drank=()=>setTimeout(()=>ga('ketel'),0);V.herken=V.drank;
 // Memory
 const PLANTEN=[['🌱','Mandragora'],['🌿','Duivelsstrik'],['🪸','Kieuwwier'],['🌳','Beukwilg'],['🫛','Pufpeul'],['🌷','Trampolinetulp'],['🌼','Affodil'],['🍃','Alsem']];
 V.memory=()=>{let kaarten=[...PLANTEN,...PLANTEN].map((p,i)=>({p,i})).sort(()=>Math.random()-.5);let open=[],klaar=0,zetten=0,lock=false;
@@ -129,8 +113,6 @@ function plantSVG(fase,kleur){let s='<svg viewBox="0 0 100 130"><path d="M25 105
  if(fase>=3)s+='<path d="M50 72 q-12 -4 -14 -14 q10 2 14 12" fill="#4c9a3a"/><circle cx="50" cy="44" r="6" fill="'+kleur+'"/>';
  if(fase>=4)s+=[0,72,144,216,288].map(a=>`<ellipse cx="50" cy="32" rx="6" ry="12" fill="${kleur}" opacity=".9" transform="rotate(${a} 50 44)"/>`).join('')+'<circle cx="50" cy="44" r="5" fill="#ffe680"/><circle cx="30" cy="30" r="1.5" fill="#fff"><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/></circle><circle cx="72" cy="40" r="1.5" fill="#fff"><animate attributeName="opacity" values="1;0;1" dur="2.5s" repeatCount="indefinite"/></circle>';
  return s+'</g></svg>'}
-V.kas=()=>{const kl=['#c8b6ff','#f4a6c0','#9fd8cb','#fff1b8','#e6c35c','#88c999','#ff9e6b','#b6c8ff'];const xp=S.xp;
- app(`<h1>🌸 De Magische Kas</h1>${tilly('Kijk ze groeien! Ik geloof echt dat planten merken wie er goed voor ze zorgt.')}<div class="kas">${PLANT_NAMEN.map((n,i)=>{const f=Math.max(0,Math.min(4,Math.floor((xp-i*60)/30)));return `<div class="pot">${plantSVG(xp>=i*60?f:0,kl[i])}<div><b>${n}</b><br><small>${xp<i*60?'🌰 Zaadje (ontkiemt bij '+i*60+' XP)':['Zaadje','Kiemplantje','Jonge plant','Knop','Bloeiend ✨'][f]}</small></div></div>`}).join('')}</div>`)};
 // Groei
 V.groei=()=>{const l=lvl(),nx=LEVELS[l+1];const pct=nx?Math.round((S.xp-LEVELS[l][0])/(nx[0]-LEVELS[l][0])*100):100;
  app(`<h1>🎓 Jouw ontwikkeling</h1><div class="kaart"><h3>${LEVELS[l][1]}</h3><div class="balk"><div style="width:${pct}%"></div></div><p>${S.xp} XP ${nx?'– nog '+(nx[0]-S.xp)+' tot '+nx[1]:'– hoogste niveau bereikt! 👑'}</p>

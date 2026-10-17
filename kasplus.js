@@ -25,7 +25,7 @@ if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(
 const lvl=()=>S.m3lvl||1;
 S.superzaad=S.superzaad||{};S.superpot=S.superpot||null;
 /* ---- nieuwe zaden + plaatjes per groeistadium ---- */
-if(typeof ZADEN!='undefined'){ZADEN.tentacula=ZADEN.tentacula||['Giftige Tentacula','tentacula',200,35,'#7ab04a',[1,2]];ZADEN.duivelsstrik=ZADEN.duivelsstrik||['Duivelsstrik','duivelsstrik',150,30,'#7a5aa8',[1,2]]}
+if(typeof ZADEN!='undefined'){ZADEN.tentacula=ZADEN.tentacula||['Giftige Tentacula','tentacula',200,90,'#7ab04a',[1,2]];ZADEN.duivelsstrik=ZADEN.duivelsstrik||['Duivelsstrik','duivelsstrik',150,80,'#7a5aa8',[1,2]]}
 const STADIA={varkensgras:[0,1,2,3,3],wolfsmelk:[0,1,2,3,3],alsem:[0,1,2,3,3],affodil:[0,1,2,3,3],sodejus:[0,1,2,3,3],mandragora:[0,1,2,3,4],tentacula:[0,1,2,3,4],duivelsstrik:[0,1,2,3,4]};
 const SUPER_KLEUREN={flessenbes:'#e88ab2',bomlicht:'#b6e58a',bliksemkristal:'#76d7dc',goudkristal:'#ffe08a',eigoud:'#ffd84a',spreukvaren:'#c58aff'};
 Object.entries(SUPERPLANTEN).forEach(([z,d])=>{STADIA[z]=[0,1,2,3,4];if(typeof ZADEN!='undefined')ZADEN[z]=ZADEN[z]||[d.naam,z,d.uren*60,d.prijs,SUPER_KLEUREN[z],[1,1]]});
@@ -57,11 +57,11 @@ function superModal(mi){const o=document.createElement('div');o.className='modal
  };teken();document.body.appendChild(o);const t=setInterval(()=>{if(!o.isConnected)return clearInterval(t);if(mp(mi)&&mpSt(mi)<4)teken()},5000)}
 const PIDX=i=>100+i; // potindexen van de persoonlijke kas (los van de gewone kassen)
 const POT_UP=[
- {naam:'Kruidenpot',prijs:500,img:'pot1',tekst:'Groene krullen. Je tweede pot. Duivelsstrik, Tentacula en Sodejus passen niet in de kleine standaardpot.'},
- {naam:'Edelsteenpot',prijs:800,img:'pot2',tekst:'Je derde pot. Op de kleine tafel passen er drie.'},
- {naam:'Kristalpot',prijs:1200,img:'pot3',tekst:'Voor op de grote tafel. Daar passen vijf potten.'},
+ {naam:'Kruidenpot',prijs:1000,img:'pot1',tekst:'Groene krullen. Je tweede pot. Duivelsstrik, Tentacula en Sodejus passen niet in de kleine standaardpot.'},
+ {naam:'Edelsteenpot',prijs:3200,img:'pot2',tekst:'Je derde pot. Op de kleine tafel passen er drie.'},
+ {naam:'Kristalpot',prijs:2400,img:'pot3',tekst:'Voor op de grote tafel. Daar passen vijf potten.'},
  {naam:'Hartpot',prijs:1600,img:'pot4',tekst:'De vijfde plek, op de grote tafel.'}];
-const VLOERPOT_PRIJS=300;
+const VLOERPOT_PRIJS=700;
 S.potUpgrade=S.potUpgrade|0;if(!S.vloerpot&&(S.mega||[]).some(Boolean))S.vloerpot=1;
 function groteTafelNu(){return lvl()>=GROTE_TAFEL||!!S.groteTafel||(S.potUpgrade|0)>=3||[3,4,5,6].some(i=>!!pot(PIDX(i)))}
 function maxPlek(){return groteTafelNu()?4:2}

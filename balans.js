@@ -12,6 +12,13 @@
    if(m>=3&&L.doelen.length>2){L.doelen=L.doelen.slice(0,2);if(!L.doelen.some(x=>x[0]=='o'))L.onkruid=0;if(!L.doelen.some(x=>['k','i','d'].includes(x[0])))L.kist=0}
    const p=L.doelen.find(x=>x[0]=='p');L.pot=p?p[1]:0;if(!p)delete L.dropInh}
   if(!window._balSim){L.zetten=Math.max(12,L.zetten+e[0]);if(ZETDOEL[n])L.zetten=ZETDOEL[n]}return L};
+ /* v100: veel levels zijn bewust zwaar, daar zijn de extra's voor. 1-20 blijven rustig.
+    Elke 5e = zwaar, elke 10e = heel zwaar, plus een vaste selectie (12% tot 60, 20% tot 200, daarna 25%). */
+ const hz=n=>{let h=Math.imul(n,2654435761)>>>0;h^=h>>>15;h=Math.imul(h,2246822519)>>>0;h^=h>>>13;return (h>>>0)%1000/1000};
+ window.lvZwaar=n=>{n=n|0;if(n<=20)return 0;try{if(window.plaagVan&&plaagVan(n))return 0}catch(e){}if(n%10==0)return 2;if(n%5==0)return 1;return hz(n)<(n<60?.12:n<200?.2:.25)?1:0};
+ const _lz=m3Level;m3Level=function(n){const L=_lz(n);if(window._balSim||!L)return L;const z=lvZwaar(n);if(!z)return L;
+  const fz=z==2?.62:.78,fd=z==2?1.35:1.2;L.zwaar=z;L.zetten=Math.max(8,Math.round(L.zetten*fz));
+  L.doelen=L.doelen.map(x=>typeof x[0]=='number'?[x[0],Math.round(x[1]*fd)]:(x[0]=='p'&&L.pot)?['p',x[1]+1]:x);const p=L.doelen.find(x=>x[0]=='p');if(p&&L.pot)L.pot=p[1];return L};
  // geen kalibratie meer op de telefoon nodig
  const _k=m3Kalibreer;m3Kalibreer=async function(n,t){if(M3BAL[n]){S.m3kal=S.m3kal||{};S.m3kal[n]=0;return 0}return _k(n,t)};
  if(!S.kalV4&&Object.keys(M3BAL).length){S.kalV4=1;S.m3kal={};bewaar()}

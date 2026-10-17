@@ -31,7 +31,7 @@ function zorgStrik(){if(strikKlaar)return;const a=window._rank1,b=window._rank2;
 /* 1 = rank (AUW, vast). 2 = het recept, alleen op de introductieles. */
 /* Balans per plaaglevel (tools2/plaagsim.py, bot-simulatie). dek = deel van het bord dat bij de start onder de plaag zit, z = aantal zetten.
    Vroege plaaglevels zijn zonder flesje te halen; later is het flesje plus boosters nodig. */
-window.PLAAGBAL=window.PLAAGBAL||{35:{dek:.6,z:24},48:{dek:.7,z:22},61:{dek:.75,z:40},74:{z:36},88:{z:30},100:{z:30},235:{z:30},248:{z:22},261:{z:18}};
+window.PLAAGBAL=window.PLAAGBAL||{35:{dek:.6,z:24},48:{dek:.7,z:22},61:{dek:.75,z:40},74:{z:36},88:{z:17},100:{z:30},235:{z:30},248:{z:22},261:{z:18}};
 function plaagDek(n){const b=window.PLAAGBAL[n];return b&&b.dek!=null?b.dek:1}
 const RECEPT=[3,3],RING=[[2,3],[4,3],[3,2],[3,4]];
 function strikVeld(n){const p=plaagVan(n);return !!(p&&!p.intro)}
@@ -154,5 +154,3 @@ const _winstP=m3Winst;m3Winst=function(n,b){let vers='';const p=plaagVan(n);if(p
 function proefMix(){if(S.proefMix)return;S.proefMix=1;S.oogst=S.oogst||{};['valeriaan','alsem','affodil','mandragora'].forEach(z=>{S.oogst[z]=Math.max(S.oogst[z]|0,3)});S.flesjes=S.flesjes||{};S.flesjes.licht=Math.max(S.flesjes.licht|0,1);S.flesjes.diep=Math.max(S.flesjes.diep|0,1);S.flesjes.vocht=Math.max(S.flesjes.vocht|0,1);bewaar()}
 window.proefMix=proefMix;
 
-/* Eerlijke ondergrens voor zetten (rustig spelen moet kunnen): plaag 24, twee of meer doelen 16, één doel 14. */
-(()=>{const _lvM=m3Level;m3Level=function(n){const L=_lvM(n);if(window._balSim||!L)return L;const min=L.plaag?24:((L.doelen||[]).length>=2?16:14);if((L.zetten|0)<min)L.zetten=min;return L}})();

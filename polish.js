@@ -90,25 +90,12 @@ addEventListener('pointermove',e=>{const now=performance.now(),dt=Math.max(16,no
 addEventListener('pointerdown',e=>{if(RMP)return;try{vonk(e.clientX,e.clientY,5,['#fff3d0','#e9d9a8','#ffffff'],1.4)}catch(x){}
  document.querySelectorAll('#decor .midobj,#decor .rankfg').forEach(m=>{m.classList.remove('wieg');void m.offsetWidth;m.classList.add('wieg')});
  const t=e.target.closest('.tegel,.knop,.optie,.ingr,.loc,.memk,.boon');if(t){t.classList.remove('tik');void t.offsetWidth;t.classList.add('tik');const bb=t.getBoundingClientRect();t.style.setProperty('--rx',(e.clientX-bb.left)+'px');t.style.setProperty('--ry',(e.clientY-bb.top)+'px')}},{passive:true});
-/* ---------- tactiele ketel: roeren met de vinger, kleuren mengen ---------- */
-function ketelSetup(){const k=$('.ketelfoto');if(!k||k.dataset.ok)return;k.dataset.ok=1;
- const n=($('#app').textContent.match(/In de ketel:\s*(.*?)\s*(Gaasvliegjes|Alsem|💧|🪰|🌱|nog leeg)/)||[]).length;
- const inh=(document.querySelector('.perkament p b')&&[...document.querySelectorAll('.perkament p')].find(p=>p.textContent.startsWith('In de ketel')))||null;const aantal=inh?(inh.textContent.match(/→/g)||[]).length+(inh.textContent.includes('nog leeg')?0:1):0;
- k.insertAdjacentHTML('beforeend',`<div class="vloeistof" style="--hue:${(aantal*47+120)%360}deg;--vol:${Math.min(1,.25+aantal*.12)}"></div><div class="roerring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,230,150,.35)" stroke-width="3" stroke-dasharray="6 8"/><circle class="roervoortgang" cx="50" cy="50" r="40" fill="none" stroke="#ffd700" stroke-width="5" stroke-dasharray="251" stroke-dashoffset="251" transform="rotate(-90 50 50)"/></svg><span>${aantal?'Roer met je vinger in rondjes':'Voeg eerst ingrediënten toe'}</span></div>`);
- if($('#app').textContent.includes('volmaakt'))k.classList.add('gelukt');
- let ang=null,tot=0,actief=false;const c=()=>{const b=k.getBoundingClientRect();return[b.left+b.width/2,b.top+b.height/2]};
- k.addEventListener('pointerdown',e=>{if(!aantal)return;actief=true;k.setPointerCapture(e.pointerId);const[cx,cy]=c();ang=Math.atan2(e.clientY-cy,e.clientX-cx)});
- k.addEventListener('pointermove',e=>{if(!actief)return;const[cx,cy]=c();const a=Math.atan2(e.clientY-cy,e.clientX-cx);let d=a-ang;if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;ang=a;tot+=Math.abs(d);
-  k.style.setProperty('--draai',(tot*57)%360+'deg');k.querySelector('.roervoortgang').style.strokeDashoffset=251-Math.min(1,tot/(3*Math.PI))*251;
-  if(Math.random()<.25)try{vonk(e.clientX,e.clientY,2,['#a8ffcf','#e8fff0'],1)}catch(x){}if(Math.random()<.06)try{fx.speel('klik')}catch(x){}
-  if(tot>=3*Math.PI){actief=false;tot=0;navigator.vibrate&&navigator.vibrate(40);$('#roer')&&$('#roer').click()}});
- ['pointerup','pointercancel'].forEach(t=>k.addEventListener(t,()=>actief=false))}
 /* ---------- nieuwsgierigheid: glinsteringen + gefluister ---------- */
 function glinster(){document.querySelectorAll('[onclick*="ga(\'"]').forEach(e=>{const m=e.getAttribute('onclick').match(/ga\('(\w+)'\)/);if(m&&!S.bezocht[m[1]]&&!e.classList.contains('dicht'))e.classList.add('glinster');else e.classList.remove('glinster')})}
 function fluister(){try{const{ac,master}=fx.ctx();const n=ac.sampleRate*1.2,b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/n)*(.5+.5*Math.sin(i/ac.sampleRate*38));const s=ac.createBufferSource();s.buffer=b;const f=ac.createBiquadFilter();f.type='bandpass';f.frequency.value=2400;f.Q.value=3;const g=ac.createGain();g.gain.value=.05;const p=ac.createStereoPanner();p.pan.value=Math.random()*1.6-.8;s.connect(f);f.connect(g);g.connect(p);p.connect(master);s.start()}catch(e){}}
 setInterval(()=>{const g=$('.glinster');if(g&&!document.hidden&&Math.random()<.5){fluister();g.classList.remove('roep');void g.offsetWidth;g.classList.add('roep')}},22000);
 /* ---------- alles toepassen na elke render ---------- */
-function polijst(){const a=$('#app');levendeTilly(document);iconiseer(document.body);glinster();ketelSetup();
+function polijst(){const a=$('#app');levendeTilly(document);iconiseer(document.body);glinster();
  a.querySelectorAll('.perkament:not(.rococo)').forEach(p=>p.classList.add('rococo'));a.querySelectorAll('.kaart').forEach(p=>p.classList.add('sierlijst'))}
 new MutationObserver(()=>{clearTimeout(window._pt);window._pt=setTimeout(polijst,0)}).observe(document.body,{childList:true,subtree:true});
 /* diepte-lagen per decor */

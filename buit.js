@@ -48,11 +48,6 @@ function buitVlucht(it){const naam=it.startsWith('kaart:')?it.slice(6):ITEMS[it]
  if(RMP){tasTeller();return}const e=document.createElement('div');e.className='buitvlieg r'+zr;e.innerHTML=buitIcoon(it);document.body.appendChild(e);const d=$('#tasknop').getBoundingClientRect();
  e.animate([{transform:`translate(${innerWidth/2}px,${innerHeight/2}px) scale(.2)`,opacity:0},{transform:`translate(${innerWidth/2}px,${innerHeight/2-80}px) scale(1.8)`,opacity:1,offset:.3},{transform:`translate(${innerWidth/2}px,${innerHeight/2-80}px) scale(1.6) rotate(10deg)`,offset:.5},{transform:`translate(${d.left+d.width/2}px,${d.top+d.height/2}px) scale(.4)`,opacity:.8}],{duration:1500,easing:'cubic-bezier(.5,0,.3,1)'}).onfinish=()=>{e.remove();tasTeller();const t=$('#tasknop');t.classList.remove('pof');void t.offsetWidth;t.classList.add('pof')}}
 const _bel3=beloon;beloon=function(id,...a){const r=_bel3(id,...a);try{buitVoor(id)}catch(e){}return r};
-/* ingrediënten echt gebruiken in de ketel */
-const INGR_ID={'Gaasvliegjes':'gaasvlieg','Bloedzuigers':'bloedzuiger','Wolfsmelk':'wolfsmelk','Varkensgras':'varkensgras','Gemalen hoorn':'tweehoorn','Geraspte huid':'boomslang','Alsemaftreksel':'alsem','Poeder van affodilwortel':'affodil','Valeriaanwortels':'valeriaan','Sodejusboon':'sodejus'};
-const idVan=txt=>{for(const k in INGR_ID)if(txt.includes(k))return INGR_ID[k];return null};
-function ketelVoorraad(){document.querySelectorAll('.ingr:not([data-vr])').forEach(b=>{b.dataset.vr=1;const id=idVan(b.textContent);if(id){const n=S.tas[id]||0;b.insertAdjacentHTML('beforeend',`<span class="vr ${n?'heb':''}">${n}</span>`)}})}
-const _bel4=beloon;beloon=function(id,pt,gal,tekst){if(id=='drank'&&$('.ketelfoto')){const R=RECEPTEN.find(r=>$('#app h2')&&$('#app h2').textContent.includes(r.n));if(R){const ids=R.r.map(idVan).filter(Boolean);const alles=ids.every(i=>S.tas[i]>0);if(alles){ids.forEach(i=>S.tas[i]--);gal=Math.round(gal*1.5);tekst=(tekst||'')+' Je gebruikte je eigen ingrediënten uit je verzamelboek: anderhalf keer zoveel Smekkies!'}}}return _bel4(id,pt,gal,tekst)};
 /* ---------- voorleesstem ---------- */
 let stemAudio=null;
 function voorlezen(id,tekst){stopStem();try{fx.duik(true)}catch(e){}
@@ -78,6 +73,5 @@ document.addEventListener('click',e=>{const k=e.target.closest('.kkaart');if(k){
 VIEWDECOR.boek='bieb';UITLEG.boek=['Je verzamelboek','Alles wat je verdient, komt hierin: tovenaarskaarten, ingrediënten en verzamelvoorwerpen. Tik op een vakje om het te bekijken en te laten voorlezen. Ingrediënten kun je ook echt gebruiken in de ketel.'];HINT.boek='Tip: grijze silhouetten heb je nog niet; ze komen uit spellen, lessen en Chocokikkers.';
 const _doelen=doelen;doelen=function(){const d=_doelen();if(S.nieuwBuit>0)d.splice(3,0,['Bekijk je nieuwe buit in je verzamelboek',false,()=>ga('boek'),'boek']);return d};
 setInterval(()=>{const o=new MutationObserver(()=>{});},1e9);
-new MutationObserver(()=>{clearTimeout(window._bv);window._bv=setTimeout(ketelVoorraad,0)}).observe($('#app'),{childList:true,subtree:true});
 tasTeller();
 

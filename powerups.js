@@ -53,8 +53,12 @@ window.m3NaBord=(b,boost)=>{uq=[];b.kt=b.kt||Array.from({length:RIJEN},()=>Array
  bewaar();setTimeout(()=>{if(bo.length>1||Object.values(S.uitlegPU).length>3)puUitleg('combi')},12000)};
 /* keuze in het level-intro */
 let gekozen=new Set();
+window.boDicht=k=>{const d=BOOSTERS[k];return d&&d.van&&(S.m3lvl|0)<d.van?d.van:0};
+const VANFOP=k=>!!(BOOSTERS[k]&&BOOSTERS[k].fop);
 window.boosterKeuze=n=>{gekozen=new Set();
- return `<div class="bokeuze"><p class="klein">Boosters (optioneel): tik om mee te nemen. Uit je kas, of koop er een met Smekkies.</p><div class="borij">${Object.entries(BOOSTERS).map(([k,d])=>`<button class="bochip ${S.bo[k]>0?'':'koop'}" data-bo="${k}" aria-pressed="false"><img src="img/pu/${d.img}.webp" alt=""><b>${d.naam}</b><small>${S.bo[k]>0?'×'+S.bo[k]:d.prijs+' Smekkies'}</small></button>`).join('')}</div></div>`};
-window.boosterGekozen=()=>[...gekozen];
-document.addEventListener('click',e=>{const c=e.target.closest('.bochip');if(!c)return;const k=c.dataset.bo;if(!gekozen.has(k)&&!(S.bo[k]>0)){const d=BOOSTERS[k];if(S.galjoenen<d.prijs){toast('Niet genoeg Smekkies voor '+d.naam+'.');return}S.galjoenen-=d.prijs;S.bo[k]=1;bewaar();try{stats()}catch(x){}c.classList.remove('koop');c.querySelector('small').textContent='gekocht';}if(gekozen.has(k))gekozen.delete(k);else gekozen.add(k);c.setAttribute('aria-pressed',gekozen.has(k));c.classList.toggle('aan',gekozen.has(k));try{gekozen.has(k)&&window.zwKies?zwKies.tik():fx.speel('klik')}catch(x){}});
+ return `<div class="bokeuze"><p class="klein">Boosters (optioneel): tik om mee te nemen. Ze groeien in je kas of zijn te koop in de <button class="bolink" onclick="document.querySelectorAll('.modal').forEach(m=>m.remove());ga('fopshop')">Fopshop</button>.</p><div class="borij">${Object.entries(BOOSTERS).map(([k,d])=>{const dicht=boDicht(k),heb=S.bo[k]>0;return `<button class="bochip ${dicht?'dicht':heb?'':'op'}" data-bo="${k}" aria-pressed="false"><img src="img/pu/${d.img}.webp" alt=""><b>${d.naam}</b><small>${dicht?'Vanaf level '+dicht:heb?'×'+S.bo[k]:VANFOP(k)?'Te koop in de Fopshop':'Groeit in je kas'}</small></button>`}).join('')}</div></div>`};
+window.boosterGekozen=()=>[...gekozen].filter(k=>S.bo[k]>0);
+document.addEventListener('click',e=>{const c=e.target.closest('.bochip');if(!c)return;const k=c.dataset.bo;
+ if(!gekozen.has(k)&&!(S.bo[k]>0)){const dicht=boDicht(k);toast(dicht?BOOSTERS[k].naam+' komt vrij vanaf level '+dicht+'.':VANFOP(k)?BOOSTERS[k].naam+' is te koop in de Tovertweelings Topfopshop.':BOOSTERS[k].naam+' kweek je in je kas.');try{fx.speel('klik')}catch(x){}return}
+ if(gekozen.has(k))gekozen.delete(k);else gekozen.add(k);c.setAttribute('aria-pressed',gekozen.has(k));c.classList.toggle('aan',gekozen.has(k));try{gekozen.has(k)&&window.zwKies?zwKies.tik():fx.speel('klik')}catch(x){}});
 })();

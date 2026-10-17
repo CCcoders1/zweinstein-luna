@@ -254,7 +254,7 @@ function tekLuna(x,p,t){const X=p.x,Y=p.y,z=p.z||0;schaduw(x,X,Y+2,15*(1-Math.mi
 
 
 /* ---------- einde ---------- */
-function einde(){if(!G||G.fase=='klaar')return;G.fase='klaar';G.joy=null;toonJoy();const n=G.n;S.galjoenen=(S.galjoenen|0)+n;S.bonusKamer.beste=Math.max(S.bonusKamer.beste|0,n);bewaar();try{stats()}catch(e){}snd('fanfare',.7);setTimeout(()=>snd('tover',.6),600);
+function einde(){if(!G||G.fase=='klaar')return;G.fase='klaar';G.joy=null;toonJoy();const n=G.test?0:G.n;S.galjoenen=(S.galjoenen|0)+n;S.bonusKamer.beste=Math.max(S.bonusKamer.beste|0,n);bewaar();try{stats()}catch(e){}snd('fanfare',.7);setTimeout(()=>snd('tover',.6),600);
  const o=document.createElement('div');o.className='bk-intro';o.innerHTML=`<div class="bk-perk"><h2>Tijd is om!</h2><p class="bk-groot"><span class="bk-boon"></span> ${n} Smekkies</p><p>${G.kisten} ${G.kisten==1?'kist':'kisten'} en ${G.deurOpen} ${G.deurOpen==1?'deur':'deuren'} geopend · beste combo ×${G.bestCombo||0}${G.kaart?` · Chocokikkerkaart: ${G.kaart}`:''}</p><p class="klein">De Smekkies staan bij je totaal. Beste ooit: ${S.bonusKamer.beste}</p><button class="knop volgende" id="bkklaar">Terug naar De Hal</button></div>`;
  $('#bk').appendChild(o);$('#bkklaar').onclick=()=>{stop();ga('home')}}
 

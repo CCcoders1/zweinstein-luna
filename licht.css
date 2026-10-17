@@ -381,7 +381,18 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 .pad .padlvl.cadeau{border-color:#ffe7a0;box-shadow:0 0 0 3px rgba(255,214,90,.55),0 0 16px rgba(255,196,60,.85),0 5px 0 rgba(0,0,0,.28)}
 .pad .padlvl.cadeau::before{content:'✦';position:absolute;left:50%;top:-13px;transform:translateX(-50%);color:#ffe58a;font-size:16px;text-shadow:0 0 6px #ffbf3a;line-height:1}
 .pad .padlvl.zwaar:not(.plaag){border-color:#e07a55;box-shadow:0 0 0 3px rgba(176,54,28,.55),0 5px 0 rgba(0,0,0,.28)}
-.pad .padlvl.zwaar:not(.plaag)::after{content:'!';position:absolute;right:-4px;top:-6px;width:18px;height:18px;border-radius:50%;background:#8d2c16;color:#fff6ea;font-size:12px;line-height:18px;box-shadow:0 0 0 2px #f6d2b8}
+.pad .padlvl.zwaar:not(.plaag)::after{content:'🔥';position:absolute;right:-5px;top:-7px;width:20px;height:20px;border-radius:50%;background:#8d2c16;color:#fff6ea;font-size:11px;line-height:20px;text-align:center;box-shadow:0 0 0 2px #f6d2b8}
+.pad .padlvl.superzwaar:not(.plaag){border-color:#9a5ad0;box-shadow:0 0 0 3px rgba(70,30,110,.6),0 5px 0 rgba(0,0,0,.3)}
+.pad .padlvl.superzwaar:not(.plaag)::after{content:'💀';background:#3a1f4f}
+.zwaarhint{margin:.4em auto;padding:.45em .7em;border-radius:12px;background:rgba(141,44,22,.12);border:1px solid rgba(141,44,22,.35);font-size:.92em;max-width:30em}
+.zwaarhint.super{background:rgba(70,30,110,.12);border-color:rgba(70,30,110,.4)}
+.zwaarhint a{color:inherit;font-weight:700}
+.bochip.dicht{opacity:.55;filter:grayscale(.6)}
+.bochip.op{opacity:.75}
+.bolink{background:none;border:0;padding:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer;font-weight:700}
+.fgitem.dicht{opacity:.6;filter:grayscale(.5)}
+.fgslot{font-size:.85em;font-weight:700;padding:.35em .7em;border-radius:10px;background:rgba(0,0,0,.08);white-space:nowrap}
+.fgraket{position:fixed;pointer-events:none;z-index:60}
 .pad .padlvl.lang{font-size:.82em}
 .pad.met-nevel::after{content:"";position:absolute;left:0;right:0;top:0;height:108px;background:linear-gradient(to bottom,rgba(6,8,14,.62),transparent);pointer-events:none;z-index:1}
 .pad.met-nevel .padlijn{-webkit-mask-image:linear-gradient(transparent 0,#000 120px);mask-image:linear-gradient(transparent 0,#000 120px)}

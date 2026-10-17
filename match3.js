@@ -203,7 +203,7 @@ const M3={};
 V.match3=async(n)=>{n=n||S.m3lvl||1;if((S.m3kal||{})[n]==null){app('<p class="m3voor">Het level wordt klaargezet…</p>');await m3Kalibreer(n,m3VakVoor(n).thema);if(document.body.dataset.view!=='match3')return}const L=m3Level(n);const vak=m3VakVoor(n);const thema=vak.thema;const T=M3THEMA[thema];
  const doelTxt=d=>d[0]=='recept'?'Recept':(['i','d'].includes(d[0])||(d[0]=='p'&&L.dropInh))&&window.doelNaam?doelNaam(d[0]):d[0]=='o'?T.onkruid:d[0]=='k'?T.kist:d[0]=='p'?(T.potMv||(/pot$/.test(T.pot)?T.pot+'ten':T.pot+'en')):(T.t[d[0]]&&T.t[d[0]].map)?T.t[d[0]][0]:'';
  app(`<div class="m3voor rococo"><h2>Level ${n}</h2><p class="m3vak">${T.n}</p><div class="m3doelen-voor">${L.doelen.map(d=>`<span>${m3DoelIco(d,T,L)}<b>${doelTxt(d)}</b></span>`).join('')}</div>
- <p>${L.zetten} zetten</p>
+ <p>${L.zetten} zetten</p>${L.zwaar?`<p class="zwaarhint ${L.zwaar>1?'super':''}">${L.zwaar>1?'💀 Heel zwaar level.':'🔥 Zwaar level.'} Dit lukt bijna niet zonder hulp: neem boosters mee uit je kas of uit de <button class="bolink" onclick="document.querySelectorAll('.modal').forEach(m=>m.remove());ga('fopshop')">Fopshop</button>.</p>`:''}
  ${window.reeksTekst?reeksTekst(n):''}
  ${window.boosterKeuze?boosterKeuze(n):''}<p class="harten">${harten()}</p><button class="knop volgende" id="m3start">Spelen</button></div>`);
  $('#m3start').onclick=()=>{const b1=false,b2=false,kost=0;if(levens()<1){toast('Je harten laden weer op. Speel even een bonusspel!');return}S.galjoenen-=kost;bewaar();stats();m3Speel(n,thema,{b1,b2,bo:window.boosterGekozen?boosterGekozen():[]})}};
@@ -330,6 +330,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
   if(!b.binnen(...d)||vastC(...d)||!b.g[d[0]][d[1]]||(d[0]==a[0]&&d[1]==a[1])){t.zw=2;t.lift=.6;toast(d[0]==a[0]&&d[1]==a[1]?'Het blok staat weer op zijn plek.':'Daar kan het niet. Het blok zweeft terug.');lev={f:'kies'};return}
   bezig=true;const tb=b.g[d[0]][d[1]];b.wis(a[0],a[1],d[0],d[1]);t.x=cx/cel-.5;t.y=cy/cel-.5;t.zw=2;t.lift=.5;tb.zw=2;tb.lift=0;try{fx.speel('klik')}catch(x){}await b.wacht(700);
   await b.oplossen(d,a,new Set(),hooks);toonFx();doelUI();bezig=false;hintT=Date.now();einde()}
+ M3.knal=async cel=>{if(bezig||!b)return false;bezig=true;try{await b.oplossen(null,null,new Set(cel.map(x=>x+'')),hooks)}catch(e){console.warn(e)}toonFx();doelUI();bezig=false;hintT=Date.now();einde();return true};
  M3.levState=()=>lev;M3.sleepTeken=(ctx,nu)=>{if(!lev||lev.f!='sleep')return;const L=cel*.9,th=lev.P.stap(lev.fx,lev.fy,L);ctx.save();ctx.strokeStyle='rgba(255,220,120,.7)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(lev.fx,lev.fy-cel*.35);ctx.lineTo(lev.fx,lev.fy);ctx.stroke();
   ctx.translate(lev.fx,lev.fy);ctx.rotate(-th);ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.55;ctx.drawImage(KU.stof('#ffd76a'),-cel*.85,-cel*.35,cel*1.7,cel*1.7);ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.translate(0,cel*.5);tekenTegel(lev.t,0,0,1.1,nu);ctx.restore();
   if(Math.random()<.35)deeltjes.push({x:lev.fx+(Math.random()-.5)*cel*.6,y:lev.fy+cel*.8,vx:(Math.random()-.5)*.3,vy:-.4,r:1.5+Math.random()*2,l:1,st:1,k:'#ffe28a'})};
@@ -340,13 +341,13 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
  cv.onpointerup=cv.onpointercancel=()=>{start=null;if(lev&&lev.f=='sleep')levUp()};
  function einde(){if(b.af)return;if(b.klaar()){b.af=1;m3Winst(n,b)}else if(b.zet<=0)m3Verlies(n,b)}
  M3.einde=einde}
-function m3Winst(n,b){const sterBonus=b.zet>=5?1:0;const gal=10+b.zet*2;S.schilden=(S.schilden||0)+1;S.galjoenen+=gal;S.xp+=10;S.m3lvl=Math.max(S.m3lvl||1,n+1);delete (S.m3extra||{})[n];tel('opgelost');tel('m3');tel('sterren');bewaar();stats();fx.speel('fanfare');vib([40,30,40,30,120]);try{confetti&&confetti()}catch(e){}
+function m3Winst(n,b){const sterBonus=b.zet>=5?1:0;const gal=10+b.zet*2+((window.lvZwaar&&lvZwaar(n))|0)*10;S.schilden=(S.schilden||0)+1;S.galjoenen+=gal;S.xp+=10;S.m3lvl=Math.max(S.m3lvl||1,n+1);delete (S.m3extra||{})[n];tel('opgelost');tel('m3');tel('sterren');bewaar();stats();fx.speel('fanfare');vib([40,30,40,30,120]);try{confetti&&confetti()}catch(e){}
  try{buitVoor('memory')}catch(e){}
  const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo m3eind"><h2>Level ${n} gehaald!</h2><div class="m3ster">${schildSVG('groot')}</div><p><b>+1 huisschild</b> voor de lokalen · +${gal} Smekkies${b.zet?` (${b.zet} zetten over)`:''}</p>${tilly(m3Zin(true))}<button class="knop volgende" id="m3verder">Naar mijn kas</button><button class="knop" id="m3volg">Volgend level</button></div>`;
  document.body.appendChild(o);$('#m3verder').onclick=()=>{o.remove();ga('home')};$('#m3volg').onclick=()=>{o.remove();ga('match3',n+1)};try{kernNa&&kernNa()}catch(e){}}
-function m3Verlies(n,b){const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo m3eind"><h2>Bijna!</h2><p>Nog ${b.doel.filter(d=>d.over>0).map(d=>d.over).join(' + ')} te gaan.</p>${tilly(m3Zin(false))}<button class="knop volgende" id="m3plus5">Nog 5 zetten · 40 Smekkies</button><button class="knop" id="m3opn">Opnieuw</button><button class="linkknop" id="m3stop">Stoppen</button></div>`;
+function m3Verlies(n,b){const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo m3eind"><h2>Bijna!</h2><p>Nog ${b.doel.filter(d=>d.over>0).map(d=>d.over).join(' + ')} te gaan.</p>${tilly(m3Zin(false))}${(S.bo&&S.bo.spijbel>0)?`<button class="knop volgende" id="m3plus5">Spijbelsnoepdoos eten: +5 zetten (nog ${S.bo.spijbel})</button>`:''}<button class="knop" id="m3opn">Opnieuw</button><button class="linkknop" id="m3stop">Stoppen</button></div>`;
  document.body.appendChild(o);
- $('#m3plus5').onclick=()=>{if(S.galjoenen<40){toast('Niet genoeg Smekkies.');return}S.galjoenen-=40;bewaar();stats();b.zet+=5;$('#m3z').textContent=b.zet;o.remove()};
+ const p5=$('#m3plus5');if(p5)p5.onclick=()=>{if(!(S.bo.spijbel>0))return;S.bo.spijbel--;bewaar();b.zet+=5;$('#m3z').textContent=b.zet;o.remove()};
  $('#m3opn').onclick=()=>{o.remove();verliesLeven();ga('match3',n)};$('#m3stop').onclick=()=>{o.remove();verliesLeven();ga('home')}}
 function m3Zin(w){const W=['Ja! Zag je die raket door de rij gaan? Ik kreeg kippenvel.','Wauw, Luna. Professor Stronk gaat dit horen, echt waar.','Die combinatie was briljant. Nog eentje?','Zo, dat was een ster. Wat gaan we ermee doen in de kas?'],L=['Zo dichtbij! Ik denk dat die onderste rij de sleutel is.','Bijna, echt waar. Zullen we het nog eens proberen? Ik help mee zoeken.','Hmm, die kistjes waren koppig. Een ketelbom zou wonderen doen.'];const a=w?W:L;return a[Math.random()*a.length|0]}
 /* milde levens */
