@@ -22,9 +22,8 @@
  const _ga=ga;ga=function(s,...a){if(s==='match3'){try{laad(info(a[0]).u)}catch(e){}}else weg();return _ga(s,...a)};
  setTimeout(()=>{try{laad(info(S.m3lvl).u)}catch(e){}},3000);
 })();
-/* Eenmalig op deze telefoon: alles open om te testen, met 10.000 Smekkies. */
+/* Testkist: alles open om te testen, met 10.000 Smekkies. Alleen handmatig via het makerscherm (logo 3x + code). */
 function proefKist(){
- if(S.proefKist)return;
  S.proefKist=1;
  S.galjoenen=Math.max(S.galjoenen|0,10000);
  S.m3lvl=Math.max(S.m3lvl|0,560);
@@ -52,4 +51,4 @@ function proefKist(){
  try{stats()}catch(e){}
  if(S.naam&&S.huis){try{V.home()}catch(e){}}
 }
-proefKist();
+window.proefKist=proefKist;

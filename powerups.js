@@ -36,7 +36,7 @@ window.m3PuFx=(f,x,y,cel)=>{const RM=matchMedia('(prefers-reduced-motion: reduce
   if(Math.random()<(f.s=='e'?.6:.3)&&window.m3VliegItem&&window.M3ITEMS){const v=(window.vakVan&&M3.b)?vakVan(M3.b.L.n).id:'herbologie';const L=M3ITEMS[v]||M3ITEMS.herbologie;const it=L[Math.random()*L.length|0];S.verzameld=S.verzameld||{};S.verzameld[it[0]]=(S.verzameld[it[0]]||0)+1;bewaar();setTimeout(()=>{m3VliegItem(it[0],x,y,document.getElementById('tasknop')||document.querySelector('#m3d .m3ico'),RM?0:500);tekst(it[1]+'!',x,y-cel*.9)},250)}}};
 /* boosters bij levelstart */
 const rnd=a=>a[Math.random()*a.length|0];
-const vrij=b=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c])L.push([r,c])}return L};
+const vrij=b=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L};
 function reeksPlan(reeks){const n=reeks|0;if(n<1)return {bommen:0,snaai:false};return {bommen:Math.min(3,n),snaai:n>=5}}
 function reeksVrij(b){const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L}
 function reeksNeem(vrij,lo,hi){let pool=vrij.filter(p=>p[0]>=lo&&p[0]<=hi);if(!pool.length)pool=vrij;if(!pool.length)return null;const p=pool[Math.random()*pool.length|0];vrij.splice(vrij.findIndex(x=>x[0]==p[0]&&x[1]==p[1]),1);return p}
