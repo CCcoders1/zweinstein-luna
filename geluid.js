@@ -58,7 +58,7 @@ const sfeer=sc=>{basis=sc;pas()};
 function tijdelijk(k){stapel.push(k);pas()}function terug(){stapel.pop();pas()}
 function volNu(){['amb','mus','rz'].forEach(k=>{const K=KAN[k];if(K.n){const c=ctx();K.n.g.gain.setTargetAtTime(doel(k)*K.niv,c.currentTime,.3)}})}
 window.zwSfeer={zet:sfeer,tijdelijk,terug};
-const SCHERM={kas:'kas',mijnkas:'kas',leraarpoort:'kas',kruidwinkel:'winkel',fopshop:'winkel',ketel:'ketel',moestuin:'moestuin',kaart:'moestuin'};
+const SCHERM={kas:'kas',mijnkas:'kas',leraarpoort:'kas',kruidwinkel:'winkel',fopshop:'winkel',ketel:'ketel',bonuskamer:'hal',moestuin:'moestuin',kaart:'moestuin'};
 const _ga=window.ga;window.ga=function(s,...a){if(stapel.length&&!document.querySelector('.verhaal,.modal'))stapel.length=0;sfeer(SCHERM[s]||'hal');return _ga.call(this,s,...a)};
 try{const _ms=m3Speel;m3Speel=function(n,thema,boost){try{const p=window.plaagVan&&plaagVan(n);sfeer(p?(p.soort==='damp'?'kerker':'plaag'):thema==='verweer'?'bos':'level')}catch(e){}return _ms.apply(this,arguments)}}catch(e){}
 try{const _vh=verhaal;verhaal=function(regels,klaar){let intro=false;try{intro=!!document.querySelector('.m3voor')||/Professor|Sneep|Stronk/.test(JSON.stringify(regels||[]).slice(0,200))}catch(e){}tijdelijk(intro?'intro':'gesprek');let weg=false;return _vh.call(this,regels,(...x)=>{if(!weg){weg=true;terug()}return klaar&&klaar(...x)})}}catch(e){}
