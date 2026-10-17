@@ -42,11 +42,11 @@ function kanZet(kan,k,niv,fade){const K=KAN[kan];fade=fade||1.8;try{const c=ctx(
 let basis='hal';const stapel=[];
 /* Tijd van de dag (klok van het toestel): ochtend 6-11, middag 11-18, avond 18-22, nacht 22-6 */
 const dagdeel=()=>{const h=new Date().getHours();return h>=6&&h<11?'ochtend':h<18&&h>=11?'middag':h>=18&&h<22?'avond':'nacht'};
-const NACHTMUS={hal:'mus-gesprek'};
+const NACHTMUS={};/* Hal/menu's houden 's nachts hun eigen (thema)muziek, alleen zachter */
 function variant(k){const d=dagdeel();if(d=='ochtend'&&buf[k+'-ochtend'])return k+'-ochtend';if((d=='avond'||d=='nacht')&&buf[k+'-nacht'])return k+'-nacht';return k}
 function tint(){const d=dagdeel();if(!document.getElementById('zwtint')){const t=document.createElement('div');t.id='zwtint';document.body.appendChild(t)}document.body.classList.toggle('zw-avond',d=='avond');document.body.classList.toggle('zw-nacht',d=='nacht')}
 function pas(){tint();if(!Object.keys(buf).length)return;const sc=SCENE[basis]||SCENE.hal;const tmp=stapel.length?TIJD[stapel[stapel.length-1]]:null;const laat=/avond|nacht/.test(dagdeel());
- kanZet('amb',variant(sc[0]),sc[1]*(tmp?tmp[0]:1));kanZet('mus',tmp?tmp[1]:(laat&&NACHTMUS[basis]&&buf[NACHTMUS[basis]]?NACHTMUS[basis]:sc[2]),(tmp?tmp[2]:sc[3])*(laat&&!tmp?.7:1))}
+ const ak=variant(sc[0]);kanZet('amb',ak,sc[1]*(tmp?tmp[0]:1)*(/hal-nacht/.test(ak)?.45:1));const mk=sc[2]=='mus-hal'&&buf['mus-titel']?'mus-titel':sc[2];kanZet('mus',tmp?tmp[1]:mk,(tmp?tmp[2]:sc[3])*(laat&&!tmp?.8:1))}
 setInterval(()=>{try{pas()}catch(e){}},300000);setTimeout(tint,500);
 /* Verrassingsgeluiden: zeldzaam, zacht, per locatie, nooit tijdens gesprekken */
 const VERR={hal:['spook1','spook2','henk','foppe1','foppe2','foppe3','uil1','bel','deur1','deur2','kat'],level:['spook1','foppe1','foppe2','uil2','deur1','kat','bel'],kas:['uil1','uil2','kikker','vleugels','deur2'],moestuin:['fang1','fang2','norbert','uil3','vleugels'],winkel:['deur1','deur2','foppe1','kat','bel'],kerker:['drup1','drup2','drup3','spook2'],plaag:['drup1','drup2','drup3'],bos:['uil1','uil3','krekel','vleugels']};
@@ -59,7 +59,7 @@ function tijdelijk(k){stapel.push(k);pas()}function terug(){stapel.pop();pas()}
 function volNu(){['amb','mus'].forEach(k=>{const K=KAN[k];if(K.n){const c=ctx();K.n.g.gain.setTargetAtTime(doel(k)*K.niv,c.currentTime,.3)}})}
 window.zwSfeer={zet:sfeer,tijdelijk,terug};
 const SCHERM={kas:'kas',mijnkas:'kas',leraarpoort:'kas',kruidwinkel:'winkel',fopshop:'winkel',moestuin:'moestuin',kaart:'moestuin'};
-const _ga=window.ga;window.ga=function(s,...a){sfeer(SCHERM[s]||'hal');return _ga.call(this,s,...a)};
+const _ga=window.ga;window.ga=function(s,...a){if(stapel.length&&!document.querySelector('.verhaal,.modal'))stapel.length=0;sfeer(SCHERM[s]||'hal');return _ga.call(this,s,...a)};
 try{const _ms=m3Speel;m3Speel=function(n,thema,boost){try{const p=window.plaagVan&&plaagVan(n);sfeer(p?(p.soort==='damp'?'kerker':'plaag'):thema==='verweer'?'bos':'level')}catch(e){}return _ms.apply(this,arguments)}}catch(e){}
 try{const _vh=verhaal;verhaal=function(regels,klaar){let intro=false;try{intro=!!document.querySelector('.m3voor')||/Professor|Sneep|Stronk/.test(JSON.stringify(regels||[]).slice(0,200))}catch(e){}tijdelijk(intro?'intro':'gesprek');let weg=false;return _vh.call(this,regels,(...x)=>{if(!weg){weg=true;terug()}return klaar&&klaar(...x)})}}catch(e){}
 /* overwinning: muziek even weg, fanfare voorop, dan terug */
