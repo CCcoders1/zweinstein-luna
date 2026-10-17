@@ -2,7 +2,7 @@
 /* Toverdranken brouwen: eigen ketel met echte vloeistof, een houten lepel die je vinger volgt, rimpels, draaikolk, bubbels en stoom. */
 (function(){
 const BEELD={ov:{src:'img/ketel/werkplaats.webp',e:[.3516,.3999,.2665,.0787]},cl:{src:'img/ketel/ketel.webp',e:[.5061,.4230,.4028,.1534]}};
-const IW=768,IH=1152,WATER='#3f5a63';
+const IW=768,IH=1152,WATER='#3f5a63',TAFEL=150;const TAFELIMG=new Image();TAFELIMG.src='img/ketel/tafel.webp';
 const RECEPT=[
  {id:'slaap',naam:'Slaapdrankje',zin:'Een rustig paars drankje voor een goede nachtrust.',kl:['#6d6fa8','#9b86d6'],beloning:15,stap:[['in','valeriaan'],['roer',3,1],['in','varkensgras'],['roer',2,1]]},
  {id:'opkikker',naam:'Opkikkerdrankje',zin:'Warm je op als je verkouden bent. Er komt stoom uit je oren!',kl:['#c8693a','#ff8a3a'],beloning:20,stap:[['in','wolfsmelk'],['roer',3,1],['in','alsem'],['roer',3,1]]},
@@ -21,7 +21,7 @@ let K=null; // toestand van de open ketel
 V.ketel=()=>{stop();const a=$('#app');a.innerHTML=`<div class="kt" id="kt"><canvas id="ktc"></canvas><div class="kt-ov" id="ktov"></div>
  <div class="kt-top"><button class="knop klein kt-terug" id="ktterug">← Terug</button><div class="kt-kaart" id="ktkaart"></div></div><div class="kt-bank" id="ktbank"></div><div class="kt-tip" id="kttip"></div></div>`;
  const imgs={};let n=0;Object.entries(BEELD).forEach(([k,b])=>{const im=new Image();im.onload=()=>{if(++n==2&&K)K.klaar=1};im.src=b.src;imgs[k]=im});
- K={imgs,modus:'ov',r:null,stap:0,acc:0,cur:hex(WATER),doel:hex(WATER),glans:0,vort:0,twist:0,bub:[],stoom:[],dr:[],ster:[],lepel:null,vinger:null,t0:performance.now(),rozet:0};
+ K={kort:innerHeight<720,imgs,modus:'ov',r:null,stap:0,acc:0,cur:hex(WATER),doel:hex(WATER),glans:0,vort:0,twist:0,bub:[],stoom:[],dr:[],ster:[],lepel:null,vinger:null,t0:performance.now(),rozet:0};
  $('#ktterug').onclick=()=>{if(K.modus=='cl')naarOv();else{stop();ga('meer')}};
  const cv=$('#ktc');cv.onpointerdown=e=>neer(e);cv.onpointermove=e=>beweeg(e);cv.onpointerup=cv.onpointercancel=e=>los(e);
  addEventListener('resize',lay);lay();naarOv(true);K.raf=requestAnimationFrame(frame);try{fx.speel('whoosh')}catch(e){}};
@@ -29,8 +29,9 @@ function stop(){if(K&&K.raf)cancelAnimationFrame(K.raf);removeEventListener('res
 
 /* ---------- opbouw ---------- */
 function lay(){if(!K)return;const cv=$('#ktc');if(!cv)return;const W=innerWidth,H=innerHeight,d=Math.min(2,devicePixelRatio||1);cv.width=W*d;cv.height=H*d;cv.style.width=W+'px';cv.style.height=H+'px';K.W=W;K.H=H;K.d=d;
- const strip=K.modus=='cl'?118:0;let s=W/IW;if(IH*s>H-strip)s=(H-strip)/IH;const iw=IW*s,ih=IH*s,ix=(W-iw)/2,iy=K.modus=='cl'?H-strip-ih:Math.max(0,(H-ih)*.75);K.L={s,iw,ih,ix,iy};
- const e=BEELD[K.modus].e;K.E={cx:ix+e[0]*iw,cy:iy+e[1]*ih,rx:e[2]*iw,ry:e[3]*ih};maakSim();if(K.modus=='ov')bankOv()}
+ let s,iw,ih,ix,iy;if(K.modus=='cl'){const TB=TAFEL,kb=$('#ktkaart'),cardB=(kb?kb.getBoundingClientRect().bottom:60)+10;K.cardB=cardB;s=Math.min(W/IW,Math.max(120,(H-TB-cardB)/.63)/IH);iw=IW*s;ih=IH*s;ix=(W-iw)/2;iy=H-TB-ih*.9}
+ else{s=W/IW;if(IH*s>H)s=H/IH;iw=IW*s;ih=IH*s;ix=(W-iw)/2;iy=Math.max(0,(H-ih)*.75)}K.L={s,iw,ih,ix,iy};
+ const e=BEELD[K.modus].e;K.E={cx:ix+e[0]*iw,cy:iy+e[1]*ih,rx:e[2]*iw,ry:e[3]*ih};if(!K.h||K.simM!==K.modus){K.simM=K.modus;maakSim()}if(K.modus=='ov')bankOv()}
 function maakSim(){const GW=K.modus=='cl'?112:72,GH=Math.round(GW*.58);K.GW=GW;K.GH=GH;K.h=new Float32Array(GW*GH);K.hp=new Float32Array(GW*GH);K.mask=new Uint8Array(GW*GH);
  for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){const u=(x+.5)/GW*2-1,v=(y+.5)/GH*2-1;K.mask[y*GW+x]=u*u+v*v<1.04?1:0}
  const c=document.createElement('canvas');c.width=GW;c.height=GH;K.oc=c;K.ox=c.getContext('2d');K.id=K.ox.createImageData(GW,GH)}
@@ -40,15 +41,18 @@ function naarCl(){K.modus='cl';$('#ktov').innerHTML='';lay();const E=K.E;K.lepel
 function bankOv(){const o=$('#ktov');if(!o)return;const L=K.L;const heb=INGR.filter(i=>(S.oogst&&S.oogst[i])|0);const lijst=(heb.length?heb:INGR.slice(0,4)).slice(0,6);
  o.style.cssText=`left:${L.ix+L.iw*.14}px;top:${L.iy+L.ih*.535}px;width:${L.iw*.8}px;height:${L.ih*.06}px`;
  o.innerHTML=lijst.map(i=>`<span class="kt-ovi" title="${naam(i)}">${ico(i)}<b>${(S.oogst&&S.oogst[i])|0}</b></span>`).join('')}
-function bank(){const b=$('#ktbank');b.style.display='';b.innerHTML=`<div class="kt-plank">${INGR.map(i=>{const n=(S.oogst&&S.oogst[i])|0;return `<button type="button" class="kt-ingr" data-i="${i}"><span class="kt-ico">${ico(i)}</span><small>${naam(i)}</small><i>${n?n+'×':'kast'}</i></button>`}).join('')}</div>`;
+function bank(){const b=$('#ktbank');b.style.display='';const nodig=K.r&&!K.klaarT&&K.r.stap[K.stap]&&K.r.stap[K.stap][0]=='in'?K.r.stap[K.stap][1]:'';
+ b.innerHTML=`<div class="kt-plank">${INGR.map(i=>{const n=(S.oogst&&S.oogst[i])|0;return `<button type="button" class="kt-ingr ${i==nodig?'nodig':''}" data-i="${i}" aria-label="${naam(i)}"><span class="kt-pot"><span class="kt-ico">${ico(i)}</span></span><span class="kt-label"><small>${naam(i)}</small><i>${n?n+'×':'uit de kast'}</i></span></button>`}).join('')}</div>`;
  b.querySelectorAll('.kt-ingr').forEach(el=>el.onpointerdown=e=>pak(e,el.dataset.i,el))}
-function kaart(){const k=$('#ktkaart');if(!k)return;if(K.modus=='ov'){k.innerHTML=`<b>Toverdranken</b><small>Je eigen ketel in de kerker</small>`;return}
+function kaart(){kaart0();if(K&&K.modus=='cl'){const kb=$('#ktkaart'),b=kb?kb.getBoundingClientRect().bottom+10:0;if(Math.abs(b-(K.cardB||0))>3)lay()}}
+function kaart0(){const k=$('#ktkaart');if(!k)return;if(K.modus=='ov'){k.innerHTML=`<b>Toverdranken</b><small>Je eigen ketel in de kerker</small>`;return}
  if(!K.r){k.innerHTML=`<b>Welk drankje ga je brouwen?</b><div class="kt-rk">${RECEPT.map((r,i)=>`<button type="button" class="knop klein ${slot(r)?'dicht':''}" data-r="${i}">${slot(r)?'🔒 ':''}${r.naam}${S.drank[r.id]?' ✓':''}</button>`).join('')}</div>`;
   k.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=RECEPT[+b.dataset.r];if(slot(r)){toast(r.slot);return}kies(r)});return}
- const r=K.r;k.innerHTML=`<b>${r.naam}</b><ol class="kt-stappen">${r.stap.map((s,i)=>`<li class="${i<K.stap?'af':i==K.stap?'nu':''}">${stapTekst(s,i)}</li>`).join('')}</ol>`}
+ const r=K.r,kort=K.kort;k.innerHTML=`<div class="kt-kop"><b>📜 ${r.naam}</b><button type="button" class="kt-klap" id="ktklap">${kort?'Alle stappen ▾':'Kleiner ▴'}</button></div>`+(kort?`<p class="kt-nu">Stap ${Math.min(K.stap+1,r.stap.length)} van ${r.stap.length}: <b>${r.stap[K.stap]?stapTekst(r.stap[K.stap],K.stap):'Klaar!'}</b></p>`:`<ol class="kt-stappen">${r.stap.map((s,i)=>`<li class="${i<K.stap?'af':i==K.stap?'nu':''}"><span class="kt-vink">${i<K.stap?'✓':i+1}</span><span>${stapTekst(s,i)}</span></li>`).join('')}</ol>`);
+ $('#ktklap').onclick=()=>{K.kort=!K.kort;kaart()}}
 function stapTekst(s,i){if(s[0]=='in')return 'Doe er '+naam(s[1]).toLowerCase()+' in';const n=i==K.stap?Math.max(0,Math.min(s[1],Math.floor(K.acc*s[2]/(2*Math.PI)))):0;return `Roer ${s[1]}× ${s[2]>0?'met de klok mee ↻':'tegen de klok in ↺'}${i==K.stap?` <span class="kt-tel">${n}/${s[1]}</span>`:''}`}
-function kies(r){K.r=r;K.stap=0;K.acc=0;K.glans=0;K.klaarT=0;K.doel=hex(WATER);kaart();bank();stapTip()}
-function stapTip(){const s=K.r&&K.r.stap[K.stap];if(!s)return;tip(s[0]=='in'?'Sleep '+naam(s[1]).toLowerCase()+' van de plank in de ketel.':'Pak de lepel en roer '+(s[2]>0?'met de klok mee ↻':'tegen de klok in ↺')+'.')}
+function kies(r){K.r=r;K.stap=0;K.lastN=-1;K.acc=0;K.glans=0;K.klaarT=0;K.doel=hex(WATER);kaart();bank();stapTip()}
+function stapTip(){const s=K.r&&K.r.stap[K.stap];if(!s)return;tip(s[0]=='in'?'Sleep '+naam(s[1]).toLowerCase()+' van de tafel in de ketel.':'Pak de lepel en roer '+(s[2]>0?'met de klok mee ↻':'tegen de klok in ↺')+'.')}
 function tip(t){const e=$('#kttip');if(!e)return;e.textContent=t||'';e.classList.toggle('aan',!!t)}
 
 /* ---------- invoer ---------- */
@@ -68,7 +72,7 @@ function erin(i,x,y){if(!K)return;const E=K.E;let u=(x-E.cx)/E.rx,v=(y-E.cy)/E.r
  const s=K.r.stap[K.stap];if(!s||s[0]!='in'||s[1]!=i){tip(s&&s[0]=='in'?'Dat hoort er nu niet in. Nu moet er '+naam(s[1]).toLowerCase()+' in.':'Eerst roeren!');K.doel=meng(K.doel,hex(kleurI(i)),.15);return}
  if(S.oogst&&S.oogst[i]>0){S.oogst[i]--;bewaar()}
  const ni=K.r.stap.slice(0,K.stap+1).filter(x=>x[0]=='in').length-1;K.doel=hex(K.r.kl[Math.min(K.r.kl.length-1,ni)]);volgende();bank()}
-function volgende(){K.stap++;K.acc=0;if(K.stap>=K.r.stap.length){klaar();return}try{fx.speel('klik')}catch(e){}kaart();stapTip()}
+function volgende(){K.stap++;K.acc=0;if(K.stap>=K.r.stap.length){klaar();bank();return}try{fx.speel('klik')}catch(e){}kaart();stapTip();bank()}
 function klaar(){const r=K.r;K.klaarT=performance.now();K.doel=hex(r.kl[r.kl.length-1]);kaart();tip('');geluid('tover',.8)||(()=>{try{fx.speel('tover')}catch(e){}})();try{vib([20,40,30])}catch(e){}
  const E=K.E;for(let i=0;i<60;i++)K.ster.push({x:E.cx+(Math.random()-.5)*E.rx*1.6,y:E.cy+(Math.random()-.5)*E.ry*1.2,vx:(Math.random()-.5)*60,vy:-30-Math.random()*90,l:1+Math.random(),k:Math.random()<.5?'#fff3b0':'#ffd76a'});
  setTimeout(()=>{if(!geluid('lof-'+(1+Math.random()*9|0),1))try{fx.speel('goed')}catch(e){}},1500);
@@ -138,6 +142,9 @@ function tekenLepel(ctx){const p=K.lepel,E=K.E;if(!p||!p.eind)return;const ex=p.
  // boven water
  ctx.save();ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=10*sc;ctx.shadowOffsetX=6*sc;ctx.shadowOffsetY=6*sc;hout(ctx,sx,sy,ex,ey,11*sc,16*sc,1);ctx.restore()}
 
+function tekenTafel(ctx,t){const W=K.W,H=K.H,y=H-TAFEL;if(TAFELIMG.complete&&TAFELIMG.naturalWidth){const sw=Math.min(TAFELIMG.naturalWidth,TAFELIMG.naturalHeight*W/TAFEL);ctx.drawImage(TAFELIMG,(TAFELIMG.naturalWidth-sw)/2,0,sw,TAFELIMG.naturalHeight,0,y,W,TAFEL)}else{ctx.fillStyle='#3a2616';ctx.fillRect(0,y,W,TAFEL)}
+ let g=ctx.createLinearGradient(0,y-18,0,y+26);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(.42,'rgba(0,0,0,.55)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,y-18,W,44);
+ const fl=.1+.03*Math.sin(t*7.3)+.02*Math.sin(t*12.7);g=ctx.createRadialGradient(W/2,y-30,0,W/2,y-30,W*.7);g.addColorStop(0,`rgba(255,140,50,${fl})`);g.addColorStop(1,'rgba(255,120,40,0)');ctx.save();ctx.globalCompositeOperation='lighter';ctx.fillStyle=g;ctx.fillRect(0,y,W,TAFEL);ctx.restore()}
 /* ---------- deeltjes ---------- */
 function tekenDeeltjes(ctx,dt){K.dr=K.dr.filter(d=>{d.l-=dt*1.3;d.vy+=300*dt;d.x+=d.vx*dt;d.y+=d.vy*dt;if(d.l<=0)return false;ctx.globalAlpha=Math.min(1,d.l*1.5);ctx.fillStyle=d.k;ctx.beginPath();ctx.arc(d.x,d.y,2.6,0,6.283);ctx.fill();return true});
  K.ster=K.ster.filter(s=>{s.l-=dt*.8;s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=20*dt;if(s.l<=0)return false;ctx.globalAlpha=Math.min(1,s.l);ctx.fillStyle=s.k;const r=2+2*Math.sin(s.l*9);ctx.beginPath();ctx.moveTo(s.x,s.y-r*2);ctx.lineTo(s.x+r*.5,s.y);ctx.lineTo(s.x,s.y+r*2);ctx.lineTo(s.x-r*.5,s.y);ctx.closePath();ctx.fill();ctx.fillRect(s.x-r*1.6,s.y-.6,r*3.2,1.2);return true});ctx.globalAlpha=1}
@@ -150,7 +157,7 @@ function frame(nu){if(!K)return;if(document.body.dataset.view&&document.body.dat
  if(L.ix>0){ctx.fillStyle='#07060a';ctx.fillRect(0,0,L.ix,K.H);ctx.fillRect(L.ix+L.iw,0,K.W,K.H)}
  tekenVuur(ctx,t);lepelStap(dt);simStap();if(K.modus=='cl')simStap();
  if(K.klaarT)K.glans=Math.min(1,(nu-K.klaarT)/1200);
- tekenVloeistof(ctx,t,dt);tekenBellen(ctx,dt);if(K.modus=='cl')tekenLepel(ctx);tekenStoom(ctx,dt,t);tekenDeeltjes(ctx,dt)}
+ tekenVloeistof(ctx,t,dt);tekenBellen(ctx,dt);if(K.modus=='cl'){tekenLepel(ctx);tekenTafel(ctx,t)}tekenStoom(ctx,dt,t);tekenDeeltjes(ctx,dt)}
 
 /* ---------- ingang in Meer ---------- */
 const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{const h=document.querySelector('#app h1,#app h2');if(h&&!document.getElementById('meerkt'))h.insertAdjacentHTML('afterend',`<button class="knop volgende meerkt" id="meerkt" onclick="ga('ketel')">🧪 Toverdranken brouwen in je eigen ketel</button>`)}catch(e){}return r};
