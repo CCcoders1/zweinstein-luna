@@ -31,7 +31,7 @@ try{const _v=V.fopshop;if(_v)V.fopshop=(...a)=>{const r=_v(...a);setTimeout(()=>
 /* ===== mixlaag: ambiance + muziek tegelijk, balans per scène, zachte crossfades ===== */
 if(S.sfeerAan==null)S.sfeerAan=true;if(S.sfeerVol==null)S.sfeerVol=.5;if(S.muziekAan==null)S.muziekAan=true;if(S.muziekVol==null)S.muziekVol=.5;if(S.fxVol==null)S.fxVol=.8;
 const SCENE={hal:['amb-hal',.35,'mus-hal',1],kas:['amb-kas',1,'mus-kas',.25],winkel:['amb-winkel',.6,'mus-winkel',.8],moestuin:['amb-buiten',.5,'mus-moestuin',1],
- level:['amb-level',.8,'mus-level',.35],bos:['donker-bos',1,'mus-donker',.3],plaag:['donker-plaag',1,'mus-plaag',.35],kerker:['donker-kerker',1,'mus-kerker',.3]};
+ level:['amb-level',.8,'mus-level',.35],bos:['donker-bos',1,'mus-donker',.3],plaag:['donker-plaag',1,'mus-plaag',.35],kerker:['donker-kerker',1,'mus-kerker',.3],ketel:['donker-kerker',.45,'mus-kerker',.2]};
 const TIJD={gesprek:[.35,'mus-gesprek',1],intro:[.3,'mus-intro',1]};
 const KAN={amb:{k:null,n:null,niv:0},mus:{k:null,n:null,niv:0},rz:{k:null,n:null,niv:0}};/* rz = leerlingen-geroezemoes in de Hal */
 function doel(kan){return kan!=='mus'?(S.sfeerAan?.4*S.sfeerVol:0):(S.muziekAan?.45*S.muziekVol:0)}
@@ -58,7 +58,7 @@ const sfeer=sc=>{basis=sc;pas()};
 function tijdelijk(k){stapel.push(k);pas()}function terug(){stapel.pop();pas()}
 function volNu(){['amb','mus','rz'].forEach(k=>{const K=KAN[k];if(K.n){const c=ctx();K.n.g.gain.setTargetAtTime(doel(k)*K.niv,c.currentTime,.3)}})}
 window.zwSfeer={zet:sfeer,tijdelijk,terug};
-const SCHERM={kas:'kas',mijnkas:'kas',leraarpoort:'kas',kruidwinkel:'winkel',fopshop:'winkel',moestuin:'moestuin',kaart:'moestuin'};
+const SCHERM={kas:'kas',mijnkas:'kas',leraarpoort:'kas',kruidwinkel:'winkel',fopshop:'winkel',ketel:'ketel',moestuin:'moestuin',kaart:'moestuin'};
 const _ga=window.ga;window.ga=function(s,...a){if(stapel.length&&!document.querySelector('.verhaal,.modal'))stapel.length=0;sfeer(SCHERM[s]||'hal');return _ga.call(this,s,...a)};
 try{const _ms=m3Speel;m3Speel=function(n,thema,boost){try{const p=window.plaagVan&&plaagVan(n);sfeer(p?(p.soort==='damp'?'kerker':'plaag'):thema==='verweer'?'bos':'level')}catch(e){}return _ms.apply(this,arguments)}}catch(e){}
 try{const _vh=verhaal;verhaal=function(regels,klaar){let intro=false;try{intro=!!document.querySelector('.m3voor')||/Professor|Sneep|Stronk/.test(JSON.stringify(regels||[]).slice(0,200))}catch(e){}tijdelijk(intro?'intro':'gesprek');let weg=false;return _vh.call(this,regels,(...x)=>{if(!weg){weg=true;terug()}return klaar&&klaar(...x)})}}catch(e){}
