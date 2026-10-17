@@ -11,7 +11,7 @@ S.lvSter=S.lvSter&&typeof S.lvSter=='object'?S.lvSter:{};
 /* bestaande levels zonder sterrendata tellen als 2 sterren */
 (function(){const t=(S.m3lvl|0)-1;let g=0;for(let n=1;n<=t;n++)if(!S.lvSter[n]){S.lvSter[n]=2;g=1}if(g)bewaar()})();
 const sterVan=b=>{const z=b&&b.zet|0;return z>=5?3:z>=2?2:1};
-if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...a){const st=sterVan(b),oud=S.lvSter[n]|0;if(st>oud){S.lvSter[n]=st;bewaar()}const r=_w.call(this,n,b,...a);
+if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...a){const st=sterVan(b),oud=S.lvSter[n]|0;if(st>oud){S.lvSter[n]=st;if(st==3&&oud>0){S.schilden=(S.schilden|0)+1;setTimeout(()=>{try{toast('Nu 3 sterren! +1 extra huisschild')}catch(e){}},2600)}bewaar()}const r=_w.call(this,n,b,...a);
  try{const h=HP[S.huis];const p=document.querySelector('.m3eind p');if(p&&h){const erbij=Math.max(0,PUNT[st]-(PUNT[oud]||0));p.insertAdjacentHTML('afterend',`<p class="hp-winst"><span class="hp-sterren">${'★'.repeat(st)}${'☆'.repeat(3-st)}</span><br>${erbij?`+${erbij} huispunten voor ${h.naam}`:`Je beste score blijft ${'★'.repeat(oud)}`}<br><small>3 sterren: win met 5 of meer zetten over · 2 sterren: 2 of meer</small></p>`)}}catch(e){}return r}}
 function stand(){const L=Object.keys(S.lvSter).filter(k=>S.lvSter[k]>0);const n=L.length;let eigen=0,c3=0,c2=0;L.forEach(k=>{const s=S.lvSter[k];eigen+=PUNT[s]||0;if(s==3)c3++;if(s==2)c2++});
  const hash=x=>{x=Math.sin(x*12.9898+78.233)*43758.5453;return x-Math.floor(x)};const f=[.965,.94,.915];const pts={};let j=0;
@@ -42,5 +42,6 @@ function sectie(){const st=stand(),max=Math.max(1,...Object.values(st.pts))*1.15
 function plaats(){try{const app=$('#app');if(!app||app.querySelector('.hp-zaal'))return;const na=app.querySelector('.halspel');const html=sectie();if(na)na.insertAdjacentHTML('afterend',html);else app.insertAdjacentHTML('beforeend',html);
  S.hpGezien=S.hpGezien||{};const zaal=app.querySelector('.hp-zaal');zaal.querySelectorAll('.hp-huis').forEach(el=>{const h=el.dataset.h,n=el.querySelector('.hp-num'),p=+n.dataset.p,oud=Math.min(p,S.hpGezien[h]==null?Math.round(p*.85):S.hpGezien[h]);
   if(p>oud){el.classList.add('valt');setTimeout(()=>el.classList.remove('valt'),3200)}setTimeout(()=>telOp(n,oud,p),300);S.hpGezien[h]=p});bewaar()}catch(e){console.warn('huispunten',e)}}
+const _pad=V.pad;if(_pad)V.pad=(...a)=>{const r=_pad(...a);try{document.querySelectorAll('.padlvl.af').forEach(b=>{const st=S.lvSter[+b.dataset.l]|0;if(st&&!b.querySelector('.padster'))b.insertAdjacentHTML('beforeend',`<span class="padster">${'★'.repeat(st)}<i>${'★'.repeat(3-st)}</i></span>`)})}catch(e){}return r};
 const _home=V.home;V.home=(...a)=>{const r=_home(...a);plaats();setTimeout(plaats,60);return r};
 })();

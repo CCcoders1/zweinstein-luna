@@ -11,7 +11,7 @@
   if(o.versie<3){delete d.m3kal;d.kalV4=0}           // v3: vaste levelbalans
   if(typeof d.naam!='string'||typeof d.galjoenen!='number')throw 'De back-up is beschadigd.';
   return d};
- const samenv=d=>`<b>${d.naam||'(geen naam)'}</b> · level ${d.m3lvl||1} · ${d.galjoenen||0} Smekkies · ${d.sterren||0} sterren`;
+ const samenv=d=>`<b>${d.naam||'(geen naam)'}</b> · level ${d.m3lvl||1} · ${d.galjoenen||0} Smekkies · ${d.schilden!=null?d.schilden:(d.sterren||0)} huisschilden`;
  const herstel=d=>{const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo bkbev"><h2>Voortgang overschrijven?</h2><p>Nu: ${samenv(S)}</p><p>Back-up: ${samenv(d)}</p><p class="klein">De huidige voortgang wordt eerst nog als reservekopie bewaard.</p><div class="bkrij"><button class="knop" id="bkja">Ja, herstel</button><button class="knop klein" id="bknee">Annuleer</button></div></div>`;document.body.appendChild(o);
   o.querySelector('#bknee').onclick=()=>o.remove();o.querySelector('#bkja').onclick=()=>{zwReserve.maak(true);localStorage.setItem(SK,JSON.stringify(d));sessionStorage.zw_hersteld=1;location.reload()}};
  const b64=u=>{let s='';u.forEach(x=>s+=String.fromCharCode(x));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};

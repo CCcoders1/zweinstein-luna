@@ -1140,3 +1140,6 @@ body.zw-nacht #zwtint{background:rgba(40,70,160,.09)}
 .hp-num{display:block;font-family:Georgia,serif;font-size:19px;color:#3a2410;font-variant-numeric:tabular-nums}.hp-bord small{display:block;font-size:11px;color:#5a3a1a;margin-top:-2px}
 .hp-doel{margin:10px 4px 0;text-align:center;font-size:14.5px;color:#f1e3c0;line-height:1.35}.hp-doel b{color:#ffd76a}
 .hp-winst{text-align:center}.hp-sterren{font-size:28px;color:#e8b020;letter-spacing:4px;text-shadow:0 0 8px rgba(255,200,60,.7)}
+.schild{width:1.15em;height:1.15em;vertical-align:-.2em;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}.schild.groot{width:64px;height:64px}#sterbadge .schild{width:22px;height:22px}
+.padlvl{position:absolute}.padster{position:absolute;left:50%;top:100%;transform:translateX(-50%);font-size:12px;letter-spacing:1px;color:#ffc21a;text-shadow:0 1px 2px #000;white-space:nowrap;pointer-events:none}.padster i{font-style:normal;color:rgba(255,255,255,.3)}
+#sterbadge{background-image:url(img/ui/pil-leeg-320.webp)!important;padding:2px 14px 2px 8px!important}#sterbadge>svg.schild{display:inline-block!important;width:24px;height:24px}

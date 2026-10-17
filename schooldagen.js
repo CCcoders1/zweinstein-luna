@@ -214,7 +214,7 @@ V.pad=function(vakId,...a){
  const beeld=document.querySelector('.padkopbeeld');
  if(beeld){
   const klaar=stage.v.taken.filter(t=>S.taken[t[0]]).length;
-  beeld.insertAdjacentHTML('afterend',`<section class="schooldag-kaart"><small>Schooldag ${stage.dagNummer} van 5 · levels ${stage.begin}–${stage.einde}</small><h3>${stage.inhoud.titel}</h3><p>${klaar}/10 hersteldoelen · ${S.schoolDag===stage.index&&(+S.m3lvl||1)>stage.einde?'Doelen nodig voor de volgende dag':'Elke levelwinst levert een ster op'}</p><button class="knop klein" onclick="ga('home')">Bekijk de hersteldoelen</button></section>`);
+  beeld.insertAdjacentHTML('afterend',`<section class="schooldag-kaart"><small>Schooldag ${stage.dagNummer} van 5 · levels ${stage.begin}–${stage.einde}</small><h3>${stage.inhoud.titel}</h3><p>${klaar}/10 hersteldoelen · ${S.schoolDag===stage.index&&(+S.m3lvl||1)>stage.einde?'Doelen nodig voor de volgende dag':'Elke levelwinst levert een huisschild op'}</p><button class="knop klein" onclick="ga('home')">Bekijk de hersteldoelen</button></section>`);
  }
  document.querySelectorAll('.padlvl').forEach(knoop=>{
   const level=+knoop.dataset.l;

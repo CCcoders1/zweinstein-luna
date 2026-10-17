@@ -157,3 +157,6 @@ let tik=0,tikT;$('#logo').onclick=()=>{tik++;clearTimeout(tikT);tikT=setTimeout(
  document.body.insertAdjacentHTML('beforeend',r('left')+r('right'))})();
 window.addEventListener('error',e=>console.error('APPFOUT',e.message));
 function startApp(){stats();if(!S.naam)fx.intro(()=>ga('home'));else ga('home')}
+
+/* Huisschild: betaalmunt voor acties in de lokalen (in de kleuren van haar huis) */
+function schildSVG(cls){const h=(typeof HUIZEN!='undefined'&&HUIZEN[S.huis])||{k1:'#7a3a8a',k2:'#e3b23c'};return `<svg class="schild ${cls||''}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V5z" fill="${h.k1}" stroke="${h.k2}" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 4.3 6 6.5v4.6c0 3.8 2.5 7 6 8.6z" fill="rgba(255,255,255,.18)"/><path d="M8.5 10.5h7M12 7.5v9" stroke="${h.k2}" stroke-width="1.5" stroke-linecap="round"/></svg>`}
