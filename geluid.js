@@ -20,7 +20,7 @@ function speelPak(k,vol){const b=buf[k];if(!b||S.geluid===false||S.stil)return f
 window.pakSpeel=speelPak;
 /* fx.speel omleiden als het pakket dit geluid heeft */
 let klaar=false;const start=()=>{if(klaar)return;klaar=true;laadBuffers().then(n=>{if(n)pas()}).catch(()=>0)};
-const hang=()=>{if(!window.fx||fx._pak)return;const org=fx.speel;fx.speel=n=>{if(speelPak(n))return;if(/^stem-/.test(n))return;const FB={splat:'whoosh',kassa:'munt',kaart:'goed',winst:'fanfare',verlies:'fout',vuurwerk:'tover',combi:'tover',kies:'klik',spreuk:'tover',kist:'klik',kikker:'goed'};if(FB[n])return org(FB[n]);return org(n)};fx._pak=1};
+const hang=()=>{if(typeof fx==='undefined'||fx._pak)return;const org=fx.speel;fx.speel=n=>{if(speelPak(n))return;if(/^stem-/.test(n))return;const FB={splat:'whoosh',kassa:'munt',kaart:'goed',winst:'fanfare',verlies:'fout',vuurwerk:'tover',combi:'tover',kies:'klik',spreuk:'tover',kist:'klik',kikker:'goed'};if(FB[n])return org(FB[n]);return org(n)};fx._pak=1};
 hang();addEventListener('pointerdown',start,{once:true});
 /* extra momenten in het spel */
 try{const _td=Bord.prototype.telDoel;Bord.prototype.telDoel=function(t){if(!this.sim&&typeof M3!='undefined'&&this===M3.b&&t===this.ksoort&&buf.kist)speelPak('kist',.5);return _td.apply(this,arguments)};
@@ -79,6 +79,7 @@ const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{const m=document.getE
 
 /* Selecteergeluid in 2 delen: kies-loop zolang ze vasthoudt, kies-uit bij loslaten. Zonder die bestanden: gewone 'kies'. */
 const KIES={n:null,t0:0};
+window.zwSpeel=(k,v)=>speelPak(k,v);
 window.zwKies={start(f){f=f||1;if(KIES.n)return;if(!buf['kies-loop']||!buf['kies-uit']||S.geluid===false||S.stil){try{fx.speel('kies')}catch(e){}return}
  const c=ctx(),s=c.createBufferSource(),g=c.createGain(),v=f*.7*(S.fxVol==null?.8:S.fxVol)/.8;s.buffer=buf['kies-loop'];s.loop=true;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(v,c.currentTime+.012);s.connect(g).connect(c.destination);s.start();KIES.n={s,g,v};KIES.t0=performance.now()},
  stop(){const k=KIES.n;if(!k)return;KIES.n=null;const wacht=Math.max(0,130-(performance.now()-KIES.t0));setTimeout(()=>{try{const c=ctx(),t=c.currentTime,u=c.createBufferSource(),g=c.createGain();k.g.gain.cancelScheduledValues(t);k.g.gain.setValueAtTime(k.g.gain.value,t);k.g.gain.linearRampToValueAtTime(0,t+.06);k.s.stop(t+.08);u.buffer=buf['kies-uit'];g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(k.v,t+.04);u.connect(g).connect(c.destination);u.start(t)}catch(e){}},wacht)},
