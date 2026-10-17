@@ -18,12 +18,12 @@ S.bonusKamer=S.bonusKamer||{gebruikt:0};
 window.bonusKamerOpen=()=>Math.max(0,Math.floor(((S.m3lvl|0)-1)/100)-(S.bonusKamer.gebruikt|0));
 V.bonuskamer=(test)=>{stop();const a=$('#app');a.innerHTML=`<div class="bk" id="bk"><canvas id="bkc"></canvas>
  <div class="bk-hud"><button class="bk-stop" id="bkstop">✕</button><div class="bk-tijd"><i id="bktijd"></i><span id="bktijdt">${DUUR}</span></div><div class="bk-teller"><span class="bk-boon"></span><b id="bkn">0</b></div></div>
- <div class="bk-combo" id="bkcombo"></div><button class="bk-spreuk" id="bkspreuk"><span>🪄</span><b id="bkspt">Spreuk</b></button>
+ <div class="bk-combo" id="bkcombo"></div>
  <div class="bk-joy" id="bkjoy"><i></i></div><div class="bk-kaart" id="bkkaart"></div>
  <div class="bk-intro" id="bkintro"><div class="bk-perk"><h2>Smekkies-bonuskamer</h2><p>Verzamel in <b>${DUUR} seconden</b> zoveel mogelijk Smekkies in de lange gang van Zweinstein!</p>
- <ul><li>Lopen: duim op de <b>joystick linksonder</b>. Of tik ergens op de vloer.</li><li>Bij een kist of een deur: tik op de spreukknop voor <b>Alohomora</b>. Achter de deuren liggen kamers vol Smekkies.</li><li>Bij een geel-roze kussen: <b>Spongify</b>. Loop erop en spring naar het podium!</li><li>Snel achter elkaar toveren geeft een combo.</li></ul><button class="knop volgende" id="bkstart">Start!</button></div></div></div>`;
+ <ul><li>Lopen: duim op de <b>joystick linksonder</b>. Of tik ergens op de vloer.</li><li>Bij een kist of een deur: tik erop voor <b>Alohomora</b> (staat ze te ver weg, dan loopt ze er eerst heen). Achter de deuren liggen kamers vol Smekkies.</li><li>Bij een geel-roze kussen: <b>Spongify</b>. Loop erop en spring naar het podium!</li><li>Snel achter elkaar toveren geeft een combo.</li></ul><button class="knop volgende" id="bkstart">Start!</button></div></div></div>`;
  G=bouw(!!test);const cv=$('#bkc');cv.onpointerdown=neer;cv.onpointermove=beweeg;cv.onpointerup=cv.onpointercancel=los;
- $('#bkspreuk').onpointerdown=e=>{e.preventDefault();e.stopPropagation();tover()};$('#bkstop').onclick=()=>{if(G&&G.fase=='spel')einde();else{stop();ga('home')}};
+ $('#bkstop').onclick=()=>{if(G&&G.fase=='spel')einde();else{stop();ga('home')}};
  $('#bkstart').onclick=()=>{$('#bkintro').remove();G.fase='spel';G.t0=performance.now();if(!G.test){S.bonusKamer.gebruikt=(S.bonusKamer.gebruikt|0)+1;bewaar()}snd('whoosh')};
  addEventListener('resize',maat);maat();G.raf=requestAnimationFrame(frame)};
 function stop(){if(G&&G.raf)cancelAnimationFrame(G.raf);removeEventListener('resize',maat);G=null;BG=null}
@@ -65,9 +65,47 @@ function botst(g,x,y,r,lv){if(!loopbaar(g,lv,x-r,y-r*.5)||!loopbaar(g,lv,x+r,y-r
 function scherm2wereld(x,y){return {x:x/G.s+G.cam.x,y:y/G.s+G.cam.y}}
 function joyMidden(){const j=$('#bkjoy');if(!j)return null;const r=j.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2,r:r.width/2}}
 function neer(e){if(!G||G.fase!='spel')return;try{e.target.setPointerCapture(e.pointerId)}catch(x){}
- const jm=joyMidden();if(jm&&Math.hypot(e.clientX-jm.x,e.clientY-jm.y)<jm.r+30){G.joy={id:e.pointerId,x0:jm.x,y0:jm.y,x:e.clientX,y:e.clientY};G.doel=null;toonJoy();return}
+ const jm=joyMidden();if(jm&&Math.hypot(e.clientX-jm.x,e.clientY-jm.y)<jm.r+30){G.joy={id:e.pointerId,x0:jm.x,y0:jm.y,x:e.clientX,y:e.clientY};G.tocht=null;toonJoy();return}
  const w=scherm2wereld(e.clientX,e.clientY);const d=deurOp(w.x,w.y)||dichtbij(w.x,w.y,40);
- if(d&&Math.hypot(d.x-G.p.x,d.y-G.p.y)<110){tover(d);return}G.doel=w}
+ const o=raak(w.x,w.y);if(o){const lv=soort(o)=='kist'?o.lv:0;if(lv==G.p.lv&&!G.p.sprong&&Math.hypot(o.x-G.p.x,o.y-G.p.y)<110&&(lv||regio(o.x,o.y)==regio(G.p.x,G.p.y))){G.tocht=null;tover(o);return}
+  if(soort(o)=='kus'&&o.actief){plan(o.x,o.y,0,null);return}plan(o.x,o.y,lv,o);return}
+ const t=tegel(G,w.x,w.y);plan(w.x,w.y,t>=20&&t<30?t-19:0,null)}
+/* tikken op een kist/deur/kussen (ongeacht hoogte) */
+function raak(x,y){const d=deurOp(x,y);if(d)return d;let best=null,bd=44;for(const k of G.kist){if(k.open)continue;const e=Math.hypot(k.x-x,k.y-12-y);if(e<bd){bd=e;best=k}}for(const k of G.kus){const e=Math.hypot(k.x-x,(k.y-y)*1.4);if(e<bd){bd=e;best=k}}return best}
+/* in welke zijkamer ligt een punt (-1 = gang/nis) */
+function regio(x,y){for(const k of G.kamers)if(x>k.x&&x<k.x+k.w&&y>k.y&&y<k.y+k.h+T)return k.deur;return -1}
+const buiten=d=>({x:d.x,y:d.y+18}),mond=d=>({x:d.x<RW/2?8.6*T:15.4*T,y:(d.r0+3.5)*T}),binnen=d=>({x:d.x,y:d.r0*T-T*.6});
+/* route: via deuropening (deur zo nodig eerst openen) of via een Spongify-kussen naar een podium; bij aankomst toveren */
+/* kortste route over de tegels (gang, nissen, deuropeningen); dichte deur onderweg = eerst Alohomora */
+function route(sx,sy,ex,ey){const sc=Math.floor(sx/T),sr=Math.floor(sy/T),ec=Math.floor(ex/T),er=Math.floor(ey/T),g=G.grid;
+ const blok=new Set();for(const z of G.zuil)blok.add(Math.floor(z.y/T)*COLS+Math.floor(z.x/T));for(const k of G.kist)if(!k.lv)blok.add(Math.floor(k.y/T)*COLS+Math.floor(k.x/T));
+ const ok=(c,r)=>{const t=g[r]&&g[r][c];if(!(t==1||(t>=10&&t<20)))return false;return (c==ec&&r==er)||!blok.has(r*COLS+c)};
+ if(!ok(ec,er))return null;const prev=new Map(),st=sr*COLS+sc;prev.set(st,-1);const q=[st];
+ while(q.length){const cur=q.shift();if(cur==er*COLS+ec)break;const c=cur%COLS,r=(cur/COLS)|0;
+  for(const [dc,dr] of [[0,-1],[1,0],[0,1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]]){const nc=c+dc,nr=r+dr,k=nr*COLS+nc;if(prev.has(k)||!ok(nc,nr))continue;if(dc&&dr&&(!ok(c+dc,r)||!ok(c,r+dr)))continue;prev.set(k,cur);q.push(k)}}
+ if(!prev.has(er*COLS+ec))return null;const tl=[];for(let k=er*COLS+ec;k!=-1;k=prev.get(k))tl.unshift(k);
+ const pts=tl.map(k=>{const c=k%COLS,r=(k/COLS)|0,t=g[r][c];return {x:(c+.5)*T,y:(r+.5)*T,deur:t>=10&&t<20?G.deuren[t-10]:null}});pts.shift();
+ const uit=[];for(let a=0;a<pts.length;a++){const q2=pts[a];if(q2.deur){const pv=uit[uit.length-1];if(!q2.deur.open&&!(pv&&pv.deur)){uit.push(Object.assign(buiten(q2.deur),{act:q2.deur}))}uit.push({x:q2.deur.x,y:q2.y,deur:q2.deur});continue}
+  // overslaan als we in rechte lijn verder kunnen
+  const pv=uit.length?uit[uit.length-1]:{x:sx,y:sy};const nx=pts[a+1];if(nx&&!nx.deur&&!(pv.deur)&&vrijeLijn(pv,nx))continue;uit.push(q2)}
+ return uit}
+function vrijeLijn(a,b){const d=Math.hypot(b.x-a.x,b.y-a.y),n=Math.ceil(d/8);for(let i=1;i<=n;i++){const x=a.x+(b.x-a.x)*i/n,y=a.y+(b.y-a.y)*i/n;if(botst(G,x,y,13,0))return false}return true}
+function plan(ex,ey,lv,obj){const p=G.p;let pts=[];G.tocht={pts,obj,eind:{x:ex,y:ey,lv},stil:0,wacht:0,lx:p.x,ly:p.y};
+ if(p.lv){if(lv!=p.lv){G.tocht.herplan=1;const P=G.pods[p.lv-1],fx=Math.max(P.x+24,Math.min(P.x+P.w-24,ex));pts.push({x:fx,y:P.y+P.h-10},{x:fx,y:P.y+P.h+60})}else if(!obj)pts.push({x:ex,y:ey});return}
+ if(lv){let kus=null,bd=1e9;for(const k of G.kus)if(k.pod==lv-1){const e=Math.hypot(k.x-p.x,k.y-p.y);if(e<bd){bd=e;kus=k}}if(!kus)return;
+  const r=route(p.x,p.y,kus.x,kus.y+46)||[];G.tocht.pts=pts=r;if(!kus.actief)pts.push({x:kus.x,y:kus.y+46,act:kus});pts.push({x:kus.x,y:kus.y,kus:1});G.tocht.herplan=1;return}
+ let ty=ey;if(obj&&soort(obj)=='kist')ty=obj.y+30;const r=route(p.x,p.y,ex,ty);
+ if(r){G.tocht.pts=pts=r;if(!obj)pts.push({x:ex,y:ey})}else pts.push({x:ex,y:ey})}
+function tochtStap(dt){const tc=G.tocht,p=G.p;if(!tc||p.sprong)return null;
+ if(tc.wacht>0){tc.wacht-=dt;return null}
+ // voortgang bewaken: na 1,5 s vastzitten stoppen
+ if(Math.hypot(p.x-tc.lx,p.y-tc.ly)>6){tc.lx=p.x;tc.ly=p.y;tc.stil=0}else if((tc.stil+=dt)>1.5){G.tocht=null;return null}
+ const o=tc.obj;if(o&&!tc.pts.length){const lv=soort(o)=='kist'?o.lv:0;if(soort(o)=='kist'&&o.open||soort(o)=='deur'&&o.open||soort(o)=='kus'&&o.actief){G.tocht=null;return null}
+  if(lv==p.lv&&Math.hypot(o.x-p.x,o.y-p.y)<90){G.tocht=null;tover(o);return null}return {x:o.x,y:o.y+(soort(o)=='kist'?20:0)}}
+ const q=tc.pts[0];if(!q){G.tocht=null;return null}
+ if(q.act&&Math.hypot(q.act.x-p.x,q.act.y-p.y)<95&&!(q.act.open||q.act.actief)){tover(q.act);tc.pts.shift();tc.wacht=.8;tc.stil=0;return null}
+ if(Math.hypot(q.x-p.x,q.y-p.y)<(q.kus?6:12)){if(q.act&&!(q.act.open||q.act.actief)){tover(q.act);tc.wacht=.8}tc.pts.shift();tc.stil=0;if(!tc.pts.length&&!o){G.tocht=null}return null}
+ return q}
 function beweeg(e){if(G&&G.joy&&G.joy.id==e.pointerId){G.joy.x=e.clientX;G.joy.y=e.clientY;toonJoy()}}
 function los(e){if(G&&G.joy&&G.joy.id==e.pointerId){G.joy=null;toonJoy()}}
 function toonJoy(){const j=$('#bkjoy');if(!j)return;j.classList.toggle('aan',!!(G&&G.joy));let dx=0,dy=0;if(G&&G.joy){dx=G.joy.x-G.joy.x0;dy=G.joy.y-G.joy.y0;const m=Math.hypot(dx,dy);if(m>42){dx*=42/m;dy*=42/m}}j.firstChild.style.transform=`translate(${dx}px,${dy}px)`}
@@ -107,14 +145,14 @@ function schuif(p,nx,ny,dt){/* lopen met hulp bij hoekjes en deuropeningen */
  if(!botst(G,p.x,ny,14,p.lv))p.y=ny;else{let ok=false;for(const d of [4,8,12,16,20,24])for(const s of [-1,1])if(!ok&&!botst(G,p.x+s*d,ny,14,p.lv)){p.x+=s*Math.min(d,110*dt);ok=true}if(!ok)p.vy=0}}
 function stap(dt,nu){const p=G.p;let ix=0,iy=0;
  if(G.fase=='spel'){if(G.joy){ix=(G.joy.x-G.joy.x0)/42;iy=(G.joy.y-G.joy.y0)/42;const m=Math.hypot(ix,iy);if(m>1){ix/=m;iy/=m}if(m<.15){ix=iy=0}}
-  else if(G.doel){const dx=G.doel.x-p.x,dy=G.doel.y-p.y,m=Math.hypot(dx,dy);if(m<8)G.doel=null;else{ix=dx/m;iy=dy/m}}}
- if(p.sprong){const s=p.sprong;s.t+=dt/s.d;const k=Math.min(1,s.t);p.x=s.x0+(s.x1-s.x0)*k;p.y=s.y0+(s.y1-s.y0)*k;p.z=Math.sin(k*Math.PI)*s.h;if(k>=1){p.sprong=null;p.z=0;p.lv=s.naarLv;snd('klik',.4)}}
+  else{const q=tochtStap(dt);if(q){const dx=q.x-p.x,dy=q.y-p.y,m=Math.hypot(dx,dy);if(m>1){ix=dx/m;iy=dy/m}}}}
+ if(p.sprong){const s=p.sprong;s.t+=dt/s.d;const k=Math.min(1,s.t);p.x=s.x0+(s.x1-s.x0)*k;p.y=s.y0+(s.y1-s.y0)*k;p.z=Math.sin(k*Math.PI)*s.h;if(k>=1){p.sprong=null;p.z=0;p.lv=s.naarLv;snd('klik',.4);const tc=G.tocht;if(tc&&tc.herplan){const e=tc.eind,o=tc.obj;plan(e.x,e.y,e.lv,o)}}}
  else{const sp=180;p.vx+=(ix*sp-p.vx)*Math.min(1,dt*12);p.vy+=(iy*sp-p.vy)*Math.min(1,dt*12);const nx=p.x+p.vx*dt,ny=p.y+p.vy*dt;
-  if(p.lv&&!loopbaar(G,p.lv,nx,ny)){/* van het podium af: spring naar beneden */const v=Math.hypot(p.vx,p.vy);if(v>40){const P=G.pods[p.lv-1],ux=p.vx/v,uy=p.vy/v;let x1=p.x+ux*70,y1=p.y+uy*70;if(uy>.5)y1=(P.r1+2)*T+20;let ok=!botst(G,x1,y1,14,0);if(!ok){x1=p.x+ux*100;y1=uy>.5?y1:p.y+uy*100;ok=!botst(G,x1,y1,14,0)}if(ok)p.sprong={x0:p.x,y0:p.y,x1,y1,t:0,d:.45,h:28,naarLv:0};else p.vx=p.vy=0}else p.vx=p.vy=0}
+  const im=Math.hypot(ix,iy);if(p.lv&&im>.5&&!loopbaar(G,p.lv,p.x+ix/im*20,p.y+iy/im*20)){/* van het podium af: spring naar beneden */const v=im;if(v>.5){const P=G.pods[p.lv-1],ux=ix/im,uy=iy/im;let x1=p.x+ux*70,y1=p.y+uy*70;if(uy>.5)y1=(P.r1+2)*T+20;let ok=!botst(G,x1,y1,14,0);if(!ok){x1=p.x+ux*100;y1=uy>.5?y1:p.y+uy*100;ok=!botst(G,x1,y1,14,0)}if(ok)p.sprong={x0:p.x,y0:p.y,x1,y1,t:0,d:.45,h:28,naarLv:0};else p.vx=p.vy=0}else p.vx=p.vy=0}
   else schuif(p,nx,ny,dt);
   const v=Math.hypot(p.vx,p.vy);if(v>20){p.stap+=dt*v/24;p.dir=Math.abs(p.vx)>Math.abs(p.vy)?(p.vx<0?'l':'r'):(p.vy<0?'b':'o')}else p.stap=0;
-  for(const k of G.kus){if(k.actief&&!p.lv&&Math.hypot(p.x-k.x,(p.y-k.y)*1.4)<30){const P=G.pods[k.pod];let x1=Math.max(P.x+30,Math.min(P.x+P.w-30,p.x)),y1=P.y+P.h*.55;for(const dx of [0,40,-40,80,-80])if(!botst(G,x1+dx,y1,14,P.lv)){x1+=dx;break}
-    p.sprong={x0:p.x,y0:p.y,x1,y1,t:0,d:.75,h:120,naarLv:P.lv};k.wob=1;snd('pluis',.7);try{vib([10,30,10])}catch(e){}p.vx=p.vy=0;G.doel=null;break}}}
+  for(const k of G.kus){if(G.tocht&&!(G.tocht.pts[0]&&G.tocht.pts[0].kus))continue;if(k.actief&&!p.lv&&Math.hypot(p.x-k.x,(p.y-k.y)*1.4)<30){const P=G.pods[k.pod];let x1=Math.max(P.x+30,Math.min(P.x+P.w-30,p.x)),y1=P.y+P.h*.55;for(const dx of [0,40,-40,80,-80])if(!botst(G,x1+dx,y1,14,P.lv)){x1+=dx;break}
+    p.sprong={x0:p.x,y0:p.y,x1,y1,t:0,d:.75,h:120,naarLv:P.lv};k.wob=1;snd('pluis',.7);try{vib([10,30,10])}catch(e){}p.vx=p.vy=0;if(G.tocht&&G.tocht.pts[0]&&G.tocht.pts[0].kus)G.tocht.pts.shift();break}}}
  for(const k of G.kus)k.wob=Math.max(0,k.wob-dt*1.2);
  for(const d of G.deuren)if(d.open)d.t+=dt;
  for(const k of G.kist){k.t+=dt;if(k.rest>0){k.tk-=dt;while(k.tk<=0&&k.rest>0){k.rest--;k.tk+=.07+Math.random()*.03;spring(k)}}}
@@ -127,8 +165,7 @@ function stap(dt,nu){const p=G.p;let ix=0,iy=0;
  // camera volgt Luna zacht
  const vw=G.W/G.s,vh=G.H/G.s;let cx=p.x-vw/2,cy=p.y-vh*.56;cx=Math.max(0,Math.min(RW-vw,cx));cy=Math.max(0,Math.min(RH-vh,cy));if(RW<vw)cx=(RW-vw)/2;
  const kk=G.camOk?Math.min(1,dt*5):1;G.cam.x+=(cx-G.cam.x)*kk;G.cam.y+=(cy-G.cam.y)*kk;G.camOk=1;
- const tb=$('#bktijd');if(tb){tb.style.width=Math.min(100,G.tijd/DUUR*100)+'%';$('#bktijdt').textContent=Math.ceil(G.tijd)}
- const sb=$('#bkspt');if(sb){const d=dichtbij(p.x,p.y,105);sb.textContent=d?(soort(d)=='kus'?'Spongify':'Alohomora'):'Spreuk';$('#bkspreuk').classList.toggle('klaar',!!d)}}
+ const tb=$('#bktijd');if(tb){tb.style.width=Math.min(100,G.tijd/DUUR*100)+'%';$('#bktijdt').textContent=Math.ceil(G.tijd)}}
 
 /* ---------- tekenen ---------- */
 let BG=null;const BS={};
