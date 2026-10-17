@@ -46,7 +46,7 @@ function bank(){const b=$('#ktbank');b.style.display='';const nodig=K.r&&!K.klaa
  b.querySelectorAll('.kt-ingr').forEach(el=>el.onpointerdown=e=>pak(e,el.dataset.i,el))}
 function kaart(){kaart0();if(K&&K.modus=='cl'){const kb=$('#ktkaart'),b=kb?kb.getBoundingClientRect().bottom+10:0;if(Math.abs(b-(K.cardB||0))>3)lay()}}
 function kaart0(){const k=$('#ktkaart');if(!k)return;if(K.modus=='ov'){k.innerHTML=`<b>Toverdranken</b><small>Je eigen ketel in de kerker</small>`;return}
- if(!K.r){k.innerHTML=`<b>Welk drankje ga je brouwen?</b><div class="kt-rk">${RECEPT.map((r,i)=>`<button type="button" class="knop klein ${slot(r)?'dicht':''}" data-r="${i}">${slot(r)?'🔒 ':''}${r.naam}${S.drank[r.id]?' ✓':''}</button>`).join('')}</div>`;
+ if(!K.r){k.innerHTML=`<b>Welk drankje ga je brouwen?</b><div class="kt-rk">${RECEPT.map((r,i)=>`<button type="button" class="knop klein ${slot(r)?'dicht':''}" data-r="${i}">${window.flesModel?flesModel(r.id,{h:34,label:false}):''}${slot(r)?'🔒 ':''}${r.naam}${S.drank[r.id]?` ✓ <small>×${S.drank[r.id]}</small>`:''}</button>`).join('')}</div>`;
   k.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const r=RECEPT[+b.dataset.r];if(slot(r)){toast(r.slot);return}kies(r)});return}
  const r=K.r,kort=K.kort;k.innerHTML=`<div class="kt-kop"><b>📜 ${r.naam}</b><button type="button" class="kt-klap" id="ktklap">${kort?'Alle stappen ▾':'Kleiner ▴'}</button></div>`+(kort?`<p class="kt-nu">Stap ${Math.min(K.stap+1,r.stap.length)} van ${r.stap.length}: <b>${r.stap[K.stap]?stapTekst(r.stap[K.stap],K.stap):'Klaar!'}</b></p>`:`<ol class="kt-stappen">${r.stap.map((s,i)=>`<li class="${i<K.stap?'af':i==K.stap?'nu':''}"><span class="kt-vink">${i<K.stap?'✓':i+1}</span><span>${stapTekst(s,i)}</span></li>`).join('')}</ol>`);
  $('#ktklap').onclick=()=>{K.kort=!K.kort;kaart()}}
@@ -77,7 +77,7 @@ function klaar(){const r=K.r;K.klaarT=performance.now();K.doel=hex(r.kl[r.kl.len
  const E=K.E;for(let i=0;i<60;i++)K.ster.push({x:E.cx+(Math.random()-.5)*E.rx*1.6,y:E.cy+(Math.random()-.5)*E.ry*1.2,vx:(Math.random()-.5)*60,vy:-30-Math.random()*90,l:1+Math.random(),k:Math.random()<.5?'#fff3b0':'#ffd76a'});
  setTimeout(()=>{if(!geluid('lof-'+(1+Math.random()*9|0),1))try{fx.speel('goed')}catch(e){}},1500);
  const eerst=!(S.drank[r.id]|0);if(eerst)S.galjoenen=(S.galjoenen|0)+r.beloning;S.drank[r.id]=(S.drank[r.id]|0)+1;bewaar();try{stats()}catch(e){}
- setTimeout(()=>{const k=$('#ktkaart');if(!k||!K||K.r!==r)return;k.innerHTML=`<b>Gelukt! ✨</b><p>Je ${r.naam} glanst in de ketel. ${r.zin}</p><p class="kt-bel">+${r.beloning} Smekkies</p><div class="kt-rk"><button class="knop klein" id="ktnog">Nog een drankje</button><button class="knop klein" id="ktwp">Naar de werkplaats</button></div>`;
+ setTimeout(()=>{const k=$('#ktkaart');if(!k||!K||K.r!==r)return;k.innerHTML=`<div class="kt-gelukt">${window.flesModel?flesModel(r.id,{h:92}):''}<div><b>Gelukt! ✨</b><p>Je ${r.naam} glanst in het flesje. ${r.zin}</p>${(S.drank[r.id]|0)<=1?`<p class="kt-bel">+${r.beloning} Smekkies</p>`:`<p class="klein">Je hebt er nu ${S.drank[r.id]} gebrouwen.</p>`}</div></div><div class="kt-rk"><button class="knop klein" id="ktnog">Nog een drankje</button><button class="knop klein" id="ktwp">Naar de werkplaats</button></div>`;
   $('#ktnog').onclick=()=>{K.r=null;K.klaarT=0;K.glans=0;K.doel=hex(WATER);kaart();tip('Kies hierboven een drankje.')};$('#ktwp').onclick=()=>{K.r=null;K.klaarT=0;K.glans=0;naarOv()}},1800)}
 const meng=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t);
 

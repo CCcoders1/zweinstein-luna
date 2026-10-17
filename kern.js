@@ -129,7 +129,7 @@ V.bonus=()=>{app(`<h2>Bonusspellen</h2>${tilly('Hier spelen we tussendoor. Niet 
  document.querySelectorAll('[data-b]').forEach(t=>t.onclick=()=>{if(S.bonusOpen[t.dataset.b])ga(t.dataset.b);else{t.classList.remove('schud');void t.offsetWidth;t.classList.add('schud');toast('Deze deur is nog op slot. Knap eerst het lokaal verder op!')}})};
 const BONUSID=new Set(BONUS.map(b=>b[0]));
 /* ---------- meer ---------- */
-V.meer=()=>{const T=[['bonus','spel','Alle extra spellen'],['kaart','kaart','Kaart van Zweinstein'],['winkel','winkel','Beloningswinkel'],['groei','hoed','Ontwikkeling & badges'],['kamer','bed','Mijn kamer & huisdier'],['kikker','kikker','Chocokikkers'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Dagbeloning']];
+V.meer=()=>{const T=[['groei','hoed','Ontwikkeling & badges'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Dagbeloning']];
  app(`<h2>Meer</h2><div class="raster">${T.map(t=>`<button class="tegel" onclick="ga('${t[0]}')"><span class="ico">${icoon(t[1])}</span><b>${t[2]}</b></button>`).join('')}</div>`)};
 /* ---------- navigatie (max 5) ---------- */
 def('menuVariant','B');const NAV=[['pad','kaart','Kaart'],['kas','bloem','Kassen'],['home','','Hal'],['boek','boek','Boek'],['meer','lijst','Meer']];
