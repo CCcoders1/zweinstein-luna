@@ -330,7 +330,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
   if(!b.binnen(...d)||vastC(...d)||!b.g[d[0]][d[1]]||(d[0]==a[0]&&d[1]==a[1])){t.zw=2;t.lift=.6;toast(d[0]==a[0]&&d[1]==a[1]?'Het blok staat weer op zijn plek.':'Daar kan het niet. Het blok zweeft terug.');lev={f:'kies'};return}
   bezig=true;const tb=b.g[d[0]][d[1]];b.wis(a[0],a[1],d[0],d[1]);t.x=cx/cel-.5;t.y=cy/cel-.5;t.zw=2;t.lift=.5;tb.zw=2;tb.lift=0;try{fx.speel('klik')}catch(x){}await b.wacht(700);
   await b.oplossen(d,a,new Set(),hooks);toonFx();doelUI();bezig=false;hintT=Date.now();einde()}
- M3.sleepTeken=(ctx,nu)=>{if(!lev||lev.f!='sleep')return;const L=cel*.9,th=lev.P.stap(lev.fx,lev.fy,L);ctx.save();ctx.strokeStyle='rgba(255,220,120,.7)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(lev.fx,lev.fy-cel*.35);ctx.lineTo(lev.fx,lev.fy);ctx.stroke();
+ M3.levState=()=>lev;M3.sleepTeken=(ctx,nu)=>{if(!lev||lev.f!='sleep')return;const L=cel*.9,th=lev.P.stap(lev.fx,lev.fy,L);ctx.save();ctx.strokeStyle='rgba(255,220,120,.7)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(lev.fx,lev.fy-cel*.35);ctx.lineTo(lev.fx,lev.fy);ctx.stroke();
   ctx.translate(lev.fx,lev.fy);ctx.rotate(-th);ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.55;ctx.drawImage(KU.stof('#ffd76a'),-cel*.85,-cel*.35,cel*1.7,cel*1.7);ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;ctx.translate(0,cel*.5);tekenTegel(lev.t,0,0,1.1,nu);ctx.restore();
   if(Math.random()<.35)deeltjes.push({x:lev.fx+(Math.random()-.5)*cel*.6,y:lev.fy+cel*.8,vx:(Math.random()-.5)*.3,vy:-.4,r:1.5+Math.random()*2,l:1,st:1,k:'#ffe28a'})};
  let start=null;
