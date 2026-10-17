@@ -1259,3 +1259,39 @@ p.harten,div.harten{display:flex;flex-wrap:wrap;align-items:center;justify-conte
 .zwdicht,.hs.dicht,.fgitem.dicht,.kritem.slot,.bochip.dicht,.zkoop.potslot,.zkoop.dicht,.deur-dicht,.mpdicht{opacity:.35!important;filter:grayscale(1)!important}
 .zwdicht{cursor:default}
 .zwslot{display:block;font-size:.72em;font-weight:400;margin-top:2px;letter-spacing:0;text-transform:none;font-variant:normal}
+
+/* ===== v107 minigames ===== */
+body[data-view=memory] #app .perkament.lijst,body[data-view=spreuk] #app .perkament.lijst,body[data-view=mysterie] #app .perkament.lijst,body[data-view=lessen] #app .perkament.lijst,body[data-view=les] #app .perkament.lijst,.mgkader{
+ border:9px solid transparent!important;border-image:linear-gradient(135deg,#6b3f1d,#a8713a 25%,#5a3216 50%,#b07a40 75%,#6b3f1d) 1!important;
+ box-shadow:0 10px 28px rgba(0,0,0,.45),inset 0 0 40px rgba(120,80,30,.25)!important;border-radius:6px!important}
+.mgkop{display:flex;align-items:center;gap:12px;margin:0 0 10px}
+.mgkopimg{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 3px 5px rgba(0,0,0,.35));flex:none}
+.mgtitel{margin:0!important;color:#6a1d12!important;font-size:1.45em!important;line-height:1.1;text-shadow:0 1px 0 rgba(255,255,255,.6)!important}
+.mguitleg{margin:.25em 0 0;color:#3b2a14;font-size:1.02em;line-height:1.35}
+.mgtel{display:flex;justify-content:center;gap:18px;margin:6px 0 12px;font-size:1.05em;color:#3b2a14}
+.mgtel span{background:rgba(255,248,225,.75);border:1px solid #c9a227;border-radius:999px;padding:.2em .9em}
+.mem2{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-width:400px;margin:0 auto;perspective:900px;touch-action:manipulation}
+.mk2{position:relative;aspect-ratio:3/4;padding:0;border:0;background:none;cursor:inherit;-webkit-tap-highlight-color:transparent}
+.mk2-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.3,1.25,.5,1)}
+.mk2.om .mk2-in,.mk2.klaar .mk2-in{transform:rotateY(180deg)}
+.mk2-achter,.mk2-voor{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.mk2-achter{background:radial-gradient(circle at 50% 40%,#8a2a22,#4a120e 75%);border:2px solid #d4af37;box-shadow:inset 0 0 0 3px #4a120e,inset 0 0 0 4px rgba(212,175,55,.55),0 3px 6px rgba(0,0,0,.4)}
+.mk2-achter img{width:62%;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+.mk2-voor{transform:rotateY(180deg);background:linear-gradient(#fff9e8,#f1e0b8);border:2px solid #c9a227;box-shadow:0 3px 6px rgba(0,0,0,.3)}
+.mk2-voor img{width:78%;height:66%;object-fit:contain}
+.mk2-voor b{font-size:.62em;color:#3b2a14;line-height:1.1;padding:0 2px;text-align:center}
+.mk2.klaar .mk2-voor{border-color:#e8c45a;box-shadow:0 0 0 2px rgba(255,215,90,.7),0 0 16px rgba(255,210,80,.75)}
+.mk2.klaar .mk2-in{animation:mkglim 1.2s .1s}
+@keyframes mkglim{40%{transform:rotateY(180deg) scale(1.08)}}
+.mgeind{text-align:center;margin-top:14px;padding:12px;border-radius:12px;background:rgba(255,248,225,.85);border:2px solid #c9a227}
+.mgeind h3{margin:.1em 0;color:#6a1d12}
+.mgknoppen{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:8px}
+body[data-view=spreuk] button.optie,body[data-view=lessen] button.optie,body[data-view=les] button.optie{background:linear-gradient(#fffaf0,#f3e3bf)!important;color:#3b2a14!important;border:2px solid #c9a227!important;border-radius:12px!important;box-shadow:0 2px 4px rgba(0,0,0,.18);font-weight:600}
+body[data-view=mysterie] .code{background:linear-gradient(#f6e7c1,#e9d39d);color:#3a1f0a;border:1px solid #a8813a;box-shadow:inset 0 0 18px rgba(120,80,30,.35);font-family:Georgia,"Times New Roman",serif;font-size:1.35em;text-align:center;padding:14px}
+body[data-view=mysterie] #ma{width:100%;font:inherit;font-size:1.1em;padding:.6em .8em;border-radius:10px;border:2px solid #c9a227;background:#fffaf0;color:#3b2a14}
+.mgkader .veld{height:330px;border:3px solid #a8713a;background:linear-gradient(#24305e,#4a6fb0 55%,#8fb7e6 72%,#3f7a2e 73%,#2b5a20)}
+.mgkader .snaaiel img{width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 0 10px #ffd76a)}
+.mgkader .snaaiel{font-size:1em}
+.mgkader #teken{background:linear-gradient(#fffaf0,#f3e3bf);border:2px solid #c9a227}
+.mgkader .bonen{padding:10px;border-radius:14px;background:radial-gradient(circle at 50% 30%,#fff3d6,#e8cf98);border:2px solid #c9a227}
+@media (prefers-reduced-motion: reduce){.mk2-in{transition:none}.mk2.klaar .mk2-in{animation:none}}
