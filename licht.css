@@ -1046,3 +1046,6 @@ body[data-view=mijnkas] .pipbubbel{z-index:45}
 .spl-msg{font-size:1.05em;line-height:1.25}
 .spl-knop{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding-bottom:4px}.spl-knop .knop{margin:0;font-size:.92em}
 .spl-knop .knop::before,.spl-knop .knop::after{display:none!important}.spl-knop .knop{padding-left:.9em!important;padding-right:.9em!important}
+#zwtint{position:fixed;inset:0;pointer-events:none;z-index:40;background:transparent;transition:background 4s}
+body.zw-avond #zwtint{background:rgba(255,150,60,.06)}
+body.zw-nacht #zwtint{background:rgba(40,70,160,.09)}
