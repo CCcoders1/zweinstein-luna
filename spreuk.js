@@ -38,7 +38,7 @@ V.spreukles=(li)=>{li=+li||0;const L=LES.flipendo,lv=L.levels[li];
  const ds=performance.now();(function anim(n){if(fase!='demo')return;demoT=(n-ds)/2200;teken();if(demoT<1.15)requestAnimationFrame(anim);else{fase='teken';t0=Date.now();$('#splmsg').textContent='Nu jij! Begin bij de toverstok.';teken();tik()}})(ds);
  let tmr;const tik=()=>{tmr=setInterval(()=>{if(!document.body.contains(cv))return clearInterval(tmr);const r=lv.tijd-Math.floor((Date.now()-t0)/1000);$('#spltijd').textContent=Math.max(0,r);if(r<=0)klaar()},250)};
  const pos=e=>{const r=cv.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
- cv.onpointerdown=e=>{if(fase!='teken'||inkt>=110)return;cv.setPointerCapture(e.pointerId);huidig=[pos(e)];lijnen.push(huidig)};
+ cv.onpointerdown=e=>{if(fase!='teken'||inkt>=110)return;cv.setPointerCapture(e.pointerId);huidig=[pos(e)];lijnen.push(huidig);window.zwKies&&zwKies.start()};
  cv.onpointermove=e=>{if(!huidig||fase!='teken')return;const p=pos(e),q=huidig[huidig.length-1],d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(d<2)return;inkt+=d*T/(opp/sc/sc)*100;huidig.push(p);ux.beginPath();ux.moveTo(...q);ux.lineTo(...p);ux.stroke();teken();inktUI();if(huidig.length%3==0)meet();if(inkt>=110){huidig=null;meet();klaar('inkt')}};
  cv.onpointerup=cv.onpointercancel=()=>{if(huidig){huidig=null;meet();if(bed>=lv.nodig&&bed>=98)klaar()}};
  const knop=$('.spl-knop');knop.insertAdjacentHTML('afterbegin','<button class="knop volgende" id="splklaar">Klaar!</button> ');$('#splklaar').onclick=()=>fase=='teken'&&klaar();

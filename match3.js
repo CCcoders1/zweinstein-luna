@@ -319,7 +319,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
  M3.probeer=probeer;M3.toonFx=toonFx;
  let start=null;
  cv.onpointerdown=e=>{if(bezig)return;try{cv.setPointerCapture(e.pointerId)}catch(x){}const p=cel_(e);if(window.strikTik&&strikTik(b,p,cel))return;if(window.strikVast&&strikVast(b,p)){window.strikAuw&&strikAuw(p,cel);return}start={p,x:e.clientX,y:e.clientY};
-  if(sel&&(sel[0]!=p[0]||sel[1]!=p[1])&&Math.abs(sel[0]-p[0])+Math.abs(sel[1]-p[1])==1){const a=sel;sel=null;start=null;probeer(a,p);return}sel=p;{const t=b.g[p[0]]&&b.g[p[0]][p[1]];fx.speel(t&&t.s?'kies':'klik')}};
+  if(sel&&(sel[0]!=p[0]||sel[1]!=p[1])&&Math.abs(sel[0]-p[0])+Math.abs(sel[1]-p[1])==1){const a=sel;sel=null;start=null;probeer(a,p);return}sel=p;{const t=b.g[p[0]]&&b.g[p[0]][p[1]];if(t&&t.s&&window.zwKies)zwKies.start();else fx.speel(t&&t.s?'kies':'klik')}};
  cv.onpointermove=e=>{if(!start)return;const dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.hypot(dx,dy)>cel*.35){const p=start.p;const d=Math.abs(dx)>Math.abs(dy)?[0,Math.sign(dx)]:[Math.sign(dy),0];start=null;probeer(p,[p[0]+d[0],p[1]+d[1]])}};
  cv.onpointerup=()=>{start=null};
  function einde(){if(b.af)return;if(b.klaar()){b.af=1;m3Winst(n,b)}else if(b.zet<=0)m3Verlies(n,b)}

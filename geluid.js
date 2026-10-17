@@ -65,6 +65,13 @@ V.geluid=()=>{app(`<div class="perkament" style="max-width:560px;margin:0 auto">
  $('#gpwis').onclick=async()=>{await wis();kanZet('amb',null,0);kanZet('mus',null,0);buf={};st('Pakket verwijderd. De gewone geluiden zijn terug.')}};
 const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{const m=document.getElementById('meermt')||document.querySelector('#app h1,#app h2');if(m&&!document.getElementById('meergp'))m.insertAdjacentHTML('afterend',`<button class="knop volgende" id="meergp" style="font-size:1.25em;padding:.7em 1.2em" onclick="ga('geluidstap')">🔊 Geluiden toevoegen</button>`)}catch(e){}return r};
 
+/* Selecteergeluid in 2 delen: kies-loop zolang ze vasthoudt, kies-uit bij loslaten. Zonder die bestanden: gewone 'kies'. */
+const KIES={n:null,t0:0};
+window.zwKies={start(){if(KIES.n)return;if(!buf['kies-loop']||!buf['kies-uit']||S.geluid===false||S.stil){try{fx.speel('kies')}catch(e){}return}
+ const c=ctx(),s=c.createBufferSource(),g=c.createGain(),v=.7*(S.fxVol==null?.8:S.fxVol)/.8;s.buffer=buf['kies-loop'];s.loop=true;g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(v,c.currentTime+.012);s.connect(g).connect(c.destination);s.start();KIES.n={s,g,v};KIES.t0=performance.now()},
+ stop(){const k=KIES.n;if(!k)return;KIES.n=null;const wacht=Math.max(0,130-(performance.now()-KIES.t0));setTimeout(()=>{try{const c=ctx(),t=c.currentTime,u=c.createBufferSource(),g=c.createGain();k.g.gain.cancelScheduledValues(t);k.g.gain.setValueAtTime(k.g.gain.value,t);k.g.gain.linearRampToValueAtTime(0,t+.06);k.s.stop(t+.08);u.buffer=buf['kies-uit'];g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(k.v,t+.04);u.connect(g).connect(c.destination);u.start(t)}catch(e){}},wacht)},
+ tik(){this.start();this.stop()}};
+['pointerup','pointercancel'].forEach(ev=>addEventListener(ev,()=>zwKies.stop(),true));
 /* Spreukstemmen (Engels, uit het pakket): zacht, hooguit eens per 12 s en niet elke keer. */
 let stemT=0;window.zwStem=s=>{const k=/wervel/.test(s)?'leviosa':/bliksem/.test(s)?'flipendo':/bom/.test(s)?'incendio':/verdwijn/.test(s)?'lumos':/drank|kristal/.test(s)?'alohomora':null;if(!k||S.stemmen===false)return;const n=Date.now();if(n-stemT<12000||Math.random()>.4)return;const naam='stem-'+k+(Math.random()<.5&&buf['stem-'+k+'2']?'2':'');if(buf[naam]){stemT=n;setTimeout(()=>speelPak(naam,.4),120)}};
 /* Telefoon-stappenplan. Alleen de LINK staat in de code, nooit audio. Vul de Drive-id in zodra het bestand gedeeld is. */
