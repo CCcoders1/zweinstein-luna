@@ -32,7 +32,7 @@ window.m3PuFx=(f,x,y,cel)=>{const RM=matchMedia('(prefers-reduced-motion: reduce
  if(f.t=='pu'){try{fx.speel('spreuk');window.zwStem&&zwStem(f.s)}catch(e){}if(f.s=='wervel'){beeldFlits('wervel',innerWidth/2,y,Math.min(innerWidth,520),1300,'draai');try{fx.speel('tover')}catch(e){}}else if(f.s=='bliksem'){beeldFlits('bliksem',x,y,cel*3.2,600,'schok')}else beeldFlits(f.s,x,y,cel*2,500,'boem')}
  if(f.t=='tik'){beeldFlits('wervel',x,y,cel*.9,350,'boem klein')}
  if(f.t=='schat'){beeldFlits(f.s=='x'?'kristal-'+(f.kl||'blauw')+'-b':'ei-open',x,y,cel*1.3,700,'open');
-  if(Math.random()<(f.s=='e'?.08:.03)&&(S.m3lvl|0)>=40&&window.zeldzaamZaad){const g=zeldzaamZaad('schat',{stil:1});setTimeout(()=>tekst('🌱 '+g.naam+'-zaadje!',x,y-cel*1.3),500)}const smk=f.s=='x'?3:8;S.galjoenen+=smk;bewaar();try{stats()}catch(e){}tekst('+'+smk+' Smekkies',x,y-cel*.4);
+  if(Math.random()<(f.s=='e'?.08:.03)&&(S.m3lvl|0)>=60&&window.zeldzaamZaad){const g=zeldzaamZaad('schat',{stil:1});setTimeout(()=>tekst('🌱 '+g.naam+'-zaadje!',x,y-cel*1.3),500)}const smk=f.s=='x'?3:8;S.galjoenen+=smk;bewaar();try{stats()}catch(e){}tekst('+'+smk+' Smekkies',x,y-cel*.4);
   if(Math.random()<(f.s=='e'?.6:.3)&&window.m3VliegItem&&window.M3ITEMS){const v=(window.vakVan&&M3.b)?vakVan(M3.b.L.n).id:'herbologie';const L=M3ITEMS[v]||M3ITEMS.herbologie;const it=L[Math.random()*L.length|0];S.verzameld=S.verzameld||{};S.verzameld[it[0]]=(S.verzameld[it[0]]||0)+1;bewaar();setTimeout(()=>{m3VliegItem(it[0],x,y,document.getElementById('tasknop')||document.querySelector('#m3d .m3ico'),RM?0:500);tekst(it[1]+'!',x,y-cel*.9)},250)}}};
 /* boosters bij levelstart */
 const rnd=a=>a[Math.random()*a.length|0];

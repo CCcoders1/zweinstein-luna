@@ -115,7 +115,7 @@ function stronkVraag(n,thema,boost){const p=plaagVan(n),heb=voorraad(p.id);const
  o.innerHTML=`<div class="modalin rococo stronk-in"><div class="stronk-beeld" style="background-image:url('${beeld}')"></div><h2>${p.prof}</h2>${window.flesModel?`<div class="stronk-fles">${flesModel(p.id,{h:96})}</div>`:''}<p>${naam()}, heb je je ${p.naam} meegenomen?</p><p class="klein">${p.groeiZin} ${plaagDek(n)<1?'Zonder flesje lukt het ook, maar met flesje is het makkelijker. ':'Zonder het flesje zit het hele bord vast, dus dan kun je niet spelen. '}${heb?`In je kist: ${heb} ${heb===1?'flesje':'flesjes'}.`:'Het flesje staat niet in je kist. Brouw het eerst bij Recepten in de kas.'}</p><div class="stronk-knoppen">${ja}${plaagDek(n)<1?'<button class="knop" id="stronktoch">Toch starten</button>':''}<button class="knop" id="stronkkas">Naar de kas</button></div></div>`;
  document.body.appendChild(o);
  const verder=weg=>{o.remove();window._strikWeg=weg;m3Speel(n,thema,Object.assign({},boost,{_stronkKlaar:1}))};
- const jb=$('#stronkja');if(jb)jb.onclick=()=>{if(voorraad(p.id)<1){toast('Het flesje is er niet.');return}S.flesjes[p.id]--;bewaar();toast(p.naam+' giet over '+p.over+'.');verder(.75)};
+ const jb=$('#stronkja');if(jb)jb.onclick=()=>{if(voorraad(p.id)<1){toast('Het flesje is er niet.');return}S.flesjes[p.id]--;window._flesInzet={n,id:p.id};bewaar();toast(p.naam+' giet over '+p.over+'.');verder(.75)};
  const tb=$('#stronktoch');if(tb)tb.onclick=()=>verder(0);
  $('#stronkkas').onclick=()=>{o.remove();ga('mijnkas');setTimeout(()=>{try{ingredientenBoek()}catch(e){}},700)}}
 function introLes(n,thema,boost){const p=plaagVan(n),al=!!(S.receptOpen&&S.receptOpen[p.id]);

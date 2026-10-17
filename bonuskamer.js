@@ -118,7 +118,9 @@ const soort=o=>o.rest!==undefined?'kist':o.r0!==undefined?'deur':'kus';
 function tover(doel){if(!G||G.fase!='spel')return;const p=G.p;doel=doel||dichtbij(p.x,p.y,105);const nu=performance.now();
  const wx=p.x+(p.dir=='l'?-14:p.dir=='r'?14:8),wy=p.y-30;
  if(!doel){for(let i=0;i<8;i++)G.part.push({x:wx,y:wy,z:0,vx:(Math.random()-.5)*80,vy:(Math.random()-.5)*80,l:.6,k:'#fff3b0',s:2});snd('klik',.3);return}
- const sr=soort(doel);p.dir=Math.abs(doel.x-p.x)>Math.abs(doel.y-p.y)?(doel.x<p.x?'l':'r'):(doel.y<p.y?'b':'o');
+ const sr=soort(doel);
+ if(sr=='deur'&&!S.bkAlo&&!G.test&&window.zwSpreuk){if(G.alo)return;G.alo=1;G.fase='alo';try{zwSpreuk('alohomora',50,ok=>{if(!G)return;G.alo=0;G.fase='spel';if(ok){S.bkAlo=1;bewaar();toast('Alohomora! Vanaf nu gaan de deuren vanzelf open.');tover(doel)}else toast('Bijna! Tik nog eens op de deur.')})}catch(e){G.alo=0;G.fase='spel';S.bkAlo=1}return}
+ p.dir=Math.abs(doel.x-p.x)>Math.abs(doel.y-p.y)?(doel.x<p.x?'l':'r'):(doel.y<p.y?'b':'o');
  G.combo=nu-G.lastCast<2600?G.combo+1:1;G.lastCast=nu;G.bestCombo=Math.max(G.bestCombo,G.combo);
  const c=$('#bkcombo');if(c&&G.combo>1){c.textContent='Combo ×'+G.combo+'!';c.classList.remove('pop');void c.offsetWidth;c.classList.add('pop')}
  const ty=sr=='deur'?doel.r0*T+T:doel.y-14;G.ringen.push({x1:wx,y1:wy,x2:doel.x,y2:ty,t:0,k:sr=='kus'?'#ffe36a':'#ffd76a'});
@@ -262,5 +264,5 @@ function einde(){if(!G||G.fase=='klaar')return;G.fase='klaar';G.joy=null;toonJoy
 /* ---------- ingangen: De Hal (na elke 100 levels) + makerscherm ---------- */
 const _home=V.home;V.home=(...a)=>{const r=_home(...a);try{const n=bonusKamerOpen();if(n>0&&!document.getElementById('bkhal')){const na=document.querySelector('.hp-zaal')||document.querySelector('.halspel');const h=`<button class="knop volgende bkhal" id="bkhal" onclick="ga('bonuskamer')">🍬 De Smekkies-bonuskamer is open!${n>1?' (×'+n+')':''}</button>`;if(na)na.insertAdjacentHTML('afterend',h);else $('#app').insertAdjacentHTML('beforeend',h)}}catch(e){}return r};
 const _mk=V.maker;if(_mk)V.maker=(...a)=>{const r=_mk(...a);$('#app').insertAdjacentHTML('beforeend',`<section class="kaart sierlijst"><h3>Smekkies-bonuskamer (test)</h3><p class="klein">Telt niet als gebruikt. Open na elke 100 levels: nu ${bonusKamerOpen()} keer beschikbaar.</p><button class="knop" onclick="ga('bonuskamer',1)">Probeer de bonuskamer</button></section><section class="kaart sierlijst"><h3>Testkist (alleen voor testen)</h3><p class="klein">Zet alles open: level 560, 10.000 Smekkies, zaadjes en boosters. Dit verandert het spel op deze telefoon echt. Niet op Luna's telefoon gebruiken.</p><button class="knop" onclick="if(confirm('Testkist openen? Dit zet het spel op level 560 met 10.000 Smekkies.')){S.proefMix=0;proefKist();proefMix();toast('Testkist geopend')}">Testkist openen</button></section>`);return r};
-window.bonusTest={get G(){return G}};
+window.bonusTest={get G(){return G},tover:d=>tover(d)};
 })();

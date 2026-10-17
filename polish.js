@@ -56,9 +56,9 @@ let rustT;function rustTimer(){clearTimeout(rustT);const v=document.body.dataset
 function doelen(){const d=vandaag();return[
  ['Haal je dagbeloning op',S.login.laatst===d,()=>V.login(),'kalender'],
  ['Los het raadsel van de dag op',S.dagKlaar===d,()=>{const e=$('#da');e&&(e.scrollIntoView({block:'center'}),e.focus())},'loep'],
- ['Speel één puzzel of spel',(S.tel[d]||{}).opgelost>=1,()=>ga(S.opgelost.drank?'memory':'drank'),'ketel'],
+ ['Win een level',(S.tel[d]||{}).m3>=1,()=>ga('match3'),'ster'],
  ['Volg een les',(S.tel[d]||{}).les>=1,()=>ga('lessen'),'les'],
- ['Verzorg je huisdier',S.dier&&S.dier.v===d,()=>ga('kamer'),'hart']]}
+ ['Win 3 levels',(S.tel[d]||{}).m3>=3,()=>ga('match3'),'beker']]}
 function vandaagHTML(){const ds=doelen();const i=ds.findIndex(x=>!x[1]);const klaar=ds.filter(x=>x[1]).length;
  return `<section class="vandaag rococo" id="vandaag"><h2>Vandaag in Zweinstein</h2><div class="voortgang"><div style="width:${Math.max(12,klaar/ds.length*100)}%"></div></div><ol>${ds.map((x,j)=>`<li class="${x[1]?'af':''} ${j==i?'nu':''}">${icoon(x[1]?'vinkje':x[3])}<span>${x[0]}</span>${j==i?`<button class="knop volgende" data-doel="${j}">Begin ${icoon('pijl')}</button>`:''}</li>`).join('')}</ol>${i<0?`<p class="allesaf">Alles gedaan voor vandaag. Wat een dag!</p><button class="knop volgende" id="afscheid">Tot morgen, Tilly</button>`:`<button class="linkknop" id="afscheid">Voor nu stoppen</button>`}</section>`}
 const _home2=V.home;V.home=()=>{_home2();const app_=$('#app');const raster=[...app_.querySelectorAll(':scope > .raster')];const kist=app_.querySelector('.kist');

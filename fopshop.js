@@ -10,6 +10,7 @@ Object.assign(BOOSTERS,{
  spijbel:{prijs:140,van:10,fop:1,naam:'Spijbelsnoepdoos',kort:'+5 zetten',img:'fg-spijbel',uitleg:'Eén hapje van de Spijbelsnoepdoos en je krijgt vijf extra zetten. Niet aan Anderling vertellen.'},
  peru:{prijs:240,van:50,fop:1,naam:'Instant Duisternispoeder',kort:'Verdwijnspreuk',img:'fg-peru',uitleg:'Instant Duisternispoeder uit Peru. Even is alles donker… en dan ligt er een Evanesco Maxima (zware spreuk) op het bord.'},
  knalpijl:{prijs:120,van:25,fop:1,naam:'Kleine Knalpijl',kort:'1 rij weg',img:'fg-knalpijl',uitleg:'Een Kleine Knalpijl van Fred en George. Bij de start schiet hij omhoog en knalt één hele rij leeg. Je hoeft niets te doen.'},
+ snaai:{prijs:1500,van:60,fop:1,naam:'Gouden Snaai',kort:'vangt een groot deel van het bord',img:'fg-snaai',uitleg:'De Gouden Snaai fladdert bij de start over het bord en neemt alles mee waar hij langs zoeft. De sterkste booster die er is.'},
  vuurpijl:{prijs:300,van:60,fop:1,naam:'Grote Weasley-Vuurpijl',kort:'3 rijen + vuurdraak',img:'fg-vuurpijl',uitleg:'De Grote Weasley-Vuurpijl! Er komt een vuurdraak uit die drie rijen tegelijk wegbrandt. Precies zoals in de Grote Zaal bij Omber.'}});
 const _nb=window.m3NaBord;
 window.m3NaBord=(b,boost)=>{const bo=(boost&&boost.bo)||[];const heb={};bo.forEach(k=>heb[k]=S.bo[k]>0);_nb(b,boost);
@@ -69,8 +70,9 @@ const ITEMS=[
  {id:'spijbel',naam:'Spijbelsnoepdoos',prijs:140,van:10,img:'img/pu/fg-spijbel.webp',tekst:'Booster: vijf extra zetten.',soort:'bo'},
  {id:'peru',naam:'Instant Duisternispoeder',prijs:240,van:50,img:'img/pu/fg-peru.webp',tekst:'Booster uit Peru: even donker, dan een Evanesco Maxima.',soort:'bo'},
  {id:'knalpijl',naam:'Kleine Knalpijl',prijs:120,van:25,img:'img/pu/fg-knalpijl.webp',tekst:'Booster: schiet bij de start vanzelf één hele rij leeg.',soort:'bo'},
+ {id:'snaai',naam:'Gouden Snaai',prijs:1500,van:60,img:'img/pu/fg-snaai.webp',tekst:'Booster: zoeft bij de start over het bord en vangt een groot deel van de stukken.',soort:'bo'},
  {id:'vuurpijl',naam:'Grote Weasley-Vuurpijl',prijs:300,van:60,img:'img/pu/fg-vuurpijl.webp',tekst:'Booster: een vuurdraak brandt bij de start drie rijen weg.',soort:'bo'},
- {id:'kikker',naam:'Chocokikker',prijs:60,img:'img/stukken/chocokikker-128.webp',tekst:'Een extra hart én een tovenaarskaart.',soort:'nu'},
+ {id:'kikker',naam:'Chocokikker',prijs:60,img:'img/stukken/chocokikker-128.webp',tekst:'Voor in je tas. Eet hem op als je een hart mist: +1 hart.',soort:'nu'},
  {id:'fopstok',naam:'Fopstokje',prijs:25,img:'img/stukken/toverstaf-128.webp',tekst:'Lijkt een echte toverstok… tot je zwaait.',soort:'nu'},
  {id:'pluis',naam:'Dwergpluisje',prijs:100,van:5,img:'',tekst:'Een zacht huisdiertje in je eigen kleur. Woont op de toonbank.',soort:'pluis'}];
 function kassa(){const k=document.getElementById('fgkassa');if(k){k.classList.remove('rinkel');void k.offsetWidth;k.classList.add('rinkel')}try{fx.speel('kassa')}catch(e){}}
@@ -78,12 +80,12 @@ function zeg(i){const g=i!=null?GRAP[i]:GRAP[Math.random()*GRAP.length|0];const 
 function koop(it,kl){if(it.van&&(S.m3lvl|0)<it.van){fgZeg('Die verkopen we je pas vanaf level '+it.van+'. Eerst nog even oefenen!');return}if(S.galjoenen<it.prijs){zeg();const el=document.getElementById('fgpraat');if(el)el.innerHTML='<b>George:</b> Daar heb je niet genoeg Smekkies voor. Geen zorgen, wij geven ook geen krediet.';return}
  S.galjoenen-=it.prijs;
  if(it.soort=='bo'){S.bo[it.id]=(S.bo[it.id]|0)+1;fgZeg(`Ligt klaar bij je boosters. Kies hem voor een level!`)}
- if(it.id=='kikker'){try{levens();if(S.harten.n<5)S.harten.n++}catch(e){}let n='',im='';try{const pool=KAARTEN.filter(k=>k[3]);let kr=trekKaart();if(!kr[3])kr=pool[Math.random()*pool.length|0];S.kaarten[kr[0]]=(S.kaarten[kr[0]]||0)+1;n=kr[0];im=kr[3]}catch(e){}kikkerShow(n,im);fgZeg(`Een extra hart${n?' en de kaart van '+n:''}! Hij springt wel, dus pak hem snel.`)}
+ if(it.id=='kikker'){S.kikkers=(S.kikkers|0)+1;kikkerShow('',`In je tas: ${S.kikkers}`);fgZeg('Een Chocokikker voor in je tas! Tik op je harten om hem op te eten: +1 hart.')}
  if(it.id=='fopstok'){fopstok()}
  if(it.id=='pluis'){S.fg.pluis.push(kl);fgZeg('Een Dwergpluisje! Hij heet nog niets. Wij stellen "Arnold" voor.')}
  bewaar();try{stats()}catch(e){}kassa();teken()}
 function fgZeg(t){const el=document.getElementById('fgpraat');if(el)el.innerHTML=`<b>${Math.random()<.5?'Fred':'George'}:</b> ${t}`}
-function kikkerShow(n,im){const d=document.createElement('div');d.className='fgkik';d.innerHTML=`<img class="kik" src="img/stukken/chocokikker-256.webp" alt=""><div class="kaart">${im?`<img src="${im}" alt="">`:''}<b>${n}</b><small>+1 hart</small></div>`;document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add('spring'));d.onclick=()=>d.remove();setTimeout(()=>{d.classList.add('weg');setTimeout(()=>d.remove(),600)},3600)}
+function kikkerShow(n,im){const d=document.createElement('div');d.className='fgkik';d.innerHTML=`<img class="kik" src="img/stukken/chocokikker-256.webp" alt=""><div class="kaart"><b>${n||'Chocokikker'}</b><small>${im||'+1 hart'}</small></div>`;document.body.appendChild(d);requestAnimationFrame(()=>d.classList.add('spring'));d.onclick=()=>d.remove();setTimeout(()=>{d.classList.add('weg');setTimeout(()=>d.remove(),600)},3600)}
 function fopstok(){const d=document.createElement('div');d.className='fgfop';d.innerHTML='<img src="img/stukken/toverstaf-128.webp" alt=""><span>🐔</span>';document.body.appendChild(d);setTimeout(()=>d.classList.add('kip'),700);setTimeout(()=>d.remove(),2600);fgZeg('Piep! Een rubberen kip. Die is nooit oud.')}
 let pluisKeuze=0;
 function teken(){const box=document.getElementById('fgitems');if(!box)return;

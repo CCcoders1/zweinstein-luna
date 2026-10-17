@@ -74,7 +74,7 @@ function potCheck(){const n=kweekPotten();if(n>(S.pottenGezien||0)){S.pottenGezi
 /* dagdoelen (3) */
 function dagDoelen(){const d=vandaag(),{v}=huidigVak();const t=v.taken.find(x=>!S.taken[x[0]]);const tv=k=>((S.tel[d]||{})[k]||0);
  const lijst=[[`Verdien 2 sterren${t?' voor “'+t[1].toLowerCase()+'”':''}`,tv('sterren'),2,()=>ga('match3'),'ster'],
-  S.bonusOpen.drank?['Brouw een drankje voor '+v.prof,tv('drank'),1,()=>ga('ketel'),'ketel']:S.bonusOpen.memory?['Help Professor Stronk met de plantenkaartjes',tv('memory'),1,()=>ga('memory'),'blad']:['Speel 2 levels',tv('m3'),2,()=>ga('match3'),'spel'],
+  ['Win 2 levels',tv('m3'),2,()=>ga('match3'),'spel'],
   [`Voltooi een taak in ${v.lokaal.replace(/^De |^Het /,'de ').toLowerCase()}`,tv('taak'),1,()=>{const b=$('#taakknop');b?b.click():ga('home')},'huis']];
  return lijst.map(([n,h,m,f,i],k)=>({n,h:Math.min(h,m),m,f,i,af:h>=m,k:d+k}))}
 function dagBeloon(){dagDoelen().forEach(g=>{if(g.af&&!S.dagBel[g.k]){S.dagBel[g.k]=1;S.schilden++;bewaar();stats();toast('Dagdoel gehaald: +1 huisschild');fx.speel('munt')}})}
@@ -129,7 +129,7 @@ V.bonus=()=>{app(`<h2>Bonusspellen</h2>${tilly('Hier spelen we tussendoor. Niet 
  document.querySelectorAll('[data-b]').forEach(t=>t.onclick=()=>{if(S.bonusOpen[t.dataset.b])ga(t.dataset.b);else{t.classList.remove('schud');void t.offsetWidth;t.classList.add('schud');toast('Deze deur is nog op slot. Knap eerst het lokaal verder op!')}})};
 const BONUSID=new Set(BONUS.map(b=>b[0]));
 /* ---------- meer ---------- */
-V.meer=()=>{const T=[['groei','hoed','Ontwikkeling & badges'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Dagbeloning']];
+V.meer=()=>{const T=[['groei','hoed','Ontwikkeling & badges'],['album','boek','Kaartenalbum'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Dagbeloning']];
  app(`<h2>Meer</h2><div class="raster">${T.map(t=>`<button class="tegel" onclick="ga('${t[0]}')"><span class="ico">${icoon(t[1])}</span><b>${t[2]}</b></button>`).join('')}</div>`)};
 /* ---------- navigatie (max 5) ---------- */
 def('menuVariant','B');const NAV=[['pad','kaart','Kaart'],['kas','bloem','Kassen'],['home','','Hal'],['boek','boek','Boek'],['meer','lijst','Meer']];

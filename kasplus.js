@@ -18,7 +18,7 @@ window.zeldzaamKies=()=>{const L=Object.entries(ZELDZAAM);let r=Math.random()*L.
 window.zeldzaamZaad=(bron,opt={})=>{const z=opt.z||zeldzaamKies();
  S.zaden=S.zaden||{};S.zaden[z]=(S.zaden[z]|0)+1;S.zaadVondst=S.zaadVondst||{};S.zaadVondst[bron]=(S.zaadVondst[bron]|0)+1;bewaar();const d=SUPERPLANTEN[z];
  if(!opt.stil)setTimeout(()=>{try{toast('🌱 Zeldzaam zaadje gevonden: '+d.naam+'!')}catch(e){}},opt.wacht||0);return {z,naam:d.naam,img:`img/kas/${d.beeld}-4.webp`,filter:d.filter||''}};
-const CADEAU=[[10,'Hagrid','Ik vond dit zaadje achter mijn pompoenen. Plant het maar, hè. Geen draken, dat beloof ik.'],[25,'Fred en George','Psst! Uit onze geheime voorraad. Niet aan Ma vertellen, en niet aan Filch.'],[50,'Mevrouw Varenkamp','Voor mijn beste klant. Deze verkoop ik niet in de winkel, liefje.'],[75,'Professor Stronk','Prachtig gewerkt! Een zeldzaam zaadje uit mijn eigen kas, voor jou.']];
+const CADEAU=[[60,'Hagrid','Ik vond dit zaadje achter mijn pompoenen. Plant het maar, hè. Geen draken, dat beloof ik.'],[75,'Fred en George','Psst! Uit onze geheime voorraad. Niet aan Ma vertellen, en niet aan Filch.'],[90,'Mevrouw Varenkamp','Voor mijn beste klant. Deze verkoop ik niet in de winkel, liefje.'],[75,'Professor Stronk','Prachtig gewerkt! Een zeldzaam zaadje uit mijn eigen kas, voor jou.']];
 function cadeauNa(n){S.zaadCadeau=S.zaadCadeau||{};let c=CADEAU.find(x=>x[0]==n);if(!c&&n>=100&&n%50==0){const r=CADEAU[(n/50)%CADEAU.length|0];c=[n,r[1],r[2]]}if(!c||S.zaadCadeau[n])return;S.zaadCadeau[n]=1;const g=zeldzaamZaad('cadeau',{stil:1});
  setTimeout(()=>{try{gids(`<b>${c[1]}</b> geeft je een cadeautje: een <b>${g.naam}</b>-zaadje! “${c[2]}” Het ligt bij je zaadjes in de kas.`,{})}catch(e){toast(c[1]+' geeft je een '+g.naam+'-zaadje!')}},3200)}
 if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,...a){const r=_w.call(this,n,...a);try{cadeauNa(n)}catch(e){}return r}}
@@ -58,9 +58,9 @@ function superModal(mi){const o=document.createElement('div');o.className='modal
 const PIDX=i=>100+i; // potindexen van de persoonlijke kas (los van de gewone kassen)
 const POT_UP=[
  {naam:'Kruidenpot',prijs:1000,img:'pot1',tekst:'Groene krullen. Je tweede pot. Duivelsstrik, Tentacula en Sodejus passen niet in de kleine standaardpot.'},
- {naam:'Edelsteenpot',prijs:3200,img:'pot2',tekst:'Je derde pot. Op de kleine tafel passen er drie.'},
+ {naam:'Edelsteenpot',prijs:1600,img:'pot2',tekst:'Je derde pot. Op de kleine tafel passen er drie.'},
  {naam:'Kristalpot',prijs:2400,img:'pot3',tekst:'Voor op de grote tafel. Daar passen vijf potten.'},
- {naam:'Hartpot',prijs:1600,img:'pot4',tekst:'De vijfde plek, op de grote tafel.'}];
+ {naam:'Hartpot',prijs:3200,img:'pot4',tekst:'De vijfde plek, op de grote tafel.'}];
 const VLOERPOT_PRIJS=700;
 S.potUpgrade=S.potUpgrade|0;if(!S.vloerpot&&(S.mega||[]).some(Boolean))S.vloerpot=1;
 function groteTafelNu(){return lvl()>=GROTE_TAFEL||!!S.groteTafel||(S.potUpgrade|0)>=3||[3,4,5,6].some(i=>!!pot(PIDX(i)))}
@@ -115,7 +115,8 @@ V.mijnkas=()=>{VIEWDECOR.mijnkas='kas';verhuisPotten();ruimTafel();
  if(window._kasVersMeld){window._kasVersMeld=0;S.kasVerhuisMeld=1;bewaar();const rest=Object.keys(S.kweek||{}).some(i=>+i<100&&S.kweek[i]);toast(rest?'Je planten staan in je eigen kas. De rest schuift op als er een pot vrijkomt.':'Je planten staan nu in de potten van je eigen kas.')}
  if(!S.mkUitleg){S.mkUitleg=1;bewaar();g('Welkom in je eigen kas, Luna! Op het tafeltje bij de deur staat je standaardpot. Tik erop en plant een zaadje. Onderin vind je Potten, Inventaris, Recepten en de Winkel. In de winkel zie je je Smekkies.')}
  else if(leraarPoort()&&!S.groenPoortUitleg){S.groenPoortUitleg=1;bewaar();g('Professor Stronk houdt het volgende level tegen tot de <b>groene kruidenpot</b> op je tafel staat. Tik op Potten. Die pot wordt je tweede, en daarin groeien de bijzondere kruiden.')}
- else if(lvl()>=MEGA_VANAF[0]&&!S.superOpen){S.superOpen=1;bewaar();g('Er is plek vrij voor grote, magische planten. Vleesetende planten en Duivelsstrik groeien in de Megapot. De power-upzaden voor je Kristalpot en Hartpot vind je als beloning in minigames.')}
+ else if(lvl()>=MEGA_VANAF[0]&&!S.superOpen){S.superOpen=1;bewaar();g('Er is plek vrij voor grote, magische planten. Vleesetende planten en Duivelsstrik groeien in de Megapot. De power-upzaden voor je Kristalpot en Hartpot vind je als beloning in levels en kistjes.')}
+ else if(waterMag()&&!S.waterUitleg){S.waterUitleg=1;bewaar();g('Nu je Flipendo en Wingardium Leviosa kent, kan het water aan! Tik op de knop met Flipendo om de kooi te openen. Laat het blok dan met Leviosa naar een knop zweven. Een volle silo zet de sproeiers aan, dan groeien je planten sneller.')}
  else if(lvl()>=GROTE_TAFEL&&!S.groteTafel){S.groteTafel=1;bewaar();g('Herbologie afgerond! De <b>grote tafel</b> staat nu waar je tafeltje stond. Er passen vijf potten op. Extra potten koop je bij Potten.')}
  poortBanner();
  try{ if(typeof elfStart==='function') elfStart('mijnkas') }catch(e){}
@@ -157,7 +158,7 @@ S.water=S.water||{blok:0,sinds:Date.now(),lvl:[0,0]};delete S.silo;
 (function(){const w=S.water;if(!w.modus){const oud=2*36e5,nu=Date.now();w.lvl=[0,1].map(i=>Math.min(1,Math.max(0,i==w.blok?(w.lvl&&w.lvl[i]||0)+(nu-(w.sinds||nu))/oud:(w.lvl&&w.lvl[i]||0))));w.blok=w.blok?1:0;w.modus=w.lvl.map((n,i)=>i==w.blok&&n>=.999?'leeg':'vul');w.sinds=nu;w.gemeld=w.modus[w.blok]==='leeg'?w.blok:-1;delete w.tot}if(!w.modus||w.modus.length<2)w.modus=['vul','vul'];if(!w.lvl||w.lvl.length<2)w.lvl=[0,0]})();
 const W=()=>S.water;
 function niveau(i){const w=W(),dt=Date.now()-w.sinds;if(w.modus[i]==='leeg')return Math.max(0,w.lvl[i]-dt/LEEG);return Math.min(1,w.lvl[i]+dt/VUL)}
-function siloAan(){const w=W();return w.modus[w.blok]==='leeg'&&niveau(w.blok)>0.01}
+function siloAan(){if(!waterMag())return false;const w=W();return w.modus[w.blok]==='leeg'&&niveau(w.blok)>0.01}
 function dtTotEvent(){const w=W(),a=w.blok;if(w.modus[a]==='leeg')return w.lvl[a]<=0?Infinity:w.lvl[a]*LEEG;if(w.lvl[a]>=1)return 0;return (1-w.lvl[a])*VUL}
 function snap(dt){const w=W();if(!(dt>0))return;w.lvl=[0,1].map(i=>w.modus[i]==='leeg'?Math.max(0,w.lvl[i]-dt/LEEG):Math.min(1,w.lvl[i]+dt/VUL));w.sinds+=dt}
 function gebeurtenis(){const w=W(),a=w.blok,b=1-a;if(w.modus[b]==='leeg')w.modus[b]='vul';if(w.modus[a]==='leeg'){w.lvl[a]=0;return 'wacht'}w.lvl[a]=1;w.modus[a]='leeg';return 'aan'}
@@ -166,7 +167,8 @@ function simuleer(tot){let g=0;while(g++<2000){const w=W(),b=1-w.blok;if(w.modus
  const w=W();if(w.modus[1-w.blok]==='leeg')w.modus[1-w.blok]='vul'}
 function statusTekst(){const w=W(),i=w.blok,n=niveau(i);const stand=w.modus[i]==='leeg'?(n<=0.01?`Silo ${i+1} is leeg`:`Silo ${i+1} loopt leeg · nog ${tijd(n*LEEG)}`):`Silo ${i+1} vult zich · nog ${tijd(Math.max(0,1-n)*VUL)}`;return stand+' · tik op het blok'}
 function plaatAan(i){const w=W();return w.blok==i&&w.modus[i]==='leeg'&&niveau(i)>0.01}
-function levHTML(){if(!W().zweeft)simuleer(Date.now());const w=W();return `<div class="mk-leviosa ${siloAan()?'aan':''}" data-b="${w.blok}"><div class="mk-silos">${[0,1].map(i=>{const pct=Math.round(niveau(i)*100);return `<div class="mk-unit u${i}" data-i="${i}"><div class="mk-silo"><div class="mk-glas"><i style="height:${pct}%"></i></div><img src="img/kas/silo.webp" alt=""><span>${pct}%</span></div></div>`}).join('')}</div><div class="mk-knoppen">${[0,1].map(i=>{const aan=plaatAan(i);return `<div class="mk-knoop k${i}"><div class="mk-plaat ${w.blok==i?'in':''} ${aan?'aan':''}"><img src="img/kas/knop-${aan?'aan':'uit'}.webp" alt="${aan?'Knop aan':'Knop uit'}"></div></div>`}).join('')}</div>
+function waterMag(){return window.spreukGeleerd&&spreukGeleerd('flipendo')&&spreukGeleerd('leviosa')}window.waterMag=waterMag;
+function levHTML(){if(!waterMag())return `<div class="mk-leviosa mk-dicht"><img src="img/kas/silo.webp" alt=""><p><b>De watersilo's en sproeiers</b><br>Leer eerst Flipendo en Wingardium Leviosa bij Professor Banning.</p><button type="button" class="knop klein volgende" onclick="ga('spreuken')">Naar de spreuklessen</button></div>`;if(!W().zweeft)simuleer(Date.now());const w=W();return `<div class="mk-leviosa ${siloAan()?'aan':''}" data-b="${w.blok}"><div class="mk-silos">${[0,1].map(i=>{const pct=Math.round(niveau(i)*100);return `<div class="mk-unit u${i}" data-i="${i}"><div class="mk-silo"><div class="mk-glas"><i style="height:${pct}%"></i></div><img src="img/kas/silo.webp" alt=""><span>${pct}%</span></div></div>`}).join('')}</div><div class="mk-knoppen">${[0,1].map(i=>{const aan=plaatAan(i);return `<div class="mk-knoop k${i}"><div class="mk-plaat ${w.blok==i?'in':''} ${aan?'aan':''}"><img src="img/kas/knop-${aan?'aan':'uit'}.webp" alt="${aan?'Knop aan':'Knop uit'}"></div></div>`}).join('')}</div>
  <button type="button" class="mk-blok" aria-label="Wingardium Leviosa-blok"><img src="img/kas/leviosa-blok.webp" alt="">${S.kooiOpen?'':'<span class="mk-kooi"><i class="mk-ketting"></i></span>'}</button>${S.kooiOpen?'':'<button type="button" class="knop mk-kooiknop">🔒<small>Flipendo</small></button>'}<button type="button" class="mk-terug" title="Blok terug">↺</button><small class="mk-levtxt">${statusTekst()}</small>
  <label class="mk-meld"><input type="checkbox" id="mkmeld" ${S.siloMeld?'checked':''}> Seintje als een silo vol is</label></div>`}
 function levitatieAuto(){const blok=$('.mk-blok');if(!blok){afrondenWissel();return}blok.classList.add('spreekt');const r=blok.getBoundingClientRect();const t=document.createElement('div');t.className='mk-toverspreuk';t.textContent='Wingardium Leviosa';const cx=Math.max(150,Math.min(innerWidth-150,r.left+r.width/2));t.style.cssText=`left:${cx}px;top:${Math.max(88,r.top-8)}px`;document.body.appendChild(t);
