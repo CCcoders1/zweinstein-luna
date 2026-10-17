@@ -292,6 +292,9 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
    if(b.lay[r][c]){const R1=window._rank1,R2=window._rank2,x=c*cel+cel/2,y=r*cel+cel/2;ctx.fillStyle=b.lay[r][c]>1?'rgba(70,110,40,.28)':'rgba(110,150,60,.18)';ctx.beginPath();ctx.roundRect(c*cel+2,r*cel+2,cel-4,cel-4,8);ctx.fill();
    }}
   for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(!t)continue;
+   if(t.zw){const k=Math.min(1,.07*dt);t.x+=(c-t.x)*k;t.y+=(r-t.y)*k;t.lift=(t.lift||0)+((t.zw==1?1:0)-(t.lift||0))*Math.min(1,.06*dt);if(t.zw==2&&t.lift<.03&&Math.abs(t.x-c)<.02&&Math.abs(t.y-r)<.02){t.x=c;t.y=r;t.lift=0;delete t.zw}
+    const X=(t.x+.5)*cel,Y=(t.y+.5)*cel-t.lift*cel*(.3+.06*Math.sin(nu/260));ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.max(0,.5*t.lift+.15*Math.sin(nu/200)*t.lift);ctx.drawImage(KU.stof('#ffd76a'),X-cel*.85,Y-cel*.85,cel*1.7,cel*1.7);ctx.restore();ctx.save();ctx.translate(X,Y);tekenTegel(t,0,0,1+.12*t.lift,nu);ctx.restore();
+    if(t.lift>.3&&Math.random()<.3)deeltjes.push({x:X+(Math.random()-.5)*cel*.7,y:Y+cel*.35,vx:(Math.random()-.5)*.3,vy:-.5,r:1.5+Math.random()*2,l:1,st:1,k:'#ffe28a'});continue}
    if(t.y<r||t.vy){t.vy+=.045*dt;t.y+=t.vy*dt;if(t.y>=r){t.y=r;if(t.vy>.12){t.vy=-t.vy*.28}else t.vy=0}}else if(t.y>r){t.y+=(r-t.y)*Math.min(1,.35*dt);if(t.y-r<.01)t.y=r}
    t.x+=(c-t.x)*Math.min(1,.35*dt);if(Math.abs(t.x-c)<.01)t.x=c;t.sc+=(1-t.sc)*.18*dt;
    let s=t.sc;const gek=sel&&sel[0]==r&&sel[1]==c;if(gek)s*=1.16+Math.sin(nu/120)*.03;if(hint&&hint.some(h=>h[0]==r&&h[1]==c))s*=1+Math.sin(nu/150)*.07;
@@ -317,8 +320,15 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
  async function probeer(a,c){if(bezig||!b.binnen(...c)||Math.abs(a[0]-c[0])+Math.abs(a[1]-c[1])!=1)return;if(window.strikTegen&&strikTegen(b,a,c,cel)){sel=null;hint=null;hintT=Date.now();return}bezig=true;sel=null;hint=null;
   const ok=await b.wissel(a,c,hooks);toonFx();doelUI();if(!ok){fx.speel('fout');vib(20)}bezig=false;hintT=Date.now();einde()}
  M3.probeer=probeer;M3.toonFx=toonFx;
+ let lev=null;M3.leviosa=()=>{lev={f:'kies'};sel=null;toast('Wingardium Leviosa! Tik op het blok dat moet zweven.')};
+ async function levTik(p){if(!b.binnen(...p))return;const vast=(rr,cc)=>(b.kist[rr]&&b.kist[rr][cc])||(b.strik&&b.strik[rr][cc]);
+  if(lev.f=='kies'){const t=b.g[p[0]][p[1]];if(!t||vast(...p)){toast('Dat kan niet zweven. Kies een ander blok.');return}t.zw=1;t.lift=0;lev={f:'doel',src:p};try{fx.speel('whoosh')}catch(e){}toast('Mooi! Tik nu waar het naartoe moet.');return}
+  const a=lev.src,ta=b.g[a[0]][a[1]];if(p[0]==a[0]&&p[1]==a[1]){ta.zw=2;lev={f:'kies'};toast('Kies een ander blok.');return}
+  if(vast(...p)||!b.g[p[0]][p[1]]){toast('Daar kan het niet landen. Kies een ander vakje.');return}
+  lev=null;bezig=true;const tb=b.g[p[0]][p[1]];b.wis(a[0],a[1],p[0],p[1]);ta.zw=2;tb.zw=2;tb.lift=0;await b.wacht(1100);
+  await b.oplossen(p,a,new Set(),hooks);toonFx();doelUI();bezig=false;hintT=Date.now();einde()}
  let start=null;
- cv.onpointerdown=e=>{if(bezig)return;try{cv.setPointerCapture(e.pointerId)}catch(x){}const p=cel_(e);if(window.strikTik&&strikTik(b,p,cel))return;if(window.strikVast&&strikVast(b,p)){window.strikAuw&&strikAuw(p,cel);return}start={p,x:e.clientX,y:e.clientY};
+ cv.onpointerdown=e=>{if(lev&&!bezig){levTik(cel_(e));return}if(bezig)return;try{cv.setPointerCapture(e.pointerId)}catch(x){}const p=cel_(e);if(window.strikTik&&strikTik(b,p,cel))return;if(window.strikVast&&strikVast(b,p)){window.strikAuw&&strikAuw(p,cel);return}start={p,x:e.clientX,y:e.clientY};
   if(sel&&(sel[0]!=p[0]||sel[1]!=p[1])&&Math.abs(sel[0]-p[0])+Math.abs(sel[1]-p[1])==1){const a=sel;sel=null;start=null;probeer(a,p);return}sel=p;{const t=b.g[p[0]]&&b.g[p[0]][p[1]];if(t&&t.s&&window.zwKies)zwKies.start();else fx.speel(t&&t.s?'kies':'klik')}};
  cv.onpointermove=e=>{if(!start)return;const dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.hypot(dx,dy)>cel*.35){const p=start.p;const d=Math.abs(dx)>Math.abs(dy)?[0,Math.sign(dx)]:[Math.sign(dy),0];start=null;probeer(p,[p[0]+d[0],p[1]+d[1]])}};
  cv.onpointerup=()=>{start=null};

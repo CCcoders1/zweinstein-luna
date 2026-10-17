@@ -1049,3 +1049,9 @@ body[data-view=mijnkas] .pipbubbel{z-index:45}
 #zwtint{position:fixed;inset:0;pointer-events:none;z-index:40;background:transparent;transition:background 4s}
 body.zw-avond #zwtint{background:rgba(255,150,60,.06)}
 body.zw-nacht #zwtint{background:rgba(40,70,160,.09)}
+
+.spl-modal{position:fixed;inset:0;z-index:300;background:rgba(10,8,25,.72);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding-top:10px}
+.spl-host{width:100%;max-width:540px}
+.m3levrij{text-align:center;margin:6px 0}.m3levrij .knop{font-size:1.05em}
+.spl-zweef{position:absolute;left:44%;top:55%;font-size:52px;animation:splZweef 2s ease-in-out forwards;filter:drop-shadow(0 0 12px #ffd76a)}
+@keyframes splZweef{0%{transform:none}40%{transform:translateY(-90px)}60%{transform:translateY(-80px)}100%{transform:translateY(-100px);opacity:0}}
