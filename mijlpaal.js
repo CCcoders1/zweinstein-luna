@@ -44,8 +44,8 @@ setInterval(()=>{if(open('drank')&&!S.mpAf.drank&&S.drank&&Object.values(S.drank
 /* niet open: niet speelbaar */
 const _ga=ga;ga=function(s,...a){if(s=='ketel'&&!open('drank')&&S.huis){toast('De ketel komt vrij vanaf level '+(MPK.drank[1]+1)+'.');return}return _ga(s,...a)};
 /* Hal: knop + uitnodiging */
-function nodig(m){const o=modal(`<h2>Een bijzonder moment!</h2><p>${port(m[2])} <b>${m[3]}:</b> ${m[4]}</p><p class="mpcadeau">🎁 De eerste keer: ${cadeauTekst(m[5])}</p><button class="knop volgende" id="mpja">Speel nu</button><button class="linkknop" id="mpnee">Straks</button>`);
- o.querySelector('#mpja').onclick=()=>{o.remove();ga(m[0])};o.querySelector('#mpnee').onclick=()=>o.remove()}
+function nodig(m,verder){const o=modal(`<h2>Een bijzonder moment!</h2><p>${port(m[2])} <b>${m[3]}:</b> ${m[4]}</p><p class="mpcadeau">🎁 De eerste keer: ${cadeauTekst(m[5])}</p><button class="knop volgende" id="mpja">Speel nu</button><button class="linkknop" id="mpnee">${verder?'Straks, eerst verder spelen':'Straks'}</button>`);
+ o.querySelector('#mpja').onclick=()=>{o.remove();ga(m[0])};o.querySelector('#mpnee').onclick=()=>{o.remove();if(verder)verder()}}
 const _home=V.home;V.home=(...a)=>{const r=_home(...a);try{zetOpen();const m=wachtend();if(m&&!document.getElementById('mpknop')){const h=document.getElementById('nieuwles')||document.getElementById('halharten');const app=document.getElementById('app');
   const html=`<div style="text-align:center"><button class="knop volgende nieuwles mpknop" id="mpknop">✨ Bijzonder moment: ${m[6]}</button></div>`;
   if(h)(h.closest('div[style]')||h).insertAdjacentHTML('afterend',html);else app.insertAdjacentHTML('afterbegin',html);
@@ -73,4 +73,23 @@ function dimMeer(){const q=s=>document.querySelector(s);
 const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{dimMeer()}catch(e){console.warn(e)}return r};
 const _home2=V.home;V.home=(...a)=>{const r=_home2(...a);try{if(!lesOpen())document.querySelectorAll('#app [onclick="ga(\'spreuken\')"]').forEach(b=>zwDicht(b,VL(lesVan()),'Professor Banning geeft je eerste les vanaf level '+lesVan()+'.'))}catch(e){}return r};
 if(V.mijnkas){const _mk=V.mijnkas;V.mijnkas=(...a)=>{const r=_mk(...a);try{if(!(S.receptOpen&&S.receptOpen.licht))zwDicht(document.getElementById('balkrecept'),VL(23),'Recepten komen in je boek als je de eerste Duivelsstrik-les haalt (level 22).')}catch(e){}return r}}
+
+/* ---------- winstscherm: 'Verder' speelt meteen het volgende level ---------- */
+function speelVolgende(k){if(typeof schoolDagKanStarten=='function'&&!schoolDagKanStarten(k)){ga('pad');let st=null;try{st=schoolDag()}catch(e){}T(()=>toast(st&&k>st.einde?'Rond eerst de doelen van deze schooldag af, dan kun je verder.':'Level '+k+' kan nu nog niet. Kies een level op het pad.'),400);return}ga('match3',k)}
+function naWinst(verder){
+ zetOpen();const m=wachtend();if(m&&!S.mpPop[m[0]]){S.mpPop[m[0]]=1;bewaar();return nodig(m,()=>naWinst(verder))}
+ const L=window.SPREUK_VAN||{};const k=Object.keys(L).find(x=>window.spreukOpen&&spreukOpen(x)&&!spreukGeleerd(x)&&!(S.lesPop||{})[x]);
+ if(k&&window.SPREUK_LES){S.lesPop=S.lesPop||{};S.lesPop[k]=1;bewaar();const naam=SPREUK_LES[k].naam;
+  const o=modal(`<h2>Nieuwe les!</h2><p>${port('banning')} <b>Professor Banning:</b> Goed gedaan! Je mag nu <b>${naam}</b> leren. Kom je naar mijn les?</p><button class="knop volgende" id="lesja">Naar de les</button><button class="linkknop" id="lesnee">Straks, eerst verder spelen</button>`);
+  o.querySelector('#lesja').onclick=()=>{o.remove();ga('spreukles',0,k)};o.querySelector('#lesnee').onclick=()=>{o.remove();verder()};return}
+ verder()}
+function winKnoppen(n){const ms=[...document.querySelectorAll('.m3eind')];const m=ms[ms.length-1];if(!m)return;const o=m.closest('.modal');if(!o)return;
+ o.dataset.geenverder=1;const pv=o.querySelector('.p-verder');if(pv)pv.remove();
+ const volg=m.querySelector('#m3volg'),kas=m.querySelector('#m3verder');const leraar=volg&&/^Eerst naar/.test(volg.textContent);
+ const weg=()=>{o.remove();document.querySelectorAll('.modal.wacht').length||0};
+ if(volg&&!leraar){volg.className='knop volgende';volg.textContent='Verder › Level '+(n+1);volg.onclick=()=>{weg();naWinst(()=>speelVolgende(n+1))}}
+ if(kas){kas.className='knop';kas.textContent='Naar de kas';kas.onclick=()=>{weg();naWinst(()=>ga('kas'))}}
+ if(volg&&kas&&!leraar)kas.before(volg);
+ const hal=document.createElement('button');hal.className='linkknop';hal.textContent='Naar De Hal';hal.onclick=()=>{weg();ga('home')};(kas||volg||m.lastChild).after(hal)}
+const _mwV=m3Winst;m3Winst=function(n,b,...a){const r=_mwV.call(this,n,b,...a);try{winKnoppen(n)}catch(e){console.warn(e)}return r};
 })();
