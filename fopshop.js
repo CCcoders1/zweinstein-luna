@@ -8,7 +8,7 @@ window.pluisSvg=(kl,cls)=>`<svg class="${cls||'pluis'}" viewBox="0 0 100 100" ar
 Object.assign(BOOSTERS,{
  wildvuur:{prijs:60,naam:'Wildvuur Wonderknallers',kort:'4 knalbommen',img:'fg-wildvuur',uitleg:'Weasleys’ Wildvuur Wonderknallers! Vier knalbommen staan op het bord. Laat ze afgaan met een match ernaast.'},
  spijbel:{prijs:50,naam:'Spijbelsnoepdoos',kort:'+5 zetten',img:'fg-spijbel',uitleg:'Eén hapje van de Spijbelsnoepdoos en je krijgt vijf extra zetten. Niet aan Anderling vertellen.'},
- peru:{prijs:90,naam:'Instant Duisternispoeder',kort:'Verdwijnspreuk',img:'fg-peru',uitleg:'Instant Duisternispoeder uit Peru. Even is alles donker… en dan ligt er een Zware Verdwijnspreuk op het bord.'}});
+ peru:{prijs:90,naam:'Instant Duisternispoeder',kort:'Verdwijnspreuk',img:'fg-peru',uitleg:'Instant Duisternispoeder uit Peru. Even is alles donker… en dan ligt er een Evanesco Maxima (zware spreuk) op het bord.'}});
 const _nb=window.m3NaBord;
 window.m3NaBord=(b,boost)=>{const bo=(boost&&boost.bo)||[];const heb={};bo.forEach(k=>heb[k]=S.bo[k]>0);_nb(b,boost);
  const vrij=()=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L};
@@ -25,7 +25,7 @@ const GRAP=[['Fred','Waarom ben je zo verdrietig, Gred?'],['George','Ik weet het
 const ITEMS=[
  {id:'wildvuur',naam:'Wildvuur Wonderknallers',prijs:60,img:'img/pu/fg-wildvuur.webp',tekst:'Booster: vier knalbommen en vuurwerk over het bord.',soort:'bo'},
  {id:'spijbel',naam:'Spijbelsnoepdoos',prijs:50,img:'img/pu/fg-spijbel.webp',tekst:'Booster: vijf extra zetten.',soort:'bo'},
- {id:'peru',naam:'Instant Duisternispoeder',prijs:90,img:'img/pu/fg-peru.webp',tekst:'Booster uit Peru: even donker, dan een Zware Verdwijnspreuk.',soort:'bo'},
+ {id:'peru',naam:'Instant Duisternispoeder',prijs:90,img:'img/pu/fg-peru.webp',tekst:'Booster uit Peru: even donker, dan een Evanesco Maxima.',soort:'bo'},
  {id:'kikker',naam:'Chocokikker',prijs:25,img:'img/stukken/chocokikker-128.webp',tekst:'Een extra hart én een tovenaarskaart.',soort:'nu'},
  {id:'fopstok',naam:'Fopstokje',prijs:10,img:'img/stukken/toverstaf-128.webp',tekst:'Lijkt een echte toverstok… tot je zwaait.',soort:'nu'},
  {id:'pluis',naam:'Dwergpluisje',prijs:40,img:'',tekst:'Een zacht huisdiertje in je eigen kleur. Woont op de toonbank.',soort:'pluis'}];
