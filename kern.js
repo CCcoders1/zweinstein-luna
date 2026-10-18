@@ -77,11 +77,11 @@ function dagDoelen(){const d=vandaag(),{v}=huidigVak();const t=v.taken.find(x=>!
   ['Win 2 levels',tv('m3'),2,()=>ga('match3'),'spel'],
   [`Voltooi een taak in ${v.lokaal.replace(/^De |^Het /,'de ').toLowerCase()}`,tv('taak'),1,()=>{const b=$('#taakknop');b?b.click():ga('home')},'huis']];
  return lijst.map(([n,h,m,f,i],k)=>({n,h:Math.min(h,m),m,f,i,af:h>=m,k:d+k}))}
-function dagBeloon(){dagDoelen().forEach(g=>{if(g.af&&!S.dagBel[g.k]){S.dagBel[g.k]=1;S.schilden++;bewaar();stats();toast('Dagdoel gehaald: +1 huisschild');fx.speel('munt')}})}
+function dagBeloon(){const dd=dagDoelen();dd.forEach(g=>{if(g.af&&!S.dagBel[g.k]){S.dagBel[g.k]=1;S.galjoenen=(S.galjoenen|0)+10;bewaar();stats();toast('Dagdoel gehaald: +10 Smekkies');fx.speel('munt')}});const ka='alle'+vandaag();if(dd.length&&dd.every(g=>g.af)&&!S.dagBel[ka]){S.dagBel[ka]=1;S.schilden++;bewaar();stats();setTimeout(()=>toast('Alle dagdoelen gehaald: +1 huisschild'),1600)}}
 // polish/welkomRitueel gebruikt doelen(): koppel aan de nieuwe dagdoelen
 doelen=function(){return dagDoelen().map(g=>[g.n,g.af,g.f,g.i])};
 /* beloon-koppeling: bonusspellen leveren extra's en soms een ster */
-const _belK=beloon;beloon=function(id,...a){const r=_belK(id,...a);const p=(id.match(/^[a-z]+/)||[''])[0];tel(p);if(!/^m3/.test(id)&&Math.random()<.35){S.schilden++;bewaar();setTimeout(()=>toast('Bonus: +1 huisschild!'),1400)}setTimeout(()=>{dagBeloon();stats()},50);return r};
+const _belK=beloon;beloon=function(id,...a){const r=_belK(id,...a);const p=(id.match(/^[a-z]+/)||[''])[0];tel(p);if(!/^m3/.test(id)&&Math.random()<.35){S.galjoenen=(S.galjoenen|0)+5;bewaar();setTimeout(()=>{toast('Bonus: +5 Smekkies!');try{stats()}catch(e){}},1400)}setTimeout(()=>{dagBeloon();stats()},50);return r};
 function kernNa(){dagBeloon();potCheck()}
 /* ---------- hoofdscherm: het actieve lokaal ---------- */
 function sterTeller(){return `<span class="sterteller" title="Huisschilden">${schildSVG()}<b>${S.schilden}</b></span>`}
@@ -114,8 +114,8 @@ function doeTaak(v,t){if(S.schilden<t[2]){toast(`Je hebt nog ${t[2]-S.schilden} 
  if(t[6]){const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo keuze"><h2>Kies een stijl</h2><p>${t[1]}</p><div class="kz">${t[6].map((n,i)=>`<button class="kzopt" data-i="${i}"><span class="kzico kz${i}">${icoon(t[3])}</span><b>${n}</b></button>`).join('')}</div>${tilly('O, ik kan niet kiezen! Ze zijn alle drie prachtig. Jij beslist.')}</div>`;document.body.appendChild(o);
   o.querySelectorAll('.kzopt').forEach(b=>b.onclick=()=>{o.remove();rond(+b.dataset.i)})}else rond(null)}
 /* elke paar dagen: uilenpost met een extra verhaalmoment */
-const POST=[['Tilly','Er kwam een uil voor je, Luna! Een briefje van Professor Stronk: “Voor de beste helpster van de kas.” Er zaten twee sterren bij.'],['Tilly','Uilenpost! Hagrid schrijft dat zijn pompoenen al zo groot zijn als een kruiwagen. En hij stuurt twee sterren mee.'],['Tilly','Een geheimzinnig briefje zonder afzender… alleen twee glinsterende sterren en de woorden: “Kijk vannacht omhoog.”'],['Tilly','Professor Banning stuurt een zwevende kaart: “Bedankt voor de hulp!” Hij danst nog steeds een beetje.']];
-function uilenpostCheck(){const nu=Date.now();if(!S.uilenpost){S.uilenpost=nu;bewaar();return}if(nu-S.uilenpost<2*864e5)return;S.uilenpost=nu;S.schilden+=2;bewaar();stats();setTimeout(()=>verhaal([POST[Math.floor(nu/864e5)%POST.length]]),700)}
+const POST=[['Tilly','Er kwam een uil voor je, Luna! Een briefje van Professor Stronk: “Voor de beste helpster van de kas.” Er zat een huisschild bij.'],['Tilly','Uilenpost! Hagrid schrijft dat zijn pompoenen al zo groot zijn als een kruiwagen. En hij stuurt een huisschild mee.'],['Tilly','Een geheimzinnig briefje zonder afzender… alleen een glinsterend huisschild en de woorden: “Kijk vannacht omhoog.”'],['Tilly','Professor Banning stuurt een zwevende kaart: “Bedankt voor de hulp!” Er zit een huisschild bij, en hij danst nog steeds een beetje.']];
+function uilenpostCheck(){const nu=Date.now();if(!S.uilenpost){S.uilenpost=nu;bewaar();return}if(nu-S.uilenpost<2*864e5)return;S.uilenpost=nu;S.schilden+=1;bewaar();stats();setTimeout(()=>verhaal([POST[Math.floor(nu/864e5)%POST.length]]),700)}
 /* ---------- levelpad ---------- */
 V.pad=()=>{const j=Math.max(1,Math.ceil(S.m3lvl/30));const start=(j-1)*30+1;const n=30;const pts=[];for(let i=0;i<n;i++){const y=60+i*86;const x=50+Math.sin(i*.9)*28;pts.push([x,y])}pts.reverse();
  const H=60+n*86;const vs=vakkenVan(j);

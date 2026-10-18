@@ -70,7 +70,7 @@ window.fgSnaai=snaaiVlucht;
 const _nb=window.m3NaBord;window.m3NaBord=(b,boost)=>{const bo=(boost&&boost.bo)||[];const heb=bo.includes('snaai')&&S.bo.snaai>0;_nb(b,boost);if(heb)setTimeout(()=>wachtVrij(b,()=>snaaiVlucht(b)),900)};
 
 /* ---------- winreeks: cadeaus van Fred & George ---------- */
-const REEKS=[null,{knalpijl:1},{knalpijl:1},{knalpijl:2},{vuurpijl:1},{vuurpijl:1}];
+const REEKS=[null,{knalpijl:1},{knalpijl:3},{vuurpijl:1},{vuurpijl:1,knalpijl:2},{snaai:1}];
 const NAAM={knalpijl:['Kleine Knalpijl','Kleine Knalpijlen'],vuurpijl:['Grote Weasley-Vuurpijl','Grote Weasley-Vuurpijlen'],snaai:['Gouden Snaai','Gouden Snaaien']};
 const giftTekst=g=>Object.entries(g).map(([k,n])=>n+' '+NAAM[k][n>1?1:0]).join(' en ');
 const giftIco=g=>Object.entries(g).map(([k,n])=>Array.from({length:n},()=>`<img src="img/pu/fg-${k}.webp" alt="">`).join('')).join('');
@@ -89,7 +89,7 @@ const _mw=m3Winst;m3Winst=function(n,b){const eerste=n>=(S.m3lvl|0);window._fles
  if(eerste&&n===30&&!heeftGroenePot()){S.potUpgrade=Math.max(1,S.potUpgrade|0);S.groenGift=1}
  if(eerste&&n===20){S.bo.bom=(S.bo.bom|0)+1;S.gift20=1}
  bewaar();const r=_mw(n,b);
- try{const m=document.querySelector('.m3eind');if(m&&gift){const vol=stand>=5;const zin=vol?'Vijf op rij! Nog een Grote Weasley-Vuurpijl. Knap gedaan!':['','Eén op rij! Een Kleine Knalpijl van het huis.','Twee op rij! Nog een Kleine Knalpijl.','Drie op rij! Twee Kleine Knalpijlen.','Vier op rij! Een Grote Weasley-Vuurpijl. Draken inbegrepen.'][stand];
+ try{const m=document.querySelector('.m3eind');if(m&&gift){const vol=stand>=5;const zin=vol?'Vijf op rij! Hier is de Gouden Snaai. Pak hem voor hij wegvliegt!':['','Eén op rij! Een Kleine Knalpijl van het huis.','Twee op rij! Drie Knalpijlen, want wij zijn gul.','Drie op rij! Een Grote Weasley-Vuurpijl. Draken inbegrepen.','Vier op rij! Een Grote én twee Kleine. Nog één en je krijgt iets heel bijzonders.'][stand];
    const knop=m.querySelector('#m3verder');(knop||m.lastChild).insertAdjacentHTML('beforebegin',`<div class="fgcadeau"><div class="fgcico">${giftIco(gift)}</div><p><b>${stand%2?'Fred':'George'}:</b> ${zin}</p>${meter(stand)}<small>${vol?'De reeks begint weer bij 1.':'Ligt bij je boosters.'}</small></div>`)}}catch(e){console.warn(e)}
  if(eerste&&n%10===0)geefKaart('','Een mijlpaal! Bij elk 10e level krijg je een tovenaarskaart.');
  if(eerste&&KAARTCADEAU[n])geefKaart(...KAARTCADEAU[n]);

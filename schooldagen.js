@@ -49,6 +49,13 @@ const SCHOOL_DAGEN_PER_VAK=5;
 const SCHOOL_LEVELS_PER_DAG=20;
 const SCHOOL_DOELEN_PER_DAG=10;
 const SCHOOL_DOELKOSTEN=[1,3,1,3,1,3,1,3,1,3];
+/* Kosten per schooldag in huisschilden. Een level geeft 1 schild per ster (2-3), dus ~50 per dag van 20 levels.
+   Dag 1 is goedkoop (20); dag 2 vangt het overschot van dag 1 op (88); daarna 54 per dag:
+   wie ~60% van de levels met 3 sterren wint, is aan het eind van de dag net rond (een paar schilden over). */
+const SCHOOL_KOSTEN_DAG=[[1,3,1,3,1,3,1,3,1,3],[4,6,7,8,9,9,10,11,12,12],[3,4,4,5,5,6,6,6,7,8]];
+const schoolKosten=index=>SCHOOL_KOSTEN_DAG[Math.min(index|0,SCHOOL_KOSTEN_DAG.length-1)];
+const schoolKostenSom=index=>schoolKosten(index).reduce((t,k)=>t+k,0);
+window.schoolKostenSom=schoolKostenSom;
 const SCHOOL_POSITIES=[[16,24],[50,18],[82,26],[23,45],[75,46],[15,66],[48,62],[84,68],[31,83],[70,84]];
 const SCHOOL_ICONEN=['blad','zon','bloem','hart','ster','boek','gieter','maan','lijst','beker'];
 const SCHOOL_KAMERS={
@@ -93,7 +100,7 @@ function schoolDag(index=S.schoolDag){
  const taken=doelen.map((naam,indexDoel)=>[
   `school-${vak.id}-dag-${dagNummer}-doel-${indexDoel+1}`,
   naam,
-  SCHOOL_DOELKOSTEN[indexDoel],
+  schoolKosten(index)[indexDoel],
   SCHOOL_ICONEN[indexDoel],
   SCHOOL_POSITIES[indexDoel],
   `${naam}. ${indexDoel%2?'De professor knikt tevreden.':'Tilly ziet meteen verschil.'}`
@@ -107,7 +114,7 @@ function schoolDag(index=S.schoolDag){
  return{
   index,vak,inhoud,begin,einde,dagNummer,
   v:{id:`school-${vak.id}-dag-${dagNummer}`,n:`${vak.n} · Dag ${dagNummer} van 5`,lokaal:lokaal.lokaal,decor:lokaal.decor,img:lokaal.img,prof:vak.prof,thema:vak.thema,
-   intro:[['Tilly',`Schooldag ${dagNummer} van 5 bij ${vak.n}. ${inhoud.open}`],[vak.prof,`${inhoud.les} Deze dag loopt van level ${begin} tot en met ${einde}; tien hersteldoelen kosten samen twintig sterren.`]],
+   intro:[['Tilly',`Schooldag ${dagNummer} van 5 bij ${vak.n}. ${inhoud.open}`],[vak.prof,`${inhoud.les} Deze dag loopt van level ${begin} tot en met ${einde}; tien hersteldoelen kosten samen ${schoolKostenSom(index)} huisschilden.`]],
    outro,taken,schoolDagIndex:index,schoolDagBegin:begin,schoolDagEinde:einde,schoolDagTitel:inhoud.titel}
  };
 }
@@ -188,7 +195,7 @@ V.home=function(...a){
   const mist=document.querySelector('.lokaal .scene-mist');
   if(mist)mist.style.opacity=String(1-afgerond/SCHOOL_DOELEN_PER_DAG);
   info.className='schooldag-voortgang';
-  info.textContent=`${stage.inhoud.titel} · ${afgerond}/${SCHOOL_DOELEN_PER_DAG} doelen · ${SCHOOL_DOELKOSTEN.reduce((totaal,kost)=>totaal+kost,0)} sterren totaal`;
+  info.textContent=`${stage.inhoud.titel} · ${afgerond}/${SCHOOL_DOELEN_PER_DAG} doelen · ${schoolKostenSom(stage.index)} huisschilden totaal`;
   teller.insertAdjacentElement('afterend',info);
   const lijst=document.createElement('details');
   lijst.className='schooldoelenlijst';
@@ -249,7 +256,8 @@ window.schoolDagen={
  doelenPerDag:SCHOOL_DOELEN_PER_DAG,
  dagenPerVak:SCHOOL_DAGEN_PER_VAK,
  levelsPerDag:SCHOOL_LEVELS_PER_DAG,
- sterrenPerDag:SCHOOL_DOELKOSTEN.reduce((totaal,kost)=>totaal+kost,0),
+ get sterrenPerDag(){return schoolKostenSom(S.schoolDag)},
+ kostenVan:schoolKostenSom,
  huidig:()=>schoolDag(),
  compleet:schoolDagDoelenKlaar
 };

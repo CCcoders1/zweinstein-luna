@@ -23,11 +23,11 @@ function kruidSlot(z){return GROEN_KRUID.has(z)&&!heeftGroenePot()}
 function potMelding(b){toast(POT_BETER_ZIN);try{fx.speel('fout')}catch(e){}if(b){b.classList.add('schud');setTimeout(()=>b.classList.remove('schud'),400)}}
 const FASEN=['Zaadje','Kiemplantje','Jonge plant','Knop','Bloeiend – klaar om te oogsten'];
 def('kweek',{});def('zaden',{varkensgras:1});def('mest',1);def('oogst',{});def('kweekOpdr',0);
-const KOPDR=[['mandragora',3,'Kweek 3 Mandragora’s voor Professor Stronk','Professor Stronk','Drie gezonde Mandragora’s! Daar kan de hele klas mee oefenen. Dank je wel, juffrouw Leeflang.',[3,40]],
- ['valeriaan',4,'Kweek 4 bossen valeriaan voor de ziekenzaal','Tilly','Madame Plijster was er zó blij mee. Ze gaat er slaapdrankjes van maken.',[2,25]],
- ['alsem',3,'Kweek 3 keer alsem voor Professor Sneep','Professor Sneep','Hm. Bruikbaar. Zeer… bruikbaar.',[2,30]],
- ['affodil',3,'Kweek 3 keer affodil voor het Vocht van de Levende Dood','Tilly','Nu hebben we álles voor het Vocht van de Levende Dood. Spannend!',[3,30]],
- ['kieuwwier',2,'Kweek 2 kieuwwier voor de toverwedstrijd bij het meer','Tilly','Wie dit eet, kan een uur onder water ademen. Zullen we het niet uitproberen in de vijver?',[3,40]]];
+const KOPDR=[['mandragora',3,'Kweek 3 Mandragora’s voor Professor Stronk','Professor Stronk','Drie gezonde Mandragora’s! Daar kan de hele klas mee oefenen. Dank je wel, juffrouw Leeflang.',[1,70]],
+ ['valeriaan',4,'Kweek 4 bossen valeriaan voor de ziekenzaal','Tilly','Madame Plijster was er zó blij mee. Ze gaat er slaapdrankjes van maken.',[1,40]],
+ ['alsem',3,'Kweek 3 keer alsem voor Professor Sneep','Professor Sneep','Hm. Bruikbaar. Zeer… bruikbaar.',[1,45]],
+ ['affodil',3,'Kweek 3 keer affodil voor het Vocht van de Levende Dood','Tilly','Nu hebben we álles voor het Vocht van de Levende Dood. Spannend!',[1,60]],
+ ['kieuwwier',2,'Kweek 2 kieuwwier voor de toverwedstrijd bij het meer','Tilly','Wie dit eet, kan een uur onder water ademen. Zullen we het niet uitproberen in de vijver?',[1,70]]];
 function kOpdr(){for(let i=0;i<KOPDR.length;i++){const o=KOPDR[(S.kweekOpdr+i)%KOPDR.length];if(!kruidSlot(o[0]))return o}return KOPDR[S.kweekOpdr%KOPDR.length]}
 function kOpdrTel(){const o=kOpdr();return Math.min(o[1],(S.oogst[o[0]+'#'+S.kweekOpdr]||0))}
 function pot(i){return S.kweek[i]||null}
@@ -59,7 +59,7 @@ function oogsten(i){if(pot(i)&&pot(i).z=='flessenbes'){try{const k=document.quer
  fx.speel(p.goud?'fanfare':'goed');vib(p.goud?[40,30,120]:[30,30]);
  for(let j=0;j<Math.min(n,4);j++)if(!power)setTimeout(()=>{try{buitVlucht(d[1])}catch(e){}},300+j*250);
  setTimeout(()=>{if(power){const beloning=Object.entries(power.oogst).map(([k,v])=>`${v*(p.goud?2:1)} ${BOOSTERS[k].naam}`).join(', ');try{gids(`${power.naam} geoogst! Je hebt nu ${beloning} klaar voor een volgende ronde.`,{})}catch(e){toast(`Geoogst: ${beloning}`)}}if(p.goud)verhaal([['Tilly',`Luna… kijk! Een <b>gouden oogst</b>! ${n}× ${buitNaam(d[1])}, en de bladeren glanzen als Smekkies. Dat zie je maar zelden. (+1 huisschild, +25 Smekkies)`]]);
-  if(kOpdrTel()>=o[1]){S.kweekOpdr++;S.schilden+=o[5][0];S.galjoenen+=o[5][1];bewaar();stats();verhaal([[o[3],o[4]],['Tilly',`Opdracht klaar! +${o[5][0]} sterren en +${o[5][1]} Smekkies.`]])}
+  if(kOpdrTel()>=o[1]){S.kweekOpdr++;S.schilden+=o[5][0];S.galjoenen+=o[5][1];bewaar();stats();verhaal([[o[3],o[4]],['Tilly',`Opdracht klaar! +${o[5][0]} ${o[5][0]==1?'huisschild':'huisschilden'} en +${o[5][1]} Smekkies.`]])}
   try{dagBeloon()}catch(e){}V.kas()},RMP?100:1100)}
 /* ingrediënten ook bruikbaar bij taken: Herbologie-mesttaak kan met drakenmest */
 /* dagdoel koppeling */
