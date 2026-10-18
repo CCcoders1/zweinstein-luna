@@ -1322,3 +1322,35 @@ body[data-view=mysterie] #ma{width:100%;font:inherit;font-size:1.1em;padding:.6e
 .vrbinnen{font-size:1.15em;line-height:1.5;text-align:center;padding:14px 6px;color:#3b2a14}
 .vrlet{color:#7a4a00!important;text-align:center}
 .vrpop .vrbel{font:700 1.6em Georgia,serif;color:#7a4a00!important;text-align:center;margin:.3em 0}
+/* v110 vrienden: menubalk, Hal-strook, levelstart */
+#nav.uinav.nav6{grid-template-columns:1fr 1fr 1.2fr 1fr 1fr 1fr!important}
+#nav.uinav.nav6 button{min-width:0!important;padding-left:0!important;padding-right:0!important}
+#nav.uinav.nav6 .rond,#nav.uinav.nav6 .rond img.uiico{width:42px;height:42px}
+#nav.uinav.nav6 .halknop,#nav.uinav.nav6 .halknop img.uiico{width:62px;height:62px}
+#nav.uinav.nav6 span:not(.halknop){font-size:.78em;letter-spacing:.02em;white-space:nowrap}
+@media(max-width:370px){#nav.uinav.nav6 .rond,#nav.uinav.nav6 .rond img.uiico{width:38px;height:38px}#nav.uinav.nav6 span:not(.halknop){font-size:.72em}}
+.vrkopimg{border-radius:50%}
+.vrhoofd button{font-size:1em;padding:.55em .2em}
+.vrsub{margin-top:4px}.vrsub button{font-size:.98em;padding:.45em}
+.vrscore small{font-size:.65em;font-weight:600;color:#6b4a22;margin-right:2px}
+.vruitnodig{text-align:center}.vruitnodig p{margin:0 0 8px;line-height:1.45;color:#3b2a14}
+.halvr{display:block;margin:10px 0;padding:10px 12px;border-radius:14px;background:linear-gradient(rgba(250,238,210,.97),rgba(236,214,170,.97))!important;border:2px solid #c9a227;box-shadow:0 4px 14px rgba(0,0,0,.3);color:#2b1a0b;cursor:pointer}
+.halvr:active{transform:scale(.99)}
+.halvrkop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.halvrkop b{font:700 1.12em Georgia,serif;color:#6a1d12}.halvrkop span{color:#7a4a00;font-weight:700;font-size:.95em}
+.halvrtekst{margin:0;color:#3b2a14}
+.halvrrij{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.halvrp{flex:0 0 auto;min-width:62px;max-width:76px;display:flex;flex-direction:column;align-items:center;padding:4px 4px 6px;border-radius:12px;background:rgba(255,250,235,.6);border:1px solid rgba(168,113,58,.4);position:relative}
+.halvrp.ik{background:rgba(212,175,55,.3);border-color:#c9a227}
+.halvrp b{font-size:.86em;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#2b1a0b}
+.halvrp small{font-size:.78em;color:#6b4a22}
+.halvrnr{position:absolute;top:-4px;left:-2px;font-size:.95em}
+.halvrp.nodig{justify-content:center;max-width:96px;border-style:dashed}.halvrp.nodig b{white-space:normal;text-align:center;font-size:.82em}
+.halvrplus{font-size:1.5em;color:#7a4a00;line-height:1}
+.vrlvbord{margin:10px auto;max-width:420px;padding:8px 12px;border-radius:12px;background:rgba(250,238,210,.93);border:1.5px solid #c9a227;color:#2b1a0b;text-align:left}
+.vrlvbord h3{margin:0 0 4px!important;font-size:1.05em!important;color:#6a1d12!important;text-shadow:none!important}
+.vrlvbord ol{list-style:none;margin:0;padding:0}
+.vrlvbord li{display:flex;align-items:center;gap:8px;padding:3px 2px;border-bottom:1px dashed rgba(168,113,58,.35)}.vrlvbord li:last-child{border-bottom:0}
+.vrlvbord .vrnaam{color:#2b1a0b}
+.vrst{color:#b8860b;font-size:1.1em;letter-spacing:1px;white-space:nowrap}.vrnu{color:#2e6b2e;font-weight:700;font-size:.92em}.vrlvn{color:#6b4a22;font-size:.92em}
+.vrlvleeg{margin:4px 0 0;color:#4a3418!important;font-size:.95em;text-shadow:none!important}
