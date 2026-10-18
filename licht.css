@@ -1354,3 +1354,13 @@ body[data-view=mysterie] #ma{width:100%;font:inherit;font-size:1.1em;padding:.6e
 .vrlvbord .vrnaam{color:#2b1a0b}
 .vrst{color:#b8860b;font-size:1.1em;letter-spacing:1px;white-space:nowrap}.vrnu{color:#2e6b2e;font-weight:700;font-size:.92em}.vrlvn{color:#6b4a22;font-size:.92em}
 .vrlvleeg{margin:4px 0 0;color:#4a3418!important;font-size:.95em;text-shadow:none!important}
+/* v111 eindfeest */
+.m3score{font:700 .9em Georgia,serif;color:#ffe9a8;text-shadow:0 1px 2px rgba(0,0,0,.6);text-align:center;margin-top:1px}
+.m3score b{color:#fff8e0;font-variant-numeric:tabular-nums;font-size:1.1em}
+#m3feest{position:fixed;inset:0;z-index:60;background:transparent;touch-action:none;display:flex;align-items:flex-end;justify-content:center;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+#m3feest span{font:700 .95em Georgia,serif;color:#3b2206;background:rgba(250,238,210,.88);border:1.5px solid #c9a227;border-radius:999px;padding:.35em 1em;box-shadow:0 3px 10px rgba(0,0,0,.3);opacity:.92}
+#m3feest.snel span{background:linear-gradient(#ffe79a,#e2b23a)}
+.m3vonk{position:fixed;width:18px;height:18px;border-radius:50%;pointer-events:none;z-index:61;background:radial-gradient(circle,#fffbe6 0,#ffe27a 35%,rgba(255,200,60,.5) 60%,transparent 72%);box-shadow:0 0 12px 4px rgba(255,214,90,.75)}
+.m3plus{position:fixed;transform:translate(-50%,-50%);pointer-events:none;z-index:61;font:700 15px Georgia,serif;color:#fff3c0;text-shadow:0 1px 2px #5a3200,0 0 6px rgba(255,200,60,.8);animation:m3plusop .9s ease-out forwards}
+@keyframes m3plusop{from{opacity:0;transform:translate(-50%,-30%) scale(.8)}20%{opacity:1}to{opacity:0;transform:translate(-50%,-160%) scale(1.05)}}
+.m3eindscore{margin:.1em 0 .3em;font:700 1.1em Georgia,serif;color:#7a4a00}.m3eindscore b{font-size:1.2em}
