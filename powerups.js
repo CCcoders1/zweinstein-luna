@@ -38,8 +38,8 @@ window.m3PuFx=(f,x,y,cel)=>{const RM=matchMedia('(prefers-reduced-motion: reduce
 const rnd=a=>a[Math.random()*a.length|0];
 const vrij=b=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L};
 /* Startbonus op het bord bij een winreeks (alleen nieuwe levels; nooit een Gouden Snaai).
-   reeks 2-3: 1 streep · reeks 4-5: 1 bom · reeks 6+: 1 bom + 1 streep · zwaar level: hooguit 1 streep */
-function reeksPlan(reeks,n){const r=reeks|0;let p={bommen:0,strepen:0};if(r>=6)p={bommen:1,strepen:1};else if(r>=4)p={bommen:1,strepen:0};else if(r>=2)p={bommen:0,strepen:1};
+   reeks 2-3: 1 streep · reeks 4-5 (max): 1 bom · zwaar level: hooguit 1 streep */
+function reeksPlan(reeks,n){const r=Math.min(5,reeks|0);let p={bommen:0,strepen:0};if(r>=4)p={bommen:1,strepen:0};else if(r>=2)p={bommen:0,strepen:1};
  if(n&&window.lvZwaar&&lvZwaar(+n)&&(p.bommen||p.strepen))p={bommen:0,strepen:1};return p}
 function reeksMag(n){n=+n||0;if(n&&n<(S.m3lvl|0))return false;const p=window.plaagVan&&plaagVan(n);if(p&&p.intro)return false;return true}
 function reeksVrij(b){const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L}
@@ -49,7 +49,7 @@ function reeksOpBord(b){const leeg={bommen:0,strepen:0};if(!b||b.sim||(b.L&&b.L.
  if(plan.bommen){const p=reeksNeem(vrij,3,5);if(p){b.g[p[0]][p[1]].s='bom';g.bommen=1}}
  if(plan.strepen){const p=reeksNeem(vrij,2,6);if(p){b.g[p[0]][p[1]].s=Math.random()<.5?'rh':'rv';g.strepen=1}}
  if(g.bommen||g.strepen){const z=reeksZin(g);toast(z.charAt(0).toUpperCase()+z.slice(1)+(g.bommen&&g.strepen?' staan':' staat')+' klaar.')}return g}
-window.reeksTekst=n=>{if(!reeksMag(n))return '';const plan=reeksPlan(S.winReeks,n);if(!plan.bommen&&!plan.strepen)return '';return `<p class="reekswinst">Reeks ${S.winReeks|0}: ${reeksZin(plan)} ${plan.bommen&&plan.strepen?'staan':'staat'} klaar op het bord.</p>`};
+window.reeksTekst=n=>{if(!reeksMag(n))return '';const plan=reeksPlan(S.winReeks,n);if(!plan.bommen&&!plan.strepen)return '';return `<p class="reekswinst">Reeks ${Math.min(5,S.winReeks|0)}${(S.winReeks|0)>=5?' (max)':''}: ${reeksZin(plan)} ${plan.bommen&&plan.strepen?'staan':'staat'} klaar op het bord.</p>`};
 window.m3NaBord=(b,boost)=>{uq=[];b.kt=b.kt||Array.from({length:RIJEN},()=>Array(KOL).fill(0));b.ktk=b.ktk||Array.from({length:RIJEN},()=>Array(KOL).fill(0));
  try{reeksOpBord(b)}catch(e){}
  const bo=(boost&&boost.bo)||[];if(!bo.length)return;

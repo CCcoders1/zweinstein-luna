@@ -75,22 +75,22 @@ const NAAM={knalpijl:['Kleine Knalpijl','Kleine Knalpijlen'],vuurpijl:['Grote We
 const giftTekst=g=>Object.entries(g).map(([k,n])=>n+' '+NAAM[k][n>1?1:0]).join(' en ');
 const giftIco=g=>Object.entries(g).map(([k,n])=>Array.from({length:n},()=>`<img src="img/pu/fg-${k}.webp" alt="">`).join('')).join('');
 const meter=v=>`<span class="fgmeter">${[1,2,3,4,5].map(i=>`<i class="${i<=v?'aan':''}">${i==5?'⚡':i}</i>`).join('')}</span>`;
-S.fgReeks=S.fgReeks|0;
+S.winReeks=Math.min(5,S.winReeks|0);S.fgReeks=Math.min(5,Math.max(S.fgReeks|0,S.winReeks|0));
 const _vm=V.match3;V.match3=async function(n,...a){const r=await _vm.call(this,n,...a);try{n=n||S.m3lvl||1;const h=document.querySelector('.m3voor .harten');if(h&&!document.querySelector('.m3voor .fgreeks')){const nieuw=n>=(S.m3lvl|0);const v=S.fgReeks|0;
-  h.insertAdjacentHTML('afterend',`<div class="fgreeks"><b>Reeks van Fred &amp; George</b> ${meter(v)}<small>${nieuw?`Win dit level voor: ${giftIco(REEKS[v+1])} ${giftTekst(REEKS[v+1])}`:'Een level opnieuw spelen telt niet mee voor de reeks.'}</small></div>`)}}catch(e){console.warn(e)}return r};
+  h.insertAdjacentHTML('afterend',`<div class="fgreeks"><b>Reeks van Fred &amp; George${v>=5?' · Reeks 5 (max)':''}</b> ${meter(Math.min(5,v))}<small>${nieuw?`Win dit level voor: ${giftIco(REEKS[Math.min(5,v+1)])} ${giftTekst(REEKS[Math.min(5,v+1)])}`:'Een level opnieuw spelen telt niet mee voor de reeks.'}</small></div>`)}}catch(e){console.warn(e)}return r};
 const _mv=m3Verlies;m3Verlies=function(n,b){const was=S.fgReeks|0;S.fgReeks=0;
  // strikflesje terug
  if(window._flesInzet&&window._flesInzet.n==n){const id=window._flesInzet.id;S.flesjes[id]=(S.flesjes[id]|0)+1;window._flesInzet=null;T(()=>toast('Je flesje is terug in je kist. Probeer het gerust nog eens.'),1200)}
  bewaar();const r=_mv(n,b);try{if(was>0){const p=document.querySelector('.m3eind p');if(p)p.insertAdjacentHTML('afterend',`<p class="klein fgweg">De reeks van Fred &amp; George begint weer bij 1.</p>`)}}catch(e){}return r};
 const _ga=ga;ga=function(s,...a){if(window._flesInzet&&s!=='match3'&&document.body.dataset.view==='match3'&&!document.querySelector('.m3eind')){const id=window._flesInzet.id;S.flesjes[id]=(S.flesjes[id]|0)+1;window._flesInzet=null;bewaar();T(()=>toast('Je flesje staat weer in je kist.'),600)}return _ga(s,...a)};
 const _mw=m3Winst;m3Winst=function(n,b){const eerste=n>=(S.m3lvl|0);window._flesInzet=null;let gift=null,stand=0;
- if(eerste){stand=(S.fgReeks|0)+1;gift=REEKS[stand];Object.entries(gift).forEach(([k,x])=>S.bo[k]=(S.bo[k]|0)+x);S.fgReeks=stand>=5?0:stand}
+ let alMax=false;if(eerste){alMax=(S.fgReeks|0)>=5;stand=Math.min(5,(S.fgReeks|0)+1);gift=REEKS[stand];Object.entries(gift).forEach(([k,x])=>S.bo[k]=(S.bo[k]|0)+x);S.fgReeks=stand}
  // mijlpalen
  if(eerste&&n===30&&!heeftGroenePot()){S.potUpgrade=Math.max(1,S.potUpgrade|0);S.groenGift=1}
  if(eerste&&n===20){S.bo.bom=(S.bo.bom|0)+1;S.gift20=1}
  bewaar();const r=_mw(n,b);
- try{const m=document.querySelector('.m3eind');if(m&&gift){const vol=stand>=5;const zin=vol?'Vijf op rij! Hier is de Gouden Snaai. Pak hem voor hij wegvliegt!':['','Eén op rij! Een Kleine Knalpijl van het huis.','Twee op rij! Drie Knalpijlen, want wij zijn gul.','Drie op rij! Een Grote Weasley-Vuurpijl. Draken inbegrepen.','Vier op rij! Een Grote én twee Kleine. Nog één en je krijgt iets heel bijzonders.'][stand];
-   const knop=m.querySelector('#m3verder');(knop||m.lastChild).insertAdjacentHTML('beforebegin',`<div class="fgcadeau"><div class="fgcico">${giftIco(gift)}</div><p><b>${stand%2?'Fred':'George'}:</b> ${zin}</p>${meter(stand)}<small>${vol?'De reeks begint weer bij 1.':'Ligt bij je boosters.'}</small></div>`)}}catch(e){console.warn(e)}
+ try{const m=document.querySelector('.m3eind');if(m&&gift){const vol=stand>=5;const zin=vol?(alMax?'Wéér gewonnen! Je reeks staat nog op 5, dus: nog een Gouden Snaai.':'Vijf op rij! Hier is de Gouden Snaai. Pak hem voor hij wegvliegt!'):['','Eén op rij! Een Kleine Knalpijl van het huis.','Twee op rij! Drie Knalpijlen, want wij zijn gul.','Drie op rij! Een Grote Weasley-Vuurpijl. Draken inbegrepen.','Vier op rij! Een Grote én twee Kleine. Nog één en je krijgt iets heel bijzonders.'][stand];
+   const knop=m.querySelector('#m3verder');(knop||m.lastChild).insertAdjacentHTML('beforebegin',`<div class="fgcadeau"><div class="fgcico">${giftIco(gift)}</div><p><b>${stand%2?'Fred':'George'}:</b> ${zin}</p>${meter(stand)}<small>${vol?'Reeks 5 (max). Blijf winnen: elke winst geeft een Gouden Snaai. Ligt bij je boosters.':'Ligt bij je boosters.'}</small></div>`)}}catch(e){console.warn(e)}
  if(eerste&&n%10===0)geefKaart('','Een mijlpaal! Bij elk 10e level krijg je een tovenaarskaart.');
  if(eerste&&KAARTCADEAU[n])geefKaart(...KAARTCADEAU[n]);
  if(S.groenGift===1){S.groenGift=2;bewaar();T(()=>{const o=modal(`<h2>Een cadeau van Professor Stronk</h2><img src="img/kas/pot1.webp" alt="" style="width:96px;display:block;margin:.3em auto"><p><b>Professor Stronk:</b> Level 30, knap gedaan! Hier is de groene <b>Kruidenpot</b>. Hij staat al op je tafel. Daarin groeien Duivelsstrik, Tentacula en Sodejus.</p><button class="knop volgende" id="grok">Dank u, professor!</button>`);o.querySelector('#grok').onclick=()=>o.remove()},2200)}
