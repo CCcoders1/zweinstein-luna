@@ -1295,3 +1295,30 @@ body[data-view=mysterie] #ma{width:100%;font:inherit;font-size:1.1em;padding:.6e
 .mgkader #teken{background:linear-gradient(#fffaf0,#f3e3bf);border:2px solid #c9a227}
 .mgkader .bonen{padding:10px;border-radius:14px;background:radial-gradient(circle at 50% 30%,#fff3d6,#e8cf98);border:2px solid #c9a227}
 @media (prefers-reduced-motion: reduce){.mk2-in{transition:none}.mk2.klaar .mk2-in{animation:none}}
+/* v109 vrienden-uitdagingen */
+.vrkader{color:#2b1a0b}
+.vrkader h3{color:#6a1d12!important;margin:.2em 0 .4em!important;font-size:1.15em}
+.vrkader section{background:rgba(255,250,235,.55);border:1.5px solid rgba(168,113,58,.45);border-radius:12px;padding:10px 12px;margin:10px 0}
+.vrcode{text-align:center}.vrcode p{margin:0;color:#5a3a16}
+.vrcodeveld{font:700 2em/1.2 Georgia,serif;letter-spacing:.22em;color:#6a1d12;margin:.15em 0 .3em;user-select:all}
+.vrknoppen{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+.vrknoppen .knop{margin:0}
+.vrnieuw label{display:block;font-weight:700;color:#5a3a16;margin-bottom:6px}
+#vrin{font:700 1.3em Georgia,serif;letter-spacing:.18em;text-transform:uppercase;width:8.2em;padding:.4em .5em;border-radius:10px;border:2px solid #c9a227;background:#fffaf0;color:#2b1a0b;text-align:center}
+.vrlijst ul,.vrbord ol{list-style:none;margin:0;padding:0}
+.vrlijst li,.vrbord li{display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px dashed rgba(168,113,58,.4)}
+.vrlijst li:last-child,.vrbord li:last-child{border-bottom:0}
+.vrnaam{flex:1;font-weight:700;color:#2b1a0b}
+.vrlv{color:#6b4a22;font-size:.95em}
+.vrweg{color:#8a4a2a!important;font-size:1.1em;padding:4px 8px!important;min-width:auto!important}
+.vrplek{width:2em;text-align:center;font-size:1.2em}
+.vrscore{font-size:1.2em;color:#6a1d12;min-width:2.4em;text-align:right}
+.vrik{background:rgba(212,175,55,.22);border-radius:8px}
+.vrgeenhuis{font-size:1.4em;width:34px;text-align:center}
+.vrtabs{display:flex;gap:6px;margin:14px 0 4px}
+.vrtabs button{flex:1;font:700 1.08em Georgia,serif;padding:.55em;border-radius:12px 12px 4px 4px;border:2px solid #a8713a;background:rgba(255,250,235,.5);color:#5a3a16}
+.vrtabs button.actief{background:linear-gradient(#e9c46a,#c9a227);color:#3b2206;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.vruitleg{color:#4a3418!important;line-height:1.4}
+.vrbinnen{font-size:1.15em;line-height:1.5;text-align:center;padding:14px 6px;color:#3b2a14}
+.vrlet{color:#7a4a00!important;text-align:center}
+.vrpop .vrbel{font:700 1.6em Georgia,serif;color:#7a4a00!important;text-align:center;margin:.3em 0}
