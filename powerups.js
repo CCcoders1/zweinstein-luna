@@ -37,11 +37,19 @@ window.m3PuFx=(f,x,y,cel)=>{const RM=matchMedia('(prefers-reduced-motion: reduce
 /* boosters bij levelstart */
 const rnd=a=>a[Math.random()*a.length|0];
 const vrij=b=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L};
-function reeksPlan(reeks){const n=reeks|0;if(n<1)return {bommen:0,snaai:false};return {bommen:Math.min(3,n),snaai:n>=5}}
+/* Startbonus op het bord bij een winreeks (alleen nieuwe levels; nooit een Gouden Snaai).
+   reeks 2-3: 1 streep · reeks 4-5: 1 bom · reeks 6+: 1 bom + 1 streep · zwaar level: hooguit 1 streep */
+function reeksPlan(reeks,n){const r=reeks|0;let p={bommen:0,strepen:0};if(r>=6)p={bommen:1,strepen:1};else if(r>=4)p={bommen:1,strepen:0};else if(r>=2)p={bommen:0,strepen:1};
+ if(n&&window.lvZwaar&&lvZwaar(+n)&&(p.bommen||p.strepen))p={bommen:0,strepen:1};return p}
+function reeksMag(n){n=+n||0;if(n&&n<(S.m3lvl|0))return false;const p=window.plaagVan&&plaagVan(n);if(p&&p.intro)return false;return true}
 function reeksVrij(b){const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L}
 function reeksNeem(vrij,lo,hi){let pool=vrij.filter(p=>p[0]>=lo&&p[0]<=hi);if(!pool.length)pool=vrij;if(!pool.length)return null;const p=pool[Math.random()*pool.length|0];vrij.splice(vrij.findIndex(x=>x[0]==p[0]&&x[1]==p[1]),1);return p}
-function reeksOpBord(b){if(!b||b.sim||(b.L&&b.L.plaag&&b.L.plaag.intro))return {bommen:0,snaai:false};const plan=reeksPlan(S.winReeks);if(!plan.bommen&&!plan.snaai)return plan;const vrij=reeksVrij(b);const banden=[[1,2],[3,4],[5,6]];let gezet=0;for(let i=0;i<plan.bommen;i++){const p=reeksNeem(vrij,...(banden[i]||[0,7]));if(!p)break;b.g[p[0]][p[1]].s='bom';gezet++}let snaai=false;if(plan.snaai){const p=reeksNeem(vrij,2,5);if(p){b.g[p[0]][p[1]].s='bal';snaai=true}}if(gezet||snaai){const delen=[];if(gezet===1)delen.push('Een bom staat klaar');else if(gezet)delen.push(gezet+' bommen staan klaar');if(snaai)delen.push('een Gouden Snaai staat klaar');toast(delen.join(', en ').replace(/^een/,'Een')+'.')}return {bommen:gezet,snaai}}
-window.reeksTekst=n=>{const plan=reeksPlan(S.winReeks);if(!plan.bommen)return '';const p=window.plaagVan&&plaagVan(+n);if(p&&p.intro)return '';const bom=plan.bommen===1?'één bom staat':plan.bommen===2?'twee bommen staan':'drie bommen staan';return `<p class="reekswinst">Reeks ${S.winReeks|0}: ${bom} klaar op het bord${plan.snaai?', plus een Gouden Snaai':''}.</p>`};
+const reeksZin=p=>[p.bommen?'een bom':'',p.strepen?'een streep':''].filter(Boolean).join(' en ');
+function reeksOpBord(b){const leeg={bommen:0,strepen:0};if(!b||b.sim||(b.L&&b.L.plaag&&b.L.plaag.intro))return leeg;const n=b.L&&b.L.n;if(!reeksMag(n))return leeg;const plan=reeksPlan(S.winReeks,n);if(!plan.bommen&&!plan.strepen)return plan;const vrij=reeksVrij(b);const g={bommen:0,strepen:0};
+ if(plan.bommen){const p=reeksNeem(vrij,3,5);if(p){b.g[p[0]][p[1]].s='bom';g.bommen=1}}
+ if(plan.strepen){const p=reeksNeem(vrij,2,6);if(p){b.g[p[0]][p[1]].s=Math.random()<.5?'rh':'rv';g.strepen=1}}
+ if(g.bommen||g.strepen){const z=reeksZin(g);toast(z.charAt(0).toUpperCase()+z.slice(1)+(g.bommen&&g.strepen?' staan':' staat')+' klaar.')}return g}
+window.reeksTekst=n=>{if(!reeksMag(n))return '';const plan=reeksPlan(S.winReeks,n);if(!plan.bommen&&!plan.strepen)return '';return `<p class="reekswinst">Reeks ${S.winReeks|0}: ${reeksZin(plan)} ${plan.bommen&&plan.strepen?'staan':'staat'} klaar op het bord.</p>`};
 window.m3NaBord=(b,boost)=>{uq=[];b.kt=b.kt||Array.from({length:RIJEN},()=>Array(KOL).fill(0));b.ktk=b.ktk||Array.from({length:RIJEN},()=>Array(KOL).fill(0));
  try{reeksOpBord(b)}catch(e){}
  const bo=(boost&&boost.bo)||[];if(!bo.length)return;

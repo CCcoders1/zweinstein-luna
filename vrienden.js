@@ -15,11 +15,11 @@ const hash=s=>{let h=7;for(const c of s)h=(Math.imul(h,31)+c.charCodeAt(0))>>>0;
 const kies=k=>{const P=POOL[k[0]],h=hash(k),a=h%P.length,b=(a+1+(h>>>8)%(P.length-1))%P.length;return [P[a],P[b]]};
 window.zwUitdagingen=k=>kies(k||dagKey());
 /* ---------- lokale telling (in de save, dus 'Alles resetten' wist dit mee) ---------- */
-const vr=()=>{if(!S.vr||typeof S.vr!='object')S.vr={sc:{},gl:S.galjoenen|0,kk:S.kikkers|0,kl:{}};S.vr.sc=S.vr.sc||{};S.vr.kl=S.vr.kl||{};return S.vr};
+const vr=()=>{if(!S.vr||typeof S.vr!='object')S.vr={sc:{},gl:S.galjoenen|0,kk:S.kikTot|0,kl:{}};S.vr.sc=S.vr.sc||{};S.vr.kl=S.vr.kl||{};return S.vr};
 const tel=(ch,n)=>{if(!(n>0))return;const v=vr();[dagKey(),weekKey()].forEach(k=>{const o=v.sc[k]=v.sc[k]||{};o[ch]=(o[ch]|0)+n});v.vuil=1};
 const opruimen=()=>{const v=vr(),grens=Date.now()-21*864e5;Object.keys(v.sc).forEach(k=>{if(keyDatum(k)<grens)delete v.sc[k]});Object.keys(v.kl).forEach(k=>{if(keyDatum(k)<grens-30*864e5)delete v.kl[k]})};
 // Smekkies en kikkers: alleen stijgingen tellen, niet in het testmenu, geen sprongen (back-up terugzetten)
-const kijk=()=>{try{if(!S||!S.naam)return;const v=vr();const g=S.galjoenen|0,kk=S.kikkers|0;const bv=document.body.dataset.view;
+const kijk=()=>{try{if(!S||!S.naam)return;const v=vr();const g=S.galjoenen|0,kk=S.kikTot|0;const bv=document.body.dataset.view;
  const tellen=bv!=='maker'&&bv!=='backup'&&!window._vrStil;let ver=false;
  if(g!==v.gl){const d=g-v.gl;if(tellen&&d>0&&d<=1500){tel('smek',d);ver=true}v.gl=g}
  if(kk!==v.kk){const d=kk-v.kk;if(tellen&&d>0&&d<=50){tel('kik',d);ver=true}v.kk=kk}

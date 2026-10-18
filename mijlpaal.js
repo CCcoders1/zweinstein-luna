@@ -23,8 +23,8 @@ const bereikt=m=>(S.m3lvl|0)>m[1];
 bonusVrij=b=>!!S.bonusOpen[b[0]];bonusCheck=function(){};
 function zetOpen(){let v=0;MP.forEach(m=>{if(bereikt(m)&&!open(m[0])){S.bonusOpen[m[0]]=1;v=1}});if(v)bewaar()}
 zetOpen();
-const cadeauTekst=c=>{const d=[];if(c.smek)d.push(c.smek+' Smekkies');if(c.kik)d.push(c.kik+(c.kik==1?' Chocokikker':' Chocokikkers'));if(c.bo)Object.entries(c.bo).forEach(([k,n])=>d.push(n+'× '+((window.BOOSTERS&&BOOSTERS[k]&&BOOSTERS[k].naam)||k)));return d.join(' en ')};
-function geef(c){if(c.smek)S.galjoenen=(S.galjoenen|0)+c.smek;if(c.kik)S.kikkers=(S.kikkers|0)+c.kik;if(c.bo){S.bo=S.bo||{};Object.entries(c.bo).forEach(([k,n])=>S.bo[k]=(S.bo[k]|0)+n)}bewaar();try{stats()}catch(e){}}
+const cadeauTekst=c=>{const d=[];if(c.smek)d.push(c.smek+' Smekkies');if(c.kik)d.push(c.kik+(c.kik==1?' Chocokikker':' Chocokikkers')+' (elk +1 hartje, of 15 Smekkies als je levens vol zijn)');if(c.bo)Object.entries(c.bo).forEach(([k,n])=>d.push(n+'× '+((window.BOOSTERS&&BOOSTERS[k]&&BOOSTERS[k].naam)||k)));return d.join(' en ')};
+function geef(c){if(c.smek)S.galjoenen=(S.galjoenen|0)+c.smek;if(c.kik&&window.kikkerKrijg)kikkerKrijg(c.kik,{wacht:800});if(c.bo){S.bo=S.bo||{};Object.entries(c.bo).forEach(([k,n])=>S.bo[k]=(S.bo[k]|0)+n)}bewaar();try{stats()}catch(e){}}
 const wachtend=()=>MP.find(m=>open(m[0])&&!S.mpAf[m[0]]);
 /* eerste keer gespeeld: cadeau */
 function klaar(k){const m=MPK[k];if(!m||!open(k)||S.mpAf[k])return;S.mpAf[k]=1;geef(m[5]);

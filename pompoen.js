@@ -34,8 +34,8 @@ function beloning(){const r=Math.random();
  if(r<.3){const pool=KAARTEN.filter(k=>k[3]);const k=pool[Math.random()*pool.length|0];return {t:'kaart',n:k[0],img:k[3],zin:'Tovenaarskaart: '+k[0]}}
  if(r<.72){const ks=Object.keys(BOOSTERS).filter(k=>!(window.boDicht&&boDicht(k)));const k=ks[Math.random()*ks.length|0];return {t:'bo',n:k,img:'img/pu/'+BOOSTERS[k].img+'.webp',zin:'Booster: '+BOOSTERS[k].naam}}
  if(r<.86&&(S.m3lvl|0)>=60&&window.SUPERPLANTEN){const z=zeldzaamKies(),d=SUPERPLANTEN[z];return {t:'zaad',z,img:`img/kas/${d.beeld}-4.webp`,zin:'Zeldzaam zaadje: '+d.naam}}
- return {t:'kikker',img:'img/stukken/chocokikker-128.webp',zin:'Chocokikker voor in je tas'}}
-function geef(b){if(b.t=='zaad'&&window.zeldzaamZaad)zeldzaamZaad('pompoen',{stil:1,z:b.z});if(b.t=='kaart')S.kaarten[b.n]=(S.kaarten[b.n]||0)+1;if(b.t=='smek')S.galjoenen+=b.n;if(b.t=='bo')S.bo[b.n]=(S.bo[b.n]|0)+1;if(b.t=='kikker'){S.kikkers=(S.kikkers|0)+1}bewaar();try{stats()}catch(e){}}
+ return {t:'kikker',img:'img/stukken/chocokikker-128.webp',zin:'Chocokikker: +1 hartje (of 15 Smekkies als je levens vol zijn)'}}
+function geef(b){if(b.t=='zaad'&&window.zeldzaamZaad)zeldzaamZaad('pompoen',{stil:1,z:b.z});if(b.t=='kaart')S.kaarten[b.n]=(S.kaarten[b.n]||0)+1;if(b.t=='smek')S.galjoenen+=b.n;if(b.t=='bo')S.bo[b.n]=(S.bo[b.n]|0)+1;if(b.t=='kikker'){window.kikkerKrijg?kikkerKrijg(1,{wacht:600}):0}bewaar();try{stats()}catch(e){}}
 function splat(el){const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
  for(let i=0;i<(RM?4:16);i++){const d=document.createElement('i');const pit=i%3==0;d.className='pp-stuk'+(pit?' pit':'');const a=Math.random()*6.283,v=60+Math.random()*90;d.style.cssText=`left:${cx}px;top:${cy}px;--dx:${Math.cos(a)*v}px;--dy:${Math.sin(a)*v-40}px;--r:${Math.random()*540-270}deg`;document.body.appendChild(d);setTimeout(()=>d.remove(),1300)}
  try{fx.speel('splat')}catch(e){}try{vib(30)}catch(e){}}

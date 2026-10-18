@@ -71,7 +71,7 @@
  addEventListener('resize',plaats);
  const _st=stats;stats=function(){_st();try{badge();plaats();setTimeout(plaats,700);verwerk()}catch(e){console.warn(e)}};
  /* match-3: resterende zetten → bonus-bonen; winstreeks ≥3 → dubbele beloning */
- if(typeof m3Winst==='function'){const _w=m3Winst;m3Winst=function(n,b){window._m3Zet=b.zet;window._m3Bonus=b.zet*2;S.winReeks=(S.winReeks||0)+1;const r=_w(n,b);
+ if(typeof m3Winst==='function'){const _w=m3Winst;m3Winst=function(n,b){window._m3Zet=b.zet;window._m3Bonus=b.zet*2;if(n>=(S.m3lvl|0))S.winReeks=(S.winReeks||0)+1;const r=_w(n,b);
    return r}}
  if(typeof m3Verlies==='function'){const _v=m3Verlies;m3Verlies=function(...a){S.winReeks=0;bewaar();return _v(...a)}}
  window.smek={spring,regen,uitgeven,bonusBonen,groteTekst};

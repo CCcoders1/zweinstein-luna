@@ -72,15 +72,15 @@ const ITEMS=[
  {id:'knalpijl',naam:'Kleine Knalpijl',prijs:120,van:25,img:'img/pu/fg-knalpijl.webp',tekst:'Booster: schiet bij de start vanzelf één hele rij leeg.',soort:'bo'},
  {id:'snaai',naam:'Gouden Snaai',prijs:1500,van:60,img:'img/pu/fg-snaai.webp',tekst:'Booster: zoeft bij de start over het bord en vangt een groot deel van de stukken.',soort:'bo'},
  {id:'vuurpijl',naam:'Grote Weasley-Vuurpijl',prijs:300,van:60,img:'img/pu/fg-vuurpijl.webp',tekst:'Booster: een vuurdraak brandt bij de start drie rijen weg.',soort:'bo'},
- {id:'kikker',naam:'Chocokikker',prijs:60,img:'img/stukken/chocokikker-128.webp',tekst:'Voor in je tas. Eet hem op als je een hart mist: +1 hart.',soort:'nu'},
+ {id:'kikker',naam:'Chocokikker',prijs:60,img:'img/stukken/chocokikker-128.webp',tekst:'Meteen +1 hartje. Alleen te koop als je een hartje mist.',soort:'nu'},
  {id:'fopstok',naam:'Fopstokje',prijs:25,img:'img/stukken/toverstaf-128.webp',tekst:'Lijkt een echte toverstok… tot je zwaait.',soort:'nu'},
  {id:'pluis',naam:'Dwergpluisje',prijs:100,van:5,img:'',tekst:'Een zacht huisdiertje in je eigen kleur. Woont op de toonbank.',soort:'pluis'}];
 function kassa(){const k=document.getElementById('fgkassa');if(k){k.classList.remove('rinkel');void k.offsetWidth;k.classList.add('rinkel')}try{fx.speel('kassa')}catch(e){}}
 function zeg(i){const g=i!=null?GRAP[i]:GRAP[Math.random()*GRAP.length|0];const el=document.getElementById('fgpraat');if(el)el.innerHTML=`<b>${g[0]}:</b> ${g[1]}`}
-function koop(it,kl){if(it.van&&(S.m3lvl|0)<it.van){fgZeg('Die verkopen we je pas vanaf level '+it.van+'. Eerst nog even oefenen!');return}if(S.galjoenen<it.prijs){zeg();const el=document.getElementById('fgpraat');if(el)el.innerHTML='<b>George:</b> Daar heb je niet genoeg Smekkies voor. Geen zorgen, wij geven ook geen krediet.';return}
+function koop(it,kl){if(it.id=='kikker'&&levens()>=5){fgZeg('Je levens zijn al vol! Kom terug als je een hartje mist.');return}if(it.van&&(S.m3lvl|0)<it.van){fgZeg('Die verkopen we je pas vanaf level '+it.van+'. Eerst nog even oefenen!');return}if(S.galjoenen<it.prijs){zeg();const el=document.getElementById('fgpraat');if(el)el.innerHTML='<b>George:</b> Daar heb je niet genoeg Smekkies voor. Geen zorgen, wij geven ook geen krediet.';return}
  S.galjoenen-=it.prijs;
  if(it.soort=='bo'){S.bo[it.id]=(S.bo[it.id]|0)+1;fgZeg(`Ligt klaar bij je boosters. Kies hem voor een level!`)}
- if(it.id=='kikker'){S.kikkers=(S.kikkers|0)+1;kikkerShow('',`In je tas: ${S.kikkers}`);fgZeg('Een Chocokikker voor in je tas! Tik op je harten om hem op te eten: +1 hart.')}
+ if(it.id=='kikker'){kikkerKrijg(1,{stil:1});kikkerShow('',`+1 hartje · ${levens()} van 5`);fgZeg('Mmm, chocola! Je hebt er meteen een hartje bij.')}
  if(it.id=='fopstok'){fopstok()}
  if(it.id=='pluis'){S.fg.pluis.push(kl);fgZeg('Een Dwergpluisje! Hij heet nog niets. Wij stellen "Arnold" voor.')}
  bewaar();try{stats()}catch(e){}kassa();teken()}

@@ -1386,3 +1386,7 @@ body[data-view=mysterie] #ma{width:100%;font:inherit;font-size:1.1em;padding:.6e
 .kt-gloed{position:relative;z-index:5;animation:ktgloed 1.2s ease-in-out infinite;border-radius:16px}
 @keyframes ktgloed{0%,100%{filter:drop-shadow(0 0 4px rgba(255,220,110,.6))}50%{filter:drop-shadow(0 0 16px rgba(255,214,90,1)) drop-shadow(0 0 30px rgba(255,190,60,.6))}}
 @media(prefers-reduced-motion:reduce){.kt-gloed,.kt-wijs.groot{animation:none}.kt-gloed{filter:drop-shadow(0 0 12px rgba(255,214,90,1))}}
+
+/* Chocokikker: knop uit als de levens vol zijn */
+.knop.kikvol,.knop.kikvol:disabled{opacity:.45;filter:grayscale(.7);cursor:default;pointer-events:none;box-shadow:none}
+.modal[data-pop=kikker] .linkknop{color:#6b3a08;display:block;margin:.6em auto 0}

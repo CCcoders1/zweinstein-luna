@@ -4,20 +4,35 @@
 (function(){
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const T=(f,ms)=>setTimeout(()=>{try{f()}catch(e){console.warn(e)}},ms||0);
-const modal=html=>{const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo">${html}</div>`;document.body.appendChild(o);return o};
+const modal=html=>{const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="perkament modalin rococo">${html}</div>`;document.body.appendChild(o);return o};
 const port=k=>{try{return window.portret?portret(k,'mini'):''}catch(e){return ''}};
 
-/* ---------- Chocokikkers: eetbaar, los van de kaarten ---------- */
-if(S.kikkersTegoed){S.kikkers=(S.kikkers|0)+(S.kikkersTegoed|0);delete S.kikkersTegoed;bewaar()}
-S.kikkers=S.kikkers|0;
-window.hartTik=()=>{if(document.querySelector('.modal[data-pop=kikker]'))return;const n=levens(),k=S.kikkers|0;
- const o=modal(`<h2>Je harten</h2><p class="harten groot">${harten()}</p>${k?`<p><img src="img/stukken/chocokikker-128.webp" alt="" style="width:56px;vertical-align:middle"> Je hebt <b>${k}</b> ${k==1?'Chocokikker':'Chocokikkers'} in je tas.</p>`:`<p>Je hebt geen Chocokikkers in je tas. Ze zijn te koop in de Fopshop, en je krijgt ze soms als beloning.</p>`}
- ${k&&n<5?`<button class="knop volgende" id="kikeet">🐸 Eet een Chocokikker (+1 hart)</button>`:''}${k&&n>=5?`<p class="klein">Je harten zijn vol. Bewaar je kikker voor later.</p>`:''}${!k?`<button class="knop volgende" id="kikfop">Naar de Fopshop</button>`:''}<button class="linkknop" id="kikdicht">Sluiten</button>`);o.dataset.pop='kikker';
- const e=o.querySelector('#kikeet');if(e)e.onclick=()=>{if(!(S.kikkers>0)||levens()>=5)return;S.kikkers--;S.harten.n=Math.min(5,S.harten.n+1);if(S.harten.n>=5)S.harten.t=Date.now();tel('eet');bewaar();try{questCheck()}catch(x){}try{fx.speel('goed')}catch(x){}try{vib([20,30,40])}catch(x){}
-  toast('Mmm, chocola! +1 hart');o.remove();document.querySelectorAll('#halharten,.m3voor .harten').forEach(h=>h.innerHTML=harten())};
- const f=o.querySelector('#kikfop');if(f)f.onclick=()=>{document.querySelectorAll('.modal').forEach(m=>m.remove());ga('fopshop')};o.querySelector('#kikdicht').onclick=()=>o.remove()};
+/* ---------- Chocokikkers: niet te sparen. Elke kikker geeft meteen +1 hartje; zijn je levens vol, dan 15 Smekkies. ---------- */
+const KIK_SMEK=15,KIK_PRIJS=60,HMAX=5;
+const hartVerf=()=>{try{document.querySelectorAll('#halharten,.m3voor .harten,.modal[data-pop=kikker] .harten').forEach(h=>h.innerHTML=harten())}catch(e){}try{stats()}catch(e){}};
+function kikZin(r){const d=[];if(r.hart)d.push('+'+r.hart+(r.hart==1?' hartje':' hartjes'));if(r.smek)d.push((r.hart?'levens vol: ':'Levens vol: ')+'+'+r.smek+' Smekkies');return d.join(', ')}
+/* n kikkers ontvangen: opt.stil = geen melding, opt.tel=false = niet meetellen voor uitdagingen */
+window.kikkerKrijg=(n,opt={})=>{n=n|0;const r={hart:0,smek:0};if(n<=0)return r;S.harten=S.harten||{n:HMAX,t:Date.now()};
+ for(let i=0;i<n;i++){if(levens()<HMAX){S.harten.n=Math.min(HMAX,S.harten.n+1);if(S.harten.n>=HMAX)S.harten.t=Date.now();r.hart++}else{S.galjoenen=(S.galjoenen|0)+KIK_SMEK;r.smek+=KIK_SMEK}}
+ if(opt.tel!==false)S.kikTot=(S.kikTot|0)+n;S.kikkers=0;bewaar();hartVerf();
+ if(!opt.stil)setTimeout(()=>{try{toast('🐸 '+(n>1?n+' Chocokikkers: ':'Chocokikker: ')+kikZin(r))}catch(e){}},opt.wacht|0);return r};
+window.kikkerZin=kikZin;
+/* oude voorraad (en oud tegoed) één keer omzetten */
+{const oud=(S.kikkers|0)+(S.kikkersTegoed|0);delete S.kikkersTegoed;S.kikkers=0;if(oud>0){const r=kikkerKrijg(oud,{stil:1,tel:false});S.kikOmgezet=oud;setTimeout(()=>{try{toast(`🐸 Je ${oud} bewaarde ${oud==1?'Chocokikker is':'Chocokikkers zijn'} opgegeten: ${kikZin(r)}.`)}catch(e){}},3500)}else bewaar()}
+/* vangnet: komt er toch ergens een kikker in S.kikkers, dan meteen toepassen */
+setInterval(()=>{if((S.kikkers|0)>0){const n=S.kikkers|0;S.kikkers=0;kikkerKrijg(n)}},1000);
+const wachtTijd=()=>{const h=S.harten;if(levens()>=HMAX)return 0;return Math.max(1,Math.ceil((20*6e4-(Date.now()-h.t))/6e4))};
+window.hartTik=()=>{if(document.querySelector('.modal[data-pop=kikker]'))return;const n=levens(),vol=n>=HMAX,genoeg=(S.galjoenen|0)>=KIK_PRIJS;
+ const o=modal(`<h2>Je levens</h2><p class="harten groot">${harten()}</p>
+ ${vol?`<p>Je levens zijn vol. Veel speelplezier!</p>`:`<p>${n<1?'Je hartjes zijn op. ':''}Over ongeveer <b>${wachtTijd()} min</b> komt er vanzelf een hartje bij.</p>
+ <p><img src="img/stukken/chocokikker-128.webp" alt="" style="width:56px;vertical-align:middle"> Of koop een Chocokikker: die geeft meteen <b>+1 hartje</b>.</p>
+ <button class="knop volgende${genoeg?'':' kikvol'}" id="kikkoop"${genoeg?'':' disabled'}>🐸 Koop een Chocokikker (${KIK_PRIJS} Smekkies)</button>${genoeg?'':`<p class="klein">Daar heb je nog niet genoeg Smekkies voor.</p>`}`}
+ <button class="linkknop" id="kikdicht">Sluiten</button>`);o.dataset.pop='kikker';
+ const e=o.querySelector('#kikkoop');if(e)e.onclick=()=>{if(levens()>=HMAX){toast('Je levens zijn vol.');o.remove();return}if((S.galjoenen|0)<KIK_PRIJS)return;S.galjoenen-=KIK_PRIJS;kikkerKrijg(1,{stil:1});try{fx.speel('goed')}catch(x){}try{vib([20,30,40])}catch(x){}
+  toast('Mmm, chocola! +1 hartje');o.remove();hartVerf()};
+ o.querySelector('#kikdicht').onclick=()=>o.remove()};
 document.addEventListener('click',e=>{const h=e.target.closest('#halharten,.m3voor .harten');if(h)hartTik()});
-const _hart=window.harten;window.harten=function(o){const s=_hart(o);const k=S.kikkers|0;return s+(k?`<span class="hkik"><img src="img/stukken/chocokikker-128.webp" alt="">×${k}</span>`:'')};
+/* geen kikkervoorraad meer naast de harten */
 V.kikker=()=>V.album();
 
 /* ---------- kaarten: eigen bronnen ---------- */
@@ -55,7 +70,7 @@ window.fgSnaai=snaaiVlucht;
 const _nb=window.m3NaBord;window.m3NaBord=(b,boost)=>{const bo=(boost&&boost.bo)||[];const heb=bo.includes('snaai')&&S.bo.snaai>0;_nb(b,boost);if(heb)setTimeout(()=>wachtVrij(b,()=>snaaiVlucht(b)),900)};
 
 /* ---------- winreeks: cadeaus van Fred & George ---------- */
-const REEKS=[null,{knalpijl:1},{knalpijl:3},{vuurpijl:1},{vuurpijl:1,knalpijl:2},{snaai:1}];
+const REEKS=[null,{knalpijl:1},{knalpijl:1},{knalpijl:2},{vuurpijl:1},{vuurpijl:1}];
 const NAAM={knalpijl:['Kleine Knalpijl','Kleine Knalpijlen'],vuurpijl:['Grote Weasley-Vuurpijl','Grote Weasley-Vuurpijlen'],snaai:['Gouden Snaai','Gouden Snaaien']};
 const giftTekst=g=>Object.entries(g).map(([k,n])=>n+' '+NAAM[k][n>1?1:0]).join(' en ');
 const giftIco=g=>Object.entries(g).map(([k,n])=>Array.from({length:n},()=>`<img src="img/pu/fg-${k}.webp" alt="">`).join('')).join('');
@@ -74,7 +89,7 @@ const _mw=m3Winst;m3Winst=function(n,b){const eerste=n>=(S.m3lvl|0);window._fles
  if(eerste&&n===30&&!heeftGroenePot()){S.potUpgrade=Math.max(1,S.potUpgrade|0);S.groenGift=1}
  if(eerste&&n===20){S.bo.bom=(S.bo.bom|0)+1;S.gift20=1}
  bewaar();const r=_mw(n,b);
- try{const m=document.querySelector('.m3eind');if(m&&gift){const vol=stand>=5;const zin=vol?'Vijf op rij! Hier is de Gouden Snaai. Pak hem voor hij wegvliegt!':['','Eén op rij! Een Kleine Knalpijl van het huis.','Twee op rij! Drie Knalpijlen, want wij zijn gul.','Drie op rij! Een Grote Weasley-Vuurpijl. Draken inbegrepen.','Vier op rij! Een Grote én twee Kleine. Nog één en je krijgt iets heel bijzonders.'][stand];
+ try{const m=document.querySelector('.m3eind');if(m&&gift){const vol=stand>=5;const zin=vol?'Vijf op rij! Nog een Grote Weasley-Vuurpijl. Knap gedaan!':['','Eén op rij! Een Kleine Knalpijl van het huis.','Twee op rij! Nog een Kleine Knalpijl.','Drie op rij! Twee Kleine Knalpijlen.','Vier op rij! Een Grote Weasley-Vuurpijl. Draken inbegrepen.'][stand];
    const knop=m.querySelector('#m3verder');(knop||m.lastChild).insertAdjacentHTML('beforebegin',`<div class="fgcadeau"><div class="fgcico">${giftIco(gift)}</div><p><b>${stand%2?'Fred':'George'}:</b> ${zin}</p>${meter(stand)}<small>${vol?'De reeks begint weer bij 1.':'Ligt bij je boosters.'}</small></div>`)}}catch(e){console.warn(e)}
  if(eerste&&n%10===0)geefKaart('','Een mijlpaal! Bij elk 10e level krijg je een tovenaarskaart.');
  if(eerste&&KAARTCADEAU[n])geefKaart(...KAARTCADEAU[n]);
@@ -88,7 +103,7 @@ if((S.m3lvl|0)>30&&!heeftGroenePot()){S.potUpgrade=Math.max(1,S.potUpgrade|0);be
 /* ---------- eerste bezoek: één zin van Tilly ---------- */
 try{Object.assign(UITLEG,{
  ketel:['De ketel','Kies een recept, sleep de kruiden in de ketel en roer met je vinger. Elk drankje dat je voor het eerst brouwt, geeft Smekkies.'],
- fopshop:['De Fopshop','Hier verkopen Fred en George boosters en Chocokikkers. Nieuwe spullen komen vrij als je verder komt.'],
+ fopshop:['De Fopshop','Hier verkopen Fred en George boosters en Chocokikkers (+1 hartje, alleen als je een hartje mist). Nieuwe spullen komen vrij als je verder komt.'],
  kruidwinkel:['De Groene Alruin','Hier koop je zaadjes, drakenmest en gedroogde kruiden voor je recepten. Sommige zaadjes komen pas later vrij.'],
  spreuken:['Spreuklessen','Kijk hoe het lichtje het teken voordoet en teken het na met je vinger. Professor Banning geeft steeds een nieuwe spreuk als je verder komt.'],
  beker:['De Afdelingsbeker','Elk level levert punten op voor je afdeling. Hier zie je wie er voor de beker gaat.'],
