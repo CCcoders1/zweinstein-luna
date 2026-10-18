@@ -92,4 +92,17 @@ function winKnoppen(n){const ms=[...document.querySelectorAll('.m3eind')];const 
  if(volg&&kas&&!leraar)kas.before(volg);
  const hal=document.createElement('button');hal.className='linkknop';hal.textContent='Naar De Hal';hal.onclick=()=>{weg();ga('home')};(kas||volg||m.lastChild).after(hal)}
 const _mwV=m3Winst;m3Winst=function(n,b,...a){const r=_mwV.call(this,n,b,...a);try{winKnoppen(n)}catch(e){console.warn(e)}return r};
+
+/* ---------- Alles resetten: alleen in het verborgen makerscherm (logo 3x + 9¾) ---------- */
+const HOUD=['zw_muz','zw_vol','zw_stem','zw_sfeer','zw_weer','zw_persist'];
+window.zwResetAlles=()=>new Promise(klaar=>{const geluid={stil:S.stil,geluid:S.geluid,gpMelding:S.gpMelding};
+ Object.keys(localStorage).filter(k=>(k.startsWith('zw')||k.startsWith('zweinstein'))&&!HOUD.includes(k)).forEach(k=>localStorage.removeItem(k));
+ Object.keys(S).forEach(k=>delete S[k]);Object.entries(geluid).forEach(([k,v])=>{if(v!==undefined)S[k]=v});bewaar();
+ try{sessionStorage.clear()}catch(e){}
+ let klaarGemeld=false;const af=()=>{if(klaarGemeld)return;klaarGemeld=true;klaar()};
+ try{const q=indexedDB.open('zweinstein',1);q.onupgradeneeded=()=>q.result.createObjectStore('reserve');q.onsuccess=()=>{try{const db=q.result;const tx=db.transaction('reserve','readwrite');tx.objectStore('reserve').put([],'lijst');tx.oncomplete=af;tx.onerror=af}catch(e){af()}};q.onerror=af}catch(e){af()}
+ setTimeout(af,2500)});
+const _mkR=V.maker;if(_mkR)V.maker=(...a)=>{const r=_mkR(...a);try{$('#app').insertAdjacentHTML('beforeend',`<section class="kaart sierlijst"><h3>Alles resetten (alleen voor testen)</h3><p class="klein">Wist alle voortgang op deze telefoon: levels, sterren, huisschilden, Smekkies, kas, opdrachten en mijlpalen. Het geluidspakket en de geluidsinstellingen blijven bewaard. Niet op Luna's telefoon gebruiken.</p><button class="knop" id="mkreset">Alles resetten</button></section>`);
+ $('#mkreset').onclick=async()=>{if(!confirm('Weet je het zeker? Alle voortgang op deze telefoon wordt gewist.'))return;const t=prompt('Typ RESET om alles te wissen:');if((t||'').trim().toUpperCase()!=='RESET'){toast('Niet gewist.');return}
+  await zwResetAlles();location.reload()}}catch(e){console.warn(e)}return r};
 })();
