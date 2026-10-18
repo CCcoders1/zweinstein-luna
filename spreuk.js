@@ -1,5 +1,5 @@
 'use strict';
-/* Spreuklessen: Flipendo. Teken het gebaar na; score = bedekking, inkt = 110% van het teken. */
+/* Spreuklessen: Flipendo. Teken het gebaar na; score = bedekking, inkt = 120% van het teken. */
 (()=>{
 const LES={flipendo:{naam:'Flipendo',uitleg:'Een duw-spreuk: hij stoot dingen weg.',
  /* Flipendo: spiraal linksom, start rechtsboven bij de toverstok, eindigt midden-links binnenin */
@@ -18,13 +18,28 @@ window.spreukGeleerd=k=>!!(S.spreuken&&S.spreuken[k]&&(S.spreuken[k].s[0]|0)>0);
 window.spreukOpen=k=>(S.m3lvl|0)>=(SPREUK_VAN[k]||1);
 const sp=()=>{S.spreuken=S.spreuken||{};return S.spreuken};
 const speel=n=>{try{fx.speel(n)}catch(e){}};
+const INKT=120;
+/* Tekenvlak vastzetten: tijdens het tekenen mag de pagina niet scrollen, stuiteren of verversen (pull-to-refresh). */
+window.zwTekenSlot=cv=>{if(!cv||cv._slot)return;cv._slot=1;cv.style.touchAction='none';const host=cv.closest('.spl,.perkament')||cv.parentElement;if(host)host.style.overscrollBehavior='contain';
+ let actief=false,bewaard=[];const scrollers=()=>{const L=[document.scrollingElement||document.documentElement];let e=cv.parentElement;while(e&&e!==document.body){const st=getComputedStyle(e);if(/(auto|scroll)/.test(st.overflowY+st.overflowX))L.push(e);e=e.parentElement}return L};
+ const zetVast=()=>{bewaard=scrollers().map(e=>[e,e.scrollTop,e.scrollLeft]);actief=true;document.documentElement.classList.add('zw-tekent')};
+ const los=()=>{if(!actief)return;actief=false;document.documentElement.classList.remove('zw-tekent')};
+ const herstel=()=>{if(!actief)return;bewaard.forEach(([e,t,l])=>{if(e.scrollTop!==t)e.scrollTop=t;if(e.scrollLeft!==l)e.scrollLeft=l})};
+ const stop=e=>{if(e.cancelable)e.preventDefault()};
+ cv.addEventListener('touchstart',e=>{stop(e);zetVast()},{passive:false});
+ cv.addEventListener('touchmove',stop,{passive:false});
+ cv.addEventListener('pointerdown',zetVast,true);
+ ['pointerup','pointercancel','touchend','touchcancel'].forEach(t=>cv.addEventListener(t,()=>setTimeout(los,60)));
+ window.addEventListener('scroll',herstel,true);
+ /* opruimen als het vlak verdwijnt */
+ const mo=new MutationObserver(()=>{if(!document.body.contains(cv)){los();window.removeEventListener('scroll',herstel,true);mo.disconnect()}});mo.observe(document.body,{childList:true,subtree:true})};
 const rnd=(p,n)=>p+'-'+(1+Math.random()*n|0);
 V.spreuken=()=>{
  app(`<div class="perkament" style="max-width:560px;margin:0 auto"><h2>Spreuklessen</h2><p>Kijk goed hoe het lichtje het teken voordoet, en teken het dan na met je vinger.</p>
  ${Object.entries(LES).map(([key,L])=>{const v=sp()[key]||{s:[]};if(!spreukOpen(key))return `<h3>🔒 ${L.naam}</h3><p class="klein">${L.uitleg}</p><p class="spl-dicht">Professor Banning geeft deze les vanaf level ${SPREUK_VAN[key]}.</p>`;return `<h3>🪄 ${L.naam}${spreukGeleerd(key)?' ✓':' <span class="spl-nieuw">Nieuw!</span>'}</h3><p class="klein">${L.uitleg}</p><div class="spl-rij">${L.levels.map((l,i)=>{const open=i==0||(v.s[i-1]|0)>0;return `<button class="knop ${open?'volgende':''}" ${open?`onclick="ga('spreukles',${i},'${key}')"`:'disabled'} style="font-size:1.1em;margin:.3em">Les ${i+1}<br><small>${l.nodig}% bedekken</small><br>${'★'.repeat(v.s[i]|0)}${'☆'.repeat(3-(v.s[i]|0))}</button>`}).join('')}</div>`}).join('')}<br><button class="knop" onclick="ga('home')">Terug</button></div>`)};
 V.spreukles=(li,key,opt)=>{li=+li||0;key=LES[key]?key:'flipendo';const L=LES[key],lv=opt&&opt.lv||L.levels[li];const host=opt&&opt.host;const zet=h=>host?(host.innerHTML=h):app(h);
  zet(`<div class="spl"><div class="spl-top"><span>${host?'':'Les '+(li+1)+': '}${L.naam}</span><span>Nodig: ${lv.nodig}%</span></div>
- <div class="spl-meters"><div>Bedekt <b id="splbed">0%</b></div><div>Inkt <b id="splinkt">110%</b><i class="spl-balk"><i id="splinktb"></i></i></div><div>⏳ <b id="spltijd">${lv.tijd}</b></div></div>
+ <div class="spl-meters"><div>Bedekt <b id="splbed">0%</b></div><div>Inkt <b id="splinkt">120%</b><i class="spl-balk"><i id="splinktb"></i></i></div><div>⏳ <b id="spltijd">${lv.tijd}</b></div></div>
  <canvas id="splc"></canvas><div class="spl-msg" id="splmsg">Kijk goed…</div>
  <div class="spl-knop"><button class="knop" id="splstop">Stoppen</button></div></div>`);
  const terugK=()=>host?opt.klaar(false):ga('spreuken');$('#splstop').onclick=terugK;
@@ -34,7 +49,7 @@ V.spreukles=(li,key,opt)=>{li=+li||0;key=LES[key]?key:'flipendo';const L=LES[key
  const [tm,tx]=mk();tx.beginPath();P.forEach((p,i)=>i?tx.lineTo(...p):tx.moveTo(...p));tx.stroke();
  const td=tx.getImageData(0,0,mw,mh).data;let opp=0;for(let i=3;i<td.length;i+=4)if(td[i]>128)opp++;
  const [um,ux]=mk();ux.strokeStyle='#000';
- const lijnen=[];let fase='demo',inkt=0,bed=0,demoT=0,t0=0,huidig=null;
+ const lijnen=[];window._splLijnen=lijnen;let fase='demo',inkt=0,bed=0,demoT=0,t0=0,huidig=null;
  const lengte=P.reduce((s,p,i)=>i?s+Math.hypot(p[0]-P[i-1][0],p[1]-P[i-1][1]):0,0);
  const punt=f=>{let d=f*lengte;for(let i=1;i<P.length;i++){const l=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);if(d<=l){const k=d/l;return [P[i-1][0]+(P[i][0]-P[i-1][0])*k,P[i-1][1]+(P[i][1]-P[i-1][1])*k]}d-=l}return P[P.length-1]};
  function teken(){c.clearRect(0,0,W,H);
@@ -45,13 +60,17 @@ V.spreukles=(li,key,opt)=>{li=+li||0;key=LES[key]?key:'flipendo';const L=LES[key
   c.lineCap=c.lineJoin='round';c.lineWidth=T;c.strokeStyle='rgba(255,60,50,.38)';c.shadowColor='rgba(255,40,30,.8)';c.shadowBlur=12;lijnen.forEach(l=>{c.beginPath();l.forEach((p,i)=>i?c.lineTo(...p):c.moveTo(...p));c.stroke()});c.shadowBlur=0;
   if(fase=='demo'){const [x,y]=punt(Math.min(1,demoT));const g=c.createRadialGradient(x,y,0,x,y,T);g.addColorStop(0,'rgba(255,255,230,1)');g.addColorStop(1,'rgba(255,255,200,0)');c.fillStyle=g;c.beginPath();c.arc(x,y,T,0,7);c.fill()}}
  const meet=()=>{const d=ux.getImageData(0,0,mw,mh).data;let n=0;for(let i=3;i<d.length;i+=4)if(d[i]>128&&td[i]>128)n++;bed=Math.round(n/opp*100);$('#splbed').textContent=bed+'%'};
- const inktUI=()=>{const r=Math.max(0,110-inkt);$('#splinkt').textContent=Math.round(r)+'%';$('#splinktb').style.width=(r/110*100)+'%'};
+ const inktUI=()=>{const r=Math.max(0,INKT-inkt);$('#splinkt').textContent=Math.round(r)+'%';$('#splinktb').style.width=(r/INKT*100)+'%'};
  teken();speel(L.demo);$('#splmsg').textContent=L.hint;
  const ds=performance.now();(function anim(n){if(fase!='demo')return;demoT=(n-ds)/2200;teken();if(demoT<1.15)requestAnimationFrame(anim);else{fase='teken';t0=Date.now();$('#splmsg').textContent='Nu jij! Begin bij de toverstok.';teken();tik()}})(ds);
  let tmr;const tik=()=>{tmr=setInterval(()=>{if(!document.body.contains(cv))return clearInterval(tmr);const r=lv.tijd-Math.floor((Date.now()-t0)/1000);$('#spltijd').textContent=Math.max(0,r);if(r<=0)klaar()},250)};
  const pos=e=>{const r=cv.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
- cv.onpointerdown=e=>{if(fase!='teken'||inkt>=110)return;cv.setPointerCapture(e.pointerId);huidig=[pos(e)];lijnen.push(huidig);window.zwKies&&zwKies.start(.6)};
- cv.onpointermove=e=>{if(!huidig||fase!='teken')return;const p=pos(e),q=huidig[huidig.length-1],d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(d<2)return;inkt+=d*T/(opp/sc/sc)*100;huidig.push(p);ux.beginPath();ux.moveTo(...q);ux.lineTo(...p);ux.stroke();teken();inktUI();if(huidig.length%3==0)meet();if(inkt>=110){huidig=null;meet();klaar('inkt')}};
+ zwTekenSlot(cv);let eersteN=0;
+ cv.onpointerdown=e=>{if(fase!='teken'||inkt>=INKT)return;e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch(x){}huidig=[pos(e)];eersteN=0;lijnen.push(huidig);window.zwKies&&zwKies.start(.6)};
+ cv.onpointermove=e=>{if(!huidig||fase!='teken')return;e.preventDefault();const p=pos(e),q=huidig[huidig.length-1],d=Math.hypot(p[0]-q[0],p[1]-q[1]);
+  /* sprong in de eerste paar punten (scherm verschoof even): beginpunt weggooien en hier opnieuw beginnen */
+  if(eersteN<4){eersteN++;if(d>Math.max(28,T*.9)){huidig.length=0;huidig.push(p);return}}
+  if(d>W*.45){huidig=[p];lijnen.push(huidig);return}if(d<2)return;inkt+=d*T/(opp/sc/sc)*100;huidig.push(p);ux.beginPath();ux.moveTo(...q);ux.lineTo(...p);ux.stroke();teken();inktUI();if(huidig.length%3==0)meet();if(inkt>=INKT){huidig=null;meet();klaar('inkt')}};
  cv.onpointerup=cv.onpointercancel=()=>{if(huidig){huidig=null;meet();if(bed>=lv.nodig)klaar()}};
  const knop=$('.spl-knop');knop.insertAdjacentHTML('afterbegin','<button class="knop volgende" id="splklaar">Klaar!</button> ');$('#splklaar').onclick=()=>fase=='teken'&&klaar();
  function klaar(why){if(fase!='teken')return;fase='uit';clearInterval(tmr);meet();const ok=bed>=lv.nodig;const v=sp()[key]=sp()[key]||{s:[]};

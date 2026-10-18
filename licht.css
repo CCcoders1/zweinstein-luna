@@ -1390,3 +1390,10 @@ body[data-view=mysterie] #ma{width:100%;font:inherit;font-size:1.1em;padding:.6e
 /* Chocokikker: knop uit als de levens vol zijn */
 .knop.kikvol,.knop.kikvol:disabled{opacity:.45;filter:grayscale(.7);cursor:default;pointer-events:none;box-shadow:none}
 .modal[data-pop=kikker] .linkknop{color:#6b3a08;display:block;margin:.6em auto 0}
+
+/* spreuken tekenen: scherm staat stil */
+html.zw-tekent,html.zw-tekent body{overscroll-behavior:none!important;touch-action:none}
+#splc,#teken{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.spl,.spl-modal{overscroll-behavior:contain}
+.spl-msg{min-height:2.6em}
+.spl-meters b{display:inline-block;min-width:3.2ch;text-align:right;font-variant-numeric:tabular-nums}

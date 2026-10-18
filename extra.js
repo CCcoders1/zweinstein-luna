@@ -213,9 +213,9 @@ function herken(pts){if(pts.length<8)return'';const xs=pts.map(p=>p[0]),ys=pts.m
  const minY=ys.indexOf(Math.max(...ys));if(minY>pts.length*.2&&minY<pts.length*.8&&h>w*.4)return'v';return wissel>=1?'zigzag':'streep'}
 V.toverstok=()=>{let doel=GEBAAR[Math.random()*GEBAAR.length|0],pts=[],tek=false;
  app(`<h1>🪄 Toverstokbewegingen</h1><div class="perkament"><p>Spreuk: <b id="sp">${doel[0]}</b></p><p><small id="sh">${doel[2]}</small></p><canvas id="teken" width="600" height="380"></canvas><button class="knop" id="nw">Andere spreuk</button></div><div id="tr"></div>`);
- const c=$('#teken'),g=c.getContext('2d');const pos=e=>{const b=c.getBoundingClientRect();return[(e.clientX-b.left)/b.width*600,(e.clientY-b.top)/b.height*380]};
- c.onpointerdown=e=>{tek=true;pts=[pos(e)];g.clearRect(0,0,600,380);c.setPointerCapture(e.pointerId)};
- c.onpointermove=e=>{if(!tek)return;const p=pos(e);const q=pts.at(-1);pts.push(p);g.strokeStyle='#d4af37';g.lineWidth=6;g.lineCap='round';g.shadowColor='#ffd700';g.shadowBlur=12;g.beginPath();g.moveTo(q[0],q[1]);g.lineTo(p[0],p[1]);g.stroke();if(Math.random()<.3)fx.speel&&0};
+ const c=$('#teken'),g=c.getContext('2d');window.zwTekenSlot&&zwTekenSlot(c);const pos=e=>{const b=c.getBoundingClientRect();return[(e.clientX-b.left)/b.width*600,(e.clientY-b.top)/b.height*380]};
+ c.onpointerdown=e=>{e.preventDefault();tek=true;pts=[pos(e)];g.clearRect(0,0,600,380);c.setPointerCapture(e.pointerId)};
+ c.onpointermove=e=>{if(!tek)return;e.preventDefault();const p=pos(e);const q=pts.at(-1);if(pts.length<5&&Math.hypot(p[0]-q[0],p[1]-q[1])>60){pts=[p];g.clearRect(0,0,600,380);return}pts.push(p);g.strokeStyle='#d4af37';g.lineWidth=6;g.lineCap='round';g.shadowColor='#ffd700';g.shadowBlur=12;g.beginPath();g.moveTo(q[0],q[1]);g.lineTo(p[0],p[1]);g.stroke();if(Math.random()<.3)fx.speel&&0};
  c.onpointerup=()=>{tek=false;const v=herken(pts);if(!v)return;tel('mini');if(v==doel[1]){const g6=eenmalig('toverstok')?6*evtBonus():0;S.galjoenen+=g6;S.xp+=4;bewaar();stats();questCheck();fx.goed();vib([30,30,80]);$('#tr').innerHTML=tilly(`<b>${doel[0]}!</b> Prachtig uitgevoerd.${g6?' +'+g6+' Smekkies.':''}`);setTimeout(()=>$('#nw')&&$('#nw').click(),1500)}else{fx.fout();$('#tr').innerHTML=foutT('Dat leek meer op een '+v+'. '+doel[2])}questCheck()};
  $('#nw').onclick=()=>{doel=GEBAAR[Math.random()*GEBAAR.length|0];$('#sp').textContent=doel[0];$('#sh').textContent=doel[2];g.clearRect(0,0,600,380);fx.speel('whoosh')}};
 /* ---------- gouden snaai verrassing ---------- */
