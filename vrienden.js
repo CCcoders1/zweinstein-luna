@@ -62,6 +62,7 @@ async function sync(forceer){if(!AAN||!S.naam||!S.huis)return false;if(ST==='nie
   for(let i=0;i<ls.length;i+=400){await rpc('submit_level_stars',{rows:ls.slice(i,i+400)})}
   if(ls.length){ls.forEach(r=>{if((v.lsq[r.level]|0)<=r.stars)delete v.lsq[r.level]});bewaar()}
   try{const fr=await rpc('my_friends');v.fc=(fr||[]).map(x=>({id:x.id,name:x.name,house:x.house,level:x.level|0}));cache.vr=v.fc;bewaar()}catch(e){}
+  try{await vrSchilden(forceer)}catch(e){}
   ST='klaar';await claims();try{halPaneel()}catch(e){}return true}catch(e){fout(e);return false}finally{bezig=null}})();return bezig}
 window.zwVrSync=sync;
 const scoresVan=async keys=>(await http('/rest/v1/challenge_scores?select=player_id,period_key,challenge_id,score&period_key=in.('+keys.map(encodeURIComponent).join(',')+')'))||[];
@@ -99,15 +100,15 @@ function bord(k,vrienden,scores){const ik=mijnId(),v=vr(),b=BEL[k[0]];const mens
  return kies(k).map(c=>{const u=UIT[c];const L=mensen.map(m=>({...m,s:m.ik?Math.max(((v.sc[k]||{})[c])|0,sc(ik,c)):sc(m.id,c)})).sort((a,z)=>z.s-a.s||(a.ik?-1:z.ik?1:0));
   return `<section class="vrbord"><h3>${u.i} ${u.n}</h3><ol>${rijen(L,m=>m.s)}</ol></section>`}).join('')+
   `<p class="klein vruitleg">⏳ ${resterend(k)}. Na afloop krijg je <b>+${b.mee} Smekkies</b> als je meedeed, en <b>+${b.win}</b> extra voor elke uitdaging waarin je bovenaan staat bij je vrienden.</p>`}
-function rangHtml(){const L=[ikRij(),...vrLijst()].sort((a,z)=>z.level-a.level||(a.ik?-1:z.ik?1:0));
- return `<section class="vrbord"><h3>🏆 Wie is het verst?</h3><ol>${rijen(L,m=>m.level|0).replace(/<b class="vrscore">(\d+)<\/b>/g,'<b class="vrscore"><small>level</small> $1</b>')}</ol></section>`+(vrLijst().length?'':uitnodig())}
+function rangHtml(){const st=rangStand();
+ return `<section class="vrbord rgbord"><h3>🛡️ Ranglijst</h3><p class="klein rguitleg">Telt alle huisschilden die je met levels hebt verdiend (je beste sterren per level), ook als je ze al hebt uitgegeven.</p><ol>${st.L.map(m=>rgRij(m,28)).join('')}</ol></section>`+(vrLijst().length?'':uitnodig())}
 function vrHtml(){const v=vr(),code=v.code||'······',F=vrLijst();
  return `<section class="vrcode"><p>Jouw vriendcode</p><div class="vrcodeveld">${esc(code)}</div><div class="vrknoppen"><button class="knop" id="vrkopie" ${v.code?'':'disabled'}>📋 Kopiëren</button><button class="knop volgende" id="vrdeel" ${v.code?'':'disabled'}>💬 Delen via WhatsApp</button></div></section>
  <section class="vrnieuw"><label for="vrin">Vriend toevoegen met code</label><div class="vrknoppen"><input id="vrin" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123"><button class="knop volgende" id="vradd">Toevoegen</button></div></section>
  <section class="vrlijst"><h3>Mijn vrienden</h3>${F.length?`<ul>${F.map(f=>`<li>${kroon(f.house)}<span class="vrnaam">${esc(f.name||'?')}</span><span class="vrlv">level ${f.level|0}</span><button class="linkknop vrweg" data-id="${esc(f.id)}" data-n="${esc(f.name)}" aria-label="Verwijderen">✕</button></li>`).join('')}</ul>`:'<p class="klein">Nog geen vrienden. Deel je code met iemand die het spel ook heeft!</p>'}</section>`}
 function uitHtml(){const sub=V.samen.sub||'d';return `<div class="vrtabs vrsub"><button class="${sub=='d'?'actief':''}" data-s="d">Vandaag</button><button class="${sub=='w'?'actief':''}" data-s="w">Deze week</button></div>${bord(sub=='d'?dagKey():weekKey(),vrLijst(),cache.sc)}`}
 function teken(){const app=$('#app');if(!app||document.body.dataset.view!=='samen')return;
- if(!gereed()){app.innerHTML=`<div class="perkament lijst mgkader vrkader">${kop()}<p class="vrbinnen">🦉 <b>Binnenkort!</b><br>De uilen worden nog getraind. Straks kun je hier vrienden toevoegen, zien wie het verst is en samen uitdagingen spelen.</p><button class="knop" onclick="ga('home')">Terug naar de Hal</button></div>`;return}
+ if(!gereed()){app.innerHTML=`<div class="perkament lijst mgkader vrkader">${kop()}${rangHtml().replace(uitnodig(),'')}<p class="vrbinnen">🦉 <b>Vrienden: binnenkort!</b><br>De uilen worden nog getraind. Straks kun je hier vrienden toevoegen en samen uitdagingen spelen.</p><button class="knop" onclick="ga('home')">Terug naar de Hal</button></div>`;return}
  const tab=V.samen.tab||'rang';
  app.innerHTML=`<div class="perkament lijst mgkader vrkader">${kop()}
  ${ST==='offline'?'<p class="klein vrlet">Even geen verbinding. Je voortgang wordt bewaard en later verstuurd.</p>':''}
@@ -128,15 +129,41 @@ function teken(){const app=$('#app');if(!app||document.body.dataset.view!=='same
  app.querySelectorAll('.vrweg').forEach(b=>b.onclick=async()=>{if(!confirm(`${b.dataset.n||'Deze vriend'} verwijderen als vriend?`))return;try{await rpc('remove_friend',{fid:b.dataset.id});await laad()}catch(e){toast('Dat lukte nu niet')}})}
 async function laad(){await sync(true);if(ST==='klaar'){try{const [s]=await Promise.all([scoresVan([dagKey(),weekKey()])]);cache={vr:vr().fc||[],sc:s||[]}}catch(e){fout(e)}}teken();toonPop()}
 V.samen=(tab)=>{if(tab)V.samen.tab=tab;const app=$('#app');if(!AAN){teken();return}if(!vr().code||ST==='onbekend')app.innerHTML=`<div class="perkament lijst mgkader vrkader">${kop()}<p class="vrbinnen">🦉 De uilen vliegen…</p></div>`;else teken();laad()};
+/* ---------- Ranglijst (v119): verdiende huisschilden = som van beste sterren per level ----------
+   Echte spelers: jij (lokaal S.lvSter) + vrienden (level_stars, opgehaald in de bestaande sync, max 1x per 10 min).
+   Zeven vaste personages staan op een vast percentage van het maximum (3 x gehaalde levels van de beste echte speler). */
+const FICT=[['Malvidus',.96,'zwadderich'],['Hermelien Griffel',.90,'griffoendor'],['Hanna Albedil',.84,'huffelpuf'],['Ernst Marsman',.77,'huffelpuf'],['Vincent Korzel',.70,'zwadderich'],['Karel Kwast',.62,'ravenklauw'],['Marcel Lubbermans',.54,'griffoendor']];
+async function vrSchilden(forceer){const v=vr(),F=v.fc||[];if(!F.length){v.fs={t:Date.now(),d:{}};return}
+ if(!forceer&&v.fs&&Date.now()-v.fs.t<10*60e3&&F.every(f=>v.fs.d&&v.fs.d[f.id]))return;
+ const ids=F.map(f=>f.id).filter(x=>/^[0-9a-f-]{36}$/i.test(x));if(!ids.length)return;const d={};ids.forEach(id=>d[id]={s:0,n:0});
+ for(let o=0;o<20000;o+=1000){const rows=(await http('/rest/v1/level_stars?select=player_id,stars&player_id=in.('+ids.join(',')+')&order=player_id,level&limit=1000&offset='+o))||[];
+  rows.forEach(r=>{const x=d[r.player_id];const st=Math.min(3,r.stars|0);if(x&&st>0){x.s+=st;x.n++}});if(rows.length<1000)break}
+ v.fs={t:Date.now(),d};bewaar()}
+const mijnSchilden=()=>{let s=0,n=0;Object.entries(S.lvSter||{}).forEach(([l,x])=>{x=Math.min(3,x|0);if(+l>0&&x>0){s+=x;n++}});return {s,n}};
+function rangStand(){const v=vr(),fs=v.fs,vers=fs&&fs.d&&Date.now()-fs.t<14*864e5;const m=mijnSchilden();
+ const echt=[{ik:1,echt:1,name:S.naam,house:S.huis,level:S.m3lvl|0,s:m.s,n:m.n}];
+ if(vers)vrLijst().forEach(f=>{const x=fs.d[f.id];if(x)echt.push({echt:1,id:f.id,name:f.name,house:f.house,level:f.level|0,s:x.s|0,n:x.n|0})});
+ const top=echt.slice().sort((a,z)=>z.s-a.s||z.n-a.n)[0];const max=3*(top.n|0);
+ let vorig=Infinity;const fict=FICT.map(([name,p,house],i)=>{let x=0;if(max>0){const j=[-2,-1,1,2][hash(name+'|'+top.n)%4];x=Math.max(0,Math.min(max,Math.round(p*max)+j));if(vorig!==Infinity)x=Math.max(0,Math.min(x,vorig-1))}vorig=x;return {fict:1,name,house,s:x,i}});
+ const L=[...fict,...echt].sort((a,z)=>z.s-a.s||(a.fict&&z.fict?a.i-z.i:a.fict?-1:z.fict?1:a.ik?-1:z.ik?1:0));
+ L.forEach((x,i)=>x.plek=i+1);const ik=L.find(x=>x.ik);return {L,plek:ik.plek,tot:L.length,ik,max}}
+window.zwRangStand=rangStand;
+/* ▲/▼ sinds de vorige keer dat ze de Hal zag */
+let nieuwBezoek=true;
+function rangPijl(plek){const R=S.rangVr=S.rangVr||{};if(R.p==null){R.p=plek;R.d=0;bewaar()}else if(nieuwBezoek){R.d=R.p-plek;R.p=plek;bewaar()}else if(R.p!==plek){R.d=(R.d|0)+(R.p-plek);R.p=plek;bewaar()}nieuwBezoek=false;
+ return R.d>0?`<i class="rgpijl op">▲${R.d}</i>`:R.d<0?`<i class="rgpijl neer">▼${-R.d}</i>`:''}
+const rgNaam=m=>esc(m.ik?'Jij':(m.name||'?'));
+const rgRij=(m,w=24)=>`<li class="${m.ik?'vrik rgik':''}${m.fict?' rgfict':''}"><span class="rgnr">${m.plek}</span>${kroon(m.house,w)}<span class="vrnaam">${rgNaam(m)}${m.echt&&!m.ik?` <small class="rglv">level ${Math.max(1,m.level|0)}</small>`:''}</span><b class="rgsc">${m.s}${schildSVG('rgico')}</b></li>`;
+function rangLijnTekst(st){if(st.plek===1)return 'Je staat bovenaan! 🏆';const b=st.L[st.plek-2];const nodig=Math.max(1,b.s-st.ik.s+(b.fict?1:0));return `Nog ${nodig} ${nodig==1?'schild':'schilden'} en je haalt <span class="rgnw"><b>${rgNaam(b)}</b> in! 🛡️</span>`}
+window.zwRangLijn=()=>rangLijnTekst(rangStand());
 /* Hal: compacte strook */
-function halPaneel(){if(!AAN||document.body.dataset.view!=='home'||!S.naam)return;const app=$('#app');if(!app)return;let el=document.getElementById('halvr');
- let html;if(!gereed())html=`<div class="halvrkop"><b>🦉 Vrienden</b><span>Binnenkort</span></div><p class="halvrtekst">Straks speel je hier samen met vrienden.</p>`;
- else{const F=vrLijst();const L=[ikRij(),...F].sort((a,z)=>z.level-a.level||(a.ik?-1:z.ik?1:0)).slice(0,5);
-  html=`<div class="halvrkop"><b>🦉 Vrienden</b><span>Alles bekijken ›</span></div><div class="halvrrij">${L.map((m,i)=>`<div class="halvrp${m.ik?' ik':''}"><span class="halvrnr">${F.length?(['🥇','🥈','🥉'][i]||(i+1)+'.'):''}</span>${kroon(m.house,30)}<b>${esc(m.ik?'Jij':(m.name||'?'))}</b><small>level ${m.level|0}</small></div>`).join('')}${F.length?'':`<div class="halvrp nodig"><span class="halvrplus">＋</span><b>Nodig je vrienden uit</b></div>`}</div>`}
- if(!el){el=document.createElement('section');el.id='halvr';el.className='halvr rococo';el.setAttribute('role','button');const voor=app.querySelector('.dagdoelen');if(voor)voor.before(el);else app.appendChild(el);el.onclick=()=>ga('samen',vrLijst().length||!gereed()?'rang':'vr')}
- el.innerHTML=html}
+function halPaneel(){if(document.body.dataset.view!=='home'||!S.naam)return;const app=$('#app');if(!app)return;let el=document.getElementById('halvr');
+ const st=rangStand();const i=st.plek-1;const van=Math.max(0,Math.min(i-1,st.tot-3));const drie=st.L.slice(van,van+3);
+ const html=`<div class="halvrkop"><b>🛡️ Ranglijst</b><span><b class="rgplek">#${st.plek} van ${st.tot}</b>${rangPijl(st.plek)} ›</span></div><ol class="rgmini">${drie.map(m=>rgRij(m,22)).join('')}</ol>`;
+ if(!el){el=document.createElement('section');el.id='halvr';el.className='halvr rgstrook rococo';el.setAttribute('role','button');el.setAttribute('aria-label','Ranglijst bekijken');const voor=app.querySelector('.dagdoelen');if(voor)voor.before(el);else app.appendChild(el);el.onclick=()=>ga('samen','rang')}
+ if(el.innerHTML!==html)el.innerHTML=html}
 window.zwHalVrienden=halPaneel;
-if(V.home){const _h=V.home;V.home=function(...a){const r=_h.apply(this,a);try{halPaneel();setTimeout(halPaneel,50)}catch(e){}return r}}
+if(V.home){const _h=V.home;V.home=function(...a){const r=_h.apply(this,a);nieuwBezoek=true;try{halPaneel();setTimeout(halPaneel,50)}catch(e){}return r}}
 /* Levelstart: vrienden rond dit level */
 const lsCache={};
 async function lvSterren(n){if(lsCache[n]&&Date.now()-lsCache[n].t<5*60e3)return lsCache[n].d;const d=(await http('/rest/v1/level_stars?select=player_id,stars&level=eq.'+(n|0)))||[];lsCache[n]={t:Date.now(),d};return d}
@@ -150,7 +177,8 @@ function lvBord(n){const voor=document.querySelector('.m3voor');if(!AAN||!voor||
   const stand=m=>m.level>n?(m.stx?`<span class="vrst">${sterren(m.stx)}</span>`:'<span class="vrst">gehaald ✓</span>'):m.level==n?'<span class="vrnu">speelt dit level</span>':`<span class="vrlvn">bij level ${m.level|0}</span>`;
   el.innerHTML=`<h3>🦉 Vrienden bij level ${n}</h3><ol>${toon.map(m=>`<li class="${m.ik?'vrik':''}">${kroon(m.house,28)}<span class="vrnaam">${esc(m.ik?'Jij':(m.name||'?'))}</span>${stand(m)}</li>`).join('')}</ol>${F.length?'':'<p class="vrlvleeg">Nodig je vrienden uit via <b>Vrienden</b> onderaan, dan zie je wie dit level al gehaald heeft.</p>'}`};
  zet(null);if(gereed()&&vrLijst().length)lvSterren(n).then(st=>{if(el.isConnected)zet(st)}).catch(()=>{})}
-if(V.match3){const _m=V.match3;V.match3=async function(n,...a){const r=await _m.call(this,n,...a);try{lvBord(n||S.m3lvl||1)}catch(e){}return r}}
+if(V.match3){const _m=V.match3;V.match3=async function(n,...a){const r=await _m.call(this,n,...a);try{rangLijn()}catch(e){}try{lvBord(n||S.m3lvl||1)}catch(e){}return r}}
+function rangLijn(){const voor=document.querySelector('.m3voor');if(!voor||!S.naam||document.getElementById('rglijn'))return;const p=document.createElement('p');p.id='rglijn';p.className='rglijn';p.innerHTML=rangLijnTekst(rangStand());p.onclick=()=>ga('samen','rang');voor.prepend(p)}
 /* Vaste knop in de menubalk (alleen als online is ingesteld) */
 if(AAN){try{if(typeof NAV!=='undefined'&&!NAV.some(t=>t[0]==='samen')){const i=NAV.findIndex(t=>t[0]==='meer');NAV.splice(i<0?NAV.length:i,0,['samen','','Vrienden'])}}catch(e){}
  const _nav=nav;nav=function(act,...a){const r=_nav(act,...a);try{const el=document.getElementById('nav');el.classList.toggle('nav6',el.querySelectorAll('button').length>5);const b=el.querySelector('button[onclick="ga(\'samen\')"]');if(b){b.classList.add('glinster');const vak=b.querySelector('.rond');if(vak&&!vak.querySelector('img'))vak.innerHTML='<img class="uiico" alt="" src="img/ui/nav-vrienden-192.webp" decoding="async">';if(act==='samen')b.classList.add('actief')}}catch(e){}return r};
