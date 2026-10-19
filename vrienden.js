@@ -132,7 +132,7 @@ V.samen=(tab)=>{if(tab)V.samen.tab=tab;const app=$('#app');if(!AAN){teken();retu
 /* ---------- Ranglijst (v119): verdiende huisschilden = som van beste sterren per level ----------
    Echte spelers: jij (lokaal S.lvSter) + vrienden (level_stars, opgehaald in de bestaande sync, max 1x per 10 min).
    Zeven vaste personages staan op een vast percentage van het maximum (3 x gehaalde levels van de beste echte speler). */
-const FICT=[['Malvidus',.96,'zwadderich'],['Hermelien Griffel',.90,'griffoendor'],['Hanna Albedil',.84,'huffelpuf'],['Ernst Marsman',.77,'huffelpuf'],['Vincent Korzel',.70,'zwadderich'],['Karel Kwast',.62,'ravenklauw'],['Marcel Lubbermans',.54,'griffoendor']];
+const FICT=[['Malvidus',.92,'zwadderich'],['Hermelien Griffel',.90,'griffoendor'],['Hanna Albedil',.84,'huffelpuf'],['Ernst Marsman',.77,'huffelpuf'],['Vincent Korzel',.70,'zwadderich'],['Karel Kwast',.62,'ravenklauw'],['Marcel Lubbermans',.54,'griffoendor']];
 async function vrSchilden(forceer){const v=vr(),F=v.fc||[];if(!F.length){v.fs={t:Date.now(),d:{}};return}
  if(!forceer&&v.fs&&Date.now()-v.fs.t<10*60e3&&F.every(f=>v.fs.d&&v.fs.d[f.id]))return;
  const ids=F.map(f=>f.id).filter(x=>/^[0-9a-f-]{36}$/i.test(x));if(!ids.length)return;const d={};ids.forEach(id=>d[id]={s:0,n:0});
