@@ -1426,3 +1426,19 @@ html.zw-tekent,html.zw-tekent body{overscroll-behavior:none!important;touch-acti
 .rgnw{white-space:nowrap}
 .rgbord .vrnaam{white-space:normal;overflow:visible;line-height:1.2}
 .rgbord .rglv{display:block}
+/* v121: 5 rijen + uitklaplaag */
+.rgmini li{height:28px}
+.rgmini li.rggat{position:relative}
+.rgmini li.rggat::before{content:"⋯";position:absolute;top:-10px;left:0;right:0;text-align:center;font:700 14px/1 Georgia,serif;color:#7a4a00;letter-spacing:2px;pointer-events:none}
+.rgopen{font-style:normal;margin-left:4px;color:#7a4a00}
+.rgachter{position:fixed;inset:0;z-index:40;background:rgba(10,12,30,.28);touch-action:none;animation:rgfade .25s ease}
+@keyframes rgfade{from{opacity:0}}
+.rgover{position:fixed!important;z-index:41;background:linear-gradient(#faeed2,#ecd6aa)!important;opacity:1;backdrop-filter:none!important;margin:0!important;display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;padding:8px 12px 10px!important;
+ clip-path:inset(0 0 calc(100% - 44px) 0 round 14px);transition:clip-path .28s cubic-bezier(.2,.8,.2,1);box-shadow:0 10px 28px rgba(0,0,0,.45)!important}
+.rgover.open{clip-path:inset(0 0 0 0 round 14px)}
+.rgover.dicht{clip-path:inset(0 0 calc(100% - 44px) 0 round 14px);transition-duration:.22s}
+.rgoverkop{cursor:pointer;flex:0 0 auto}
+.rgover .rguitleg{flex:0 0 auto;font-size:.85em}
+.rgvol{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.rginklap{flex:0 0 auto;margin:8px auto 0!important;display:block;min-height:40px}
+@media (prefers-reduced-motion: reduce){.rgover,.rgover.open,.rgover.dicht{transition:none}}

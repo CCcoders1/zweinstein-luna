@@ -157,13 +157,42 @@ const rgRij=(m,w=24)=>`<li class="${m.ik?'vrik rgik':''}${m.fict?' rgfict':''}">
 function rangLijnTekst(st){if(st.plek===1)return 'Je staat bovenaan! 🏆';const b=st.L[st.plek-2];const nodig=Math.max(1,b.s-st.ik.s+(b.fict?1:0));return `Nog ${nodig} ${nodig==1?'schild':'schilden'} en je haalt <span class="rgnw"><b>${rgNaam(b)}</b> in! 🛡️</span>`}
 window.zwRangLijn=()=>rangLijnTekst(rangStand());
 /* Hal: compacte strook */
+/* v121: 5 rijen rond jou (2 boven, jij, 2 onder; schuift aan de randen). Bij vrienden staat er altijd minstens één echte vriend in:
+   anders vervangt de dichtstbijzijnde vriend de verste rij aan zijn kant, met een klein '⋯' als gat. */
+function vijfRijen(st){const L=st.L,i=st.plek-1,n=Math.min(5,L.length);const van=Math.max(0,Math.min(i-2,L.length-n));let R=L.slice(van,van+n).map(m=>({m}));
+ const vrienden=L.filter(m=>m.echt&&!m.ik);if(vrienden.length&&!R.some(r=>r.m.echt&&!r.m.ik)){const f=vrienden.slice().sort((a,z)=>Math.abs(a.plek-1-i)-Math.abs(z.plek-1-i))[0];
+  if(f.plek-1>i){R.pop();R.push({m:f,gat:1})}else{R.shift();R.unshift({m:f});R[1].gat=1}}
+ return R}
+const rgRijGat=(r,w)=>r.gat?rgRij(r.m,w).replace('<li class="','<li class="rggat '):rgRij(r.m,w);
 function halPaneel(){if(document.body.dataset.view!=='home'||!S.naam)return;const app=$('#app');if(!app)return;let el=document.getElementById('halvr');
- const st=rangStand();const i=st.plek-1;const van=Math.max(0,Math.min(i-1,st.tot-3));const drie=st.L.slice(van,van+3);
- const html=`<div class="halvrkop"><b>🛡️ Ranglijst</b><span><b class="rgplek">#${st.plek} van ${st.tot}</b>${rangPijl(st.plek)} ›</span></div><ol class="rgmini">${drie.map(m=>rgRij(m,22)).join('')}</ol>`;
- if(!el){el=document.createElement('section');el.id='halvr';el.className='halvr rgstrook rococo';el.setAttribute('role','button');el.setAttribute('aria-label','Ranglijst bekijken');const voor=app.querySelector('.dagdoelen');if(voor)voor.before(el);else app.appendChild(el);el.onclick=()=>ga('samen','rang')}
- if(el.innerHTML!==html)el.innerHTML=html}
+ const st=rangStand();
+ const html=`<div class="halvrkop"><b>🛡️ Ranglijst</b><span><b class="rgplek">#${st.plek} van ${st.tot}</b>${rangPijl(st.plek)} <i class="rgopen">▾</i></span></div><ol class="rgmini">${vijfRijen(st).map(r=>rgRijGat(r,22)).join('')}</ol>`;
+ if(!el){el=document.createElement('section');el.id='halvr';el.className='halvr rgstrook rococo';el.setAttribute('role','button');el.setAttribute('aria-expanded','false');el.setAttribute('aria-label','Hele ranglijst uitklappen');const voor=app.querySelector('.dagdoelen');if(voor)voor.before(el);else app.appendChild(el);el.onclick=()=>rgUitklap(el)}
+ if(el.innerHTML!==html)el.innerHTML=html;const o=document.getElementById('rgover');if(o&&o.dataset.html!==rgVolHtml())rgVulOver(o)}
+/* Uitklappen: de hele ranglijst als laag over de Hal (geen sprong in de pagina). Inklappen: kop, knop of ernaast tikken. */
+const rgVolHtml=()=>rangStand().L.map(m=>rgRij(m,24)).join('');
+function rgVulOver(o){const h=rgVolHtml();o.dataset.html=h;const ol=o.querySelector('ol');if(ol)ol.innerHTML=h}
+function rgDicht(){const o=document.getElementById('rgover'),b=document.getElementById('rgachter'),el=document.getElementById('halvr');if(el)el.setAttribute('aria-expanded','false');
+ if(b)b.remove();if(!o)return;o.classList.remove('open');o.classList.add('dicht');setTimeout(()=>o.remove(),RMX?0:260)}
+window.zwRangDicht=rgDicht;
+setInterval(()=>{if(document.getElementById('rgover')&&(document.body.dataset.view!=='home'||!document.getElementById('halvr')||document.querySelector('.modal,.verhaal')))rgDicht()},400);
+const RMX=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function rgUitklap(el){if(document.getElementById('rgover')){rgDicht();return}
+ const navT=(()=>{const n=document.getElementById('nav');return n?n.getBoundingClientRect().top:innerHeight})();const kopB=(()=>{let m=0;document.querySelectorAll('header,header *,body>*').forEach(x=>{const c=getComputedStyle(x);const vast=x.tagName==='HEADER'||c.position==='fixed'||c.position==='sticky';if(!vast||x.id==='nav'||x.id==='rgover'||c.display==='none')return;const R=x.getBoundingClientRect();if(R.height>0&&R.height<140&&R.top<70&&R.bottom>m)m=R.bottom});return m})();
+ let r=el.getBoundingClientRect();if(navT-r.top<380||r.top<kopB){window.scrollBy(0,r.top-kopB-8);r=el.getBoundingClientRect()}
+ const top=Math.max(kopB+4,r.top),hoog=Math.max(220,navT-top-8);
+ const b=document.createElement('div');b.id='rgachter';b.className='rgachter';b.addEventListener('pointerdown',e=>{e.preventDefault();rgDicht()});b.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});b.addEventListener('wheel',e=>e.preventDefault(),{passive:false});
+ const o=document.createElement('div');o.id='rgover';o.className='rgover halvr rococo';o.style.cssText=`top:${top}px;left:${r.left}px;width:${r.width}px;max-height:${hoog}px`;
+ const st=rangStand();
+ o.innerHTML=`<div class="halvrkop rgoverkop" role="button" aria-label="Inklappen"><b>🛡️ Ranglijst</b><span><b class="rgplek">#${st.plek} van ${st.tot}</b> <i class="rgopen">▴</i></span></div><p class="klein rguitleg">Alle huisschilden die met levels zijn verdiend (beste sterren per level).</p><ol class="rgmini rgvol"></ol><button class="knop rginklap" type="button">Inklappen ▴</button>`;
+ rgVulOver(o);document.body.append(b,o);el.setAttribute('aria-expanded','true');
+ o.querySelector('.rgoverkop').onclick=rgDicht;o.querySelector('.rginklap').onclick=rgDicht;
+ const ol=o.querySelector('ol');o.addEventListener('wheel',e=>{const L=ol;const op=e.deltaY<0&&L.scrollTop<=0,neer=e.deltaY>0&&L.scrollTop+L.clientHeight>=L.scrollHeight-1;if(!L.contains(e.target)||op||neer)e.preventDefault()},{passive:false});
+ o.addEventListener('touchmove',e=>{if(!ol.contains(e.target)||ol.scrollHeight<=ol.clientHeight)e.preventDefault()},{passive:false});
+ const ik=ol.querySelector('.rgik');if(ik&&ik.offsetTop-ol.offsetTop+ik.offsetHeight>ol.clientHeight)ol.scrollTop=Math.max(0,ik.offsetTop-ol.offsetTop-ol.clientHeight/2+ik.offsetHeight/2);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>o.classList.add('open')));try{fx.speel('klik')}catch(e){}}
 window.zwHalVrienden=halPaneel;
-if(V.home){const _h=V.home;V.home=function(...a){const r=_h.apply(this,a);nieuwBezoek=true;try{halPaneel();setTimeout(halPaneel,50)}catch(e){}return r}}
+if(V.home){const _h=V.home;V.home=function(...a){try{rgDicht()}catch(e){}const r=_h.apply(this,a);nieuwBezoek=true;try{halPaneel();setTimeout(halPaneel,50)}catch(e){}return r}}
 /* Levelstart: vrienden rond dit level */
 const lsCache={};
 async function lvSterren(n){if(lsCache[n]&&Date.now()-lsCache[n].t<5*60e3)return lsCache[n].d;const d=(await http('/rest/v1/level_stars?select=player_id,stars&level=eq.'+(n|0)))||[];lsCache[n]={t:Date.now(),d};return d}
