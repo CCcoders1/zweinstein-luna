@@ -1,6 +1,8 @@
 /* Eindfeest na winst met zetten over: elke zet ruimt een stukje op (elke 5e een explosie), daarna gaan alle
    overgebleven specials af. Score telt zichtbaar op. Tikken = sneller (niet overslaan).
-   Sterren, Smekkies en huisschilden worden berekend met het aantal zetten van VOOR het feest (b.zet blijft ongewijzigd). */
+   Smekkies worden berekend met het aantal zetten van VOOR het feest (b.zet blijft ongewijzigd).
+   v118: sterren en huisschilden komen uit de EINDSCORE: dit is de buitenste m3Winst-laag en roept de rest pas aan
+   als het feest klaar is, dus huispunten.js ziet de definitieve b.score. De scorebalk (#m3bv) vult mee. */
 (()=>{if(typeof m3Winst!=='function'||typeof Bord==='undefined')return;
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const slaap=ms=>new Promise(r=>setTimeout(r,ms));
@@ -8,7 +10,13 @@ const slaap=ms=>new Promise(r=>setTimeout(r,ms));
 let getoond=0,scoreDoel=0;
 function scoreEl(){let e=document.getElementById('m3sc');if(!e){const t=document.querySelector('.m3mid .m3titel');if(!t)return null;t.insertAdjacentHTML('afterend','<div class="m3score">Score <b id="m3sc">0</b></div>');e=document.getElementById('m3sc');getoond=0}return e}
 setInterval(()=>{try{if(typeof M3==='undefined'||!M3.b||M3.b.sim||document.body.dataset.view!=='match3')return;const e=scoreEl();if(!e)return;scoreDoel=M3.b.score|0;
- if(getoond>scoreDoel)getoond=scoreDoel;if(getoond<scoreDoel){getoond=Math.min(scoreDoel,getoond+Math.max(5,Math.ceil((scoreDoel-getoond)/4)));e.textContent=getoond.toLocaleString('nl-NL')}}catch(e){}},60);
+ if(getoond>scoreDoel)getoond=scoreDoel;if(getoond<scoreDoel){getoond=Math.min(scoreDoel,getoond+Math.max(5,Math.ceil((scoreDoel-getoond)/4)));e.textContent=getoond.toLocaleString('nl-NL')}balk(M3.b)}catch(e){}},60);
+/* scorebalk: vult met de getoonde score; streepjes op 2★ en 3★; ster 1 = gewonnen */
+let balkB=null,balkW=-1;
+function balk(b){const bv=document.getElementById('m3bv');if(!bv||!b._grens)return;if(balkB!==b){balkB=b;balkW=-1}
+ const w=Math.min(100,getoond/b._max*100);if(Math.abs(w-balkW)>=.2){balkW=w;bv.style.width=w.toFixed(1)+'%'}
+ const st=document.querySelectorAll('#m3balk .m3bs');const aan=[b.klaar&&b.klaar(),getoond>=b._grens[0],getoond>=b._grens[1]];
+ st.forEach((s,i)=>{if(aan[i]&&!s.classList.contains('aan')){s.classList.add('aan','pop');setTimeout(()=>s.classList.remove('pop'),600);if(i)try{fx.speel('munt')}catch(x){}}else if(!aan[i]&&s.classList.contains('aan'))s.classList.remove('aan')})}
 /* ---------- hulpjes ---------- */
 const vrijeTegels=b=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L};
 const specials=b=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L};

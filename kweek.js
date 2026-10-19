@@ -37,7 +37,7 @@ const tijd=ms=>{const m=Math.ceil(ms/6e4);return m>=60?`${Math.floor(m/60)} u ${
 function buitNaam(id){try{const it=ITEMS[id];if(it&&it[1])return it[1]}catch(e){}return (ZADEN[id]&&ZADEN[id][0])||'oogst'}
 V.kas=()=>{VIEWDECOR.kas='kas';const o=kOpdr();
  app(`<h2>De Kassen</h2>
- <section class="kweekopdr rococo"><small>Opdracht van ${o[3]}</small><b>${o[2]}</b><div class="voortgang"><div style="width:${kOpdrTel()/o[1]*100}%"></div></div><small>${kOpdrTel()} van ${o[1]} · beloning ${o[5][0]} sterren + ${o[5][1]} Smekkies</small></section>
+ <section class="kweekopdr rococo"><small>Opdracht van ${o[3]}</small><b>${o[2]}</b><div class="voortgang"><div style="width:${kOpdrTel()/o[1]*100}%"></div></div><small>${kOpdrTel()} van ${o[1]} · beloning ${o[5][1]+15*(o[5][0]|0)} Smekkies</small></section>
  <div class="kweekbalk"><button class="knop klein" id="zwinkel">${icoon('winkel')} Zadenwinkel</button><button class="knop klein" id="potwinkel">Potten</button><span class="voorraad">${icoon('blad')} ${Object.values(S.zaden).reduce((a,b)=>a+b,0)} zaadjes · ${icoon('vuur')} ${S.mest} drakenmest</span></div>
  <p class="klein kasverwijs">Koop hier je zaadjes. In je eigen kas tik je op de standaardpot en kies je een zaadje. Mooiere potten en de grote vloerpot staan in Potten.</p>
  ${tilly(kweekZin())}`);
@@ -54,12 +54,12 @@ function zadenwinkel(daarna){const o=document.createElement('div');o.className='
   o.querySelectorAll('.zkoop').forEach(b=>b.onclick=()=>{const z=b.dataset.z;if(zaadDicht(z)){toast('Dit is te koop vanaf level '+zaadDicht(z)+'.');return}if(z!='mest'&&kruidSlot(z)){const m=o.querySelector('#potmelding');if(m)m.textContent=POT_BETER_ZIN;potMelding(b);return}const prijs=z=='mest'?50:ZADEN[z][3];if(S.galjoenen<prijs){toast('Niet genoeg Smekkies. Speel een level!');fx.speel('fout');return}S.galjoenen-=prijs;if(z=='mest')S.mest++;else S.zaden[z]=(S.zaden[z]||0)+1;bewaar();stats();fx.speel('munt');vib(15);toast((z=='mest'?'Drakenmest':ZADEN[z][0]+'-zaadje')+' gekocht');teken()});o.querySelector('#zwk').onclick=()=>{o.remove();if(typeof daarna==='function')daarna();else V.kas()}};teken();document.body.appendChild(o)}
 function oogsten(i){if(pot(i)&&pot(i).z=='flessenbes'){try{const k=document.querySelector(`.kpot[data-i="${i}"]`);if(k){spat(k,['#ff3a5a','#a05aff','#ffd76a','#4aa8ff']);k.classList.add('knal');fx.speel('splat')}}catch(e){}}const p=pot(i),d=ZADEN[p.z],power=SUPERPLANTEN&&SUPERPLANTEN[p.z];let n=power?0:d[5][0]+Math.round(Math.random()*(d[5][1]-d[5][0]));if(p.goud&&!power)n*=2;
  if(power)Object.entries(power.oogst).forEach(([k,v])=>S.bo[k]=(S.bo[k]||0)+v*(p.goud?2:1));else{S.tas[d[1]]=(S.tas[d[1]]||0)+n;S.nieuwBuit=(S.nieuwBuit||0)+n;S.oogst[p.z]=(S.oogst[p.z]||0)+1}const o=kOpdr();if(!power&&o[0]==p.z)S.oogst[p.z+'#'+S.kweekOpdr]=(S.oogst[p.z+'#'+S.kweekOpdr]||0)+1;
- if(p.goud){S.schilden++}tel('oogst');delete S.kweek[i];S.xp+=5;bewaar();stats();
+ if(p.goud){S.galjoenen+=25}tel('oogst');delete S.kweek[i];S.xp+=5;bewaar();stats();
  const k=document.querySelector(`.kpot[data-i="${i}"]`);if(k){k.classList.add('oogsten');spat(k,p.goud?['#ffd700','#fff3b0']:['#a8ffcf','#e8fff0'])}
  fx.speel(p.goud?'fanfare':'goed');vib(p.goud?[40,30,120]:[30,30]);
  for(let j=0;j<Math.min(n,4);j++)if(!power)setTimeout(()=>{try{buitVlucht(d[1])}catch(e){}},300+j*250);
- setTimeout(()=>{if(power){const beloning=Object.entries(power.oogst).map(([k,v])=>`${v*(p.goud?2:1)} ${BOOSTERS[k].naam}`).join(', ');try{gids(`${power.naam} geoogst! Je hebt nu ${beloning} klaar voor een volgende ronde.`,{})}catch(e){toast(`Geoogst: ${beloning}`)}}if(p.goud)verhaal([['Tilly',`Luna… kijk! Een <b>gouden oogst</b>! ${n}× ${buitNaam(d[1])}, en de bladeren glanzen als Smekkies. Dat zie je maar zelden. (+1 huisschild, +25 Smekkies)`]]);
-  if(kOpdrTel()>=o[1]){S.kweekOpdr++;S.schilden+=o[5][0];S.galjoenen+=o[5][1];bewaar();stats();verhaal([[o[3],o[4]],['Tilly',`Opdracht klaar! +${o[5][0]} ${o[5][0]==1?'huisschild':'huisschilden'} en +${o[5][1]} Smekkies.`]])}
+ setTimeout(()=>{if(power){const beloning=Object.entries(power.oogst).map(([k,v])=>`${v*(p.goud?2:1)} ${BOOSTERS[k].naam}`).join(', ');try{gids(`${power.naam} geoogst! Je hebt nu ${beloning} klaar voor een volgende ronde.`,{})}catch(e){toast(`Geoogst: ${beloning}`)}}if(p.goud)verhaal([['Tilly',`Luna… kijk! Een <b>gouden oogst</b>! ${n}× ${buitNaam(d[1])}, en de bladeren glanzen als Smekkies. Dat zie je maar zelden. (+25 Smekkies)`]]);
+  if(kOpdrTel()>=o[1]){S.kweekOpdr++;const sm=o[5][1]+15*(o[5][0]|0);S.galjoenen+=sm;bewaar();stats();verhaal([[o[3],o[4]],['Tilly',`Opdracht klaar! +${sm} Smekkies.`]])}
   try{dagBeloon()}catch(e){}V.kas()},RMP?100:1100)}
 /* ingrediënten ook bruikbaar bij taken: Herbologie-mesttaak kan met drakenmest */
 /* dagdoel koppeling */

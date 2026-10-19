@@ -49,7 +49,7 @@ V.spreukles=(li,key,opt)=>{li=+li||0;key=LES[key]?key:'flipendo';const L=LES[key
  const [tm,tx]=mk();tx.beginPath();P.forEach((p,i)=>i?tx.lineTo(...p):tx.moveTo(...p));tx.stroke();
  const td=tx.getImageData(0,0,mw,mh).data;let opp=0;for(let i=3;i<td.length;i+=4)if(td[i]>128)opp++;
  const [um,ux]=mk();ux.strokeStyle='#000';
- const lijnen=[];window._splLijnen=lijnen;let fase='demo',inkt=0,bed=0,demoT=0,t0=0,huidig=null;
+ const lijnen=[];let fase='demo',inkt=0,bed=0,demoT=0,t0=0,huidig=null;
  const lengte=P.reduce((s,p,i)=>i?s+Math.hypot(p[0]-P[i-1][0],p[1]-P[i-1][1]):0,0);
  const punt=f=>{let d=f*lengte;for(let i=1;i<P.length;i++){const l=Math.hypot(P[i][0]-P[i-1][0],P[i][1]-P[i-1][1]);if(d<=l){const k=d/l;return [P[i-1][0]+(P[i][0]-P[i-1][0])*k,P[i-1][1]+(P[i][1]-P[i-1][1])*k]}d-=l}return P[P.length-1]};
  function teken(){c.clearRect(0,0,W,H);

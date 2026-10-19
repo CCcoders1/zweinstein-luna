@@ -12,9 +12,15 @@ S.lvSter=S.lvSter&&typeof S.lvSter=='object'?S.lvSter:{};
 (function(){const t=(S.m3lvl|0)-1;let g=0;for(let n=1;n<=t;n++)if(!S.lvSter[n]){S.lvSter[n]=2;g=1}if(g)bewaar()})();
 /* huisschilden per level = beste aantal sterren (max 3); bij opnieuw spelen alleen het verschil */
 if(!S.lvSchild||typeof S.lvSchild!='object'){S.lvSchild={};Object.keys(S.lvSter).forEach(k=>S.lvSchild[k]=S.lvSter[k]|0);bewaar()}
-const sterVan=b=>{const z=b&&b.zet|0;return z>=5?3:z>=2?2:1};
-if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...a){const st=sterVan(b),oud=S.lvSter[n]|0;if(st>oud)S.lvSter[n]=st;const al=S.lvSchild[n]|0,sch=Math.max(0,st-al);S.lvSchild[n]=Math.max(al,st);S.schilden=(S.schilden|0)+sch;bewaar();window._schildTekst=sch?`<b>+${sch} ${sch==1?'huisschild':'huisschilden'}</b> voor de lokalen · `:`<b>Maximaal aantal huisschilden voor dit level al gehaald</b> · `;const r=_w.call(this,n,b,...a);
- try{const h=HP[S.huis];const p=document.querySelector('.m3eind p');if(p&&h){const erbij=Math.max(0,PUNT[st]-(PUNT[oud]||0));p.insertAdjacentHTML('afterend',`<p class="hp-winst"><span class="hp-sterren">${'★'.repeat(st)}${'☆'.repeat(3-st)}</span><br>${erbij?`+${erbij} huispunten voor ${h.naam}`:`Je beste score blijft ${'★'.repeat(oud)}`}<br><small>3 sterren: win met 5 of meer zetten over · 2 sterren: 2 of meer</small></p>`)}}catch(e){}return r}}
+/* v118: sterren uit de EINDSCORE (inclusief het eindfeest). Z = toegestane zetten van het level.
+   2 sterren vanaf Z×70, 3 sterren vanaf Z×95; zware levels ×0,85. Gekalibreerd met de bot (kalibratie/). */
+const STER2=70,STER3=95,ZWAAR_F=.85;
+const grens=(n,L)=>{L=L||(typeof m3Level=='function'?m3Level(n):null);const Z=L?((L.zetten|0)+(L.extra|0)):20;const f=((window.lvZwaar&&lvZwaar(n))|0)?ZWAAR_F:1;const r=x=>Math.round(x/10)*10;return [r(Z*STER2*f),r(Z*STER3*f)]};
+window.m3SterGrens=grens;
+const sterVan=(b,n)=>{const g=grens(n,b&&b.L),sc=(b&&b.score)|0;return sc>=g[1]?3:sc>=g[0]?2:1};
+window.m3SterVan=sterVan;
+if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...a){const st=sterVan(b,n),oud=S.lvSter[n]|0;if(st>oud)S.lvSter[n]=st;const al=S.lvSchild[n]|0,sch=Math.max(0,st-al);S.lvSchild[n]=Math.max(al,st);S.schilden=(S.schilden|0)+sch;bewaar();window._schildTekst=sch?`<b>+${sch} ${sch==1?'huisschild':'huisschilden'}</b> voor de lokalen · `:`<b>Maximaal aantal huisschilden voor dit level al gehaald</b> · `;const r=_w.call(this,n,b,...a);
+ try{const h=HP[S.huis];const p=document.querySelector('.m3eind p');if(p&&h){const erbij=Math.max(0,PUNT[st]-(PUNT[oud]||0));p.insertAdjacentHTML('afterend',`<p class="hp-winst"><span class="hp-sterren">${'★'.repeat(st)}${'☆'.repeat(3-st)}</span><br>${erbij?`+${erbij} huispunten voor ${h.naam}`:`Je beste score blijft ${'★'.repeat(oud)}`}<br><small>Score ${((b&&b.score)|0).toLocaleString('nl-NL')} · 2 sterren vanaf ${grens(n,b&&b.L)[0].toLocaleString('nl-NL')} · 3 sterren vanaf ${grens(n,b&&b.L)[1].toLocaleString('nl-NL')}</small></p>`)}}catch(e){}return r}}
 function stand(){const L=Object.keys(S.lvSter).filter(k=>S.lvSter[k]>0);const n=L.length;let eigen=0,c3=0,c2=0;L.forEach(k=>{const s=S.lvSter[k];eigen+=PUNT[s]||0;if(s==3)c3++;if(s==2)c2++});
  const hash=x=>{x=Math.sin(x*12.9898+78.233)*43758.5453;return x-Math.floor(x)};const f=[.965,.94,.915];const pts={};let j=0;
  VOLG.forEach(h=>{if(h==S.huis){pts[h]=eigen;return}const k=f[j]+(hash(n+j*7)-.5)*.02;pts[h]=Math.round(n*DOEL*k)+(j*7+3)*(n>0?1:0);j++});

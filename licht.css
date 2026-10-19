@@ -1397,3 +1397,10 @@ html.zw-tekent,html.zw-tekent body{overscroll-behavior:none!important;touch-acti
 .spl,.spl-modal{overscroll-behavior:contain}
 .spl-msg{min-height:2.6em}
 .spl-meters b{display:inline-block;min-width:3.2ch;text-align:right;font-variant-numeric:tabular-nums}
+/* v118 scorebalk: sterren uit de score */
+.m3balk .m3tik{position:absolute;top:-2px;bottom:-2px;width:2px;margin-left:-1px;background:#fff3c0;opacity:.85;border-radius:1px;box-shadow:0 0 3px rgba(0,0,0,.6);text-decoration:none;pointer-events:none}
+.m3balk i{transition:width .25s linear}
+.m3bs.een{width:18px;height:18px;top:-4px}
+.m3bs.pop svg{animation:m3sterpop .55s cubic-bezier(.2,1.6,.4,1)}
+@keyframes m3sterpop{0%{transform:scale(.6)}55%{transform:scale(1.7)}100%{transform:scale(1.2)}}
+.m3voor .m3grens{display:block;font-size:13px;opacity:.85;margin-top:2px;font-variant-numeric:tabular-nums}

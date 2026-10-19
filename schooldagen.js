@@ -49,10 +49,11 @@ const SCHOOL_DAGEN_PER_VAK=5;
 const SCHOOL_LEVELS_PER_DAG=20;
 const SCHOOL_DOELEN_PER_DAG=10;
 const SCHOOL_DOELKOSTEN=[1,3,1,3,1,3,1,3,1,3];
-/* Kosten per schooldag in huisschilden. Een level geeft 1 schild per ster (2-3), dus ~50 per dag van 20 levels.
-   Dag 1 is goedkoop (20); dag 2 vangt het overschot van dag 1 op (88); daarna 54 per dag:
-   wie ~60% van de levels met 3 sterren wint, is aan het eind van de dag net rond (een paar schilden over). */
-const SCHOOL_KOSTEN_DAG=[[1,3,1,3,1,3,1,3,1,3],[4,6,7,8,9,9,10,11,12,12],[3,4,4,5,5,6,6,6,7,8]];
+/* Kosten per schooldag in huisschilden (v118). Schilden komen ALLEEN uit levels: 1 per ster, sterren uit de score.
+   Bot-kalibratie (60% 3★ over alle wins): dag 1 levert ~60, dag 2 ~56, daarna ~47-51 per 20 levels.
+   Dag 1 kost 20; dag 2 kost 80 (vangt het overschot van dag 1 op); daarna 45: net iets onder het aanbod,
+   zodat er weinig overblijft maar je niet vaak hoeft te herspelen. */
+const SCHOOL_KOSTEN_DAG=[[1,3,1,3,1,3,1,3,1,3],[4,5,6,7,8,8,9,10,11,12],[3,3,4,4,4,5,5,5,6,6]];
 const schoolKosten=index=>SCHOOL_KOSTEN_DAG[Math.min(index|0,SCHOOL_KOSTEN_DAG.length-1)];
 const schoolKostenSom=index=>schoolKosten(index).reduce((t,k)=>t+k,0);
 window.schoolKostenSom=schoolKostenSom;
