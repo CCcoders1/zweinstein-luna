@@ -133,6 +133,13 @@ function schoolDagDoorgaan(stage){
  return true;
 }
 
+/* v122: zelfherstel. Waren de tien doelen al af VOORDAT het laatste level van de dag gewonnen werd, dan ging de dag
+   niet door (alleen het outro-verhaal en de doelen-knop deden dat, en toen was het level nog niet gehaald).
+   Nu: gaat door zodra (alle doelen af) én (laatste level gewonnen) – bij laden, in de Hal, bij Spelen en na elke winst.
+   Raakt geen Smekkies of huisschilden aan; zet alleen S.schoolDag een dag verder (zo vaak als echt verdiend). */
+function schoolDagHerstel(){let n=0;try{while(n<5&&schoolDagDoorgaan(schoolDag()))n++}catch(e){}return n}
+window.schoolDagHerstel=schoolDagHerstel;
+schoolDagHerstel();
 const schoolVerhaalOud=verhaal;
 verhaal=function(regels,klaar){
  const index=regels&&regels.schoolDagIndex;
@@ -161,6 +168,7 @@ bonusVrij=function(b){return !!S.bonusOpen[b[0]]||S.schoolDag>=schoolBonusDag[b[
 
 const schoolGaOud=ga;
 ga=function(s,...a){
+ if(s==='match3'||s==='home')schoolDagHerstel();
  if(s==='match3'){
   const level=a[0]||S.m3lvl||1;
   if(!schoolDagKanStarten(level)){
@@ -175,7 +183,7 @@ ga=function(s,...a){
 
 const schoolMatch3Oud=V.match3;
 V.match3=async function(level,...a){
- level=level||S.m3lvl||1;
+ level=level||S.m3lvl||1;schoolDagHerstel();
  if(!schoolDagKanStarten(level)){
   schoolGaOud('home');
   return;
@@ -185,6 +193,7 @@ V.match3=async function(level,...a){
 
 const schoolHomeOud=V.home;
 V.home=function(...a){
+ schoolDagHerstel();
  const result=schoolHomeOud.apply(this,a);
  const stage=schoolDag()||schoolDag(M3VAKKEN.length*SCHOOL_DAGEN_PER_VAK-1);
  const header=document.querySelector('.lokaal .lk-kop small');
@@ -243,6 +252,7 @@ m3Winst=function(level,bord){
  const stage=schoolDag();
  const result=schoolWinstOud.apply(this,arguments);
  if(stage&&stage.index===S.schoolDag&&level===stage.einde&&schoolDagDoelenKlaar(stage)){
+  schoolDagDoorgaan(stage);
   const volgende=stage.index+1<M3VAKKEN.length*SCHOOL_DAGEN_PER_VAK?schoolDag(stage.index+1):null;
   const slotStory=[[stage.vak.prof,stage.inhoud.klaar],['Tilly',volgende?`De volgende schooldag is ${volgende.inhoud.titel} bij ${volgende.vak.n}. ${volgende.inhoud.open}`:'Zeshonderd levels, driehonderd doelen. We hebben het hele kasteel samen opgebouwd.']];
   setTimeout(()=>verhaal(slotStory,()=>{
