@@ -1442,3 +1442,12 @@ html.zw-tekent,html.zw-tekent body{overscroll-behavior:none!important;touch-acti
 .rgvol{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 .rginklap{flex:0 0 auto;margin:8px auto 0!important;display:block;min-height:40px}
 @media (prefers-reduced-motion: reduce){.rgover,.rgover.open,.rgover.dicht{transition:none}}
+/* v123 speellog in makerscherm */
+.logkaart .logcijfers{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.logkaart .logcijfers span{background:rgba(255,248,230,.7);border:1px solid #c9a96b;border-radius:8px;padding:6px 4px;text-align:center;font-size:.78em;line-height:1.2}
+.logkaart .logcijfers b{display:block;font-size:1.3em;color:#5b3a12}
+.logkaart .logtab{width:100%;border-collapse:collapse;font-size:.85em;margin:6px 0}
+.logkaart .logtab th,.logkaart .logtab td{border-bottom:1px solid #d9c49a;padding:3px 4px;text-align:right}
+.logkaart .logtab th:first-child,.logkaart .logtab td:first-child{text-align:left}
+.kaart.sierlijst.logkaart,body .kaart.sierlijst.logkaart{background:#f7eed8!important;color:#3b2a14!important}
+.kaart.logkaart h3{color:#7a1f12!important}.kaart.logkaart p,.kaart.logkaart td,.kaart.logkaart th,.kaart.logkaart .klein{color:#3b2a14!important}

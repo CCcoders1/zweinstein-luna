@@ -14,8 +14,8 @@ S.lvSter=S.lvSter&&typeof S.lvSter=='object'?S.lvSter:{};
 if(!S.lvSchild||typeof S.lvSchild!='object'){S.lvSchild={};Object.keys(S.lvSter).forEach(k=>S.lvSchild[k]=S.lvSter[k]|0);bewaar()}
 /* v118: sterren uit de EINDSCORE (inclusief het eindfeest). Z = toegestane zetten van het level.
    2 sterren vanaf Z×70, 3 sterren vanaf Z×95; zware levels ×0,85. Gekalibreerd met de bot (kalibratie/). */
-const STER2=70,STER3=95,ZWAAR_F=.85;
-const grens=(n,L)=>{L=L||(typeof m3Level=='function'?m3Level(n):null);const Z=L?((L.zetten|0)+(L.extra|0)):20;const f=((window.lvZwaar&&lvZwaar(n))|0)?ZWAAR_F:1;const r=x=>Math.round(x/10)*10;return [r(Z*STER2*f),r(Z*STER3*f)]};
+const STER2=70,STER3=95,STER3_VROEG=150,ZWAAR_F=.85; /* v123: levels 1–30 3★ vanaf Z×150 (bot: ~77% 3★ van de winsten i.p.v. 95%) */
+const grens=(n,L)=>{L=L||(typeof m3Level=='function'?m3Level(n):null);const Z=L?((L.zetten|0)+(L.extra|0)):20;const f=((window.lvZwaar&&lvZwaar(n))|0)?ZWAAR_F:1;const r=x=>Math.round(x/10)*10;return [r(Z*STER2*f),r(Z*((n|0)>=1&&(n|0)<=30?STER3_VROEG:STER3)*f)]};
 window.m3SterGrens=grens;
 const sterVan=(b,n)=>{const g=grens(n,b&&b.L),sc=(b&&b.score)|0;return sc>=g[1]?3:sc>=g[0]?2:1};
 window.m3SterVan=sterVan;
