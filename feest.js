@@ -67,9 +67,9 @@ async function feest(b){const log={pop:0,boem:0,spec:0,score0:b.score|0};window.
 const _w=m3Winst;
 window.m3Winst=m3Winst=function(n,b,...a){
  let doen=false;try{doen=!!(b&&!b.sim&&!b._feest&&b.zet>0&&typeof M3!=='undefined'&&M3.b===b&&M3.knal&&document.getElementById('m3c')&&document.body.dataset.view==='match3')}catch(e){}
- const klaar=()=>{const r=_w.call(this,n,b,...a);try{const sc=b.score|0;const h=document.querySelector('.m3eind h2');if(h&&sc&&!document.querySelector('.m3eindscore'))h.insertAdjacentHTML('afterend',`<p class="m3eindscore">Score <b>${sc.toLocaleString('nl-NL')}</b></p>`)}catch(e){}return r};
+ const klaar=()=>{let r;try{r=_w.call(this,n,b,...a)}finally{try{ECO.winKlaar(n)}catch(e){}}try{const sc=b.score|0;const h=document.querySelector('.m3eind h2');if(h&&sc&&!document.querySelector('.m3eindscore'))h.insertAdjacentHTML('afterend',`<p class="m3eindscore">Score <b>${sc.toLocaleString('nl-NL')}</b></p>`)}catch(e){}return r};
  if(!doen)return klaar();
- b._feest=1;let gedaan=false;const af=()=>{if(gedaan)return;gedaan=true;klaar()};
+ b._feest=1;try{ECO.winStart(n,b)}catch(e){}let gedaan=false;const af=()=>{if(gedaan)return;gedaan=true;klaar()};
  feest(b).catch(e=>console.warn(e)).finally(af);setTimeout(af,30000);
 };
 })();

@@ -52,6 +52,20 @@ const ECO={REST,WISSEL,MAXST,
   const over=had-mag,sm=over*WISSEL;S.schilden=mag;S.galjoenen=Math.max(0,int(S.galjoenen))+sm;
   log(['W',nu(),over,sm,d]);S.wisselMelding={over,sm,prof,dag:d,had,mee:mag};setTimeout(sw,1200);return over},
  toonMelding:sw,
+ /* v127 eindfeest: op het moment van winnen wordt de winst meteen vastgelegd (S.winBezig, bewaard). Loopt het feest
+    gewoon af, dan betaalt de normale keten alles uit (sterren uit de eindscore, alleen het verschil) en verdwijnt de
+    notitie. Wordt de app tijdens het feest gesloten, dan maakt winHerstel() bij de volgende start de winst af met de
+    score van het winmoment: level gewonnen, sterren (min 1), schilden en Smekkies – precies één keer. */
+ winStart(n,b){if(!b||b.sim||b._ecoStart)return;b._ecoStart=1;
+  S.winBezig={n:int(n),sc:int(b.score),z:Math.max(0,int(b.zet)),zw:((window.lvZwaar&&lvZwaar(n))|0)?1:0,t:nu()};bewaar()},
+ winKlaar(n){if(S.winBezig&&int(S.winBezig.n)===int(n)){delete S.winBezig;bewaar()}},
+ winHerstel(){const w=S.winBezig;if(!w)return 0;delete S.winBezig;const n=int(w.n);if(n<1){bewaar();return 0}
+  let st=1;try{const g=m3SterGrens(n);st=int(w.sc)>=g[1]?3:int(w.sc)>=g[0]?2:1}catch(e){}
+  const gal=10+Math.max(0,int(w.z))*2+(w.zw?10:0);
+  S.m3lvl=Math.max(int(S.m3lvl,1),n+1);S.galjoenen=Math.max(0,int(S.galjoenen))+gal;S.xp=int(S.xp)+10;try{delete (S.m3extra||{})[n]}catch(e){}
+  const sch=ECO.geefLevel(n,st);
+  log(['L',int(w.t,nu()),n,'w',int(w.sc),st,int(w.z),'',0,sch,0]);afw('winst L'+n+' afgemaakt na onderbroken eindfeest: '+st+'★, +'+sch+' schilden, +'+gal+' Smekkies');
+  bewaar();return 1},
  /* invarianten; stil=1 → niet zelf bewaren */
  check(reden,stil){const a=[];
   const vroeg=reden==='laden';   /* vóór de migraties van kern/huispunten: niets aanmaken, alleen bestaande waarden netjes maken */
@@ -69,6 +83,8 @@ const ECO={REST,WISSEL,MAXST,
    if(v>int(S.lvSter[k])){a.push('lvSter['+k+'] omhoog naar betaald '+v);S.lvSter[k]=v}}
   if(S.lvSchild==null&&!vroeg){S.lvSchild={};Object.keys(S.lvSter).forEach(k=>S.lvSchild[k]=S.lvSter[k]|0);a.push('lvSchild uit sterren')}
   if(S.lvSchild==null)delete S.lvSchild;
+  /* v127: levels met sterren maar zonder vastgelegde schilden (oude saves, '2★ ingevuld') gelden als al uitbetaald */
+  if(!vroeg&&obj(S.lvSchild)){let k0=0;for(const k in S.lvSter){if(S.lvSter[k]>0&&S.lvSchild[k]==null){S.lvSchild[k]=S.lvSter[k];k0++}}if(k0)a.push(k0+' levels: schilden gelijkgezet aan sterren')}
   const s=Math.max(0,int(S.schilden));if(!(vroeg&&S.schilden==null)&&s!==S.schilden){a.push('schilden '+S.schilden+'→'+s);S.schilden=s}
   const g=Math.max(0,int(S.galjoenen));if(g!==S.galjoenen){a.push('Smekkies '+S.galjoenen+'→'+g);S.galjoenen=g}
   if(S.schoolDag!=null){const d=Math.max(0,Math.min(DAGEN,int(S.schoolDag)));const md=maxDag();
@@ -87,6 +103,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...r){
   if(b&&typeof b=='object'){if(b._ecoWin){afw('dubbele winst genegeerd L'+n);return}b._ecoWin=1}
   return _w.call(this,n,b,...r)}}
+ try{ECO.winHerstel()}catch(e){}
  ECO.check('start');if(S.wisselMelding)setTimeout(sw,1500);
 });
 /* meerdere tabbladen: schrijft een ander tabblad de save, neem die over (geen dubbele winst, geen oude stand terugschrijven) */
