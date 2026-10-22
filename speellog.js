@@ -1,7 +1,7 @@
 /* ====== v123 Speellog: alleen op deze telefoon (geen server). Ringbuffer van 500 regels in de save (S.log),
    dus mee in back-up en reservekopie, maar nooit gesynchroniseerd. Leesbaar in het makerscherm.
    Regels (compact):  ['L',t,level,uitslag w/v/a,score,sterren,zettenOver,boosters,duurSec,schildenErbij,spijbel]
-                      ['S',start,eind]  ['U',t,schildenUitgegeven,dag]  ['D',t,nieuweDag]   (t = seconden sinds 1970) */
+                      ['S',start,eind]  ['U',t,schildenUitgegeven,dag]  ['D',t,nieuweDag]  ['W',t,schildenOmgewisseld,smekkies,nieuweDag]   (t = seconden sinds 1970) */
 (function(){const MAX=500,nu=()=>Math.round(Date.now()/1000);
  const L=()=>{if(!Array.isArray(S.log))S.log=[];return S.log};
  const zet=r=>{const a=L();a.push(r);if(a.length>MAX)a.splice(0,a.length-MAX);return r};
@@ -14,7 +14,7 @@
  /* ---- schilden uitgegeven & dagvoortgang (vergelijk met vorige stand) ---- */
  let sch=S.schilden|0,dag=S.schoolDag|0;
  setInterval(()=>{const s=S.schilden|0,d=S.schoolDag|0;
-  if(s<sch)zet(['U',nu(),sch-s,d]);sch=s;
+  if(s<sch){const w=Math.min(sch-s,window._zwWissel|0);window._zwWissel=0;if(sch-s-w>0)zet(['U',nu(),sch-s-w,d])}else window._zwWissel=0;sch=s;
   if(d>dag)zet(['D',nu(),d]);dag=d},1500);
  /* ---- levelpogingen ---- */
  const voorraad=()=>Object.assign({},S.bo||{});
@@ -59,7 +59,7 @@
  const UIT={w:'gewonnen',v:'verloren',a:'gestopt'};
  window.zwLogTekst=()=>{const z=zwLogSamen(),a=L();const r=[];
   r.push(`Zweinstein Luna – speellog (${S.naam||'speler'}) · gemaakt ${tijd(nu())}`);
-  r.push(`Level nu: ${S.m3lvl||1} · schooldag ${(S.schoolDag|0)+1} · ${S.schilden|0} schilden · ${S.galjoenen|0} Smekkies · app v124`);
+  r.push(`Level nu: ${S.m3lvl||1} · schooldag ${(S.schoolDag|0)+1} · ${S.schilden|0} schilden · ${S.galjoenen|0} Smekkies · app v125`);
   r.push(`Periode: vanaf ${z.van?tijd(z.van):'–'} · ${z.regels} regels (max ${MAX})`,'');
   r.push(`Pogingen ${z.pogingen}, gewonnen ${z.winst} (${pct(z.winst,z.pogingen)}) · gem. ${z.gemPog.toFixed(1)} pogingen per level · 3★ ${pct(z.s3,z.winst)} van de winsten`);
   z.band.forEach(b=>r.push(`  levels ${b.naam}: ${b.p} pogingen, winst ${pct(b.w,b.p)}, 3★ ${pct(b.s3,b.w)}`));
@@ -70,7 +70,8 @@
   a.forEach(x=>{if(x[0]=='L')r.push(`${tijd(x[1])}  L${x[2]} ${UIT[x[3]]||x[3]}  score ${x[4]}  ${x[3]=='w'?x[5]+'★ ':''}zetten over ${x[6]}  ${min(x[8])}${x[7]?'  boosters '+x[7]:''}${x[9]?'  +'+x[9]+' schild':''}${x[10]?'  spijbel×'+x[10]:''}`);
    else if(x[0]=='S')r.push(`${tijd(x[1])}  sessie ${min(x[2]-x[1])}`);
    else if(x[0]=='U')r.push(`${tijd(x[1])}  ${x[2]} schild(en) uitgegeven (dag ${x[3]+1})`);
-   else if(x[0]=='D')r.push(`${tijd(x[1])}  naar schooldag ${x[2]+1}`)});
+   else if(x[0]=='D')r.push(`${tijd(x[1])}  naar schooldag ${x[2]+1}`);
+   else if(x[0]=='W')r.push(`${tijd(x[1])}  ${x[2]} overgebleven schild(en) omgewisseld voor ${x[3]} Smekkies (naar dag ${x[4]+1})`)});
   return r.join('\n')};
  const html=()=>{const z=zwLogSamen();return `<section class="kaart sierlijst logkaart"><h3>Speellog</h3>
   <p class="klein">${z.regels} regels sinds ${z.van?dagS(z.van):'–'} · alleen op deze telefoon, niet verstuurd; wel in de back-up.</p>

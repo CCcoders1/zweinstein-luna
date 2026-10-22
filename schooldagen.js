@@ -53,7 +53,12 @@ const SCHOOL_DOELKOSTEN=[1,3,1,3,1,3,1,3,1,3];
    Bot-kalibratie (60% 3★ over alle wins): dag 1 levert ~60, dag 2 ~56, daarna ~47-51 per 20 levels.
    Dag 1 kost 20; dag 2 kost 80 (vangt het overschot van dag 1 op); daarna 45: net iets onder het aanbod,
    zodat er weinig overblijft maar je niet vaak hoeft te herspelen. */
-const SCHOOL_KOSTEN_DAG=[[1,3,1,3,1,3,1,3,1,3],[4,5,6,7,8,8,9,10,11,12],[3,3,4,4,4,5,5,5,6,6]];
+/* v125: dag 2 kost niet meer 80 maar 45 zoals elke volgende dag, want het overschot van een dag gaat niet meer mee:
+   bij een nieuwe schooldag blijven hooguit 5 huisschilden over; de rest wisselt de professor om voor 10 Smekkies per stuk.
+   Kalibratie (bot, 30 spelers, levels 1–200): aanbod dag 1 ~55, dag 2–10 ~45–52 → na 45 blijft gemiddeld 5–11 over,
+   vrijwel nooit herspelen nodig. */
+const SCHOOL_KOSTEN_DAG=[[1,3,1,3,1,3,1,3,1,3],[3,3,4,4,4,5,5,5,6,6]];
+const SCHOOL_SCHILD_REST=5,SCHOOL_SCHILD_WISSEL=10;
 const schoolKosten=index=>SCHOOL_KOSTEN_DAG[Math.min(index|0,SCHOOL_KOSTEN_DAG.length-1)];
 const schoolKostenSom=index=>schoolKosten(index).reduce((t,k)=>t+k,0);
 window.schoolKostenSom=schoolKostenSom;
@@ -125,9 +130,20 @@ function schoolDagKanStarten(level){
  const stage=schoolDag();
  return !!stage&&level<=(S.m3lvl||1)&&level<=stage.einde;
 }
+function schoolSchildWissel(stage){
+ const over=(S.schilden|0)-SCHOOL_SCHILD_REST;if(over<=0)return;
+ const sm=over*SCHOOL_SCHILD_WISSEL;S.schilden=SCHOOL_SCHILD_REST;S.galjoenen=(S.galjoenen|0)+sm;
+ window._zwWissel=(window._zwWissel|0)+over;   /* speellog telt dit niet als 'uitgegeven' */
+ try{if(!Array.isArray(S.log))S.log=[];S.log.push(['W',Math.round(Date.now()/1000),over,sm,S.schoolDag]);if(S.log.length>500)S.log.splice(0,S.log.length-500)}catch(e){}
+ const prof=(stage&&stage.vak&&stage.vak.prof)||'De professor';
+ setTimeout(()=>{try{const o=document.createElement('div');o.className='modal';o.dataset.pop='schildwissel';
+  o.innerHTML=`<div class="modalin rococo keuze schildw"><h2>${prof} wisselt je schilden om</h2><p>Je had nog ${over+SCHOOL_SCHILD_REST} huisschilden over van de vorige schooldag. ${SCHOOL_SCHILD_REST} neem je mee naar de nieuwe dag, de andere ${over} wisselt ${prof} voor je om:</p><p style="font-size:1.4em;margin:.4em 0"><b>+${sm} Smekkies</b></p><p class="klein">Elke nieuwe schooldag neem je hooguit ${SCHOOL_SCHILD_REST} huisschilden mee. Nieuwe schilden verdien je gewoon weer met levels.</p><button class="knop volgende">Dank je wel!</button></div>`;
+  document.body.appendChild(o);o.querySelector('button').onclick=()=>{o.remove();try{stats()}catch(e){}};try{stats()}catch(e){}}catch(e){}},1200);
+}
 function schoolDagDoorgaan(stage){
  if(!stage||stage.index!==S.schoolDag||!schoolDagDoelenKlaar(stage)||(+S.m3lvl||1)<=stage.einde)return false;
  S.schoolDag=Math.min(M3VAKKEN.length*SCHOOL_DAGEN_PER_VAK,stage.index+1);
+ schoolSchildWissel(stage);
  bewaar();
  try{bonusCheck()}catch(e){}
  return true;
@@ -136,7 +152,7 @@ function schoolDagDoorgaan(stage){
 /* v122: zelfherstel. Waren de tien doelen al af VOORDAT het laatste level van de dag gewonnen werd, dan ging de dag
    niet door (alleen het outro-verhaal en de doelen-knop deden dat, en toen was het level nog niet gehaald).
    Nu: gaat door zodra (alle doelen af) én (laatste level gewonnen) – bij laden, in de Hal, bij Spelen en na elke winst.
-   Raakt geen Smekkies of huisschilden aan; zet alleen S.schoolDag een dag verder (zo vaak als echt verdiend). */
+   Zet S.schoolDag een dag verder (zo vaak als echt verdiend); v125: daarbij hooguit 5 schilden mee, rest → Smekkies. */
 function schoolDagHerstel(){let n=0;try{while(n<5&&schoolDagDoorgaan(schoolDag()))n++}catch(e){}return n}
 window.schoolDagHerstel=schoolDagHerstel;
 schoolDagHerstel();

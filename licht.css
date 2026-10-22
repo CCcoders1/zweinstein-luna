@@ -1451,3 +1451,5 @@ html.zw-tekent,html.zw-tekent body{overscroll-behavior:none!important;touch-acti
 .logkaart .logtab th:first-child,.logkaart .logtab td:first-child{text-align:left}
 .kaart.sierlijst.logkaart,body .kaart.sierlijst.logkaart{background:#f7eed8!important;color:#3b2a14!important}
 .kaart.logkaart h3{color:#7a1f12!important}.kaart.logkaart p,.kaart.logkaart td,.kaart.logkaart th,.kaart.logkaart .klein{color:#3b2a14!important}
+.zwversie{font-size:.75em;opacity:.6;text-align:center;margin:10px 0 4px}
+.schildw{text-align:center}.schildw p,.schildw p b{color:#2b1a0b!important;-webkit-text-fill-color:#2b1a0b!important;text-shadow:none!important}.schildw .klein{opacity:.8}
