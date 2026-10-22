@@ -288,6 +288,15 @@ def scenarios(app):
     ok('labels bij iconen bovenin', E(pg, "['#stats .vuur-t','#sterbadge','#smekbadge'].every(q=>{const e=document.querySelector(q);return e&&e.dataset.lbl})"))
     app.inv(pg, 'v131'); ok('geen JS-fouten', not pg.errs, pg.errs); pg.context.close()
 
+    print('[19] v132: 6 kleuren op 20 levels, 74/88/100 ongemoeid, geen verzameldoel in een ontbrekende kleur')
+    pg = app.open(basis(schilden=5, galjoenen=1026, wisselTot=1))
+    kl = E(pg, "[51,56,66,71,76,81,96,111,116,121,131,62,83,89,98,102,108,112,127,139].map(n=>{const L=m3Level(n);return [L.kleuren,L.doelen.every(d=>typeof d[0]!='number'||d[0]<L.kleuren)]})")
+    ok('20 levels hebben 6 kleuren, doelen haalbaar', all(k == [6, True] for k in kl), kl)
+    ok('74/88/100 houden 7 kleuren', E(pg, "[74,88,100].map(n=>m3Level(n).kleuren)") == [7, 7, 7])
+    ok('zetten volgens v132 (51: 39, 83: 32, 121: 16)', E(pg, "[51,83,121].map(n=>m3Level(n).zetten+(m3Level(n).extra|0))") == [39, 32, 16])
+    ok('save onveranderd', E(pg, "[S.schilden,S.galjoenen]") == [5, 1026])
+    app.inv(pg, 'v132'); ok('geen JS-fouten', not pg.errs, pg.errs); pg.context.close()
+
 def main():
     audit()
     s = socket.socket(); s.bind(('127.0.0.1', 0)); poort = s.getsockname()[1]; s.close()
