@@ -247,6 +247,15 @@ def scenarios(app):
     E(pg, WIN, [6, grens(pg, 6)[1], 0]); ok('herspelen 3★ → +1 (alleen het verschil)', E(pg, '[S.schilden,S.lvSchild[6]]') == [6, 3])
     app.inv(pg, 'oude save lvSchild'); pg.context.close()
 
+    print('[17] zachtere levels 20-30 (v128): save onveranderd, stergrenzen volgen de zetten')
+    s17 = basis(schilden=5, galjoenen=1026, wisselTot=1)
+    pg = app.open(s17)
+    ok('save onveranderd na laden', E(pg, "[S.schilden,S.galjoenen,S.m3lvl]") == [5, 1026, s17['m3lvl']])
+    L20 = E(pg, "(()=>{const L=m3Level(20);return [L.zetten,JSON.stringify(L.doelen),L.pot]})()")
+    ok('level 20: 2 potten, 46 zetten', L20 == [46, '[["o"],["p",2]]', 2], L20)
+    ok('stergrens = zetten x 70 / 150', all(E(pg, f"(()=>{{const L=m3Level({n}),Z=L.zetten+(L.extra|0),f=lvZwaar({n})?.85:1,r=x=>Math.round(x/10)*10;return JSON.stringify(m3SterGrens({n}))==JSON.stringify([r(Z*70*f),r(Z*150*f)])}})()") for n in (20, 21, 23, 24, 25, 26, 30)))
+    ok('geen JS-fouten', not pg.errs, pg.errs); pg.context.close()
+
 def main():
     audit()
     s = socket.socket(); s.bind(('127.0.0.1', 0)); poort = s.getsockname()[1]; s.close()

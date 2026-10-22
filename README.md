@@ -22,3 +22,8 @@ bash tests/release.sh
 ```
 
 Dit controleert de syntax, of `versie.js` en de cache in `sw.js` gelijk zijn, of elk script in `sw.js` staat, draait `tests/economie.py` (audit + browserscenario's: haar save-standen, herspelen, dubbel tikken, uitgeven, dagovergang, kapotte en oude saves, Spijbel, twee tabbladen, onderbroken eindfeest, oude saves zonder lvSchild, klok verzetten, events zonder schilden, echt level met eindfeest) en maakt pas daarna `../magische-app.zip`.
+
+## Moeilijkheid levels 15-30 (v128)
+Kalibratie met de greedy bot (200 potjes per level, zonder boosters). Uitschieters zijn in `balans.js` (tabel `ZACHT`, laatste laag van `m3Level`) iets zachter gemaakt; de stergrenzen rekenen automatisch met het nieuwe aantal zetten.
+- 20: 3 → 2 potten, +2 zetten · 21: kleurdoelen 25 → 20 · 23: 4 → 3 potten, +3 zetten · 24: +6 zetten
+- 25: 4 → 2 potten, kleurdoel 18 → 14 · 26: onkruid overal → alleen de rand · 30: +9 zetten, 3 → 1 pot

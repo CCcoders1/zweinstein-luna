@@ -19,6 +19,12 @@
  const _lz=m3Level;m3Level=function(n){const L=_lz(n);if(window._balSim||!L)return L;const z=lvZwaar(n);if(!z)return L;
   const fz=z==2?.62:.78,fd=z==2?1.35:1.2;L.zwaar=z;L.zetten=Math.max(8,Math.round(L.zetten*fz));
   L.doelen=L.doelen.map(x=>typeof x[0]=='number'?[x[0],Math.round(x[1]*fd)]:(x[0]=='p'&&L.pot)?['p',x[1]+1]:x);const p=L.doelen.find(x=>x[0]=='p');if(p&&L.pot)L.pot=p[1];return L};
+ /* v128: vroege uitschieters zachter (kalibratie: 200 potjes per level, greedy bot). Laatste laag, dus de stergrenzen rekenen mee. */
+ const ZACHT={20:{pot:2,z:2},21:{f:.8},23:{pot:3,z:3},24:{z:6},25:{pot:2,f:.8},26:{onkruid:'rand'},30:{z:9,pot:1}};window.M3ZACHT=ZACHT;
+ const _lzz=m3Level;m3Level=function(n){const L=_lzz(n);const M=ZACHT[n|0];if(window._balSim||!L||!M)return L;
+  if(M.z)L.zetten+=M.z;if(M.onkruid!==undefined)L.onkruid=M.onkruid;
+  if(M.pot!=null&&L.doelen.some(x=>x[0]=='p')){L.pot=M.pot;L.doelen=L.doelen.map(x=>x[0]=='p'?['p',M.pot]:x)}
+  if(M.f)L.doelen=L.doelen.map(x=>typeof x[0]=='number'?[x[0],Math.round(x[1]*M.f)]:x);return L};
  // geen kalibratie meer op de telefoon nodig
  const _k=m3Kalibreer;m3Kalibreer=async function(n,t){if(M3BAL[n]){S.m3kal=S.m3kal||{};S.m3kal[n]=0;return 0}return _k(n,t)};
  if(!S.kalV4&&Object.keys(M3BAL).length){S.kalV4=1;S.m3kal={};bewaar()}

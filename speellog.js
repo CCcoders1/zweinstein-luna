@@ -59,7 +59,7 @@
  const UIT={w:'gewonnen',v:'verloren',a:'gestopt'};
  window.zwLogTekst=()=>{const z=zwLogSamen(),a=L();const r=[];
   r.push(`Zweinstein Luna – speellog (${S.naam||'speler'}) · gemaakt ${tijd(nu())}`);
-  r.push(`Level nu: ${S.m3lvl||1} · schooldag ${(S.schoolDag|0)+1} · ${S.schilden|0} schilden · ${S.galjoenen|0} Smekkies · app v127`);
+  r.push(`Level nu: ${S.m3lvl||1} · schooldag ${(S.schoolDag|0)+1} · ${S.schilden|0} schilden · ${S.galjoenen|0} Smekkies · app v128`);
   r.push(`Periode: vanaf ${z.van?tijd(z.van):'–'} · ${z.regels} regels (max ${MAX})`,'');
   r.push(`Pogingen ${z.pogingen}, gewonnen ${z.winst} (${pct(z.winst,z.pogingen)}) · gem. ${z.gemPog.toFixed(1)} pogingen per level · 3★ ${pct(z.s3,z.winst)} van de winsten`);
   z.band.forEach(b=>r.push(`  levels ${b.naam}: ${b.p} pogingen, winst ${pct(b.w,b.p)}, 3★ ${pct(b.s3,b.w)}`));
