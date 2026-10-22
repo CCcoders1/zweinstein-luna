@@ -14,8 +14,8 @@
  /* ---- schilden uitgegeven & dagvoortgang (vergelijk met vorige stand) ---- */
  let sch=S.schilden|0,dag=S.schoolDag|0;
  setInterval(()=>{const s=S.schilden|0,d=S.schoolDag|0;
-  if(s<sch){const w=Math.min(sch-s,window._zwWissel|0);window._zwWissel=0;if(sch-s-w>0)zet(['U',nu(),sch-s-w,d])}else window._zwWissel=0;sch=s;
-  if(d>dag)zet(['D',nu(),d]);dag=d},1500);
+  /* v126: 'U' (uitgeven), 'D' (nieuwe dag) en 'W' (wissel) schrijft economie.js zelf; hier alleen nog onverklaarde dalingen */
+  sch=s;dag=d},1500);
  /* ---- levelpogingen ---- */
  const voorraad=()=>Object.assign({},S.bo||{});
  const gebruikt=v=>{const o=[];const b=S.bo||{};for(const k in v){const x=(v[k]|0)-(b[k]|0);if(x>0)o.push(x>1?k+'×'+x:k)}return o.join('+')};
@@ -33,8 +33,8 @@
    b._logR=1;bewaar();
    const k=document.getElementById('m3plus5');if(k)k.addEventListener('click',()=>{if(((S.bo&&S.bo.spijbel)|0)<sp0){b._logR=0;p.sp=(p.sp|0)+1}})}}catch(e){}
   return r}}
- if(typeof m3Winst==='function'){const _w=m3Winst;m3Winst=function(n,b){const s0=S.schilden|0;const r=_w.apply(this,arguments);
-  try{if(b&&!b.sim&&!b._logW){b._logW=1;const p=koppel(b)||{n:+n,t0:nu(),v:voorraad()};const st=window.m3SterVan?m3SterVan(b,n):1;const erbij=Math.max(0,(S.schilden|0)-s0);sch=S.schilden|0;
+ if(typeof m3Winst==='function'){const _w=m3Winst;m3Winst=function(n,b){const s0=(S.lvSchild&&S.lvSchild[n])|0;const r=_w.apply(this,arguments);
+  try{if(b&&!b.sim&&!b._logW){b._logW=1;const p=koppel(b)||{n:+n,t0:nu(),v:voorraad()};const st=window.m3SterVan?m3SterVan(b,n):1;const erbij=Math.max(0,((S.lvSchild&&S.lvSchild[n])|0)-s0);sch=S.schilden|0;
    const rij=['L',nu(),+n,'w',b.score|0,st,b.zet|0,gebruikt(p.v),nu()-p.t0,erbij,p.sp|0];
    if(p.rij)p.rij.splice(0,rij.length,...rij);else zet(rij);
    b._logR=1;wacht=null;bewaar()}}catch(e){}
@@ -59,7 +59,7 @@
  const UIT={w:'gewonnen',v:'verloren',a:'gestopt'};
  window.zwLogTekst=()=>{const z=zwLogSamen(),a=L();const r=[];
   r.push(`Zweinstein Luna – speellog (${S.naam||'speler'}) · gemaakt ${tijd(nu())}`);
-  r.push(`Level nu: ${S.m3lvl||1} · schooldag ${(S.schoolDag|0)+1} · ${S.schilden|0} schilden · ${S.galjoenen|0} Smekkies · app v125`);
+  r.push(`Level nu: ${S.m3lvl||1} · schooldag ${(S.schoolDag|0)+1} · ${S.schilden|0} schilden · ${S.galjoenen|0} Smekkies · app v126`);
   r.push(`Periode: vanaf ${z.van?tijd(z.van):'–'} · ${z.regels} regels (max ${MAX})`,'');
   r.push(`Pogingen ${z.pogingen}, gewonnen ${z.winst} (${pct(z.winst,z.pogingen)}) · gem. ${z.gemPog.toFixed(1)} pogingen per level · 3★ ${pct(z.s3,z.winst)} van de winsten`);
   z.band.forEach(b=>r.push(`  levels ${b.naam}: ${b.p} pogingen, winst ${pct(b.w,b.p)}, 3★ ${pct(b.s3,b.w)}`));
@@ -71,6 +71,7 @@
    else if(x[0]=='S')r.push(`${tijd(x[1])}  sessie ${min(x[2]-x[1])}`);
    else if(x[0]=='U')r.push(`${tijd(x[1])}  ${x[2]} schild(en) uitgegeven (dag ${x[3]+1})`);
    else if(x[0]=='D')r.push(`${tijd(x[1])}  naar schooldag ${x[2]+1}`);
+   else if(x[0]=='A')r.push(`${tijd(x[1])}  ⚠ hersteld: ${x[2]}`);
    else if(x[0]=='W')r.push(`${tijd(x[1])}  ${x[2]} overgebleven schild(en) omgewisseld voor ${x[3]} Smekkies (naar dag ${x[4]+1})`)});
   return r.join('\n')};
  const html=()=>{const z=zwLogSamen();return `<section class="kaart sierlijst logkaart"><h3>Speellog</h3>

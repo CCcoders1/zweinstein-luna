@@ -1,9 +1,10 @@
 
 # auteursrechtelijk beschermde game-geluiden: nooit committen
 *.uax
-*_uax
-zweinstein-geluiden*.zip
-geluiden/
-sounds/
 *.wav
 *.zwp
+*_uax
+__pycache__/
+geluiden/
+sounds/
+zweinstein-geluiden*.zip

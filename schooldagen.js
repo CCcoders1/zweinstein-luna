@@ -58,7 +58,7 @@ const SCHOOL_DOELKOSTEN=[1,3,1,3,1,3,1,3,1,3];
    Kalibratie (bot, 30 spelers, levels 1–200): aanbod dag 1 ~55, dag 2–10 ~45–52 → na 45 blijft gemiddeld 5–11 over,
    vrijwel nooit herspelen nodig. */
 const SCHOOL_KOSTEN_DAG=[[1,3,1,3,1,3,1,3,1,3],[3,3,4,4,4,5,5,5,6,6]];
-const SCHOOL_SCHILD_REST=5,SCHOOL_SCHILD_WISSEL=10;
+/* overschot-regel: zie ECO.dagWissel in economie.js (REST 5, WISSEL 10) */
 const schoolKosten=index=>SCHOOL_KOSTEN_DAG[Math.min(index|0,SCHOOL_KOSTEN_DAG.length-1)];
 const schoolKostenSom=index=>schoolKosten(index).reduce((t,k)=>t+k,0);
 window.schoolKostenSom=schoolKostenSom;
@@ -130,20 +130,10 @@ function schoolDagKanStarten(level){
  const stage=schoolDag();
  return !!stage&&level<=(S.m3lvl||1)&&level<=stage.einde;
 }
-function schoolSchildWissel(stage){
- const over=(S.schilden|0)-SCHOOL_SCHILD_REST;if(over<=0)return;
- const sm=over*SCHOOL_SCHILD_WISSEL;S.schilden=SCHOOL_SCHILD_REST;S.galjoenen=(S.galjoenen|0)+sm;
- window._zwWissel=(window._zwWissel|0)+over;   /* speellog telt dit niet als 'uitgegeven' */
- try{if(!Array.isArray(S.log))S.log=[];S.log.push(['W',Math.round(Date.now()/1000),over,sm,S.schoolDag]);if(S.log.length>500)S.log.splice(0,S.log.length-500)}catch(e){}
- const prof=(stage&&stage.vak&&stage.vak.prof)||'De professor';
- setTimeout(()=>{try{const o=document.createElement('div');o.className='modal';o.dataset.pop='schildwissel';
-  o.innerHTML=`<div class="modalin rococo keuze schildw"><h2>${prof} wisselt je schilden om</h2><p>Je had nog ${over+SCHOOL_SCHILD_REST} huisschilden over van de vorige schooldag. ${SCHOOL_SCHILD_REST} neem je mee naar de nieuwe dag, de andere ${over} wisselt ${prof} voor je om:</p><p style="font-size:1.4em;margin:.4em 0"><b>+${sm} Smekkies</b></p><p class="klein">Elke nieuwe schooldag neem je hooguit ${SCHOOL_SCHILD_REST} huisschilden mee. Nieuwe schilden verdien je gewoon weer met levels.</p><button class="knop volgende">Dank je wel!</button></div>`;
-  document.body.appendChild(o);o.querySelector('button').onclick=()=>{o.remove();try{stats()}catch(e){}};try{stats()}catch(e){}}catch(e){}},1200);
-}
 function schoolDagDoorgaan(stage){
  if(!stage||stage.index!==S.schoolDag||!schoolDagDoelenKlaar(stage)||(+S.m3lvl||1)<=stage.einde)return false;
  S.schoolDag=Math.min(M3VAKKEN.length*SCHOOL_DAGEN_PER_VAK,stage.index+1);
- schoolSchildWissel(stage);
+ ECO.dagWissel(S.schoolDag,stage.vak&&stage.vak.prof);   /* v126: max 5 schilden mee, eenmalig per dag; dag + wissel in één bewaar() */
  bewaar();
  try{bonusCheck()}catch(e){}
  return true;
@@ -247,7 +237,7 @@ V.pad=function(vakId,...a){
  const beeld=document.querySelector('.padkopbeeld');
  if(beeld){
   const klaar=stage.v.taken.filter(t=>S.taken[t[0]]).length;
-  beeld.insertAdjacentHTML('afterend',`<section class="schooldag-kaart"><small>Schooldag ${stage.dagNummer} van 5 · levels ${stage.begin}–${stage.einde}</small><h3>${stage.inhoud.titel}</h3><p>${klaar}/10 hersteldoelen · ${S.schoolDag===stage.index&&(+S.m3lvl||1)>stage.einde?'Doelen nodig voor de volgende dag':'Elke levelwinst levert een huisschild op'}</p><button class="knop klein" onclick="ga('home')">Bekijk de hersteldoelen</button></section>`);
+  beeld.insertAdjacentHTML('afterend',`<section class="schooldag-kaart"><small>Schooldag ${stage.dagNummer} van 5 · levels ${stage.begin}–${stage.einde}</small><h3>${stage.inhoud.titel}</h3><p>${klaar}/10 hersteldoelen · ${S.schoolDag===stage.index&&(+S.m3lvl||1)>stage.einde?'Doelen nodig voor de volgende dag':'Elke levelwinst levert 1 tot 3 huisschilden op (één per ster)'}</p><button class="knop klein" onclick="ga('home')">Bekijk de hersteldoelen</button></section>`);
  }
  document.querySelectorAll('.padlvl').forEach(knoop=>{
   const level=+knoop.dataset.l;

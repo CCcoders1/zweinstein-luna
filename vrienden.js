@@ -26,9 +26,9 @@ const kijk=()=>{try{if(!S||!S.naam)return;const v=vr();const g=S.galjoenen|0,kk=
  if(ver)bewaar()}catch(e){}};
 setInterval(kijk,3000);
 // Levels: alleen echte nieuwe winst; 3★ alleen als het level voor het eerst 3★ krijgt; schilden zijn al per level begrensd
-if(typeof m3Winst==='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...a){let eerste=false,oudSt=0,oudSch=0;try{eerste=n>=(S.m3lvl|0);oudSt=(S.lvSter&&S.lvSter[n])|0;oudSch=S.schilden|0}catch(e){}
+if(typeof m3Winst==='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...a){let eerste=false,oudSt=0,oudSch=0;try{eerste=n>=(S.m3lvl|0);oudSt=(S.lvSter&&S.lvSter[n])|0;oudSch=(S.lvSchild&&S.lvSchild[n])|0}catch(e){}
  const r=_w.call(this,n,b,...a);
- try{if(!window._vrStil&&document.body.dataset.view!=='maker'){if(eerste)tel('lvl',1);const st=(S.lvSter&&S.lvSter[n])|0;if(st>=3&&oudSt<3)tel('ster3',1);if(st>0){const v=vr();v.lsq=v.lsq||{};if(st>(v.lsq[n]|0))v.lsq[n]=st}tel('schild',Math.max(0,(S.schilden|0)-oudSch));kijk();bewaar()}}catch(e){}
+ try{if(!window._vrStil&&document.body.dataset.view!=='maker'){if(eerste)tel('lvl',1);const st=(S.lvSter&&S.lvSter[n])|0;if(st>=3&&oudSt<3)tel('ster3',1);if(st>0){const v=vr();v.lsq=v.lsq||{};if(st>(v.lsq[n]|0))v.lsq[n]=st}tel('schild',Math.max(0,((S.lvSchild&&S.lvSchild[n])|0)-oudSch));kijk();bewaar()}}catch(e){}
  return r}}
 /* ---------- kleine Supabase-client ---------- */
 let ST=AAN?'onbekend':'uit',laatsteNiet=0;window.zwOnlineStatus=()=>ST;
