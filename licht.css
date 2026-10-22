@@ -1453,3 +1453,7 @@ html.zw-tekent,html.zw-tekent body{overscroll-behavior:none!important;touch-acti
 .kaart.logkaart h3{color:#7a1f12!important}.kaart.logkaart p,.kaart.logkaart td,.kaart.logkaart th,.kaart.logkaart .klein{color:#3b2a14!important}
 .zwversie{font-size:.75em;opacity:.6;text-align:center;margin:10px 0 4px}
 .schildw{text-align:center}.schildw p,.schildw p b{color:#2b1a0b!important;-webkit-text-fill-color:#2b1a0b!important;text-shadow:none!important}.schildw .klein{opacity:.8}
+
+/* v131 labels bij iconen */
+.heeftlbl{position:relative}.heeftlbl::after{content:attr(data-lbl);position:absolute;left:50%;transform:translateX(-50%);bottom:-1.15em;font-size:10px;line-height:1;letter-spacing:.02em;white-space:nowrap;color:#f3e9cc;text-shadow:0 1px 2px #000;pointer-events:none;font-weight:600}
+#stats{overflow:visible}#stats .heeftlbl{position:relative!important}#stats .heeftlbl::after{position:absolute!important;left:50%!important;transform:translateX(-50%)!important;bottom:-.95em!important;margin:0!important}

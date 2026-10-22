@@ -23,7 +23,8 @@ const vandaag=()=>new Date().toISOString().slice(0,10);
 const dagGedachte=()=>{const d=vandaag().split('-').join('')*1;return GEDACHTEN[d%GEDACHTEN.length]};
 const tilly=t=>`<div class="tilly"><span class="gez">🧝‍♀️</span><div><b>Tilly:</b> ${t}</div></div>`;
 const foutT=t=>{fx.fout();return tilly(t)};
-function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('zien');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('zien'),2200)}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('zien');if(!e.onclick)e.onclick=()=>{clearTimeout(toast.t);e.classList.remove('zien')};clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('zien'),toastDuur(t))}
+function toastDuur(t){return Math.min(8000,Math.max(4000,String(t||'').length*70))}
 const HOEK='<svg viewBox="0 0 70 70" class="hoek {c}"><g fill="none" stroke="#b8860b" stroke-width="2.2" stroke-linecap="round"><path d="M4 66V20C4 10 10 4 20 4h46"/><path d="M12 58V26c0-8 6-14 14-14h32"/><path d="M26 26c8-6 16 2 10 8s-14-2-6-6"/><circle cx="20" cy="20" r="3" fill="#d4af37"/><path d="M40 12c4-6 10-6 12 0M12 40c-6 4-6 10 0 12"/></g></svg>';
 const lijst=html=>`<div class="perkament lijst">${['lb','rb','lo','ro'].map(c=>HOEK.replace('{c}',c)).join('')}${html}</div>`;
 function beloon(id,pt,gal,tekst){
@@ -142,3 +143,8 @@ function startApp(){stats();if(!S.naam)fx.intro(()=>ga('home'));else ga('home')}
 
 /* Huisschild: betaalmunt voor acties in de lokalen (in de kleuren van haar huis) */
 function schildSVG(cls){const h=(typeof HUIZEN!='undefined'&&HUIZEN[S.huis])||{k1:'#7a3a8a',k2:'#e3b23c'};return `<svg class="schild ${cls||''}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V5z" fill="${h.k1}" stroke="${h.k2}" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 4.3 6 6.5v4.6c0 3.8 2.5 7 6 8.6z" fill="rgba(255,255,255,.18)"/><path d="M8.5 10.5h7M12 7.5v9" stroke="${h.k2}" stroke-width="1.5" stroke-linecap="round"/></svg>`}
+
+/* v131: zichtbare labels bij de iconen bovenin, en uitleg bij een tik (oudere spelers: geen hover, geen raden) */
+(function(){const LBL=[['#stats .schild-t','','Afdelingspunten voor Huffelpuf.'],['#stats .vuur-t','op rij','Zoveel dagen op rij heb je gespeeld. Een dag overslaan is niet erg.'],['#smekbadge','Smekkies','Smekkies: snoepjes die je verdient met levels en raadsels.'],['#sterbadge','schilden','Huisschilden: verdien je met sterren in de levels.'],['#stats .munt-t','Smekkies','Smekkies: snoepjes die je verdient met levels en raadsels.'],['#tasknop','verzameld',null]];
+ const zet=()=>{LBL.forEach(([q,l,u])=>{const e=document.querySelector(q);if(!e||e.dataset.lblk)return;e.dataset.lblk=1;if(l){e.dataset.lbl=l;e.classList.add('heeftlbl')}if(u){e.setAttribute('aria-label',l||e.title||'');e.setAttribute('role','button')}if(u){e.tabIndex=0;e.addEventListener('click',()=>toast(u))}})};
+ const h=document.querySelector('header');if(h)new MutationObserver(zet).observe(h,{childList:true,subtree:true});setTimeout(zet,0);setInterval(zet,2000)})();

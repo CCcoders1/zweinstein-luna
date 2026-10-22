@@ -49,9 +49,22 @@ function reeksOpBord(b){const leeg={bommen:0,strepen:0};if(!b||b.sim||(b.L&&b.L.
  if(plan.bommen){const p=reeksNeem(vrij,3,5);if(p){b.g[p[0]][p[1]].s='bom';g.bommen=1}}
  if(plan.strepen){const p=reeksNeem(vrij,2,6);if(p){b.g[p[0]][p[1]].s=Math.random()<.5?'rh':'rv';g.strepen=1}}
  if(g.bommen||g.strepen){const z=reeksZin(g);toast(z.charAt(0).toUpperCase()+z.slice(1)+(g.bommen&&g.strepen?' staan':' staat')+' klaar.')}return g}
+/* Stille hulp (v131): na 3 verliezen op hetzelfde level legt Tilly gratis een bom klaar en doet er 3 zetten bij;
+   vanaf 5 verliezen ook een streep. Telt per level, wist bij winst. Nooit in de bot (b.sim), nooit via de winkel. */
+const PECH_VANAF=3;
+function pechPlan(k){k=k|0;return k<PECH_VANAF?{bommen:0,strepen:0,zetten:0}:{bommen:1,strepen:k>=5?1:0,zetten:3}}
+function pechHulp(b){if(!b||b.sim||!b.L)return null;const n=b.L.n;const plan=pechPlan((S.m3pech||{})[n]);if(!plan.zetten)return null;const vrij=reeksVrij(b);const g={bommen:0,strepen:0,zetten:plan.zetten};
+ if(plan.bommen){const p=reeksNeem(vrij,3,5);if(p){b.g[p[0]][p[1]].s='bom';g.bommen=1}}
+ if(plan.strepen){const p=reeksNeem(vrij,2,6);if(p){b.g[p[0]][p[1]].s=Math.random()<.5?'rh':'rv';g.strepen=1}}
+ b.zet+=plan.zetten;const z=document.getElementById('m3z');if(z)z.textContent=b.zet;b._pech=g;
+ const zin=reeksZin(g);setTimeout(()=>toast('Tilly heeft stilletjes '+(zin?zin+' klaargelegd en ':'')+plan.zetten+' zetten erbij gedaan.'),1300);return g}
+window.pechPlan=pechPlan;window.pechHulp=pechHulp;
+if(typeof m3Verlies==='function'){const _pv=m3Verlies;m3Verlies=function(n,b){S.m3pech=S.m3pech||{};S.m3pech[n]=Math.min(99,(S.m3pech[n]|0)+1);bewaar();return _pv.apply(this,arguments)}}
+if(typeof m3Winst==='function'){const _pw=m3Winst;m3Winst=function(n,b){if(S.m3pech&&S.m3pech[n]){delete S.m3pech[n];bewaar()}return _pw.apply(this,arguments)}}
 window.reeksTekst=n=>{if(!reeksMag(n))return '';const plan=reeksPlan(S.winReeks,n);if(!plan.bommen&&!plan.strepen)return '';return `<p class="reekswinst">Reeks ${Math.min(5,S.winReeks|0)}${(S.winReeks|0)>=5?' (max)':''}: ${reeksZin(plan)} ${plan.bommen&&plan.strepen?'staan':'staat'} klaar op het bord.</p>`};
 window.m3NaBord=(b,boost)=>{uq=[];b.kt=b.kt||Array.from({length:RIJEN},()=>Array(KOL).fill(0));b.ktk=b.ktk||Array.from({length:RIJEN},()=>Array(KOL).fill(0));
  try{reeksOpBord(b)}catch(e){}
+ try{pechHulp(b)}catch(e){}
  const bo=(boost&&boost.bo)||[];if(!bo.length)return;
  bo.forEach(k=>{if(!(S.bo[k]>0))return;S.bo[k]--;
   if(k=='bliksem'){const v=rnd(vrij(b));if(v)b.g[v[0]][v[1]].s='kruis'}

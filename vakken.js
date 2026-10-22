@@ -106,7 +106,7 @@ const LES_KOSTEN=false;
    knoppen=pts.map(p=>{const L=p.L,d=L-hier;const st=L<hier?'af':L==hier?'nu':'vooruit';
     const plaag=padPlaag(L),cadeau=padCadeau(L),zwaar=!plaag&&padZwaar(L);
     const cls=[st,plaag?'plaag':'',cadeau?'cadeau':'',zwaar?(zwaar>1?'zwaar superzwaar':'zwaar'):'',L>=100?'lang':'','v'+Math.max(0,d)].filter(Boolean).join(' ');
-    const tip=plaag&&cadeau?(plaag.soort==='damp'?plaag.kaart+', recept: '+cadeau:'Duivelsstrik, recept: '+cadeau):plaag?(plaag.soort==='damp'?'Plaaglevel, '+plaag.kaart:'Plaaglevel, Duivelsstrik'):cadeau?('Hier krijg je: '+cadeau):zwaar?(zwaar>1?'Heel zwaar level: neem boosters mee':'Zwaar level: boosters helpen'):'';
+    const tip=plaag&&cadeau?(plaag.soort==='damp'?plaag.kaart+', recept: '+cadeau:'Duivelsstrik, recept: '+cadeau):plaag?(plaag.soort==='damp'?'Plaaglevel, '+plaag.kaart:'Plaaglevel, Duivelsstrik'):cadeau?('Hier krijg je: '+cadeau):zwaar?(zwaar>1?'Heel pittig level: Tilly helpt als het niet lukt':'Pittig level: Tilly helpt als het niet lukt'):'';
     return `<button class="padlvl ${cls}" data-l="${L}"${tip?` title="${tip}"`:''} style="left:${p.x}%;top:${p.y}px${d>0?';--v:'+d:''}">${L}${L==hier?'<span class="luna">L</span>':''}</button>`}).join('');
    if(mist)nevel=`<div class="pad-nevel">${plaagVer?padTeken('plaag',plaagVer.kaart+' nadert',''):''}${giftVer?padTeken('cadeau',giftVer,'dat krijg je'):''}</div>`;
   }
