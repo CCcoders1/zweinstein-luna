@@ -254,6 +254,9 @@ def scenarios(app):
     L20 = E(pg, "(()=>{const L=m3Level(20);return [L.zetten,JSON.stringify(L.doelen),L.pot]})()")
     ok('level 20: 2 potten, 46 zetten', L20 == [46, '[["o"],["p",2]]', 2], L20)
     ok('stergrens = zetten x 70 / 150', all(E(pg, f"(()=>{{const L=m3Level({n}),Z=L.zetten+(L.extra|0),f=lvZwaar({n})?.85:1,r=x=>Math.round(x/10)*10;return JSON.stringify(m3SterGrens({n}))==JSON.stringify([r(Z*70*f),r(Z*150*f)])}})()") for n in (20, 21, 23, 24, 25, 26, 30)))
+    V129 = [5,12,15,16,33,40,41,42,45,46,47,50,53,54,56,59,60,67,80,81,87,90,93,95,103,110,115,122,125,135,136,140,141,145,150]
+    ok('v129: aangepaste levels nooit 7 kleuren met 3+ potten', E(pg, f"{V129}.every(n=>{{const L=m3Level(n);return !(L.kleuren>=7&&(L.pot|0)>=3)}})"))
+    ok('v129: level 150 heeft 2 potten, level 59 kist dubbel', E(pg, "[m3Level(150).pot,m3Level(59).kist]") == [2, 'dubbel'])
     ok('geen JS-fouten', not pg.errs, pg.errs); pg.context.close()
 
 def main():

@@ -20,9 +20,13 @@
   const fz=z==2?.62:.78,fd=z==2?1.35:1.2;L.zwaar=z;L.zetten=Math.max(8,Math.round(L.zetten*fz));
   L.doelen=L.doelen.map(x=>typeof x[0]=='number'?[x[0],Math.round(x[1]*fd)]:(x[0]=='p'&&L.pot)?['p',x[1]+1]:x);const p=L.doelen.find(x=>x[0]=='p');if(p&&L.pot)L.pot=p[1];return L};
  /* v128: vroege uitschieters zachter (kalibratie: 200 potjes per level, greedy bot). Laatste laag, dus de stergrenzen rekenen mee. */
- const ZACHT={20:{pot:2,z:2},21:{f:.8},23:{pot:3,z:3},24:{z:6},25:{pot:2,f:.8},26:{onkruid:'rand'},30:{z:9,pot:1}};window.M3ZACHT=ZACHT;
+ const ZACHT={20:{pot:2,z:2},21:{f:.8},23:{pot:3,z:3},24:{z:6},25:{pot:2,f:.8},26:{onkruid:'rand'},30:{z:9,pot:1},
+ // v129: de 35 ernstigste uitschieters van 1-150 (74/88/100 bewust niet), gemeten met de kalibratie-bot
+ 5:{z:4},12:{pot:2},15:{z:5},16:{onkruid:'rand'},33:{onkruid:'rand'},40:{onkruid:'rand',z:3},41:{pot:2,kist:'rij',z:3},42:{pot:2,kist:'rij'},45:{onkruid:'rand'},46:{z:7},47:{pot:1},50:{pot:2},
+ 53:{pot:1,z:3},54:{f:.75,z:2},56:{onkruid:'rand',z:4},59:{kist:'dubbel'},60:{z:4,f:.8},67:{f:.75,kist:'rij'},80:{pot:2},81:{pot:1,z:4},87:{z:4},90:{pot:2,f:.8,z:3},93:{f:.8},95:{pot:2},
+ 103:{pot:2},110:{pot:2},115:{pot:2,kist:'rij'},122:{f:.7,z:3},125:{pot:2},135:{pot:2,onkruid:'rand'},136:{f:.7,z:3},140:{pot:2,kist:'rij',z:3},141:{z:4},145:{pot:2,onkruid:'kruis',z:3},150:{pot:2,onkruid:'rand',f:.8,z:3}};window.M3ZACHT=ZACHT;
  const _lzz=m3Level;m3Level=function(n){const L=_lzz(n);const M=ZACHT[n|0];if(window._balSim||!L||!M)return L;
-  if(M.z)L.zetten+=M.z;if(M.onkruid!==undefined)L.onkruid=M.onkruid;
+  if(M.z)L.zetten+=M.z;if(M.onkruid!==undefined)L.onkruid=M.onkruid;if(M.kist!==undefined)L.kist=M.kist;
   if(M.pot!=null&&L.doelen.some(x=>x[0]=='p')){L.pot=M.pot;L.doelen=L.doelen.map(x=>x[0]=='p'?['p',M.pot]:x)}
   if(M.f)L.doelen=L.doelen.map(x=>typeof x[0]=='number'?[x[0],Math.round(x[1]*M.f)]:x);return L};
  // geen kalibratie meer op de telefoon nodig

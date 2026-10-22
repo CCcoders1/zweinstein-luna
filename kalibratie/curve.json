@@ -1,0 +1,90 @@
+{
+ "_uitleg": "Doelcurve voor speelbaarheid. Winkans = greedy bot (kalibratie/speelbaar.js), zonder hulp en met hulp (+5 zetten + 1 bom + 1 streep). Banden in fracties 0-1. 'zwaar' = toegestane verlaging van min voor lvZwaar 1 en 2. 'buur' = maximaal zoveel punten onder de lopende mediaan van de ±5 buren (na zwaar-correctie). 'max' te makkelijk is alleen info.",
+ "spellen": {
+  "geen": 100,
+  "hulp": 50,
+  "snel": 100
+ },
+ "banden": [
+  {
+   "van": 1,
+   "tot": 10,
+   "geen": [
+    0.6,
+    1.0
+   ],
+   "hulp": [
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "van": 11,
+   "tot": 50,
+   "geen": [
+    0.3,
+    0.7
+   ],
+   "hulp": [
+    0.5,
+    0.9
+   ]
+  },
+  {
+   "van": 51,
+   "tot": 150,
+   "geen": [
+    0.2,
+    0.6
+   ],
+   "hulp": [
+    0.35,
+    0.85
+   ]
+  },
+  {
+   "van": 151,
+   "tot": 350,
+   "geen": [
+    0.15,
+    0.55
+   ],
+   "hulp": [
+    0.3,
+    0.85
+   ]
+  },
+  {
+   "van": 351,
+   "tot": 600,
+   "geen": [
+    0.12,
+    0.5
+   ],
+   "hulp": [
+    0.25,
+    0.8
+   ]
+  }
+ ],
+ "zwaar": {
+  "1": 0.15,
+  "2": 0.25
+ },
+ "bodem": {
+  "geen": 0.08,
+  "hulp": 0.2
+ },
+ "buur": {
+  "straal": 5,
+  "max_onder": 0.25
+ },
+ "vrij": {
+  "_uitleg": "plaag-intro levels zijn bewust makkelijk",
+  "levels": [
+   22,
+   222
+  ]
+ },
+ "opmerking": "v129: banden afgestemd op de (zwakkere) kalibratie-bot; mensen winnen vaker. 151-600 voorlopig, niet gemeten."
+}
