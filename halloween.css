@@ -1,0 +1,106 @@
+/* ====== v124 Halloweenweek ====== */
+#hwdecor{display:none;position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+#hwtint{display:none;position:fixed;inset:0;pointer-events:none;z-index:6;mix-blend-mode:soft-light;background:linear-gradient(170deg,rgba(255,140,40,.32),rgba(120,50,170,.30) 60%,rgba(60,20,90,.35))}
+body.hw #hwdecor,body.hw #hwtint{display:block}
+body.hw:not([data-view=home]):not([data-view=kaart]):not([data-view=halloween]):not([data-view=match3]) #hwdecor{display:none}
+body.hw[data-view=match3] #hwdecor .hwlanten,body.hw[data-view=match3] #hwdecor .hwkaarsen,body.hw[data-view=match3] #hwdecor .hwweb{display:none}
+body.hw[data-view=match3] #hwtint{opacity:.7}
+.hwweb{position:absolute;top:0;width:120px;height:120px;opacity:.55}
+.hwweb.l{left:0}.hwweb.r{right:0;transform:scaleX(-1)}
+.hwlanten .hwl{position:absolute;width:46px;height:46px;animation:hwzweef 7s ease-in-out infinite;will-change:transform}
+.hwl::before,.hws.s0::before,.hws.s2::before,.hws.s4::before,.hws.s6::before,.hwfz::before{content:'';position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(rgba(255,160,50,.55),rgba(255,140,40,0) 65%);z-index:-1}
+.hwl svg{width:100%;height:100%}
+.hwl.l0{left:6%;top:9%}.hwl.l1{left:78%;top:13%;animation-delay:-2s;width:38px;height:38px}.hwl.l2{left:44%;top:6%;animation-delay:-4s;width:32px;height:32px;opacity:.85}
+.hwl.l3{left:88%;top:48%;animation-delay:-1s;width:34px;height:34px;opacity:.8}.hwl.l4{left:2%;top:58%;animation-delay:-5s;width:30px;height:30px;opacity:.75}
+body:not(.hwfeest) .hwl.l3,body:not(.hwfeest) .hwl.l4{display:none}
+@keyframes hwzweef{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+.hwb{position:absolute;width:44px;height:20px;opacity:.75;animation:hwvlieg 26s linear infinite;will-change:transform}
+.hwb svg{width:100%;height:100%;animation:hwflap .35s ease-in-out infinite alternate;transform-origin:50% 40%}
+.hwb.b0{top:17%;animation-delay:-3s}.hwb.b1{top:31%;animation-duration:34s;animation-delay:-17s;width:30px;height:14px}.hwb.b2{top:9%;animation-duration:41s;animation-delay:-28s;width:24px;height:11px;opacity:.55}
+@keyframes hwvlieg{0%{transform:translate(-60px,0)}25%{transform:translate(25vw,18px)}50%{transform:translate(55vw,-8px)}75%{transform:translate(80vw,14px)}100%{transform:translate(110vw,0)}}
+@keyframes hwflap{from{transform:scaleY(1)}to{transform:scaleY(.55)}}
+.hwkaarsen .hwk{position:absolute;width:6px;height:18px;border-radius:2px;background:linear-gradient(#fff6dc,#e8d3a3);box-shadow:0 0 0 0 transparent;animation:hwzweef 6s ease-in-out infinite}
+.hwkaarsen .hwk::before{content:'';position:absolute;left:50%;top:-14px;width:16px;height:18px;margin-left:-8px;border-radius:50%;background:radial-gradient(ellipse at 50% 60%,#fff 8%,#ffcf5a 25%,rgba(255,170,60,.35) 45%,rgba(255,140,30,0) 70%);animation:hwvlam 1.6s ease-in-out infinite alternate;will-change:transform}
+.hwk.k0{left:20%;top:22%}.hwk.k1{left:33%;top:14%;animation-delay:-1s}.hwk.k2{left:62%;top:20%;animation-delay:-2s}.hwk.k3{left:70%;top:7%;animation-delay:-3s}.hwk.k4{left:92%;top:27%;animation-delay:-4s}.hwk.k5{left:12%;top:36%;animation-delay:-5s}
+@keyframes hwvlam{from{transform:scale(1,1)}to{transform:scale(.85,1.15)}}
+@media (prefers-reduced-motion:reduce){#hwdecor *{animation:none!important}.hwb{display:none}}
+/* kaart in De Hal */
+.hwkaart{margin:10px 0;padding:10px 12px;border-radius:10px;cursor:pointer;background:linear-gradient(135deg,#3b1d4f,#5a2a5e 55%,#8a3d1c)!important;color:#ffe9c7!important;box-shadow:0 0 0 1px rgba(255,170,70,.6),0 6px 18px rgba(40,10,50,.45)}
+.hwkaart h3{margin:0;color:#ffd08a!important;font-size:1.05em;letter-spacing:.02em}
+.hwkaart small{color:#f3d9ff;opacity:.9}
+.hwk-kop{display:flex;align-items:center;gap:10px}
+.hwk-kop>div{flex:1;min-width:0}
+.hwk-pomp{width:42px;height:42px;flex:none;position:relative}
+.hwk-pomp svg{width:100%;height:100%}
+.hwk-snoep{display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.25);border-radius:20px;padding:3px 9px 3px 5px;font-size:1.05em}
+.hwsnoep{width:26px;height:16px;flex:none}
+.hwk-balk{height:9px;border-radius:6px;background:rgba(0,0,0,.35);margin:9px 0 6px;overflow:hidden}
+.hwk-balk i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#f28a1d,#ffc65a);box-shadow:0 0 8px rgba(255,170,60,.8);transition:width .6s}
+.hwk-volg{margin:0;font-size:.9em;color:#ffe9c7!important}
+.hwk-klaar{color:#ffd76a;animation:hwgloei 1.6s ease-in-out infinite alternate}
+@keyframes hwgloei{from{text-shadow:0 0 0 transparent}to{text-shadow:0 0 10px rgba(255,200,90,.9)}}
+.hwk-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.hwk-tags span{font-size:.78em;background:rgba(255,200,120,.18);border:1px solid rgba(255,190,110,.5);border-radius:12px;padding:2px 8px}
+.hwkaart.hwfk{box-shadow:0 0 0 2px #ffc65a,0 0 22px rgba(255,160,50,.7)}
+.hwteaser{padding:8px 12px}
+/* in het level */
+.hwchip{position:absolute;right:6px;bottom:-30px;display:flex;align-items:center;gap:3px;background:rgba(59,29,79,.88);color:#ffe9c7;border:1px solid rgba(255,170,70,.7);border-radius:14px;padding:2px 8px 2px 4px;font-size:.85em;z-index:5;pointer-events:none}
+.m3hud{position:relative}
+.hwchip.tik{animation:hwtik .35s}
+@keyframes hwtik{50%{transform:scale(1.25)}}
+.hwvlieg{position:fixed;z-index:60;width:28px;height:18px;pointer-events:none;transition:transform .8s cubic-bezier(.4,-.3,.6,1),opacity .8s;filter:drop-shadow(0 0 6px rgba(255,160,40,.9))}
+.hwvlieg svg{width:100%;height:100%}
+/* eventscherm */
+.hwscherm{padding-bottom:20px}
+.hwkop{position:relative;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,170,70,.6),0 8px 22px rgba(0,0,0,.5);margin-bottom:12px}
+.hwkop img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.hwkop-t{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 10px;background:linear-gradient(transparent,rgba(25,8,35,.92));color:#ffe9c7}
+.hwkop-t h1{margin:0;font-size:1.45em;color:#ffd08a}.hwkop-t p{margin:2px 0 0;font-size:.9em}.hwkop-t small{color:#e9c9ff}
+.hwblok{margin:10px 0}
+.hwstand{display:flex;align-items:center;gap:10px;font-size:1.1em}.hwstand .hwsnoep{width:44px;height:26px}.hwstand b{font-size:1.4em}
+.hwpad{list-style:none;padding:0;margin:8px 0 0}
+.hwpad li{display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:1px dashed rgba(140,90,40,.35)}
+.hwpad li.dicht{opacity:.6}
+.hwpad li.klaar .hwp-s{color:#2f7a2f;font-weight:bold}
+.hwpad li.kan{background:rgba(255,190,90,.18);border-radius:8px}
+.hwp-ico{font-size:1.5em;width:34px;text-align:center}
+.hwp-t{flex:1;line-height:1.2}.hwp-t small{display:block;opacity:.75;font-size:.8em}
+.hwp-s{font-size:.85em;white-space:nowrap}
+.hwvraag{font-size:1.08em;font-style:italic}
+.hwopties{display:flex;flex-direction:column;gap:8px}
+.hwopties .knop{width:100%}.hwopties .knop.mis{opacity:.45;text-decoration:line-through}
+.hwverh{list-style:none;padding:0;margin:0}.hwverh li{padding:7px 0;border-bottom:1px dashed rgba(140,90,40,.35)}
+.hwverh li.dicht{opacity:.6;display:flex;justify-content:space-between;gap:8px}.hwverh small{font-size:.8em}
+.hwnieuw{background:#c2410c;color:#fff;border-radius:8px;padding:0 6px;font-size:.75em}
+/* scènes en popups */
+.hwsc{background:linear-gradient(#2e1640,#4a2152)!important;color:#ffe9c7!important}
+.hwsc-kop small{color:#e9c9ff}.hwsc-kop h3{margin:0 0 8px;color:#ffd08a!important}
+.hwsc-rij{display:flex;gap:12px;align-items:flex-start}
+.hwsc-p{width:84px;height:84px;flex:none;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px rgba(255,190,110,.7);background:#2a1638;display:flex;align-items:center;justify-content:center}
+.hwsc-p img,.hwsc-p svg{width:100%;height:100%;object-fit:cover}
+.hwsc-p.spook{box-shadow:0 0 0 2px rgba(190,210,255,.8),0 0 18px rgba(170,200,255,.6);animation:hwzweef 5s ease-in-out infinite;will-change:transform}
+.hwico{font-size:2.6em}
+.hwsc-t{flex:1}.hwsc-t b{color:#ffd08a}.hwsc-t p{margin:4px 0 12px;color:#ffe9c7!important;line-height:1.4}
+.hwfm{text-align:center}
+.hwfm-beeld{position:relative;margin:-6px -6px 10px;border-radius:10px;overflow:hidden}
+.hwfm-beeld img{display:block;width:100%}
+.hwfz{position:absolute;width:34px;height:34px;animation:hwzweef 4s ease-in-out infinite;will-change:transform}
+.hwfz.z0{left:8%;top:10%}.hwfz.z1{left:30%;top:4%;animation-delay:-1s}.hwfz.z2{left:62%;top:12%;animation-delay:-2s}.hwfz.z3{left:84%;top:5%;animation-delay:-3s}
+.hwfz svg{width:100%;height:100%}
+.hwres{font-weight:bold;color:#7a3a0c}
+.hwopen-ico{font-size:3.4em;margin:4px 0}.hwopen-ico img{width:150px;max-width:60%;animation:hwzweef 5s ease-in-out infinite;will-change:transform}
+.hwlijst{text-align:left}
+.hwtrofee{position:absolute;right:4%;bottom:4%;width:76px;text-align:center}
+.hwtrofee img{width:100%;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}.hwtrofee small{display:block;font-size:.65em;color:#5a3a12;background:rgba(255,240,200,.85);border-radius:6px}
+.modalin.hwfm{background:linear-gradient(#2e1640,#4a2152 70%,#5b2a3c)!important;color:#ffe9c7!important}
+.modalin.hwfm h2{color:#ffd08a!important}.modalin.hwfm p,.modalin.hwfm li{color:#ffe9c7!important}.modalin.hwfm .hwres{color:#ffd76a!important}
+.hwslinger{position:relative;height:46px;margin:-4px 0 2px;pointer-events:none}
+.hwtouw{position:absolute;left:0;top:0;width:100%;height:30px}
+.hws{position:absolute;top:6px;width:30px;height:30px;transform-origin:50% 0;animation:hwswing 4s ease-in-out infinite;will-change:transform}
+.hws svg{width:100%;height:100%}
+
+.hws.s1,.hws.s3,.hws.s5{width:34px;height:15px;top:12px}
+.hws.s0{left:3%;top:3px}.hws.s1{left:16%}.hws.s2{left:28%;top:16px}.hws.s3{left:42%;top:10px}.hws.s4{left:55%;top:14px}.hws.s5{left:69%}.hws.s6{left:85%;top:6px}
+.hws.s2{animation-delay:-1s}.hws.s4{animation-delay:-2s}.hws.s6{animation-delay:-3s}
+@keyframes hwswing{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@media (prefers-reduced-motion:reduce){.hws{animation:none}}

@@ -31,7 +31,7 @@ function hagridRijp(){if(document.querySelector('.modal'))return setTimeout(hagr
  document.body.appendChild(o);o.querySelector('#ppga').onclick=()=>{o.remove();ga('moestuin')};o.querySelector('#pplater').onclick=()=>o.remove()}
 window.hagridRijp=hagridRijp;
 function beloning(){const r=Math.random();
- if(r<.3){const pool=KAARTEN.filter(k=>k[3]);const k=pool[Math.random()*pool.length|0];return {t:'kaart',n:k[0],img:k[3],zin:'Tovenaarskaart: '+k[0]}}
+ if(r<.3){const pool=KAARTEN.filter(k=>k[3]&&!k[5]);const k=pool[Math.random()*pool.length|0];return {t:'kaart',n:k[0],img:k[3],zin:'Tovenaarskaart: '+k[0]}}
  if(r<.72){const ks=Object.keys(BOOSTERS).filter(k=>!(window.boDicht&&boDicht(k)));const k=ks[Math.random()*ks.length|0];return {t:'bo',n:k,img:'img/pu/'+BOOSTERS[k].img+'.webp',zin:'Booster: '+BOOSTERS[k].naam}}
  if(r<.86&&(S.m3lvl|0)>=60&&window.SUPERPLANTEN){const z=zeldzaamKies(),d=SUPERPLANTEN[z];return {t:'zaad',z,img:`img/kas/${d.beeld}-4.webp`,zin:'Zeldzaam zaadje: '+d.naam}}
  return {t:'kikker',img:'img/stukken/chocokikker-128.webp',zin:'Chocokikker: +1 hartje (of 15 Smekkies als je levens vol zijn)'}}
