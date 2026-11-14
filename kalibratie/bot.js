@@ -1,6 +1,6 @@
 /* In de pagina uitvoeren: speelt levels met de greedy bot (sim-modus) en rekent het eindfeest na. */
 window.zwBot=async function(levels,per){
- const vrij=b=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L};
+ const vrij=b=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.k>=0&&!t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c])&&!(b.ijs&&b.ijs[r]&&b.ijs[r][c]))L.push([r,c])}return L};
  const spec=b=>{const L=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=b.g[r][c];if(t&&t.s&&!b.kist[r][c]&&!(b.strik&&b.strik[r][c]))L.push([r,c])}return L};
  async function feestSim(b){const z0=b.zet;b.telDoel=()=>{};
   for(let i=1;i<=z0;i++){const v=vrij(b);if(!v.length)break;const [r,c]=v[b.rng()*v.length|0];

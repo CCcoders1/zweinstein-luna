@@ -97,6 +97,7 @@ class Bord{
   for(let i=0;i<Math.min(2,L.pot);i++){const c=1+i*4;this.g[0][c]=this.tegel(-1,0,c,0);this.potGeplaatst++}
   this.doel.forEach(d=>{if(d.t=='o')d.n=this.lay.flat().reduce((a,b)=>a+b,0);if(d.t=='k'||d.t=='i'||d.t=='d')d.n=this.kist.flat().filter(v=>v>0).length;d.over=d.n});
   if(typeof this.strikInit==='function')this.strikInit();
+  if(typeof this.laatInit==='function')this.laatInit();
   if(!this.heeftZet())this.schud()}
  tegel(k,r,c,van){return{k,s:null,x:c,y:sim0(this)?r:(van===undefined?r:van-RIJEN),sc:1,vy:0,id:Math.random()}}
  k(r,c){const t=this.g[r]&&this.g[r][c];return t?t.k:-9}
@@ -109,12 +110,14 @@ class Bord{
   // samenvoegen
   for(let i=0;i<gs.length;i++)for(let j=gs.length-1;j>i;j--)if([...gs[j].set].some(x=>gs[i].set.has(x))){gs[j].set.forEach(x=>gs[i].set.add(x));gs[i].runs.push(...gs[j].runs);gs.splice(j,1)}
   return gs}
- heeftZet(){for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(!t)continue;if(t.s)return true;for(const[dr,dc]of[[0,1],[1,0]]){const r2=r+dr,c2=c+dc;if(!this.binnen(r2,c2)||!this.g[r2][c2])continue;this.wis(r,c,r2,c2);const ok=this.runs().length>0;this.wis(r,c,r2,c2);if(ok)return[[r,c],[r2,c2]]}}return false}
+ heeftZet(){for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(!t)continue;if(t.s)return true;for(const[dr,dc]of[[0,1],[1,0]]){const r2=r+dr,c2=c+dc;if(!this.binnen(r2,c2)||!this.g[r2][c2])continue;if((this.ijs&&(this.ijs[r][c]||this.ijs[r2][c2]))||this.g[r][c].k===-2||this.g[r2][c2].k===-2)continue;this.wis(r,c,r2,c2);const ok=this.runs().length>0;this.wis(r,c,r2,c2);if(ok)return[[r,c],[r2,c2]]}}return false}
  wis(a,b,c,d){const t=this.g[a][b];this.g[a][b]=this.g[c][d];this.g[c][d]=t}
- schud(){const vrij=(r,c)=>!(this.strik&&this.strik[r][c]);const ts=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(t&&t.k>=0&&!t.s&&vrij(r,c))ts.push(t)}let p=0;do{for(let i=ts.length-1;i>0;i--){const j=this.rng()*(i+1)|0;[ts[i],ts[j]]=[ts[j],ts[i]]}let i=0;for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(t&&t.k>=0&&!t.s&&vrij(r,c)){this.g[r][c]=ts[i++];this.g[r][c].x=c;this.g[r][c].y=r}}p++}while((this.runs().length||!this.heeftZet())&&p<40)}
+ schud(){const vrij=(r,c)=>!(this.strik&&this.strik[r][c])&&!(this.ijs&&this.ijs[r]&&this.ijs[r][c]);const ts=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(t&&t.k>=0&&!t.s&&vrij(r,c))ts.push(t)}let p=0;do{for(let i=ts.length-1;i>0;i--){const j=this.rng()*(i+1)|0;[ts[i],ts[j]]=[ts[j],ts[i]]}let i=0;for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(t&&t.k>=0&&!t.s&&vrij(r,c)){this.g[r][c]=ts[i++];this.g[r][c].x=c;this.g[r][c].y=r}}p++}while((this.runs().length||!this.heeftZet())&&p<40)}
  async wissel(a,b,hooks={}){// a,b = [r,c]
   const ta=this.g[a[0]][a[1]],tb=this.g[b[0]][b[1]];if(!ta||!tb)return false;
   if(this.strik&&(this.strik[a[0]][a[1]]||this.strik[b[0]][b[1]]))return false;
+  if(this.ijs&&(this.ijs[a[0]][a[1]]||this.ijs[b[0]][b[1]]))return false;
+  if(ta.k===-2||tb.k===-2)return false;
   this.wis(a[0],a[1],b[0],b[1]);if(!this.sim){const nu=performance.now();ta.hop=tb.hop=1;ta.hopT=tb.hopT=nu}await this.wacht(this.sim?0:200);
   let effect=null;
   if(ta.s&&tb.s)effect='combi';else if(ta.s=='bal'||tb.s=='bal')effect='bal';
@@ -168,7 +171,7 @@ class Bord{
     t.s=null}
    // wis + schade
    const geraakteKist=new Set();
-   wis.forEach(x=>{const[r,c]=x.split(',').map(Number);if(!this.binnen(r,c))return;
+   wis.forEach(x=>{const[r,c]=x.split(',').map(Number);if(!this.binnen(r,c))return;if(this.laatVoorWis&&this.laatVoorWis(r,c,wis))return;
     if(this.kist[r][c]){geraakteKist.add(x);return}
     const t=this.g[r][c];if(!t||t.k<0)return;
     if(nieuw.some(([p])=>p[0]==r&&p[1]==c))return;
@@ -177,13 +180,15 @@ class Bord{
     this.telDoel(t.k);this.score+=10*this.combo;t.weg=1;this.fx.push({t:'pof',r,c,k:t.k});this.g[r][c]=null;
     [[0,1],[1,0],[0,-1],[-1,0]].forEach(([dr,dc])=>{const rr=r+dr,cc=c+dc;if(!this.binnen(rr,cc))return;if(this.kist[rr][cc])geraakteKist.add([rr,cc]+'');if(this.strik&&this.strik[rr][cc]==1){this.strik[rr][cc]=0;this.fx.push({t:'strik',r:rr,c:cc})}})});
    geraakteKist.forEach(x=>{const[r,c]=x.split(',').map(Number);if(this.kist[r][c]>0){this.kist[r][c]--;if(this.kt&&this.kt[r][c]){if(this.kist[r][c]==0){this.fx.push({t:'schat',r,c,s:this.kt[r][c],kl:this.ktk[r][c]});this.kt[r][c]=0}else this.fx.push({t:'tik',r,c,s:this.kt[r][c]});return}if(this.kist[r][c]==0){this.telDoel(this.ksoort);if(this.ksoort!='d')this.fx.push({t:'kist',r,c});if(this.ksoort=='k'&&!this.zaadKist&&(S.m3lvl|0)>=60&&window.zeldzaamZaad&&Math.random()<.02){this.zaadKist=1;zeldzaamZaad('kistje',{wacht:300})}if(this.ksoort!='k'){const ih=this.L.kistInh||[];this.fx.push({t:'vrij',r,c,s:this.ksoort,it:ih[(r*7+c)%Math.max(1,ih.length)]})}}else this.fx.push({t:'plank',r,c,over:this.kist[r][c]})}});
+   if(this.laatNaWis)this.laatNaWis(wis);
    nieuw.forEach(([p,s,k,cl])=>{const t=this.g[p[0]][p[1]];if(t){t.s=s;t.k=k;t.sc=1.5}else{const nt=this.tegel(k,p[0],p[1],p[0]);nt.s=s;nt.sc=1.5;this.g[p[0]][p[1]]=nt}if(s)this.fx.push({t:'nieuw',r:p[0],c:p[1],s,cel:cl})});
    hooks.wis&&hooks.wis(wis.size,this.combo);
    await this.wacht(this.sim?0:Math.max(90,220-this.combo*22));
    this.val();await this.wachtVal();
-   this.potten();
+   this.potten();if(this.laatVal)this.laatVal();
    eerste=false}
-  if(this.g.some((rw,r)=>rw.some((t,c)=>!t&&!this.kist[r][c]))){this.val();this.potten()}
+  if(this.g.some((rw,r)=>rw.some((t,c)=>!t&&!this.kist[r][c]))){this.val();this.potten();if(this.laatVal)this.laatVal()}
+  if(this.laatZetEinde)this.laatZetEinde();
   if(!this.heeftZet()){this.schud();hooks.geschud&&hooks.geschud()}}
  uilDoel(wis){const kans=[];for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){if(wis.has([r,c]+''))continue;if(this.kist[r][c])kans.push([r,c,3]);else if(this.lay[r][c]&&this.g[r][c])kans.push([r,c,2]);else{const t=this.g[r][c];if(t&&this.doel.some(d=>d.t===t.k&&d.over>0))kans.push([r,c,1])}}
   if(!kans.length)return null;const m=Math.max(...kans.map(k=>k[2]));const b=kans.filter(k=>k[2]==m);const x=b[this.rng()*b.length|0];return[x[0],x[1]]}
@@ -192,10 +197,10 @@ class Bord{
      let rr=r,nn=leeg;while(nn>0){const nxt=rr+1;if(nxt>=RIJEN||muur(nxt,c))break;rr=nxt;if(!this.kist[rr][c])nn--}if(rr!==r&&!this.kist[rr][c]){this.g[rr][c]=t;this.g[r][c]=null}}}
    let n=0;for(let r=RIJEN-1;r>=0;r--)if(!vast(r,c)&&!this.g[r][c])n++;let i=0;
    for(let r=0;r<RIJEN;r++)if(!vast(r,c)&&!this.g[r][c]){let k=this.rng()*this.L.kleuren|0;
-     if(this.potGeplaatst<this.L.pot){const op=this.g.flat().filter(t=>t&&t.k<0).length;if(op<2&&this.rng()<(op?.1:.45)){k=-1;this.potGeplaatst++}}
+     if(this.potGeplaatst<this.L.pot){const op=this.g.flat().filter(t=>t&&t.k===-1).length;if(op<2&&this.rng()<(op?.1:.45)){k=-1;this.potGeplaatst++}}
      const t=this.tegel(k,r,c);let onder=false;for(let q=0;q<r;q++)if(muur(q,c))onder=true;t.y=sim0(this)||onder?r:(-n+i-.2);i++;this.g[r][c]=t}}}
- potOpBord(){return this.g.flat().some(t=>t&&t.k<0)}
- potten(){for(let c=0;c<KOL;c++){let r=RIJEN-1;while(r>=0&&(this.kist[r][c]||(this.strik&&this.strik[r][c])))r--;const t=r>=0&&this.g[r][c];if(t&&t.k<0){this.g[r][c]=null;this.telDoel('p');this.fx.push({t:'pot',r,c});this.val()}}}
+ potOpBord(){return this.g.flat().some(t=>t&&t.k===-1)}
+ potten(){for(let c=0;c<KOL;c++){let r=RIJEN-1;while(r>=0&&(this.kist[r][c]||(this.strik&&this.strik[r][c])))r--;const t=r>=0&&this.g[r][c];if(t&&t.k===-1){this.g[r][c]=null;this.telDoel('p');this.fx.push({t:'pot',r,c});this.val()}}}
  klaar(){return this.doel.every(d=>d.over<=0)}
  wacht(ms){return this.sim?Promise.resolve():new Promise(r=>setTimeout(r,ms))}
  wachtVal(){if(this.sim)return Promise.resolve();const start=performance.now();return new Promise(r=>{const tick=()=>{const bezig=this.g.some((rw,ri)=>rw.some((tile,c)=>tile&&(Math.abs((tile.y??ri)-ri)>.05||Math.abs((tile.x??c)-c)>.05||(tile.vy&&Math.abs(tile.vy)>.05)||tile.hop)));if(!bezig||performance.now()-start>720)r();else requestAnimationFrame(tick)};requestAnimationFrame(tick)})}
@@ -203,15 +208,15 @@ class Bord{
 function sim0(b){return !!b.sim}
 /* oplosbaarheidscheck: greedy bot speelt het level een paar keer na */
 async function m3Oplosbaar(L,thema){let win=0;for(let p=1;p<=3;p++){const b=new Bord(L,thema,p);let veilig=0;while(b.zet>0&&!b.klaar()&&veilig++<80){const z=m3BesteZet(b);if(!z)break;await b.wissel(z[0],z[1])}if(b.klaar())win++}return win}
-function m3BesteZet(b){let best=null,bs=-1;for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)for(const[dr,dc]of[[0,1],[1,0]]){const r2=r+dr,c2=c+dc;if(!b.binnen(r2,c2)||!b.g[r][c]||!b.g[r2][c2])continue;if(b.strik&&((b.strik[r]&&b.strik[r][c])||(b.strik[r2]&&b.strik[r2][c2])))continue;
+function m3BesteZet(b){let best=null,bs=-1;for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)for(const[dr,dc]of[[0,1],[1,0]]){const r2=r+dr,c2=c+dc;if(!b.binnen(r2,c2)||!b.g[r][c]||!b.g[r2][c2])continue;if(b.strik&&((b.strik[r]&&b.strik[r][c])||(b.strik[r2]&&b.strik[r2][c2])))continue;if((b.ijs&&((b.ijs[r]&&b.ijs[r][c])||(b.ijs[r2]&&b.ijs[r2][c2])))||(b.g[r][c].k===-2||b.g[r2][c2].k===-2))continue;
   const ta=b.g[r][c],tb=b.g[r2][c2];let s=0;if(ta.s||tb.s)s=5+(ta.s&&tb.s?10:0);b.wis(r,c,r2,c2);const rs=b.runs();b.wis(r,c,r2,c2);
   rs.forEach(x=>{s+=x.cel.length;x.cel.forEach(([rr,cc])=>{if(b.lay[rr][cc])s+=2;const t=b.g[rr][cc];const k=(rr==r&&cc==c)?tb:(rr==r2&&cc==c2)?ta:t;if(k&&b.doel.some(d=>d.t===k.k&&d.over>0))s+=2})});
   rs.forEach(x=>x.cel.forEach(([rr,cc])=>{for(let q=rr-1;q>=0;q--){const t=b.g[q][cc];if(t&&t.k<0){s+=4;break}}if([[0,1],[1,0],[0,-1],[-1,0]].some(([a,d])=>b.binnen(rr+a,cc+d)&&b.kist[rr+a][cc+d]))s+=3;if(b.strik){if(b.strik[rr][cc]==1)s+=6;[[0,1],[1,0],[0,-1],[-1,0]].forEach(([a,d])=>{const r3=rr+a,c3=cc+d;if(b.binnen(r3,c3)&&b.strik[r3]&&b.strik[r3][c3]==1)s+=4})}}));
-  if(rs.length||ta.s||tb.s){s+=r*0.1;if(s>bs){bs=s;best=[[r,c],[r2,c2]]}}}return best}
+  if(window.laatZetScore)s+=laatZetScore(b,r,c,r2,c2,rs);if(rs.length||ta.s||tb.s){s+=r*0.1;if(s>bs){bs=s;best=[[r,c],[r2,c2]]}}}return best}
 /* ---------- weergave ---------- */
 const M3={};
 V.match3=async(n)=>{n=n||S.m3lvl||1;if((S.m3kal||{})[n]==null){app('<p class="m3voor">Het level wordt klaargezet…</p>');await m3Kalibreer(n,m3VakVoor(n).thema);if(document.body.dataset.view!=='match3')return}const L=m3Level(n);const vak=m3VakVoor(n);const thema=vak.thema;const T=M3THEMA[thema];
- const doelTxt=d=>d[0]=='recept'?'Recept':(['i','d'].includes(d[0])||(d[0]=='p'&&L.dropInh))&&window.doelNaam?doelNaam(d[0]):d[0]=='o'?T.onkruid:d[0]=='k'?T.kist:d[0]=='p'?(T.potMv||(/pot$/.test(T.pot)?T.pot+'ten':T.pot+'en')):(T.t[d[0]]&&T.t[d[0]].map)?T.t[d[0]][0]:'';
+ const doelTxt=d=>d[0]=='ijs'?'Rijp':d[0]=='pak'?'Uilenpost':d[0]=='sleutel'?'Vliegende sleutels':d[0]=='recept'?'Recept':(['i','d'].includes(d[0])||(d[0]=='p'&&L.dropInh))&&window.doelNaam?doelNaam(d[0]):d[0]=='o'?T.onkruid:d[0]=='k'?T.kist:d[0]=='p'?(T.potMv||(/pot$/.test(T.pot)?T.pot+'ten':T.pot+'en')):(T.t[d[0]]&&T.t[d[0]].map)?T.t[d[0]][0]:'';
  app(`<div class="m3voor rococo"><h2>Level ${n}</h2><p class="m3vak">${T.n}</p><div class="m3doelen-voor">${L.doelen.map(d=>`<span>${m3DoelIco(d,T,L)}<b>${doelTxt(d)}</b></span>`).join('')}</div>
  <p>${L.zetten} zetten${window.m3SterGrens?(g=>`<small class="m3grens">★ winnen · ★★ ${g[0].toLocaleString('nl-NL')} · ★★★ ${g[1].toLocaleString('nl-NL')} punten</small>`)(m3SterGrens(n,L)):''}</p>${L.zwaar?`<p class="zwaarhint ${L.zwaar>1?'super':''}">${L.zwaar>1?'🔥🔥 Heel pittig level.':'🔥 Pittig level.'} Lukt het niet meteen? Geen zorgen: na een paar pogingen helpt Tilly je een handje.</p>`:''}
  ${window.reeksTekst?reeksTekst(n):''}
@@ -258,7 +263,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
   if(groot>=2)combo('Betoverend!');
   if(poef.length>=5){const cx=poef.reduce((a,p)=>a+p[0],0)/poef.length,cy=poef.reduce((a,p)=>a+p[1],0)/poef.length;fxs.push({t:'zwiep',x:cx,y:cy,run:poef.map(p=>[p[0],p[1]]),l:0,slow:1});slowTot=performance.now()+(RMP?0:750);poef.forEach(p=>{stofW(p[0],p[1],'#c58aff',RMP?1:5);stofW(p[0],p[1],'#ffd84a',RMP?0:3)});combo(poef.length>=8?'Fenomenaal!':'Toverpoeder!');const cr=cv.getBoundingClientRect();try{ampulLaad(poef.map(p=>[cr.left+p[0],cr.top+p[1]]))}catch(e){}}};
  const staf=()=>KU.speciaal('staf',Math.round(cel*2));
- const tekenTegel=(t,x,y,s,nu)=>{if(t.k<0&&L.dropInh&&window.itemSprite){const z=cel*1.05;ctx.save();ctx.translate(x,y+Math.sin(nu/400+t.x)*cel*.03);ctx.scale(s,s);ctx.drawImage(itemSprite(L.dropInh[(t.x+(t.id*10|0))%L.dropInh.length],Math.round(cel*2)),-z/2,-z/2,z,z);ctx.restore();return}if(t.k<0){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle='#c27a3a';ctx.beginPath();ctx.moveTo(-cel*.32,-cel*.15);ctx.lineTo(cel*.32,-cel*.15);ctx.lineTo(cel*.24,cel*.35);ctx.lineTo(-cel*.24,cel*.35);ctx.fill();ctx.fillStyle='#e09a55';ctx.fillRect(-cel*.38,-cel*.3,cel*.76,cel*.16);ctx.strokeStyle='#4f9a3c';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,-cel*.3);ctx.quadraticCurveTo(-cel*.2,-cel*.5,-cel*.25,-cel*.42);ctx.moveTo(0,-cel*.3);ctx.quadraticCurveTo(cel*.2,-cel*.55,cel*.22,-cel*.45);ctx.stroke();ctx.restore();return}
+ const tekenTegel=(t,x,y,s,nu)=>{if(t.k===-2){if(window.laatPakTeken)laatPakTeken(ctx,x,y,s,cel,nu);return}if(t.k<0&&L.dropInh&&window.itemSprite){const z=cel*1.05;ctx.save();ctx.translate(x,y+Math.sin(nu/400+t.x)*cel*.03);ctx.scale(s,s);ctx.drawImage(itemSprite(L.dropInh[(t.x+(t.id*10|0))%L.dropInh.length],Math.round(cel*2)),-z/2,-z/2,z,z);ctx.restore();return}if(t.k<0){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle='#c27a3a';ctx.beginPath();ctx.moveTo(-cel*.32,-cel*.15);ctx.lineTo(cel*.32,-cel*.15);ctx.lineTo(cel*.24,cel*.35);ctx.lineTo(-cel*.24,cel*.35);ctx.fill();ctx.fillStyle='#e09a55';ctx.fillRect(-cel*.38,-cel*.3,cel*.76,cel*.16);ctx.strokeStyle='#4f9a3c';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,-cel*.3);ctx.quadraticCurveTo(-cel*.2,-cel*.5,-cel*.25,-cel*.42);ctx.moveTo(0,-cel*.3);ctx.quadraticCurveTo(cel*.2,-cel*.55,cel*.22,-cel*.45);ctx.stroke();ctx.restore();return}
   ctx.save();ctx.translate(x,y);const bob=RMP?0:Math.sin(nu/650+t.id*20)*cel*.018,adem=RMP?1:1+Math.sin(nu/900+t.id*13)*.015;ctx.translate(0,bob);ctx.scale(s*adem,s*adem);
   const kl=T.t[t.k]?T.t[t.k][1]:'#fff';
   if(!t.s){if(window.STUK_FOTO&&!RMP){const ph=nu/1000+t.id*.61;ctx.save();ctx.translate(0,Math.sin(ph*1.6)*cel*.025);const sc=1+Math.sin(ph*2.1)*.025;ctx.rotate(Math.sin(ph*1.1)*.035);ctx.scale(sc,sc);ctx.drawImage(tegelBeeld(T,t.k,cel),-cel/2,-cel/2,cel,cel);const g=(ph*.35)%3;if(g<.6){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.sin(g/.6*Math.PI)*.35;const x=-cel*.6+g/.6*cel*1.2;const gr=ctx.createLinearGradient(x-cel*.15,0,x+cel*.15,0);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.5,'rgba(255,250,220,.9)');gr.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=gr;ctx.beginPath();ctx.arc(0,0,cel*.36,0,7);ctx.fill()}ctx.restore()}else ctx.drawImage(tegelBeeld(T,t.k,cel),-cel/2,-cel/2,cel,cel)}
@@ -315,7 +320,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
   for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(b.kist[r][c]){if(b.kt&&b.kt[r][c]&&window.schatSprite){const z=cel*.92;ctx.drawImage(schatSprite(b.kt[r][c],b.kist[r][c],b.ktk[r][c]),c*cel+(cel-z)/2,r*cel+(cel-z)/2+Math.sin(nu/500+c)*cel*.02,z,z);continue}const ih=L.kistInh||[],it=ih[(r*7+c)%Math.max(1,ih.length)];if(b.ksoort=='d'&&window.kooiSprite){ctx.drawImage(kooiSprite(b.kist[r][c],it,Math.round(cel*2)),c*cel,r*cel,cel,cel);continue}const sp=kistSprite(b.kist[r][c],b.T.id||'herbologie',Math.round(cel*2));ctx.drawImage(sp,c*cel,r*cel,cel,cel);if(b.ksoort=='i'&&window.runeImg&&runeImg(it)){const ri=runeImg(it),z=cel*.62;ctx.save();ctx.globalAlpha=.55+.3*Math.sin(nu/300+c);ctx.shadowColor='#ffb020';ctx.shadowBlur=cel*.3;ctx.beginPath();[.26,.44,.62].forEach(f=>ctx.rect(c*cel+cel*.15,r*cel+cel*(f-.02),cel*.7,cel*.05));ctx.rect(c*cel+cel*.15,r*cel+cel*.12,cel*.7,cel*.12);ctx.clip();ctx.drawImage(ri,c*cel+(cel-z)/2,r*cel+cel*.52-z/2,z,z);ctx.restore();ctx.save();ctx.globalAlpha=.35+.2*Math.sin(nu/300+c);ctx.globalCompositeOperation='lighter';ctx.drawImage(ri,c*cel+(cel-z)/2,r*cel+cel*.52-z/2,z,z);ctx.restore()}else if(b.ksoort=='i'&&window.runeVan){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.5+.25*Math.sin(nu/300+c);ctx.fillStyle='#ffd36a';ctx.shadowColor='#ffb020';ctx.shadowBlur=cel*.3;ctx.font=`bold ${cel*.62}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(runeVan(it),c*cel+cel/2,r*cel+cel*.55);ctx.restore()}}
   for(let i=geesten.length-1;i>=0;i--){const g=geesten[i];g.l-=.065*dt;if(g.l<=0){geesten.splice(i,1);continue}const z=cel*(1+(1-g.l)*.45);ctx.globalAlpha=g.l*.85;ctx.drawImage(tegelBeeld(T,g.k,cel),g.x-z/2,g.y-z/2,z,z);ctx.globalCompositeOperation='lighter';ctx.globalAlpha=g.l*.6;ctx.drawImage(KU.stof(T.t[g.k]?T.t[g.k][1]:'#fff'),g.x-z*.6,g.y-z*.6,z*1.2,z*1.2);ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1}
   if(M3.sleepTeken)M3.sleepTeken(ctx,nu);fxTeken(dt,nu);
-  {const R1=window._rank1,R2=window._rank2;if(R1&&R1.complete&&R1.naturalWidth)for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(b.lay[r][c]){const x=c*cel+cel/2,y=r*cel+cel/2,h=cel*1.2,w=h*R1.naturalWidth/R1.naturalHeight;ctx.save();ctx.globalAlpha=.78;ctx.translate(x,y);ctx.rotate(-.7);ctx.drawImage(R1,-w/2,-h/2,w,h);ctx.restore();if(b.lay[r][c]>1&&R2.complete){const w2=h*R2.naturalWidth/R2.naturalHeight;ctx.save();ctx.globalAlpha=.78;ctx.translate(x,y);ctx.rotate(.7);ctx.drawImage(R2,-w2/2,-h/2,w2,h);ctx.restore()}}if(window.tekenStrik)tekenStrik(ctx,b,cel)}
+  {const R1=window._rank1,R2=window._rank2;if(R1&&R1.complete&&R1.naturalWidth)for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(b.lay[r][c]){const x=c*cel+cel/2,y=r*cel+cel/2,h=cel*1.2,w=h*R1.naturalWidth/R1.naturalHeight;ctx.save();ctx.globalAlpha=.78;ctx.translate(x,y);ctx.rotate(-.7);ctx.drawImage(R1,-w/2,-h/2,w,h);ctx.restore();if(b.lay[r][c]>1&&R2.complete){const w2=h*R2.naturalWidth/R2.naturalHeight;ctx.save();ctx.globalAlpha=.78;ctx.translate(x,y);ctx.rotate(.7);ctx.drawImage(R2,-w2/2,-h/2,w2,h);ctx.restore()}}if(window.tekenStrik)tekenStrik(ctx,b,cel);if(b.laatTeken)b.laatTeken(ctx,cel,nu)}
   for(let i=planken.length-1;i>=0;i--){const q=planken[i];q.vy+=.35*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.a+=q.va*dt;q.l-=.012*dt;if(q.l<=0||q.y>H+40){planken.splice(i,1);continue}ctx.save();ctx.globalAlpha=Math.min(1,q.l*1.5);ctx.translate(q.x,q.y);ctx.rotate(q.a);if(q.spijker){ctx.fillStyle='#7a7f8a';ctx.fillRect(-1.5,-4,3,8);ctx.fillStyle='#b8bcc6';ctx.fillRect(-3,-5,6,2)}else{const g=ctx.createLinearGradient(0,-q.h/2,0,q.h/2);g.addColorStop(0,'#d9a066');g.addColorStop(.5,'#b97a3e');g.addColorStop(1,'#8a5426');ctx.fillStyle=g;ctx.fillRect(-q.w/2,-q.h/2,q.w,q.h);ctx.strokeStyle='rgba(70,35,10,.6)';ctx.lineWidth=1;ctx.strokeRect(-q.w/2,-q.h/2,q.w,q.h);ctx.fillStyle='#5a5f6a';ctx.fillRect(-q.w/2+3,-1.5,3,3);ctx.fillRect(q.w/2-6,-1.5,3,3)}ctx.restore()}
   for(const p of deeltjes){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=p.st?.97:1;p.vy=p.st?p.vy*.97-.02*dt:p.vy+.2*dt;p.l-=(p.st?.024:.03)*dt;const a=Math.max(0,p.l);
    if(p.st){ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.min(1,a)*(.65+.35*Math.sin(nu/50+p.r*9));const z=p.r*4.2*(.5+Math.min(1,a)*.6);ctx.drawImage(KU.stof(p.k),p.x-z/2,p.y-z/2,z,z);ctx.globalCompositeOperation='source-over'}

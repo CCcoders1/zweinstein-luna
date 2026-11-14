@@ -377,14 +377,18 @@ function mooiWinst(n,b){
       if(/huisschild/i.test(p.textContent||'')&&!p.classList.contains('schildmoment'))p.style.display='none';
     });
   }
-  if(!eind.querySelector('.winhaak')&&!eind.querySelector('.fgcadeau')){
-    const zin=typeof verhaalMorgen==='function'?verhaalMorgen():'';
-    const kas=typeof kasMorgen==='function'&&S.kweek&&Object.keys(S.kweek).length?kasMorgen():'';
-    const tekst=(zin||'Wat een les.')+(kas?' '+kas:'');
-    const wrap=document.createElement('div');wrap.className='winhaak';
-    wrap.innerHTML=typeof tilly==='function'?tilly(tekst):('<p>'+tekst+'</p>');
-    const kn=eind.querySelector('button');if(kn)kn.before(wrap);else eind.appendChild(wrap);
+  const zin=(typeof winHaakZin==='function'&&winHaakZin(n))||(typeof verhaalMorgen==='function'?verhaalMorgen():'');
+  const kas=typeof kasMorgen==='function'&&S.kweek&&Object.keys(S.kweek).length?kasMorgen():'';
+  const tekst=(zin||'Wat een les, Luna.')+(kas?' '+kas:'');
+  let haak=eind.querySelector('.winhaak');
+  const oud=eind.querySelector('.tilly');
+  if(!haak&&oud){haak=oud;haak.classList.add('winhaak')}
+  if(!haak){
+    haak=document.createElement('div');haak.className='winhaak';
+    const kn=eind.querySelector('button, .m3actie');if(kn)kn.before(haak);else eind.appendChild(haak);
   }
+  haak.innerHTML=typeof tilly==='function'?tilly(tekst):('<p>'+tekst+'</p>');
+  if(oud&&oud!==haak)oud.remove();
   if(!eind.querySelector('.m3actie')){
     const act=document.createElement('div');act.className='m3actie';
     [...eind.querySelectorAll(':scope > button, :scope > .knop, :scope > .linkknop')].forEach(b=>act.appendChild(b));

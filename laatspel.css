@@ -1,0 +1,8 @@
+/* v140: late-game obstakels en vaste verhaalhaak */
+.winhaak{overflow:visible;max-height:none}
+.m3eind:has(.fgcadeau) .winhaak{margin-bottom:.35rem}
+.m3ico.ijs{background:linear-gradient(160deg,#8fd4ee,#4a8eb8)}
+.m3ico.pak{background:linear-gradient(160deg,#c4894a,#7a4a22)}
+.m3ico.sleutel{background:linear-gradient(160deg,#efd36a,#b8861a)}
+
+.m3eind .winhaak,.m3eind .tilly,.m3eind .fgcadeau{position:relative;z-index:3;margin:.4rem 0 .6rem;overflow:visible}
