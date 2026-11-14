@@ -96,7 +96,7 @@ body.halstrak .lokaal .tilly,
 body.halstrak .lokaal .lk-tel,
 body.halstrak .schooldag-voortgang,
 body.halstrak .schooldoelenlijst{display:none!important}
-.groet .halsfeer{margin:.15em 0 .35em;font:italic .88em/1.35 Georgia,serif;color:#5a3a14;max-width:34em}
+.groet .halsfeer{margin:.15em 0 .35em;font:italic .98em/1.4 Georgia,serif;color:#f3e4c0;text-shadow:0 1px 2px rgba(0,0,0,.75);max-width:34em}
 #boekknop.ookchip{position:relative}
 #boekknop.boeknieuw::after{right:4px;top:-7px}
 body.halstrak .ookvandaag{margin:0 10px 6px;padding:4px 8px 6px}
@@ -105,10 +105,10 @@ body.halstrak .ookchip,
 body.halstrak .ookrij .knop,
 body.halstrak .ookrij button,
 body.halstrak #boekknop.ookchip{
-  flex:0 1 auto;min-width:auto;min-height:40px;max-width:100%;
-  padding:6px 8px!important;font-size:.8em!important;white-space:nowrap
+  flex:0 1 auto;min-width:48px;min-height:48px;max-width:100%;
+  padding:8px 10px!important;font-size:.85em!important;white-space:nowrap
 }
-.groet .halsfeer{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.groet .halsfeer{white-space:normal;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;max-width:100%;max-height:2.9em}
 .kantlijnen .kantlijn{margin:.4em 0;padding-left:.2em;font:italic .95em/1.45 Georgia,serif;color:#3b2a14}
 /* pagkop: Cinzel overal. Goud op de stenen achtergrond, wijn op perkament. */
 h1.pagkop,.pagkop,#app>h1,#app>h2,.boek .blad>h2,.mgkop .mgtitel,.padkopbeeld h2{
@@ -243,12 +243,12 @@ body[data-view=boek] #app{
 /* body heeft overflow-x:hidden, daardoor werkt sticky niet; op de Kaart blijft de rij onder de kop staan. */
 body[data-view=pad] .plekkaart{position:fixed;left:8px;right:8px;top:60px;z-index:11;margin:0;background:linear-gradient(180deg,#f7edd6,#ead6ae)}
 body[data-view=pad] #app{padding-top:7.6rem}
-.plekkaart>small{display:block;letter-spacing:.08em;text-transform:uppercase;font-size:.68em;opacity:.75;margin:0 2px 6px}
+.plekkaart>small{display:block;letter-spacing:.08em;text-transform:uppercase;font-size:.78em;opacity:.9;margin:0 2px 6px;color:#3a2410}
 .plekrij{display:flex;gap:4px;overflow-x:hidden;padding:2px 0 4px}
 .plekpin{flex:1 1 0;min-width:0;min-height:58px;padding:5px 2px;border-radius:12px;border:1.5px solid rgba(168,128,31,.55);background:linear-gradient(180deg,#f8f0dc,#e6d0a4);color:#2a1c0c;font:inherit;font-size:.72em;line-height:1.15;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative}
 .plekpin b{font-weight:700}
 .plekpin .plekico{font-size:1.25em;line-height:1}
-.plekpin.dicht{opacity:.45}
+.plekpin.dicht{opacity:.7;filter:grayscale(.35)}
 .plekpin.wacht{box-shadow:0 0 0 1px rgba(232,197,106,.7)}
 .plekpin.aan{border-color:#c9a227;box-shadow:0 0 0 2px rgba(255,220,100,.75),0 0 16px rgba(255,200,80,.7);background:linear-gradient(180deg,#fff8dc,#f0d36a)}
 .plekpin.aan i{position:absolute;top:2px;right:4px;font-style:normal;font-size:.7em;color:#6b1d0e;font-weight:700}
@@ -257,3 +257,18 @@ body[data-view=pad] #app{padding-top:7.6rem}
   .plekpin.aan{animation:plekgloed 2.8s ease-in-out infinite}
   @keyframes plekgloed{50%{box-shadow:0 0 0 2px rgba(255,220,100,.8),0 0 20px rgba(255,200,80,.7)}}
 }
+
+/* v148: leesbaarheid 62+ en zeldzame bord-knipoog */
+#gids .gbel{font-size:1.02em;line-height:1.4}
+#gids .gbel .knop,#gids #gk{min-width:48px;min-height:48px}
+.zwknip{position:fixed;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:50;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:#fff6d8!important;color:#2a1c0c!important;border:2px solid #c9a227;box-shadow:0 10px 24px rgba(0,0,0,.55);font:1.05em/1.4 Georgia,serif;pointer-events:none;animation:knipIn .6s ease-out}
+.zwknip i{flex:none;width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d0,#c9a227 60%,#6a3a1c);box-shadow:0 0 10px rgba(255,200,80,.7)}
+.zwknip p{margin:0;color:#2a1c0c!important;font-style:normal;font-weight:500}
+.zwknip.weg{animation:knipUit .8s ease-in forwards}
+.zwknip.knip-veer i{background:radial-gradient(circle at 30% 30%,#fff,#d8e8f8 40%,#6a7a9a)}
+.zwknip.knip-blad i{background:radial-gradient(circle at 30% 30%,#d8f0b0,#3e7a32 70%,#1e3a18)}
+.zwknip.knip-glim i{background:radial-gradient(circle at 30% 30%,#fff8d0,#e0b020 55%,#6a4a00)}
+.zwknip.knip-vlam i{background:radial-gradient(circle at 40% 30%,#ffe9a0,#e07020 60%,#5a1808)}
+@keyframes knipIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes knipUit{to{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){.zwknip,.zwknip.weg{animation:none}}

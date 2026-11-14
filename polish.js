@@ -30,12 +30,25 @@ function levendeTilly(root){root.querySelectorAll?.('.tilly:not(.leeft)').forEac
 /* knipperen: willekeurig, licht */
 setInterval(()=>{if(RMP)return;document.querySelectorAll('.tsvg').forEach(s=>{if(Math.random()<.6){s.classList.add('knip');setTimeout(()=>s.classList.remove('knip'),160)}})},2600);
 /* ---------- gids: Tilly als begeleider onderin ---------- */
-document.body.insertAdjacentHTML('beforeend',`<div id="gids" aria-live="polite"><div class="gav">${tillySVG('praat')}</div><div class="gbel"><p id="gtekst"></p><div id="gknop"></div><button class="gsluit" aria-label="Sluiten">×</button></div></div><button id="terug" aria-label="Terug">${icoon('terug')}<span>Terug</span></button><div id="overgang"></div>`);
-let gidsT;function gids(tekst,{mood='praat',knop,actie,doel,duur=0}={}){const G=$('#gids');G.querySelector('.gav').innerHTML=tillySVG(mood);$('#gtekst').innerHTML=tekst;$('#gknop').innerHTML=knop?`<button class="knop klein" id="gk">${knop}</button>`:'';if(knop)$('#gk').onclick=()=>{gidsWeg();actie&&actie()};
- G.classList.add('zien');document.querySelectorAll('.wijs').forEach(e=>e.classList.remove('wijs'));if(doel){const d=typeof doel=='string'?$(doel):doel;if(d){d.classList.add('wijs');d.scrollIntoView({block:'center',behavior:RMP?'auto':'smooth'})}}
- clearTimeout(gidsT);if(duur)gidsT=setTimeout(gidsWeg,duur);try{fx.speel('klik')}catch(e){}}
-function gidsWeg(){const G=$('#gids');if(G)G.classList.remove('zien');document.querySelectorAll('.wijs').forEach(e=>e.classList.remove('wijs'))}
-$('#gids .gsluit').onclick=gidsWeg;
+function gidsBouw(){
+  if(document.getElementById('gids'))return;
+  document.body.insertAdjacentHTML('beforeend',`<div id="gids" aria-live="polite"><div class="gav">${tillySVG('praat')}</div><div class="gbel"><p id="gtekst"></p><div id="gknop"></div><button class="gsluit" aria-label="Sluiten">×</button></div></div>`);
+  const sl=document.querySelector('#gids .gsluit');if(sl)sl.onclick=gidsWeg;
+}
+if(!document.getElementById('terug'))document.body.insertAdjacentHTML('beforeend',`<button id="terug" aria-label="Terug">${icoon('terug')}<span>Terug</span></button><div id="overgang"></div>`);
+gidsBouw();
+let gidsT;function gids(tekst,{mood='praat',knop,actie,doel,duur=0}={}){
+  try{gidsBouw()}catch(e){}
+  const G=document.getElementById('gids');if(!G)return;
+  const gav=G.querySelector('.gav');if(gav)gav.innerHTML=tillySVG(mood);
+  const gt=document.getElementById('gtekst');if(gt)gt.innerHTML=tekst;
+  const gk=document.getElementById('gknop');if(gk)gk.innerHTML=knop?`<button class="knop klein" id="gk">${knop}</button>`:'';
+  const kn=document.getElementById('gk');if(knop&&kn)kn.onclick=()=>{gidsWeg();actie&&actie()};
+  G.classList.add('zien');document.querySelectorAll('.wijs').forEach(e=>e.classList.remove('wijs'));
+  if(doel){const d=typeof doel=='string'?$(doel):doel;if(d){d.classList.add('wijs');d.scrollIntoView({block:'center',behavior:RMP?'auto':'smooth'})}}
+  clearTimeout(gidsT);if(duur)gidsT=setTimeout(gidsWeg,duur);try{fx.speel('klik')}catch(e){}}
+function gidsWeg(){const G=document.getElementById('gids');if(G)G.classList.remove('zien');document.querySelectorAll('.wijs').forEach(e=>e.classList.remove('wijs'))}
+{const sl=document.querySelector('#gids .gsluit');if(sl)sl.onclick=gidsWeg}
 /* ---------- filmische overgangen ---------- */
 const TYPE=v=>['lessen','les','spel','groei','quests','beker'].includes(v)?'gang':['kamer','verhaal','dier'].includes(v)?'portret':['kaart','brief'].includes(v)?'rol':'deur';
 const OVHTML={deur:`<div class="ov-dl ov-vl"></div><div class="ov-dr ov-vl"></div>`,portret:`<div class="ov-portret"><div class="ov-lijst"></div></div>`,gang:`<div class="ov-gang"></div>`,rol:`<div class="ov-rol"></div>`};

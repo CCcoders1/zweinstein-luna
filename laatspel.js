@@ -501,4 +501,111 @@ window.winHaakZin=function(n){
   window.zwPopVolgende=volgende;
 })();
 
+
+/* v148: Tilly onthoudt gisteren; zeldzame knipoog op het bord (geen economie). */
+(function(){
+  function gisterTel(){
+    try{
+      const d=typeof gisteren==='function'?gisteren():'';
+      return (S.tel&&d&&S.tel[d])||{};
+    }catch(e){return {}}
+  }
+  function hashZin(s,n){
+    let h=7;s=String(s||'');
+    for(let i=0;i<s.length;i++)h=(Math.imul(h,31)+s.charCodeAt(i))>>>0;
+    return h%(n||1);
+  }
+  const GISTER=[
+    [t=> (t.m3|0)>=3, 'Gisteren drie levels, en je bleef kalm. De zevende kaars leek even te knikken.'],
+    [t=> (t.les|0)>=1, 'Die les van gisteren zit nog in mijn hoofd. Jij ook?'],
+    [t=> (t.oogst|0)>=1 || (t.plant|0)>=1, 'De kas rook vanmorgen naar jouw gieter van gisteren.'],
+    [t=> (t.taak|0)>=1, 'Het lokaal is stiller sinds gisteren. Alsof de stoelen blij zijn.'],
+    [t=> (t.water|0)>=1, 'De varens staan rechter dan gisteren. Ze hebben je onthouden.'],
+    [t=> (t.dier|0)>=1, 'Je huisdier keek vanmorgen al naar de deur, op jou.'],
+    [t=> (t.m3|0)>=1, 'Ik dacht nog aan dat level van gisteren. Je gaf niet op.']
+  ];
+  const _hal=typeof zwHalSfeer==='function'?zwHalSfeer:null;
+  window.zwHalSfeer=function(){
+    try{
+      if(typeof zwTerug==='function'&&zwTerug())return 'Fijn dat je er weer bent. Je ochtendpost wacht.';
+      const t=gisterTel();
+      for(const [ok,zin] of GISTER){if(ok(t))return zin}
+    }catch(e){}
+    return _hal?_hal():'In de Hal ruikt het naar bijenwas en een beetje monnikskap.';
+  };
+
+  const KLAAR=[
+    'Alles klaar hier! Ik ben zo benieuwd wat er achter de volgende deur zit.',
+    'Dit lokaal glimt. Zullen we kijken wat de volgende kamer voor ons bewaart?',
+    'Af, en netjes ook. Ik sta al bij de volgende deur te wachten.'
+  ];
+  const GENOEG=[
+    n=>`We hebben genoeg huisschilden! Zullen we “${n}”? Ik heb er zin in.`,
+    n=>`De schilden zijn er. “${n}” wacht, en ik sta al klaar.`,
+    n=>`Genoeg schilden voor “${n}”. Zal ik meesjouwen?`
+  ];
+  const TEKORT=[
+    (n,x,w)=>`Nog ${x} ${w} nodig voor “${n}”. Eén level en we zijn er bijna. Kom!`,
+    (n,x,w)=>`Voor “${n}” missen we nog ${x} ${w}. De speelknop is vlakbij.`,
+    (n,x,w)=>`Nog ${x} ${w}, dan “${n}”. Ik blijf ernaast staan.`
+  ];
+  const _tz=typeof tillyZin==='function'?tillyZin:null;
+  if(_tz) window.tillyZin=function(v,vol){
+    try{
+      const sleutel=(typeof vandaag==='function'?vandaag():'')+'-'+(S.schoolDag|0)+'-'+(vol&&vol[0]||'klaar');
+      if(!vol)return KLAAR[hashZin(sleutel,KLAAR.length)];
+      const naam=String(vol[1]||'').toLowerCase();
+      if(S.schilden>=vol[2])return GENOEG[hashZin(sleutel,GENOEG.length)](naam);
+      const x=vol[2]-S.schilden, w=x==1?'huisschild':'huisschilden';
+      const t=gisterTel();
+      if((t.m3|0)>=1) return `Gisteren ging het goed. Nog ${x} ${w}, dan “${naam}”.`;
+      return TEKORT[hashZin(sleutel,TEKORT.length)](naam,x,w);
+    }catch(e){return _tz(v,vol)}
+  };
+
+  const KNIP=[
+    {id:'veer', cls:'knip-veer', zin:'Een veer dwarrelt langs je bord. Niet van een schooluil. Iemand groet ons, denk ik.'},
+    {id:'blad', cls:'knip-blad', zin:'Er zweeft een blaadje over het bord. Hetzelfde groen als in je zak, die eerste avond.'},
+    {id:'glim', cls:'knip-glim', zin:'Iets glimmends bewoog langs de rand. Het zocht geen Smekkies. Alleen gezelschap.'},
+    {id:'vlam', cls:'knip-vlam', zin:'De rand van het bord gloeide even, als een zevende vlam die niet wil storen.'}
+  ];
+  function zwKnipoog(){
+    try{
+      if(window._zwSim)return;if(window._lvSkip&&!window._zwKnipForce)return;
+      if(typeof RMP==='boolean'&&RMP)return;
+      if(document.body.dataset.view!=='match3')return;
+      if(document.body.classList.contains('lvintro')||document.getElementById('lvintro')||document.querySelector('#laadscherm.aan')){
+        setTimeout(zwKnipoog,500);return;
+      }
+      if(!document.getElementById('m3c')||!document.querySelector('.m3bord'))return;
+      if(document.querySelector('.m3eind,.m3voor,#zwknip'))return;
+      const dag=typeof vandaag==='function'?vandaag():'';
+      if(!window._zwKnipForce){
+        if(S.knipDag===dag)return;
+        const sleutel=dag+'-'+(S.m3lvl|0);
+        let h=11;for(const c of sleutel)h=(Math.imul(h,31)+c.charCodeAt(0))>>>0;
+        if((h%8)!==0)return; // ongeveer 1 op 8 levels, max één keer per dag
+      }
+      S.knipDag=dag;try{bewaar()}catch(e){}
+      const k=KNIP[hashZin(dag+(S.m3lvl|0),KNIP.length)];
+      const o=document.createElement('div');
+      o.id='zwknip';o.className='zwknip '+k.cls;o.setAttribute('aria-live','polite');
+      o.style.cssText='background:#fff6d8;color:#2a1c0c;z-index:50';
+      o.innerHTML=`<i></i><p style="color:#2a1c0c;margin:0">${k.zin}</p>`;
+      document.body.appendChild(o);
+      setTimeout(()=>{try{o.classList.add('weg')}catch(e){}},5200);
+      setTimeout(()=>{try{o.remove()}catch(e){}},6400);
+    }catch(e){}
+  }
+  if(typeof m3Speel==='function'){
+    const _sp=m3Speel;
+    m3Speel=function(){
+      const r=_sp.apply(this,arguments);
+      try{setTimeout(zwKnipoog,1400)}catch(e){}
+      return r;
+    };
+  }
+  window.zwKnipoog=zwKnipoog;
+})();
+
 })();

@@ -35,7 +35,7 @@ const MONO={stronk:{l:'PS',k:'#c4a035',a:'#3a2a10'},sinistra:{l:'AS',k:'#2a3d6e'
  /* --- Tilly: portret i.p.v. getekend figuurtje --- */
  tillySVG=function(mood='praat'){return `<img class="tportret m-${mood}" src="${src('tilly',128)}" srcset="${src('tilly',128)} 1x, ${src('tilly',256)} 2x" alt="Tilly">`};
  /* gids/onboarding: Tilly ten voeten uit */
- const _gids=gids;gids=function(t,o={}){const r=_gids(t,o);try{const G=document.getElementById('gids');G.classList.add('metstaand');G.querySelector('.gav').innerHTML=staand('m-'+(o.mood||'praat'))}catch(e){}return r};
+ const _gids=gids;gids=function(t,o={}){const r=_gids(t,o);try{const G=document.getElementById('gids');if(!G)return r;G.classList.add('metstaand');const gav=G.querySelector('.gav');if(gav)gav.innerHTML=staand('m-'+(o.mood||'praat'))}catch(e){}return r};
  /* --- dialogen: portret per spreker --- */
  const _vh=verhaal;
  verhaal=function(regels,klaar){if(document.querySelector('.modal:not(.zw-wacht)'))return setTimeout(()=>verhaal(regels,klaar),800);let i=0;const o=document.createElement('div');o.className='modal verhaalm';document.body.appendChild(o);
