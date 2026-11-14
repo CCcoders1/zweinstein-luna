@@ -9,5 +9,6 @@ V=$(grep -o "VERSIE='v[0-9]*'" versie.js | grep -o "v[0-9]*"); C=$(grep -o "zwei
 echo "== versie: versie.js $V, sw.js $C"; [ "$V" = "$C" ] || { echo "FOUT: versie.js en sw.js-cache verschillen"; exit 1; }
 for f in $(grep -oE '(src|href)="[^"]*\.(js|css)"' index.html | cut -d'"' -f2); do grep -q "\"$f\"" sw.js || { echo "FOUT: $f staat niet in sw.js"; exit 1; }; done
 echo "== economietest"; python3 tests/economie.py
+echo "== robuust"; python3 tests/robuust.py
 [ -z "$(git status --porcelain)" ] || { echo "LET OP: niet-gecommitte wijzigingen; de zip bevat alleen HEAD"; }
 git archive -o ../magische-app.zip HEAD && echo "== zip: ../magische-app.zip ($(git log --oneline -1))"

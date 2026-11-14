@@ -5,8 +5,16 @@ const STD={naam:'',huis:'',punten:0,galjoenen:0,xp:0,opgelost:{},badges:[],strea
  {id:1,naam:'Etentje naar keuze',prijs:120,ico:'🍽️'},{id:2,naam:'Bioscoopavond',prijs:100,ico:'🎬'},
  {id:3,naam:'Ontbijt op bed',prijs:60,ico:'🥐'},{id:4,naam:'Bos- of tuinwandeling samen',prijs:40,ico:'🌳'},
  {id:5,naam:'Harry Potter-filmavond met snoep',prijs:80,ico:'🍿'}],cipherHfd:0,trivLvl:0};
-var S=Object.assign({},STD,JSON.parse(localStorage.getItem(SK)||'{}'));
-const bewaar=()=>localStorage.setItem(SK,JSON.stringify(S));
+function zwLeesSave(){try{const o=JSON.parse(localStorage.getItem(SK)||'{}');return o&&typeof o==='object'&&!Array.isArray(o)?o:{}}catch(e){return {}}}
+var S=Object.assign({},STD,zwLeesSave());
+const bewaar=()=>{const ruw=JSON.stringify(S);const zet=()=>localStorage.setItem(SK,ruw);
+ try{zet();return true}catch(e){
+  try{localStorage.removeItem('zw_weer');
+   try{const L=JSON.parse(localStorage.getItem('zw_reserve')||'[]');if(Array.isArray(L)&&L.length>1)localStorage.setItem('zw_reserve',JSON.stringify(L.slice(0,1)))}catch(x){}
+   zet();return true}catch(e2){
+   try{if(window.zwReserve)zwReserve.maak(true)}catch(x){}
+   try{if(typeof toast==='function')toast('De opslag van deze telefoon is vol. Je voortgang staat nog in het geheugen. Maak een back-up via Meer → Voortgang bewaren.')}catch(x){}
+   return false}}};
 const naam=()=>S.naam||'Luna';
 const HUIZEN={griffoendor:{n:'Griffoendor',i:'🦁',d:'Moed, durf, lef en ridderlijkheid.',st:'Goderic Griffoendor',dier:'leeuw',kl:'scharlakenrood en goud',k1:'#9c1b1b',k2:'#e3b23c',el:'vuur',sp:'Haast Onthoofde Henk',hf:'professor Minerva Anderling'},
 huffelpuf:{n:'Huffelpuf',i:'🦡',d:'Trouw, geduld, hard werken en eerlijkheid.',st:'Helga Huffelpuf',dier:'das',kl:'geel en zwart',k1:'#e6b422',k2:'#1c1c1c',el:'aarde',sp:'de Dikke Monnik',hf:'professor Pomona Stronk'},

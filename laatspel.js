@@ -1596,3 +1596,67 @@ window.winHaakZin=function(n){
     return r;
   };
 })();
+
+/* v154: sfeerregel in de levelintro, per vak en thema */
+(function(){
+  const ZIN={
+    herbologie:'De kas ruikt naar vochtige aarde en een beetje geheim.',
+    bezweringen:'Een veer trilt boven een lessenaar, alsof hij al wil beginnen.',
+    toverdranken:'De ketels tikken zacht, alsof ze het recept al kennen.',
+    gedaante:'Een theekopje piept. Of was het een muis?',
+    astronomie:'Boven de toren is de lucht even stiller, klaar om bekeken te worden.',
+    verweer:'De kast aan de kant bromt, maar jij mag rustig ademhalen.',
+    fabeldieren:'Ergens schuifelt iets met veren. Gewoon vriendelijk blijven.'
+  };
+  function introZin(n,th){
+    try{
+      if(typeof laatVan==='function'){
+        const info=laatVan(n);
+        if(info){
+          if(info.soort==='ijs')return 'Een tegel rijp, precies waar je kijken wilt. Zachtjes werken.';
+          if(info.soort==='pak')return 'Er ligt een pakketje met lak. De uil is alweer weg.';
+          if(info.soort==='sleutel')return 'Een sleutel fladdert langs. Geduld vangt hem eerder dan haast.';
+        }
+      }
+    }catch(e){}
+    if((n|0)>=600)return 'De tuin van Lindaroos wacht, zonder haast.';
+    const id=th||((typeof m3VakVoor==='function'&&m3VakVoor(n)||{}).thema)||'herbologie';
+    return ZIN[id]||ZIN.herbologie;
+  }
+  window.zwIntroZin=introZin;
+  function nVanKop(sel,fallback){
+    const h=document.querySelector(sel);
+    return parseInt((h&&h.textContent||'').replace(/\D/g,''),10)||fallback||((typeof S!=='undefined'&&S.m3lvl)|0);
+  }
+  function zetVoor(n){
+    const v=document.querySelector('.m3voor');if(!v||v.querySelector('.m3sfeer'))return;
+    const vak=v.querySelector('.m3vak');if(!vak)return;
+    n=n||nVanKop('.m3voor h2');
+    const p=document.createElement('p');p.className='m3sfeer';
+    const th=typeof m3VakVoor==='function'?(m3VakVoor(n)||{}).thema:'';
+    p.textContent=introZin(n,th);
+    vak.after(p);
+  }
+  function planVoor(n){
+    const go=()=>{try{zetVoor(n)}catch(e){}};
+    go();
+    [80,200,500,1200].forEach(t=>setTimeout(go,t));
+  }
+  function zetLvi(){
+    const t=document.getElementById('lvintro');if(!t||t.querySelector('.lvi-zin'))return;
+    const box=t.querySelector('.lvi-in');if(!box)return;
+    const n=nVanKop('#lvintro h2');
+    const p=document.createElement('p');p.className='lvi-zin';p.textContent=introZin(n);
+    box.appendChild(p);
+  }
+  const _m=typeof V!=='undefined'?V.match3:null;
+  if(_m)V.match3=async function(n){
+    const r=await _m.apply(this,arguments);
+    try{planVoor(n||((typeof S!=='undefined'&&S.m3lvl)|0)||1)}catch(e){}
+    return r;
+  };
+  if(typeof MutationObserver==='function'){
+    const mo=new MutationObserver(()=>{zetLvi();try{zetVoor(nVanKop('.m3voor h2'))}catch(e){}});
+    addEventListener('load',()=>{try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}});
+  }
+})();
