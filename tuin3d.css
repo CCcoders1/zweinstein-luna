@@ -10,6 +10,8 @@ html,body{margin:0;height:100%;background:#163a78;overflow:hidden;font-family:Ge
   box-shadow:0 2px 0 #8a6a12,0 6px 16px rgba(0,0,0,.28);
 }
 .knop.terug{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:calc(10px + env(safe-area-inset-left,0px))}
+.knop.geluid{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:calc(10px + env(safe-area-inset-right,0px));min-width:48px}
+.knop.geluid[aria-pressed="true"]{background:linear-gradient(#f7e7b0,#c9a227)}
 .hint{
   position:absolute;left:50%;transform:translateX(-50%);
   bottom:calc(92px + env(safe-area-inset-bottom,0px));
