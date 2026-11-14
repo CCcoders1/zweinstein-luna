@@ -102,8 +102,10 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home='zaal';try{zetDecor('zaal')
  $('#speelknop').onclick=()=>ga('match3');$('#afscheid').onclick=()=>{try{afscheid()}catch(e){}};
  const tk=$('#taakknop');if(tk)tk.onclick=()=>doeTaak(v,vol);
  try{loginCheck&&loginCheck()}catch(e){}
- if(!S.verhaalGezien[v.id+j]){S.verhaalGezien[v.id+j]=1;bewaar();setTimeout(()=>verhaal(v.intro),RMP?50:600)}
- else uilenpostCheck();
+ if(!S.verhaalGezien[v.id+j]){
+  if(S.login&&S.login.laatst&&S.login.laatst!==(typeof vandaag==='function'?vandaag():'')){/* ochtendpost eerst; intro komt na claimen */}
+  else{S.verhaalGezien[v.id+j]=1;bewaar();setTimeout(()=>verhaal(v.intro),RMP?50:600)}
+ }else uilenpostCheck();
  potCheck();stats()};
 function spellenHal(){const open=BONUS.filter(b=>S.bonusOpen[b[0]]);const dicht=BONUS.find(b=>!S.bonusOpen[b[0]]);return `<section class="halspel"><h3>Spellen</h3><div class="hs-rij"><button class="hs hs-hoofd" onclick="ga('match3')"><i class="rond">${icoon('ster')}</i><b>Level ${S.m3lvl}</b><small>${m3VakVoor(S.m3lvl).n}</small></button>${open.map(b=>`<button class="hs" onclick="ga('${b[0]}')"><i class="rond">${icoon(b[2])}</i><b>${b[1]}</b></button>`).join('')}${dicht?`<button class="hs dicht" onclick="toast('Nog op slot: ${dicht[5].replace(/'/g,'’')}')"><i class="rond">${icoon('slot')}</i><b>${dicht[1]}</b><small>binnenkort</small></button>`:''}</div></section>`}
 function tillyZin(v,vol){if(!vol)return 'Alles klaar hier! Ik ben zo benieuwd wat er achter de volgende deur zit.';if(S.schilden>=vol[2])return `We hebben genoeg huisschilden! Zullen we “${vol[1].toLowerCase()}”? Ik heb er zin in.`;return `Nog ${vol[2]-S.schilden} ${vol[2]-S.schilden==1?'huisschild':'huisschilden'} nodig voor “${vol[1].toLowerCase()}”. Eén level en we zijn er bijna. Kom!`}
@@ -115,7 +117,7 @@ function doeTaak(v,t){if(S.schilden<t[2]){toast(`Je hebt nog ${t[2]-S.schilden} 
   o.querySelectorAll('.kzopt').forEach(b=>b.onclick=()=>{o.remove();rond(+b.dataset.i)})}else rond(null)}
 /* elke paar dagen: uilenpost met een extra verhaalmoment */
 const POST=[['Tilly','Er kwam een uil voor je, Luna! Een briefje van Professor Stronk: “Voor de beste helpster van de kas.” Er zaten 10 Smekkies bij.'],['Tilly','Uilenpost! Hagrid schrijft dat zijn pompoenen al zo groot zijn als een kruiwagen. En hij stuurt 10 Smekkies mee.'],['Tilly','Een geheimzinnig briefje zonder afzender… alleen 10 glinsterende Smekkies en de woorden: “Kijk vannacht omhoog.”'],['Tilly','Professor Banning stuurt een zwevende kaart: “Bedankt voor de hulp!” Er zitten 10 Smekkies bij, en de kaart danst nog steeds een beetje.']];
-function uilenpostCheck(){const nu=Date.now();if(!S.uilenpost){S.uilenpost=nu;bewaar();return}if(nu-S.uilenpost<2*864e5)return;S.uilenpost=nu;S.galjoenen+=10;bewaar();stats();setTimeout(()=>verhaal([POST[Math.floor(nu/864e5)%POST.length]]),700)}
+function uilenpostCheck(){if(S.login&&S.login.laatst&&S.login.laatst!==(typeof vandaag==='function'?vandaag():''))return;const nu=Date.now();if(!S.uilenpost){S.uilenpost=nu;bewaar();return}if(nu-S.uilenpost<2*864e5)return;S.uilenpost=nu;S.galjoenen+=10;bewaar();stats();setTimeout(()=>verhaal([POST[Math.floor(nu/864e5)%POST.length]]),700)}
 /* ---------- levelpad ---------- */
 V.pad=()=>{const j=Math.max(1,Math.ceil(S.m3lvl/30));const start=(j-1)*30+1;const n=30;const pts=[];for(let i=0;i<n;i++){const y=60+i*86;const x=50+Math.sin(i*.9)*28;pts.push([x,y])}pts.reverse();
  const H=60+n*86;const vs=vakkenVan(j);

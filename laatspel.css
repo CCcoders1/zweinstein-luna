@@ -110,7 +110,21 @@ body.halstrak #boekknop.ookchip{
 }
 .groet .halsfeer{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .kantlijnen .kantlijn{margin:.4em 0;padding-left:.2em;font:italic .95em/1.45 Georgia,serif;color:#3b2a14}
-h1.pagkop,.pagkop{font-family:Cinzel,Georgia,serif;font-size:1.35em;letter-spacing:.04em;color:var(--wijn,#6a1d12);margin:.35em 12px .4em}
+/* pagkop: Cinzel overal. Goud op de stenen achtergrond, wijn op perkament. */
+h1.pagkop,.pagkop,#app>h1,#app>h2,.boek .blad>h2,.mgkop .mgtitel,.padkopbeeld h2{
+  font-family:Cinzel,Georgia,serif;font-size:1.35em;letter-spacing:.04em;
+  margin:.35em 12px .4em;text-align:center;font-weight:700
+}
+#app>h1,#app>h2,body[data-view=meer] .pagkop,body[data-view=kas] .pagkop,
+body[data-view=vrienden] .pagkop,body[data-view=album] .pagkop,
+body[data-view=pad] .padkop,body[data-view=pad] .padkopbeeld h2{
+  color:var(--goud,#e8c56a)!important;-webkit-text-fill-color:var(--goud,#e8c56a)!important;
+  text-shadow:0 0 10px rgba(255,200,80,.28)
+}
+.dagboek h1.pagkop,.boek .blad>h2,.perkament>h2,.perkament>h1{
+  color:var(--wijn,#6b1d0e)!important;-webkit-text-fill-color:var(--wijn,#6b1d0e)!important;
+  text-shadow:none
+}
 .mgkop .pagkop{margin:.1em 0 .2em}
 
 .dagboek{padding-bottom:calc(100px + env(safe-area-inset-bottom))}

@@ -138,8 +138,13 @@ function halOrde(){
       const nm=(S.naam||'Luna').trim().split(/\s+/)[0];
       const uur=new Date().getHours();
       const hallo=uur<6?'Goedenacht':uur<12?'Goedemorgen':uur<18?'Goedemiddag':'Goedenavond';
-      g.innerHTML='<h2>'+hallo+', '+nm+'</h2>';
+      const terug=typeof zwTerug==='function'?zwTerug():false;
+      g.innerHTML='<h2>'+(terug?('Welkom terug, '+nm):(hallo+', '+nm))+'</h2>';
       app.insertBefore(g,app.firstChild);
+    }else if(typeof zwTerug==='function'&&zwTerug()){
+      const h=app.querySelector('.groet h2');
+      const nm=(S.naam||'Luna').trim().split(/\s+/)[0];
+      if(h&&!/Welkom terug/i.test(h.textContent||''))h.textContent='Welkom terug, '+nm;
     }
     const tk=document.getElementById('taakknop'), st=document.getElementById('volgendestap');
     if(tk&&st)tk.style.display='none';
@@ -163,9 +168,13 @@ function halOrde(){
       }
     });
     const groetNu=app.querySelector('.groet');
-    if(groetNu&&typeof zwHalSfeer==='function'&&!groetNu.querySelector('.halsfeer')){
-      const p=document.createElement('p');p.className='halsfeer';p.textContent=zwHalSfeer();
-      groetNu.appendChild(p);
+    if(groetNu){
+      let p=groetNu.querySelector('.halsfeer');
+      if(!p&&typeof zwHalSfeer==='function'){p=document.createElement('p');p.className='halsfeer';groetNu.appendChild(p)}
+      if(p){
+        if(typeof zwTerug==='function'&&zwTerug())p.textContent='Fijn dat je er weer bent. Je ochtendpost wacht.';
+        else if(!p.textContent&&typeof zwHalSfeer==='function')p.textContent=zwHalSfeer();
+      }
     }
 
     const volgorde=['.groet','#halharten','#ookvandaag','#volgendestap','.lokaal','#halvr','#wmkaart','#hwkaart','#morgenkaart','.dagdoelen','.halspel'];
@@ -296,7 +305,15 @@ if(typeof zwHalVrienden==='function'){
 }
 
 let pad=null;
-function padStop(){try{if(pad){clearTimeout(pad.timer);pad.g.gain.linearRampToValueAtTime(0,pad.ac.currentTime+.4);setTimeout(()=>{try{pad.o1&&pad.o1.stop();pad.o2&&pad.o2.stop();pad.ns&&pad.ns.stop()}catch(e){}pad=null},500)}}catch(e){pad=null}}
+function zwTerug(){
+  try{
+    const L=S.login||{};
+    if(!L.laatst)return false;
+    const v=typeof vandaag==='function'?vandaag():'';
+    return !!(v&&L.laatst!==v);
+  }catch(e){return false}
+}
+function padStop(){try{if(pad){clearTimeout(pad.timer);const t=pad.ac.currentTime;pad.g.gain.cancelScheduledValues(t);pad.g.gain.setValueAtTime(pad.g.gain.value,t);pad.g.gain.linearRampToValueAtTime(0,t+.4);const p=pad;setTimeout(()=>{try{(p.os||[]).forEach(o=>{try{o.stop()}catch(e){}});}catch(e){}try{p.ns&&p.ns.stop()}catch(e){}if(pad===p)pad=null},500)}}catch(e){pad=null}}
 function padStart(){
   try{
     if(RMX||S.muziekAan===false||S.geluid===false||S.stil)return padStop();
@@ -306,30 +323,44 @@ function padStart(){
     const ac=(window.fx&&fx.ctx&&(fx.ctx().ac))||new (window.AudioContext||window.webkitAudioContext)();
     if(ac.state==='suspended')ac.resume();
     const master=ac.createGain();master.gain.value=0;master.connect(ac.destination);
-    const vol=.05*(S.muziekVol==null?.5:S.muziekVol);
-    const o1=ac.createOscillator(),o2=ac.createOscillator(),f=ac.createBiquadFilter(),g=ac.createGain();
-    o1.type='sine';o2.type='sine';o1.frequency.value=174.61;o2.frequency.value=220;
-    f.type='lowpass';f.frequency.value=560;g.gain.value=.5;
-    o1.connect(f);o2.connect(f);f.connect(g);g.connect(master);
-    const buf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=buf.getChannelData(0);
-    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.07;
-    const ns=ac.createBufferSource();ns.buffer=buf;ns.loop=true;
-    const nf=ac.createBiquadFilter();nf.type='bandpass';nf.frequency.value=900;nf.Q.value=.7;
-    const ng=ac.createGain();ng.gain.value=.018;
-    ns.connect(nf);nf.connect(ng);ng.connect(master);
+    const vol=.08*(S.muziekVol==null?.5:S.muziekVol);
+    /* Eigen compositie "Lantaarn in de Hal": 3/4, F-majeur, celesta + zacht akkoord.
+       Geen bestaande melodie, geen film- of spellied. */
+    const N=m=>440*Math.pow(2,(m-69)/12);
+    const BEAT=.42;
     const winter=document.body.classList.contains('winter');
-    const seq=winter?[392.00,523.25,659.25,783.99,659.25,523.25,440.00,349.23]:[349.23,440.00,523.25,587.33,659.25,523.25,440.00,392.00];
-    const step=2;
-    const sched=()=>{if(!pad||pad.ac!==ac)return;const now=ac.currentTime+0.05;
-      seq.forEach((hz,i)=>{const t=now+i*step,o=ac.createOscillator(),gg=ac.createGain(),ff=ac.createBiquadFilter();
-        o.type='triangle';o.frequency.value=hz;ff.type='lowpass';ff.frequency.value=1500;
-        gg.gain.setValueAtTime(0,t);gg.gain.linearRampToValueAtTime(.065,t+.1);gg.gain.exponentialRampToValueAtTime(.001,t+1.7);
-        o.connect(ff);ff.connect(gg);gg.connect(master);o.start(t);o.stop(t+1.8);
-        if(winter){const b=ac.createOscillator(),bg=ac.createGain();b.type='sine';b.frequency.value=hz*2;bg.gain.setValueAtTime(0,t);bg.gain.linearRampToValueAtTime(.02,t+.05);bg.gain.exponentialRampToValueAtTime(.001,t+.8);b.connect(bg);bg.connect(master);b.start(t);b.stop(t+.9)}});
-      pad.timer=setTimeout(sched,seq.length*step*1000)};
-    o1.start();o2.start();ns.start();
-    master.gain.linearRampToValueAtTime(vol,ac.currentTime+2.2);
-    pad={ac,o1,o2,ns,g:master,timer:null};sched();
+    const tr=winter?3:0;
+    const MEL=[[65,0,1],[69,1,1],[72,2,1],[74,3,1],[72,4,1],[69,5,1],[70,6,1],[69,7,1],[67,8,1],[69,9,2],[65,11,1],[67,12,1],[69,13,1],[72,14,1],[70,15,1.5],[69,16.5,.5],[67,17,1],[65,18,1],[69,19,1],[67,20,1],[65,21,3]];
+    const AKK=[[[53,57,60],0,6],[[50,53,57],6,6],[[48,52,55],12,6],[[53,57,60],18,6]];
+    const os=[];
+    const stem=(hz,t,d,g,type)=>{
+      const o=ac.createOscillator(),gg=ac.createGain(),ff=ac.createBiquadFilter();
+      o.type=type||'sine';o.frequency.value=hz;ff.type='lowpass';ff.frequency.value=type==='triangle'?2200:1800;
+      gg.gain.setValueAtTime(0,t);gg.gain.linearRampToValueAtTime(g,t+.04);gg.gain.exponentialRampToValueAtTime(.0008,t+d);
+      o.connect(ff);ff.connect(gg);gg.connect(master);o.start(t);o.stop(t+d+.05);os.push(o);
+    };
+    const cel=(hz,t,d,g)=>{stem(hz,t,d*1.15,g,'sine');stem(hz*2.005,t,d*.55,g*.28,'triangle');};
+    const sched=()=>{
+      if(!pad||pad.ac!==ac)return;
+      os.length=0;
+      const now=ac.currentTime+0.08;
+      AKK.forEach(([chs,b,dd])=>{const t=now+b*BEAT,len=dd*BEAT;
+        chs.forEach((m,i)=>stem(N(m+tr-12),t+i*.03,len*1.05,.028,'triangle'));
+      });
+      MEL.forEach(([m,b,dd])=>{
+        const t=now+b*BEAT;cel(N(m+tr),t,dd*BEAT,.07);
+        if(winter)stem(N(m+tr+12),t+.02,dd*BEAT*.7,.016,'sine');
+      });
+      pad.timer=setTimeout(sched,24*BEAT*1000);
+    };
+    const buf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*.04;
+    const ns=ac.createBufferSource();ns.buffer=buf;ns.loop=true;
+    const nf=ac.createBiquadFilter();nf.type='lowpass';nf.frequency.value=700;
+    const ng=ac.createGain();ng.gain.value=.01;
+    ns.connect(nf);nf.connect(ng);ng.connect(master);ns.start();
+    master.gain.linearRampToValueAtTime(vol,ac.currentTime+1.6);
+    pad={ac,os,ns,g:master,timer:null};sched();
   }catch(e){}
 }
 function padPas(){const v=document.body.dataset.view;if(v==='home'||v==='dagboek'||v==='verhaal'||v==='meer')padStart();else padStop()}

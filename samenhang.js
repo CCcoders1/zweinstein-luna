@@ -49,7 +49,7 @@ V.album=function(){
     }).join('');
     return `<section class="aserie ${s.klaar?'compleet':''}">${kop}<div class="album">${kaarten}</div></section>`;
   }).join('');
-  app(`<h1>Kaartenalbum</h1><p>${hebN} van ${totaal} kaarten verzameld. Een complete serie geeft een titel, een korte scène en een zeldzaam zaadje. Dubbele kaarten worden toverpoeder voor de elfjes.</p>${blok}<p class="klein">Kaarten vind je in kistjes in de levels, als mijlpaal bij elk 10e level, als cadeau, in de bonuskamer en in Hagrids pompoenen.</p>`);
+  app(`<h1 class="pagkop">Kaartenalbum</h1><p>${hebN} van ${totaal} kaarten verzameld. Een complete serie geeft een titel, een korte scène en een zeldzaam zaadje. Dubbele kaarten worden toverpoeder voor de elfjes.</p>${blok}<p class="klein">Kaarten vind je in kistjes in de levels, als mijlpaal bij elk 10e level, als cadeau, in de bonuskamer en in Hagrids pompoenen.</p>`);
   try{lijst.forEach(s=>serieBeloon(s))}catch(e){}
 };
 
@@ -89,7 +89,7 @@ V.login=function(){
   const o=document.createElement('div');o.className='modal';o.dataset.pop='ochtend';
   o.innerHTML=`<div class="perkament modalin rococo ochtendpost">
     <p class="klein ochtenduil">Uilenpost</p>
-    <h2>Ochtendpost</h2>
+    <h2>${geclaimd?'Ochtendpost':'Welkom terug, '+((S.naam||'Luna').trim().split(/\s+/)[0])}</h2>
     <p><b>${wie}:</b> ${zin}</p>
     ${geclaimd?'':`<p class="opcadeau">Vandaag in je brief: <b>${bel[0]}</b>${uil?' en <b>10 extra Smekkies</b> van de uilenpost':''}.</p>`}
     <div class="kalender">${LOGINLIJST.map((x,i)=>{const b=x[1]||{};const kort=b.t?'⏳ +30':b.k?'🐸 +1':'15';return `<div class="kdag ${i<d||geclaimd&&i==d?'gehad':''} ${i==d&&!geclaimd?'nu':''}"><small>Dag ${i+1}</small><b>${kort}</b></div>`}).join('')}</div>
@@ -112,6 +112,7 @@ V.login=function(){
     }catch(x){console.warn(x)}
     try{stats();fx.speel('munt');fx.goed();vib([30,30,60])}catch(x){}
     try{popupSluit?popupSluit(o):o.remove()}catch(e){o.remove()}
+    try{if((document.body.dataset.view||'home')==='home'&&typeof V.home==='function')V.home()}catch(e){}
   };
 };
 
@@ -121,7 +122,7 @@ loginCheck=function(){
   if(L.laatst&&L.laatst!==gisteren()){const gemist=Math.round((new Date(vandaag())-new Date(L.laatst))/864e5)-1;
     if(gemist==1&&S.tijdverdrijver>0){S.tijdverdrijver--;toast('Je Tijdverdrijver draaide de tijd terug: je reeks is bewaard!');if(S.dagKlaar===ymd(new Date(Date.now()-2*864e5)))S.dagKlaar=gisteren()}else{L.dag=0}}
   if(!L.laatst)return; /* eerste bezoek: Volgende stap wijst naar de brief, Spelen blijft zichtbaar */
-  setTimeout(()=>V.login(),(typeof RMX!=='undefined'&&RMX)?200:1400);
+  setTimeout(()=>V.login(),(typeof RMX!=='undefined'&&RMX)?200:700);
 };
 window.loginCheck=loginCheck;
 

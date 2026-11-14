@@ -36,7 +36,7 @@ function rest(p){const tot=ZADEN[p.z][2]*6e4;return Math.max(0,tot-(Date.now()-p
 const tijd=ms=>{const m=Math.ceil(ms/6e4);return m>=60?`${Math.floor(m/60)} u ${m%60?m%60+' min':''}`:`${m} min`};
 function buitNaam(id){try{const it=ITEMS[id];if(it&&it[1])return it[1]}catch(e){}return (ZADEN[id]&&ZADEN[id][0])||'oogst'}
 V.kas=()=>{VIEWDECOR.kas='kas';const o=kOpdr();
- app(`<h2>De Kassen</h2>
+ app(`<h2 class="pagkop">De Kassen</h2>
  <section class="kweekopdr rococo"><small>Opdracht van ${o[3]}</small><b>${o[2]}</b><div class="voortgang"><div style="width:${kOpdrTel()/o[1]*100}%"></div></div><small>${kOpdrTel()} van ${o[1]} · beloning ${o[5][1]+15*(o[5][0]|0)} Smekkies</small></section>
  <div class="kweekbalk"><button class="knop klein" id="zwinkel">${icoon('winkel')} Zadenwinkel</button><button class="knop klein" id="potwinkel">Potten</button><span class="voorraad">${icoon('blad')} ${Object.values(S.zaden).reduce((a,b)=>a+b,0)} zaadjes · ${icoon('vuur')} ${S.mest} drakenmest</span></div>
  <p class="klein kasverwijs">Koop hier je zaadjes. In je eigen kas tik je op de standaardpot en kies je een zaadje. Mooiere potten en de grote vloerpot staan in Potten.</p>
