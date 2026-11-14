@@ -206,3 +206,11 @@ Uitgeknipt en verkleind naar WebP.
 Winter- en huiskamerillustraties: eigen schilderijen in sprookjesstijl, geen filmbeelden of acteurs.
 Torenlessen-kaarten (rijp, uilenpost, gevleugelde sleutel): eigen tekeningen in sprookjesstijl, geen filmbeelden of acteurs.
 Portretten van Professor Stronk, Professor Sinistra, Professor Perkamentus, Bartholomeus Lindaroos, Fred Wemel en George Wemel: eigen schilderijen in sprookjesstijl, geen filmbeelden of acteurs.
+
+THREE.JS (map vendor/)
+  Bestand: vendor/three.min.js
+  Versie: r160
+  Licentie: MIT
+  Copyright 2010-2023 Three.js Authors
+  Bron: https://github.com/mrdoob/three.js
+  Alleen gebruikt op de testpagina tuin3d.html. Geometrie en textures van de tuin zijn eigen werk.

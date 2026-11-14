@@ -1694,3 +1694,20 @@ window.winHaakZin=function(n){
   const _kt=V.ketel;
   if(_kt)V.ketel=function(){const r=_kt.apply(this,arguments);try{zetKetelSfeer()}catch(e){}return r};
 })();
+
+
+/* v160: knop naar de 3D-testtuin, alleen in het makersmenu */
+(function(){
+  const _mk=V.maker;
+  if(!_mk)return;
+  V.maker=function(){
+    const r=_mk.apply(this,arguments);
+    try{
+      const app=document.getElementById('app');
+      if(!app||app.querySelector('#mk-tuin3d'))return r;
+      app.insertAdjacentHTML('beforeend',
+        '<section class="kaart sierlijst" id="mk-tuin3d"><h3>Test: 3D-tuin naar Kas Drie</h3><p class="klein">Een proefomgeving in de stijl van het oude pc-spel. Het gewone spel verandert hier niet door.</p><a class="knop" href="tuin3d.html">Open de 3D-tuin</a></section>');
+    }catch(e){}
+    return r;
+  };
+})();
