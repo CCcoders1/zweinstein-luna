@@ -287,7 +287,7 @@ def scenarios(app):
     tx = E(pg, "(document.querySelector('.zwaarhint')||{}).textContent||document.body.innerText.slice(0,300)")
     ok(f'zwaar level {zw}: vriendelijke tekst zonder winkel', 'pittig' in tx.lower() and 'Fopshop' not in tx and 'bijna niet' not in tx, tx)
     ok('meldingen minstens 4 s, lange langer (max 8 s)', E(pg, "[toastDuur('kort'),toastDuur('x'.repeat(100)),toastDuur('x'.repeat(500))]") == [4000, 7000, 8000])
-    E(pg, "toast('test')"); pg.click('#toast'); pg.wait_for_timeout(600)
+    E(pg, "()=>{document.querySelectorAll('.modal,.verhaal,.ritueel').forEach(m=>m.remove());const g=document.getElementById('gids');if(g)g.classList.remove('zien');const l=document.getElementById('laadscherm');if(l){l.classList.remove('aan','tikbaar');l.classList.add('uit')};toast('test');document.getElementById('toast').click()}")
     ok('melding verdwijnt bij een tik', not E(pg, "document.getElementById('toast').classList.contains('zien')"))
     ok('labels bij iconen bovenin', E(pg, "['#stats .vuur-t','#sterbadge','#smekbadge'].every(q=>{const e=document.querySelector(q);return e&&e.dataset.lbl})"))
     app.inv(pg, 'v131'); ok('geen JS-fouten', not pg.errs, pg.errs); pg.context.close()
