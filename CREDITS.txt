@@ -213,4 +213,67 @@ THREE.JS (map vendor/)
   Licentie: MIT
   Copyright 2010-2023 Three.js Authors
   Bron: https://github.com/mrdoob/three.js
-  Alleen gebruikt op de testpagina tuin3d.html. Geometrie en textures van de tuin zijn eigen werk.
+  Alleen gebruikt op de testpagina tuin3d.html.
+  Bestand: vendor/GLTFLoader.min.js
+  Herkomst: three.js r160 examples/jsm/loaders/GLTFLoader.js, gebundeld als IIFE die THREE.GLTFLoader zet.
+  Licentie: MIT, Copyright 2010-2023 Three.js Authors.
+
+
+3D-TUIN ASSETS (map assets/tuin3d/) – alleen CC0. Geen EA/Warner- of HP-modellen.
+Bewerkingen staan per item. Deze bestanden worden door de service worker gecachet (geen pakket-audio).
+
+assets/tuin3d/luna.glb
+  Oorspronkelijk model: “Witch” uit Ultimate Modular Women (Quaternius)
+  Maker: Quaternius
+  Licentie: CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/)
+  Officiële pack-pagina: https://quaternius.com/packs/ultimatemodularwomen.html
+  Verkregen via de CC0-heruitgave in LuanDucate/Ducz.CharacterCreator
+    (public/models/Female/Witch.glb), omdat de officiële Google Drive-map
+    (1720N9IGyQHXYvtvZJzazhxtTTlz-y2Vf) “Quota exceeded” teruggaf.
+  Bewerkingen: puntmuts verwijderd (Purple- en Gold-primitieven van het hoofd);
+    jurk hertint naar bijna-zwart; gouden biezen naar Huffelpuf-geel;
+    haar van zwart naar middenbruin; ongebruikte animaties verwijderd
+    (behouden: Idle, Idle_Neutral, Walk, Run); daarna vereenvoudigd (meshopt)
+    en gekwantiseerd voor bestandsgrootte. In de tuin wordt een lange
+    zwarte mantel met gele voering en neerhangende kap, plus een toverstaf
+    aan de rechterpols, in de scene gezet (eigen geometrie, aan de rig).
+
+assets/tuin3d/gargoyle.glb
+  Oorspronkelijk model: “Gargoyle” (Pixor Library)
+  Maker: Pixor
+  Licentie: CC0 1.0
+  Bron: https://pixor.art/library/dungeon/gargoyle/
+  Bestand: https://pixor.art/library/files/gargoyle/pixor-library-gargoyle.glb
+  Bewerkingen: sokkel en oplichtende ogen verwijderd; in de tuin voorzien van
+    een verweerde steentextuur (ambientCG Rock051) en geplaatst op de bestaande
+    zandstenen zuil. De waterstraal vertrekt vanuit de bek.
+
+assets/tuin3d/tex/zandsteen.webp
+  Bron: Bricks083, ambientCG, CC0 1.0
+  https://ambientcg.com/a/Bricks083
+  Bewerking: bijgesneden naar 512 px, WebP, warme oker-kleurtoon.
+
+assets/tuin3d/tex/kassei.webp
+  Bron: PavingStones070, ambientCG, CC0 1.0
+  https://ambientcg.com/a/PavingStones070
+  Bewerking: 512 px, WebP.
+
+assets/tuin3d/tex/gras.webp
+  Bron: Grass004, ambientCG, CC0 1.0
+  https://ambientcg.com/a/Grass004
+  Bewerking: 512 px, WebP, iets verzadigder groen.
+
+assets/tuin3d/tex/leisteen.webp
+  Bron: RoofingTiles001, ambientCG, CC0 1.0
+  https://ambientcg.com/a/RoofingTiles001
+  Bewerking: 512 px, WebP.
+
+assets/tuin3d/tex/haag.webp
+  Bron: Moss003, ambientCG, CC0 1.0
+  https://ambientcg.com/a/Moss003
+  Bewerking: 512 px, WebP, verzadigder groen (bladhaag).
+
+assets/tuin3d/tex/steen.webp
+  Bron: Rock051, ambientCG, CC0 1.0
+  https://ambientcg.com/a/Rock051
+  Bewerking: 512 px, WebP, iets koeler/grauwer voor de waterspuwer.

@@ -9,7 +9,7 @@
   <title>3D-tuin (test) – Zweinstein Luna</title>
   <link rel="stylesheet" href="tuin3d.css">
 </head>
-<body>
+<body class="laden-bezig">
   <canvas id="tuin"></canvas>
   <div id="ui">
     <a class="knop terug" href="index.html" id="terug">← Terug</a>
@@ -26,6 +26,15 @@
     <button type="button" id="deurbtn">Kas Drie – tik om naar binnen te gaan</button>
   </div>
   <div id="overgang" hidden aria-hidden="true"></div>
+  <div id="laden" role="status" aria-live="polite">
+    <div class="laden-kaart">
+      <p class="laden-merk">Zweinstein Luna</p>
+      <h2>De schooltuin</h2>
+      <p class="laden-tekst">Een moment, de tuin wordt klaargezet…</p>
+      <div class="laden-balk" aria-hidden="true"><span id="ladenvul"></span></div>
+      <p class="laden-pct" id="ladenpct">0%</p>
+    </div>
+  </div>
   <div id="nowebgl" hidden>
     <div class="kaart">
       <h2>Deze telefoon kan de 3D-tuin niet tonen</h2>
@@ -34,6 +43,7 @@
     </div>
   </div>
   <script src="vendor/three.min.js"></script>
+  <script src="vendor/GLTFLoader.min.js"></script>
   <script src="tuin3d.js"></script>
 </body>
 </html>
