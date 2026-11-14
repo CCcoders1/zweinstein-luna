@@ -989,3 +989,153 @@ window.winHaakZin=function(n){
   };
 
 })();
+
+/* v151: wekelijkse verhaalbrief van Tilly, terugblik op Luna's week. Geen economie. */
+(function(){
+  const MAAND=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+  function dagNu(){return typeof vandaag==='function'?vandaag():new Date().toISOString().slice(0,10)}
+  function ymdPlus(iso,n){
+    const d=new Date(iso+'T12:00:00Z');
+    d.setUTCDate(d.getUTCDate()+n);
+    return d.toISOString().slice(0,10);
+  }
+  function isoWeekKey(iso){
+    const d=new Date(iso+'T12:00:00Z');
+    const day=(d.getUTCDay()+6)%7;
+    const thu=new Date(d.getTime());
+    thu.setUTCDate(d.getUTCDate()-day+3);
+    const year=thu.getUTCFullYear();
+    const jan4=new Date(Date.UTC(year,0,4));
+    const week=1+Math.round((+thu-+jan4)/6048e5);
+    return year+'-W'+String(week).padStart(2,'0');
+  }
+  function dagenVanWeek(key){
+    const m=String(key||'').match(/^(\d{4})-W(\d{2})$/);
+    if(!m)return [];
+    const year=+m[1],week=+m[2];
+    const jan4=new Date(Date.UTC(year,0,4));
+    const day=(jan4.getUTCDay()+6)%7;
+    const mo=new Date(jan4.getTime());
+    mo.setUTCDate(jan4.getUTCDate()-day+(week-1)*7);
+    const out=[];
+    for(let i=0;i<7;i++)out.push(new Date(mo.getTime()+i*864e5).toISOString().slice(0,10));
+    return out;
+  }
+  function prevIsoWeek(key){
+    const dagen=dagenVanWeek(key);
+    if(!dagen.length)return key;
+    return isoWeekKey(ymdPlus(dagen[0],-1));
+  }
+  function nlDag(iso){
+    const p=String(iso||'').split('-').map(Number);
+    if(p.length<3)return iso||'';
+    return p[2]+' '+MAAND[p[1]-1];
+  }
+  function periodeVan(dagen){
+    if(!dagen||!dagen.length)return '';
+    const a=nlDag(dagen[0]),b=nlDag(dagen[dagen.length-1]);
+    return a===b?a:(a+' – '+b);
+  }
+  function telVanDagen(dagen){
+    const som={};
+    (dagen||[]).forEach(d=>{
+      const t=(S.tel&&S.tel[d])||{};
+      Object.keys(t).forEach(k=>{if(typeof t[k]==='number')som[k]=(som[k]|0)+(t[k]|0)});
+    });
+    return som;
+  }
+  function ooitGespeeld(){
+    const t=S.tel||{};
+    return Object.keys(t).some(k=>{
+      const v=t[k];
+      if(!v||typeof v!=='object')return false;
+      return Object.keys(v).some(x=>(v[x]|0)>0);
+    });
+  }
+  function briefTekst(som,lvl){
+    const m3=som.m3|0,oogst=som.oogst|0,plant=som.plant|0,kas=som.kas|0,les=som.les|0,taak=som.taak|0,water=som.water|0;
+    const delen=[];
+    if(m3>=15)delen.push('Wat een week, Luna. '+m3+' lessen, en je bleef rustig komen. De lokalen ruiken er nog naar.');
+    else if(m3>=6)delen.push('Deze week speelde je '+m3+' lessen. Dat is een ritme waar een kas van opknapt.');
+    else if(m3>=3)delen.push('Drie, vier lessen deze week — precies '+m3+' — en de kaarsen bleven vriendelijk branden.');
+    else if(m3>=1)delen.push('Een paar lessen deze week, '+m3+' in getal, en dat was genoeg om de hal warm te houden.');
+    else delen.push('Het was stil in de lokalen. Ik heb je stoel toch afgestoft. Fijn dat je er weer bent.');
+    if(oogst)delen.push('Je oogstte in de kas. De lucht rook naar aarde, en Stronk zou instemmend hebben gezwegen.');
+    else if(plant||water||kas)delen.push('Je was in de kassen. Alleen al langskomen doet de potten goed.');
+    if(les||taak)delen.push('Je was ook in een lokaal, niet alleen op het bord. Dat telt mee, al zegt niemand het hardop.');
+    if((lvl|0)>=601)delen.push('In de tuin van Lindaroos staat het werk niet stil. Zelfs een rustige week telt daar, blad voor blad.');
+    else if((lvl|0)>=500)delen.push('Kas zeven is dichtbij. Ik bewaar je briefjes, voor als de deur opengaat.');
+    delen.push('Ik leg dit briefje in je dagboek, bij de andere post. Volgende week schrijf ik weer — of je nu veel of weinig doet.');
+    return delen.join(' ');
+  }
+  function portHtml(){
+    try{if(typeof portret==='function')return '<div class="whport">'+portret('tilly','sm')+'</div>'}catch(e){}
+    return '';
+  }
+  function toonBrief(entry){
+    if(document.querySelector('[data-pop="weekbrief"]'))return;
+    const o=document.createElement('div');
+    o.className='modal verhaalm';
+    o.dataset.pop='weekbrief';
+    const port=portHtml();
+    o.innerHTML='<div class="perkament modalin rococo weekbrief"><h2>Een weekbrief van Tilly</h2>'
+      +(entry.periode?'<p class="wbperiode">'+entry.periode+'</p>':'')
+      +'<div class="wbport">'+(port||'')+'<p>'+entry.tekst+'</p></div>'
+      +'<button type="button" class="knop volgende" id="wbok">Bewaren in mijn dagboek</button></div>';
+    document.body.appendChild(o);
+    const kn=o.querySelector('#wbok');
+    if(kn)kn.onclick=()=>{try{if(typeof popupSluit==='function')popupSluit(o);else o.remove()}catch(e){try{o.remove()}catch(x){}}};
+  }
+  function weekBriefCheck(){
+    try{
+      const nu=dagNu();
+      const w=isoWeekKey(nu);
+      if(!S||typeof S!=='object')return;
+      if(!Array.isArray(S.weekBrieven))S.weekBrieven=[];
+      if(S.weekBrief===w)return;
+      if(!ooitGespeeld()&&(S.m3lvl|0)<=2){S.weekBrief=w;if(typeof bewaar==='function')bewaar();return}
+      const vorige=prevIsoWeek(w);
+      const dagen=dagenVanWeek(vorige);
+      const som=telVanDagen(dagen);
+      const entry={w:vorige,periode:periodeVan(dagen),tekst:briefTekst(som,S.m3lvl||1),t:Date.now()};
+      S.weekBrieven.push(entry);
+      if(S.weekBrieven.length>24)S.weekBrieven=S.weekBrieven.slice(-24);
+      S.weekBrief=w;
+      if(typeof bewaar==='function')bewaar();
+      setTimeout(()=>toonBrief(entry),900);
+    }catch(e){}
+  }
+  function htmlWeekBrieven(){
+    const lijst=(S.weekBrieven||[]).slice().reverse();
+    if(!lijst.length)return '';
+    return lijst.map(b=>{
+      const per=b.periode||b.w||'';
+      return '<details class="kaart hfdkaart weekbriefkaart"><summary>'+portHtml()+'<div><b>Een weekbrief van Tilly</b><small> '+(per||'Tilly')+'</small></div></summary><p>'+(b.tekst||'')+'</p></details>';
+    }).join('');
+  }
+  window.zwWeekBriefCheck=weekBriefCheck;
+
+  const _home=typeof V!=='undefined'&&V.home?V.home:null;
+  if(_home)V.home=function(){
+    const r=_home.apply(this,arguments);
+    try{weekBriefCheck()}catch(e){}
+    return r;
+  };
+
+  const _db=typeof V!=='undefined'&&V.dagboek?V.dagboek:null;
+  if(_db)V.dagboek=V.verhaal=function(){
+    const r=_db.apply(this,arguments);
+    try{
+      if(document.querySelector('.weekbriefkaart'))return r;
+      const html=htmlWeekBrieven();
+      if(!html)return r;
+      const kop=[...document.querySelectorAll('#app h3')].find(h=>/Brieven/.test(h.textContent||''));
+      if(!kop)return r;
+      const sect=kop.closest('section')||kop.parentElement;
+      const leeg=sect&&sect.querySelector('.hfdslot');
+      if(leeg)leeg.remove();
+      kop.insertAdjacentHTML('afterend',html);
+    }catch(e){}
+    return r;
+  };
+})();

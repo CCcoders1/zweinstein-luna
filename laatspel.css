@@ -331,3 +331,24 @@ body.akte2-kas .kasdecor .kd-rank{opacity:1;filter:saturate(1.2)}
 .appgeest .mk-titel,.appgeest .mk-tuin{position:absolute!important}
 
 .lokaal .akte2-zin{margin:8px 12px 10px;color:#3a2410;font-size:14px;line-height:1.4}
+
+/* v151: weekbrief van Tilly */
+.weekbrief{max-width:22rem;margin:0 auto}
+.weekbrief h2{margin:.1em 0 .15em}
+.weekbrief .wbperiode{margin:0 0 .8em;letter-spacing:.06em;text-transform:uppercase;font-size:.78em;opacity:.85;color:#3a2410}
+.weekbrief .wbport{display:flex;gap:12px;align-items:flex-start;text-align:left}
+.weekbrief .wbport .whport{flex:0 0 64px}
+.weekbrief .wbport .whport img,.weekbrief .wbport .pportret{width:64px;height:64px;border-radius:50%;object-fit:cover}
+.weekbrief .wbport p{margin:0;line-height:1.45;color:#2a1c0c}
+.weekbriefkaart{margin:.4em 0}
+.weekbriefkaart summary>div small{display:block;margin-top:2px;opacity:.9}
+/* Leesbare brieven op de donkere dagboekkaarten (ook bestaande post). */
+.boekextra .hfdkaart,
+.boekextra .hfdkaart summary,
+.boekextra .hfdkaart b,
+.boekextra .hfdkaart small,
+.boekextra .hfdkaart p{
+  color:#f6e6c4;
+}
+.boekextra .hfdkaart p{color:#f3e6c8;line-height:1.45}
+
