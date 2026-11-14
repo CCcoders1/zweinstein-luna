@@ -115,11 +115,11 @@ class Bord{
  async wissel(a,b,hooks={}){// a,b = [r,c]
   const ta=this.g[a[0]][a[1]],tb=this.g[b[0]][b[1]];if(!ta||!tb)return false;
   if(this.strik&&(this.strik[a[0]][a[1]]||this.strik[b[0]][b[1]]))return false;
-  this.wis(a[0],a[1],b[0],b[1]);await this.wacht(160);
+  this.wis(a[0],a[1],b[0],b[1]);if(!this.sim){const nu=performance.now();ta.hop=tb.hop=1;ta.hopT=tb.hopT=nu}await this.wacht(this.sim?0:200);
   let effect=null;
   if(ta.s&&tb.s)effect='combi';else if(ta.s=='bal'||tb.s=='bal')effect='bal';
   if(!effect&&!this.runs().length&&(ta.s||tb.s))effect='los';
-  if(!effect&&!this.runs().length){this.wis(a[0],a[1],b[0],b[1]);await this.wacht(160);return false}
+  if(!effect&&!this.runs().length){this.wis(a[0],a[1],b[0],b[1]);if(!this.sim){const nu=performance.now();ta.hop=tb.hop=1;ta.hopT=tb.hopT=nu}await this.wacht(this.sim?0:200);return false}
   this.zet--;this.combo=0;const extra=new Set();
   if(effect=='bal'){const bal=ta.s=='bal'?b:a,ander=ta.s=='bal'?tb:ta;bal.toString();const pos=ta.s=='bal'?b:a;extra.add(pos+'');
    if(ander.s){/* bal+special: alle tegels van die kleur worden die special */const k=ander.k;for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){const t=this.g[r][c];if(t&&t.k==k){t.s=t.s||ander.s;extra.add([r,c]+'')}}}
@@ -170,8 +170,8 @@ class Bord{
    geraakteKist.forEach(x=>{const[r,c]=x.split(',').map(Number);if(this.kist[r][c]>0){this.kist[r][c]--;if(this.kt&&this.kt[r][c]){if(this.kist[r][c]==0){this.fx.push({t:'schat',r,c,s:this.kt[r][c],kl:this.ktk[r][c]});this.kt[r][c]=0}else this.fx.push({t:'tik',r,c,s:this.kt[r][c]});return}if(this.kist[r][c]==0){this.telDoel(this.ksoort);if(this.ksoort!='d')this.fx.push({t:'kist',r,c});if(this.ksoort=='k'&&!this.zaadKist&&(S.m3lvl|0)>=60&&window.zeldzaamZaad&&Math.random()<.02){this.zaadKist=1;zeldzaamZaad('kistje',{wacht:300})}if(this.ksoort!='k'){const ih=this.L.kistInh||[];this.fx.push({t:'vrij',r,c,s:this.ksoort,it:ih[(r*7+c)%Math.max(1,ih.length)]})}}else this.fx.push({t:'plank',r,c,over:this.kist[r][c]})}});
    nieuw.forEach(([p,s,k,cl])=>{const t=this.g[p[0]][p[1]];if(t){t.s=s;t.k=k;t.sc=1.5}else{const nt=this.tegel(k,p[0],p[1],p[0]);nt.s=s;nt.sc=1.5;this.g[p[0]][p[1]]=nt}if(s)this.fx.push({t:'nieuw',r:p[0],c:p[1],s,cel:cl})});
    hooks.wis&&hooks.wis(wis.size,this.combo);
-   await this.wacht(200);
-   this.val();await this.wacht(320);
+   await this.wacht(this.sim?0:Math.max(90,220-this.combo*22));
+   this.val();await this.wachtVal();
    this.potten();
    eerste=false}
   if(this.g.some((rw,r)=>rw.some((t,c)=>!t&&!this.kist[r][c]))){this.val();this.potten()}
@@ -189,6 +189,7 @@ class Bord{
  potten(){for(let c=0;c<KOL;c++){let r=RIJEN-1;while(r>=0&&(this.kist[r][c]||(this.strik&&this.strik[r][c])))r--;const t=r>=0&&this.g[r][c];if(t&&t.k<0){this.g[r][c]=null;this.telDoel('p');this.fx.push({t:'pot',r,c});this.val()}}}
  klaar(){return this.doel.every(d=>d.over<=0)}
  wacht(ms){return this.sim?Promise.resolve():new Promise(r=>setTimeout(r,ms))}
+ wachtVal(){if(this.sim)return Promise.resolve();const start=performance.now();return new Promise(r=>{const tick=()=>{const bezig=this.g.some((rw,ri)=>rw.some((tile,c)=>tile&&(Math.abs((tile.y??ri)-ri)>.05||Math.abs((tile.x??c)-c)>.05||(tile.vy&&Math.abs(tile.vy)>.05)||tile.hop)));if(!bezig||performance.now()-start>720)r();else requestAnimationFrame(tick)};requestAnimationFrame(tick)})}
 }
 function sim0(b){return !!b.sim}
 /* oplosbaarheidscheck: greedy bot speelt het level een paar keer na */
@@ -295,10 +296,10 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
    if(t.sleep)continue;if(t.zw){const k=Math.min(1,.07*dt);t.x+=(c-t.x)*k;t.y+=(r-t.y)*k;t.lift=(t.lift||0)+((t.zw==1?1:0)-(t.lift||0))*Math.min(1,.06*dt);if(t.zw==2&&t.lift<.03&&Math.abs(t.x-c)<.02&&Math.abs(t.y-r)<.02){t.x=c;t.y=r;t.lift=0;delete t.zw}
     const X=(t.x+.5)*cel,Y=(t.y+.5)*cel-t.lift*cel*(.3+.06*Math.sin(nu/260));ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=Math.max(0,.5*t.lift+.15*Math.sin(nu/200)*t.lift);ctx.drawImage(KU.stof('#ffd76a'),X-cel*.85,Y-cel*.85,cel*1.7,cel*1.7);ctx.restore();ctx.save();ctx.translate(X,Y);tekenTegel(t,0,0,1+.12*t.lift,nu);ctx.restore();
     if(t.lift>.3&&Math.random()<.3)deeltjes.push({x:X+(Math.random()-.5)*cel*.7,y:Y+cel*.35,vx:(Math.random()-.5)*.3,vy:-.5,r:1.5+Math.random()*2,l:1,st:1,k:'#ffe28a'});continue}
-   if(t.y<r||t.vy){t.vy+=.045*dt;t.y+=t.vy*dt;if(t.y>=r){t.y=r;if(t.vy>.12){t.vy=-t.vy*.28}else t.vy=0}}else if(t.y>r){t.y+=(r-t.y)*Math.min(1,.35*dt);if(t.y-r<.01)t.y=r}
+   if(t.y<r||t.vy){t.vy+=.07*dt;t.y+=t.vy*dt;if(t.y>=r){t.y=r;if(t.vy>.12){t.vy=-t.vy*.32}else t.vy=0}}else if(t.y>r){t.y+=(r-t.y)*Math.min(1,.35*dt);if(t.y-r<.01)t.y=r}
    t.x+=(c-t.x)*Math.min(1,.35*dt);if(Math.abs(t.x-c)<.01)t.x=c;t.sc+=(1-t.sc)*.18*dt;
    let s=t.sc;const gek=sel&&sel[0]==r&&sel[1]==c;if(gek)s*=1.16+Math.sin(nu/120)*.03;if(hint&&hint.some(h=>h[0]==r&&h[1]==c))s*=1+Math.sin(nu/150)*.07;
-   const sq=t.vy?1+Math.min(.15,Math.abs(t.vy)*.4):1;const X=(t.x+.5)*cel,Y=(t.y+.5)*cel;
+   const sq=t.vy?1+Math.min(.2,Math.abs(t.vy)*.45):1;let hop=0;if(t.hop){const p=Math.min(1,(nu-(t.hopT||nu))/200);hop=-Math.sin(p*Math.PI)*cel*.22;if(p>=1)delete t.hop}const X=(t.x+.5)*cel,Y=(t.y+.5)*cel+hop;
    if(gek&&t.k>=0){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.75+.2*Math.sin(nu/120);ctx.drawImage(KU.stof(T.t[t.k][1]),X-cel*.75,Y-cel*.75,cel*1.5,cel*1.5);ctx.restore()}
    ctx.save();ctx.translate(X,Y);ctx.scale(1/sq,sq);tekenTegel(t,0,0,s,nu);ctx.restore()}
   for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(b.kist[r][c]){if(b.kt&&b.kt[r][c]&&window.schatSprite){const z=cel*.92;ctx.drawImage(schatSprite(b.kt[r][c],b.kist[r][c],b.ktk[r][c]),c*cel+(cel-z)/2,r*cel+(cel-z)/2+Math.sin(nu/500+c)*cel*.02,z,z);continue}const ih=L.kistInh||[],it=ih[(r*7+c)%Math.max(1,ih.length)];if(b.ksoort=='d'&&window.kooiSprite){ctx.drawImage(kooiSprite(b.kist[r][c],it,Math.round(cel*2)),c*cel,r*cel,cel,cel);continue}const sp=kistSprite(b.kist[r][c],b.T.id||'herbologie',Math.round(cel*2));ctx.drawImage(sp,c*cel,r*cel,cel,cel);if(b.ksoort=='i'&&window.runeImg&&runeImg(it)){const ri=runeImg(it),z=cel*.62;ctx.save();ctx.globalAlpha=.55+.3*Math.sin(nu/300+c);ctx.shadowColor='#ffb020';ctx.shadowBlur=cel*.3;ctx.beginPath();[.26,.44,.62].forEach(f=>ctx.rect(c*cel+cel*.15,r*cel+cel*(f-.02),cel*.7,cel*.05));ctx.rect(c*cel+cel*.15,r*cel+cel*.12,cel*.7,cel*.12);ctx.clip();ctx.drawImage(ri,c*cel+(cel-z)/2,r*cel+cel*.52-z/2,z,z);ctx.restore();ctx.save();ctx.globalAlpha=.35+.2*Math.sin(nu/300+c);ctx.globalCompositeOperation='lighter';ctx.drawImage(ri,c*cel+(cel-z)/2,r*cel+cel*.52-z/2,z,z);ctx.restore()}else if(b.ksoort=='i'&&window.runeVan){ctx.save();ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.5+.25*Math.sin(nu/300+c);ctx.fillStyle='#ffd36a';ctx.shadowColor='#ffb020';ctx.shadowBlur=cel*.3;ctx.font=`bold ${cel*.62}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(runeVan(it),c*cel+cel/2,r*cel+cel*.55);ctx.restore()}}
@@ -315,7 +316,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
   requestAnimationFrame(frame)};requestAnimationFrame(frame);
  const blip=(n)=>{try{const{ac,master}=fx.ctx();const t=ac.currentTime;[0,7].forEach((iv,j)=>{const o=ac.createOscillator(),g=ac.createGain();o.type=j?'sine':'triangle';o.frequency.value=523*2**((Math.min(n,12)*2+iv)/12);g.gain.setValueAtTime(0,t+j*.04);g.gain.linearRampToValueAtTime(j?.06:.13,t+j*.04+.01);g.gain.exponentialRampToValueAtTime(.001,t+.45);o.connect(g);g.connect(master);o.start(t+j*.04);o.stop(t+.5)})}catch(e){}};
  setTimeout(()=>{try{window.m3NaBord&&m3NaBord(b,boost||{})}catch(e){console.error(e)}},0);
- const hooks={combo:n=>{blip(n);if(n>=3)combo(['','','','Prachtig!','Magisch!','Betoverend!','Fenomenaal!'][Math.min(6,n)])},wis:()=>{toonFx();doelUI()},geschud:()=>toast('Geen zetten meer: de voorwerpen worden opnieuw geschud.')};
+ const hooks={combo:n=>{blip(n);try{navigator.vibrate&&navigator.vibrate(n>=4?18:8)}catch(e){}if(n>=3)combo('×'+n+' '+['','','','Prachtig!','Magisch!','Betoverend!','Fenomenaal!'][Math.min(6,n)])},wis:()=>{toonFx();doelUI()},geschud:()=>toast('Geen zetten meer: de voorwerpen worden opnieuw geschud.')};
  const cel_=e=>{const r=cv.getBoundingClientRect();return[Math.floor((e.clientY-r.top)/cel),Math.floor((e.clientX-r.left)/cel)]};
  async function probeer(a,c){if(bezig||!b.binnen(...c)||Math.abs(a[0]-c[0])+Math.abs(a[1]-c[1])!=1)return;if(window.strikTegen&&strikTegen(b,a,c,cel)){sel=null;hint=null;hintT=Date.now();return}bezig=true;sel=null;hint=null;
   const ok=await b.wissel(a,c,hooks);toonFx();doelUI();if(!ok){fx.speel('fout');vib(20)}bezig=false;hintT=Date.now();einde()}

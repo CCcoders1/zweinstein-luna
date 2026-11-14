@@ -35,7 +35,7 @@ def('tas',{});def('nieuwBuit',0);
 function trek(pool){for(let t=0;t<8;t++){const id=pool[Math.random()*pool.length|0];if(Math.random()<KANS[ITEMS[id][2]])return id}return pool[0]}
 function buitVoor(id){const k=id.startsWith('drank')?'drank':id.startsWith('memory')?'memory':id.startsWith('spreuk')?'spreuk':id.startsWith('mysterie')?'mysterie':id.startsWith('dag')?'dag':id.startsWith('verhaal')?'verhaal':/-(1|2|slijm)$|puist/.test(id)?'les':'mini';
  const n=1+(Math.random()<.35?1:0);const items=[];for(let i=0;i<n;i++){const it=trek(LOOT[k]);S.tas[it]=(S.tas[it]||0)+1;items.push(it)}
- if(Math.random()<.12){const kr=trekKaart();S.kaarten[kr[0]]=(S.kaarten[kr[0]]||0)+1;items.push('kaart:'+kr[0])}
+ if(Math.random()<.12){const kr=trekKaart();const nw=!S.kaarten[kr[0]];S.kaarten[kr[0]]=(S.kaarten[kr[0]]||0)+1;try{serieNaKaart&&serieNaKaart(nw)}catch(e){}items.push('kaart:'+kr[0])}
  S.nieuwBuit+=items.length;bewaar();setTimeout(()=>items.forEach((it,i)=>setTimeout(()=>buitVlucht(it),i*350)),900);return items}
 /* tasknop */
 document.body.insertAdjacentHTML('beforeend',`<button id="tasknop" aria-label="Verzamelboek"><svg class="icn" viewBox="0 0 24 24"><path d="M5 9h14l-1 11H6zM9 9V7a3 3 0 016 0v2M5 9c0-2 2-3 3-3M19 9c0-2-2-3-3-3"/></svg><span id="tasn"></span></button>`);

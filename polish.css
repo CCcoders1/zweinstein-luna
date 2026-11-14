@@ -171,3 +171,29 @@ header{flex-wrap:nowrap;height:56px;overflow:hidden;gap:8px}
 #stats{flex-wrap:nowrap;gap:9px;font-size:.82em;white-space:nowrap;overflow:hidden}
 #stats .hoed-t b{max-width:92px;overflow:hidden;text-overflow:ellipsis;display:inline-block;vertical-align:bottom}
 @media(max-width:420px){#stats #weer span{font-size:0}#stats #weer .icn{font-size:16px}}
+
+/* v133: volgende stap, ochtendpost, album-series, intro */
+body.in-intro header{opacity:0;pointer-events:none}
+.volgestap{margin:8px 10px 12px;padding:12px 14px 14px;position:relative;z-index:2}
+.volgestap>small{display:block;letter-spacing:.08em;text-transform:uppercase;font-size:.72em;opacity:.8;margin-bottom:2px}
+.volgestap h3{margin:.1em 0 .2em;font-size:1.15em}
+.volgestap p{margin:0 0 .7em;line-height:1.35}
+.volgestap .knop{width:100%;min-height:48px}
+.aserie{margin:1em 0 1.4em}
+.aserkop{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 4px 8px}
+.aserkop h3{margin:0;font-size:1.05em}
+.aserkop small{opacity:.8}
+.aserie.compleet .aserkop h3{color:var(--goud2,#d4af37)}
+.akaart .kfoto{width:72px;height:90px;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.akaart .kfoto img{width:100%;height:100%;object-fit:cover;display:block}
+.akaart b,.akaart small{display:block;margin-top:3px;line-height:1.2}
+.ochtendpost{max-width:92vw}
+.ochtenduil{letter-spacing:.12em;text-transform:uppercase;margin:.2em 0}
+.opcadeau{background:rgba(255,230,150,.25);border-radius:8px;padding:.5em .7em}
+.opvolg{font-size:.95em}
+.ochtendpost{margin-bottom:88px;padding-bottom:8px}
+.ochtendpost .kalender{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.ochtendpost .kdag{font-size:.7em;padding:6px 2px;min-height:58px}
+.ochtendpost .kdag b{display:block;font-size:1.05em;margin-top:2px}
+.smekgroot{top:72px;font-size:28px}
+.smekgroot small{font-size:14px}

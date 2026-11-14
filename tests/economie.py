@@ -62,7 +62,11 @@ def basis(**k):
 
 class App:
     def __init__(self, pw, url):
-        self.br = pw.chromium.launch(); self.url = url
+        try:
+            self.br = pw.chromium.launch()
+        except Exception:
+            self.br = pw.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox','--disable-dev-shm-usage'])
+        self.url = url
     def open(self, save, init='', ctx=None):
         ctx = ctx or self.br.new_context(viewport={'width': 390, 'height': 844}, service_workers='block')
         if save is not None:

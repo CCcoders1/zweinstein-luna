@@ -36,8 +36,8 @@ document.addEventListener('click',e=>{const h=e.target.closest('#halharten,.m3vo
 V.kikker=()=>V.album();
 
 /* ---------- kaarten: eigen bronnen ---------- */
-function geefKaart(wie,zin){let k;try{k=trekKaart()}catch(e){return}const nieuw=!S.kaarten[k[0]];S.kaarten[k[0]]=(S.kaarten[k[0]]||0)+1;bewaar();
- T(()=>{const o=modal(`<h2>Een tovenaarskaart!</h2>${wie?`<p><b>${wie}:</b> ${zin}</p>`:''}<p class="kaartnieuw"><b>${k[0]}</b><br><small>${nieuw?'Nieuw in je album!':'Die had je al. Hij staat nu dubbel in je album.'}</small></p><button class="knop volgende" id="kaalb">Naar mijn album</button><button class="linkknop" id="kadi">Verder</button>`);try{fx.speel('fanfare')}catch(e){}
+function geefKaart(wie,zin){let k;try{k=trekKaart()}catch(e){return}const nieuw=!S.kaarten[k[0]];S.kaarten[k[0]]=(S.kaarten[k[0]]||0)+1;bewaar();try{window.serieNaKaart&&serieNaKaart(nieuw)}catch(e){}
+ T(()=>{const o=modal(`<h2>Een tovenaarskaart!</h2>${wie?`<p><b>${wie}:</b> ${zin}</p>`:''}<p class="kaartnieuw"><b>${k[0]}</b><br><small>${nieuw?'Nieuw in je album!':'Die had je al: hij wordt toverpoeder voor de elfjes.'}</small></p><button class="knop volgende" id="kaalb">Naar mijn album</button><button class="linkknop" id="kadi">Verder</button>`);try{fx.speel('fanfare')}catch(e){}
   o.querySelector('#kaalb').onclick=()=>{document.querySelectorAll('.modal').forEach(m=>m.remove());ga('album')};o.querySelector('#kadi').onclick=()=>o.remove()},2600)}
 const KAARTCADEAU={10:['Hagrid','Ik vond deze kaart in een oude Chocokikkerdoos. Die is voor jou, hè.'],25:['Fred en George','Psst! Een kaart uit onze geheime voorraad. Niet aan Ma vertellen.'],50:['Mevrouw Varenkamp','Voor mijn beste klant. Deze kaart lag nog onder de toonbank.']};
 

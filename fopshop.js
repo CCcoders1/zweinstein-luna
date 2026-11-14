@@ -102,7 +102,7 @@ V.fopshop=()=>{VIEWDECOR.fopshop='zaal';S.fg.bezoek=(S.fg.bezoek|0)+1;bewaar();
   <div class="fgtoonbank" id="fgtoonbank"></div>
   <div class="fgpraat" id="fgpraat" role="status"></div>
  </div>
- <h2 class="fgtitel">Tovertweelings Topfopshop</h2><p class="klein fgsub">Wegisweg 93 · eigenaars: Fred en George Wemel</p>
+ <h2 class="fgtitel">Tovertweelings Topfopshop</h2><p class="klein fgsub">Wegisweg 93 · eigenaars: Fred en George Wemel<br>Hier koop je start-hulp: pijlen en de Spijbelsnoepdoos. Bommen en bliksem kweek je in de kas, bij de superplanten.</p>
  <div id="fgitems" class="fgitems"></div><button class="knop" onclick="ga('meer')">Terug</button></div>`);
  zeg(S.fg.bezoek<=1?0:null);teken();
  const sc=document.getElementById('fgscene');sc.onclick=e=>{if(e.target.closest('.fgkassa')){kassa();zeg();return}vuurwerk(sc,2);zeg()};

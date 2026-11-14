@@ -34,7 +34,7 @@ document.body.insertAdjacentHTML('beforeend',`<div id="gids" aria-live="polite">
 let gidsT;function gids(tekst,{mood='praat',knop,actie,doel,duur=0}={}){const G=$('#gids');G.querySelector('.gav').innerHTML=tillySVG(mood);$('#gtekst').innerHTML=tekst;$('#gknop').innerHTML=knop?`<button class="knop klein" id="gk">${knop}</button>`:'';if(knop)$('#gk').onclick=()=>{gidsWeg();actie&&actie()};
  G.classList.add('zien');document.querySelectorAll('.wijs').forEach(e=>e.classList.remove('wijs'));if(doel){const d=typeof doel=='string'?$(doel):doel;if(d){d.classList.add('wijs');d.scrollIntoView({block:'center',behavior:RMP?'auto':'smooth'})}}
  clearTimeout(gidsT);if(duur)gidsT=setTimeout(gidsWeg,duur);try{fx.speel('klik')}catch(e){}}
-function gidsWeg(){$('#gids').classList.remove('zien');document.querySelectorAll('.wijs').forEach(e=>e.classList.remove('wijs'))}
+function gidsWeg(){const G=$('#gids');if(G)G.classList.remove('zien');document.querySelectorAll('.wijs').forEach(e=>e.classList.remove('wijs'))}
 $('#gids .gsluit').onclick=gidsWeg;
 /* ---------- filmische overgangen ---------- */
 const TYPE=v=>['lessen','les','spel','groei','quests','beker'].includes(v)?'gang':['kamer','verhaal','dier'].includes(v)?'portret':['kaart','brief'].includes(v)?'rol':'deur';

@@ -65,5 +65,5 @@ document.getElementById('mzk').onclick=e=>{e.stopPropagation();fx.init();fx.muz(
 document.getElementById('vol').oninput=e=>fx.vol(+e.target.value);
 addEventListener('click',e=>{if(e.target.closest('nav button,button,.tegel,.memk,.ingr'))fx.speel('klik')});
 // intro
-fx.intro=klaar=>{const o=document.createElement('div');o.id='intro';o.innerHTML=`<div class="uil"><img class="uilfoto" src="img/sneeuwuil.webp" alt="Sneeuwuil"><div class="env"><img class="zg" src="img/lakzegel.webp" alt="Lakzegel"></div></div><p class="tik">Een uil brengt post voor jou…<br><b>Tik om de brief te openen</b></p>`;document.body.appendChild(o);
- o.onclick=()=>{fx.init();fx.speel('whoosh');o.classList.add('breek');setTimeout(()=>fx.speel('kras'),500);setTimeout(()=>{o.classList.add('weg');klaar();setTimeout(()=>o.remove(),800)},RM?100:1300)}};
+fx.intro=klaar=>{const o=document.createElement('div');o.id='intro';o.innerHTML=`<div class="uil"><img class="uilfoto" src="img/sneeuwuil.webp" alt="Sneeuwuil"><div class="env"><img class="zg" src="img/lakzegel.webp" alt="Lakzegel"></div></div><p class="tik">Een uil brengt post voor jou…<br><b>Tik om de brief te openen</b></p>`;document.body.classList.add('in-intro');document.body.appendChild(o);
+ o.onclick=()=>{fx.init();fx.speel('whoosh');o.classList.add('breek');setTimeout(()=>fx.speel('kras'),500);setTimeout(()=>{o.classList.add('weg');document.body.classList.remove('in-intro');klaar();setTimeout(()=>o.remove(),800)},RM?100:1300)}};
