@@ -65,6 +65,18 @@
     0.25,
     0.8
    ]
+  },
+  {
+   "van": 601,
+   "tot": 800,
+   "geen": [
+    0.15,
+    0.55
+   ],
+   "hulp": [
+    0.3,
+    0.85
+   ]
   }
  ],
  "zwaar": {
@@ -86,5 +98,5 @@
    222
   ]
  },
- "opmerking": "v129: banden afgestemd op de (zwakkere) kalibratie-bot; mensen winnen vaker. 151-600 voorlopig, niet gemeten."
+ "opmerking": "v129: banden afgestemd op de (zwakkere) kalibratie-bot; mensen winnen vaker. 151-600 voorlopig, niet gemeten. v150: band 601-800 gelijk aan 151-350 (Akte II, 6 kleuren, hartslag)."
 }

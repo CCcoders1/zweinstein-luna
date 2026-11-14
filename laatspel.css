@@ -323,3 +323,11 @@ body.akte2-kas .kasdecor .kd-rank{opacity:1;filter:saturate(1.2)}
 
 .mk-lab{white-space:normal!important;line-height:1.15;font-size:11px;max-width:100%;text-align:center}
 .kas-aktezin{background:rgba(255,246,216,.88);border:1px solid #c9a227;border-radius:12px;padding:8px 12px;margin:8px 12px 10px;color:#2a1c0c!important;font-weight:700;text-shadow:none}
+
+/* v150: tikvlak preview-link */
+.m3voor .bolink, .m3voor a.bolink{min-height:44px;min-width:44px;display:inline-flex;align-items:center;padding:8px 10px;box-sizing:border-box}
+
+/* v150: vaste titels van Mijn kas niet laten doorschemeren via appgeest */
+.appgeest .mk-titel,.appgeest .mk-tuin{position:absolute!important}
+
+.lokaal .akte2-zin{margin:8px 12px 10px;color:#3a2410;font-size:14px;line-height:1.4}

@@ -9,4 +9,5 @@
 (()=>{const _g=ga;ga=function(s,...a){const app=$('#app');const voor=document.body.dataset.view;if(RMP||!app||!app.firstElementChild){return _g(s,...a)}
  const r=app.getBoundingClientRect();const g=app.cloneNode(true);g.removeAttribute('id');g.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));g.querySelectorAll('canvas').forEach(c=>c.remove());g.classList.remove('inkomen','vervaag');g.classList.add('appgeest');
  Object.assign(g.style,{position:'fixed',left:r.left+'px',top:r.top+'px',width:r.width+'px',margin:'0',pointerEvents:'none',zIndex:'1'});
+ g.querySelectorAll('.mk-titel,.mk-tuin').forEach(e=>{e.style.position='absolute'});
  _g(s,...a);if(document.body.dataset.view===voor){return}document.body.appendChild(g);g.animate([{opacity:1},{opacity:0}],{duration:(voor==='boek'||s==='boek')?1500:560,easing:(voor==='boek'||s==='boek')?'linear':'ease-in-out',fill:'forwards'}).onfinish=()=>g.remove()}})();

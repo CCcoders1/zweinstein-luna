@@ -110,6 +110,7 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home='zaal';try{zetDecor('zaal')
       if(document.querySelector('.modal:not(.zw-wacht),.ritueel:not(.zw-wacht)'))return setTimeout(startIntro,800);
       window._zwSchoolWacht=0;
       if(S.verhaalGezien[v.id+j])return;
+      if(document.body.dataset.view&&document.body.dataset.view!=='home')return;
       S.verhaalGezien[v.id+j]=1;bewaar();
       verhaal(v.intro);
     };

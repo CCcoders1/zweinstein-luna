@@ -128,7 +128,12 @@ function schoolDag(index=S.schoolDag){
 function schoolDagDoelenKlaar(stage){return !!stage&&stage.v.taken.every(t=>S.taken[t[0]])}
 function schoolDagKanStarten(level){
  const stage=schoolDag();
- return !!stage&&level<=(S.m3lvl||1)&&level<=stage.einde;
+ const huidig=S.m3lvl||1;
+ if(!stage){
+  const laatste=schoolDag(M3VAKKEN.length*SCHOOL_DAGEN_PER_VAK-1);
+  return !!laatste&&huidig>laatste.einde&&level<=huidig&&level>laatste.einde;
+ }
+ return level<=huidig&&level<=stage.einde;
 }
 function schoolDagDoorgaan(stage){
  if(!stage||stage.index!==S.schoolDag||!schoolDagDoelenKlaar(stage)||(+S.m3lvl||1)<=stage.einde)return false;
@@ -201,6 +206,21 @@ const schoolHomeOud=V.home;
 V.home=function(...a){
  schoolDagHerstel();
  const result=schoolHomeOud.apply(this,a);
+ const jaarKlaar=(S.schoolDag|0)>=M3VAKKEN.length*SCHOOL_DAGEN_PER_VAK;
+ if(jaarKlaar){
+  const spelen=$('#speelknop');
+  if(spelen){spelen.disabled=false;spelen.textContent='Spelen · Level '+(S.m3lvl||1);spelen.onclick=()=>ga('match3')}
+  const header=document.querySelector('.lokaal .lk-kop small');
+  if(header)header.textContent=(S.m3lvl|0)<=800?'Akte II · De tuin van Lindaroos':'Meester-tovenares';
+  const h2=document.querySelector('.lokaal .lk-kop h2');
+  if(h2)h2.textContent=(S.m3lvl|0)<=800?'De tuin van Lindaroos':'Meester-tovenares';
+  document.querySelectorAll('.lokaal .scene,.lokaal .voortgang,.lokaal .lk-tel,.schooldag-voortgang,.schooldoelenlijst,#taakknop').forEach(e=>{try{e.remove()}catch(x){}});
+  const kop=document.querySelector('.lokaal .lk-kop');
+  if(kop&&!document.querySelector('.akte2-zin')){
+   kop.insertAdjacentHTML('afterend','<p class="akte2-zin">Het schooljaar is afgerond. In de tuin van Lindaroos wacht level '+(S.m3lvl||1)+'.</p>');
+  }
+  return result;
+ }
  const stage=schoolDag()||schoolDag(M3VAKKEN.length*SCHOOL_DAGEN_PER_VAK-1);
  const header=document.querySelector('.lokaal .lk-kop small');
  const info=document.createElement('p');

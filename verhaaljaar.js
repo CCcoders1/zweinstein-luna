@@ -297,7 +297,7 @@ const PLEK_KAART=[
   {soort:'album',naam:'Album',ga:'album',ico:'📖'},
   {soort:'feest',naam:'De Hal',ga:'home',ico:'🕯️'}
 ];
-function htmlPlekKaart(){
+window.htmlPlekKaart=function htmlPlekKaart(){
   const gevonden=(S.dagboek&&S.dagboek.plek)||{};
   const knoppen=PLEK_KAART.map(p=>{
     const scenes=PLEK.filter(x=>x[1]===p.soort);
@@ -307,9 +307,9 @@ function htmlPlekKaart(){
     const titel=gezien.length?gezien[gezien.length-1][2]:(open.length?'Hier is iets te zien.':'Hier gebeurt later iets.');
     return `<button type="button" class="plekpin ${st}" data-soort="${p.soort}" data-ga="${p.ga}" aria-label="${p.naam}. ${titel}"><span class="plekico">${p.ico}</span><b>${p.naam}</b>${gezien.length?`<i>${gezien.length}</i>`:''}</button>`;
   }).join('');
-  return `<section class="plekkaart" id="plekkaart"><small>Spoor van Kas Zeven</small><div class="plekrij">${knoppen}</div></section>`;
+  return `<section class="plekkaart" id="plekkaart"><small>${lv()>=600?'Spoor in de tuin van Lindaroos':'Spoor van Kas Zeven'}</small><div class="plekrij">${knoppen}</div></section>`;
 }
-function tikPlek(soort,gaNaar){
+window.tikPlek=function tikPlek(soort,gaNaar){
   const gevonden=(S.dagboek&&S.dagboek.plek)||{};
   const scenes=PLEK.filter(x=>x[1]===soort);
   const open=scenes.filter(x=>vrij(x[6]));

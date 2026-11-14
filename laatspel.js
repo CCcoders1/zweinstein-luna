@@ -747,3 +747,245 @@ window.winHaakZin=function(n){
     return _ga.apply(this,arguments);
   };
 })();
+
+/* v150: verantwoorde reeks 601–800 (Akte II). Bestaande generator crashte of gaf te weinig zetten. Geen economie. */
+(function(){
+  const PAT=['rand','kruis','midden','onder'];
+  const KP=['rij','hoeken'];
+  function plekVan(n){return ((n-1)%10)+1}
+  function rng(n){return (typeof rngVan==='function'?rngVan(n*7919+17):Math.random)}
+  function kleurCap(L){
+    const Z=(L.zetten|0)+(L.extra|0);
+    const cap=Math.max(12, Math.floor(Z*0.65));
+    (L.doelen||[]).forEach(d=>{if(typeof d[0]==='number'&&d[1]>cap)d[1]=cap});
+  }
+  function herbDrops(L,n){
+    try{
+      const ITEMS=window.M3ITEMS, DIEREN=window.M3DIEREN;
+      const it=(ITEMS&&ITEMS.herbologie)||[];
+      const dd=(DIEREN&&DIEREN.herbologie)||[];
+      if(L.kistSoort==='i'&&it.length)L.kistInh=[it[(n*7)%it.length][0],it[(n*7+1)%it.length][0]];
+      if(L.kistSoort==='d'&&dd.length)L.kistInh=[dd[n%dd.length][0]];
+      if(L.pot&&it.length)L.dropInh=[it[(n*3)%it.length][0],it[(n*3+2)%it.length][0]];
+    }catch(e){}
+  }
+  function bouwAkte2(n,L){
+    const plek=plekVan(n);
+    const adem=plek===1||plek===6;
+    const piek=plek===5||plek===10;
+    const zwaar=plek===10;
+    const r=rng(n);
+    const rnd=()=> (typeof r==='function'?r():Math.random());
+
+    L.plaag=null;
+    L.laat=null;
+    L.kistSoort=null;
+    L.kistInh=null;
+    L.dropInh=null;
+    L.zwaar=zwaar?2:piek?1:0;
+    L.kleuren=6;
+    L.onkruid=0;L.kist=0;L.pot=0;
+    L.doelen=[];
+
+    const kleurId=(n*3)%6;
+    if(adem){
+      L.zetten=26;
+      L.doelen.push([kleurId,16]);
+      L.onkruid='rand';L.doelen.push(['o'])
+    }else if(plek===2||plek===7){
+      const laat=['ijs','pak','sleutel'][(n*5+3)%3];
+      L.laat={soort:laat};
+      L.doelen.push([laat]);
+      L.doelen.push([kleurId, laat==='pak'?14:16]);
+      if(laat==='pak'){L.zetten=40;L.onkruid=0}
+      else if(laat==='ijs'){L.zetten=30;if(rnd()<.5){L.onkruid='rand';L.doelen.push(['o'])}}
+      else {L.zetten=24}
+    }else if(plek===3||plek===8){
+      L.zetten=26;
+      L.onkruid=PAT[n%PAT.length];
+      L.doelen.push([kleurId,18]);
+      L.doelen.push(['o']);
+    }else if(plek===4||plek===9){
+      L.zetten=26;
+      L.kist=['rij','hoeken','dubbel'][n%3];
+      L.doelen.push([kleurId,17]);
+      L.doelen.push(['k']);
+      if(rnd()<.45){L.kistSoort='i';L.doelen[L.doelen.length-1]=['i']}
+      else if(rnd()<.5){L.kistSoort='d';L.doelen[L.doelen.length-1]=['d']}
+    }else if(plek===5){
+      L.zetten=34;
+      L.onkruid=PAT[(n+1)%PAT.length];
+      L.doelen.push([kleurId,16]);
+      L.doelen.push(['o']);
+      if(rnd()<.6){L.pot=2;L.doelen.push(['p',2])}
+      else {L.kist='rij';L.doelen.push(['k'])}
+    }else{
+      L.zetten=32;
+      L.onkruid='kruis';
+      L.kist='hoeken';
+      L.doelen.push([kleurId,17]);
+      L.doelen.push(['o']);
+      L.doelen.push(['k']);
+    }
+    if((S.m3kal||{})[n])L.zetten+=(S.m3kal[n]|0);
+    kleurCap(L);
+    herbDrops(L,n);
+    return L;
+  }
+
+  const _lv=typeof m3Level==='function'?m3Level:null;
+  if(_lv) window.m3Level=m3Level=function(n){
+    let L;
+    try{L=_lv.apply(this,arguments)}catch(e){L={n:+n||1,zetten:32,kleuren:6,doelen:[[0,14]],onkruid:0,kist:0,pot:0,extra:+((S.m3extra||{})[n])||0}}
+    try{
+      n=+n||1;
+      if(n>=601){
+        if(!L||typeof L!=='object')L={n,extra:+((S.m3extra||{})[n])||0};
+        L.n=n;
+        if(L.extra==null)L.extra=+((S.m3extra||{})[n])||0;
+        bouwAkte2(n,L);
+      }
+    }catch(e){}
+    return L;
+  };
+
+  const _mv=typeof m3VakVoor==='function'?m3VakVoor:null;
+  if(_mv) window.m3VakVoor=m3VakVoor=function(n){
+    const v=_mv.apply(this,arguments);
+    try{
+      n=+n||1;
+      if(n>=601){
+        const basis=_mv(1)||v||{};
+        return Object.assign({},basis,{
+          id:'herbologie',
+          n:n<=800?'De tuin van Lindaroos':'Meester-tovenares',
+          prof:'Professor Stronk',
+          thema:'herbologie',
+          decor:basis.decor||'kas',
+          van:601
+        });
+      }
+    }catch(e){}
+    return v;
+  };
+})();
+
+
+/* v150: hal, kaart en preview na het schooljaar */
+(()=>{
+  const AKTE2=[
+    {id:'lindaroos1',n:'De tuin van Lindaroos',prof:'Professor Stronk',ls:'herbologie',van:601,tot:700},
+    {id:'lindaroos2',n:'Een zaad voor later',prof:'Professor Stronk',ls:'herbologie',van:701,tot:800}
+  ];
+  const jaarKlaar=()=>{const dagen=(typeof M3VAKKEN!=='undefined'&&typeof SCHOOL_DAGEN_PER_VAK==='number')?M3VAKKEN.length*SCHOOL_DAGEN_PER_VAK:30;return (S.schoolDag|0)>=dagen};
+
+  const _hv=typeof huidigVak==='function'?huidigVak:null;
+  if(_hv) window.huidigVak=huidigVak=function(){
+    if(jaarKlaar()){
+      const naam=(S.m3lvl|0)<=800?'De tuin van Lindaroos':'Meester-tovenares';
+      const v={id:'lindaroos',n:naam,lokaal:naam,prof:'Professor Stronk',thema:'herbologie',decor:'kas',img:'decor-kas',taken:[],intro:[['Tilly','Kas zeven is achter ons. De tuin van Lindaroos ligt open, Luna. Elke les is weer een nieuw bed.'],['Professor Stronk','Wees zuinig met de bladeren. Wat je hier zaait, groeit het hele jaar mee.']],outro:[]};
+      return{j:7,vs:[v],v};
+    }
+    return _hv.apply(this,arguments);
+  };
+
+  function tekenAkte2Pad(vid){
+    const hier=S.m3lvl||1;
+    const v=AKTE2.find(x=>x.id===vid)||AKTE2.find(x=>hier>=x.van&&hier<=x.tot)||(hier>800?AKTE2[1]:AKTE2[0]);
+    const kop=M3VAKKEN.map(x=>'<button class="pv af" data-v="'+x.id+'"><img src="img/laadschermen/'+x.ls+'-klein.webp" alt="" loading="lazy"><span>'+x.n+'</span><small>klaar</small></button>').join('')
+      +AKTE2.map(x=>{
+        const st=x===v?'actief':hier>x.tot?'af':hier>=x.van?'open':'dicht';
+        const klein=st==='af'?'klaar':st==='actief'?'nu':hier<x.van?'wacht':'';
+        return '<button class="pv '+st+'" data-akte="'+x.id+'"><img src="img/laadschermen/'+x.ls+'-klein.webp" alt="" loading="lazy"><span>'+x.n+'</span><small>'+klein+'</small></button>';
+      }).join('');
+    const inVak=hier>=v.van&&hier<=v.tot;
+    const van=inVak?Math.max(v.van,hier-5):v.van;
+    const tot=inVak?Math.min(v.tot,hier+19):Math.min(v.tot,v.van+19);
+    const niveaus=[];for(let L=van;L<=tot;L++)niveaus.push(L);
+    const mist=tot<v.tot;
+    const top=mist?128:52,rij=82,n=niveaus.length;
+    const pts=niveaus.map((L,i)=>{const vanOnder=n-1-i;return{L,x:50+Math.sin(vanOnder*.95)*22,y:top+vanOnder*rij}});
+    const H=top+Math.max(0,n-1)*rij+64;
+    const lijn='<svg class="padlijn" viewBox="0 0 100 '+H+'" preserveAspectRatio="none" aria-hidden="true"><path d="M'+pts.map(p=>p.x+' '+p.y).join(' L')+'" fill="none" stroke="#d4af37" stroke-width="1.8" stroke-dasharray="2 2.4" vector-effect="non-scaling-stroke"/></svg>';
+    const knoppen=pts.map(p=>{
+      const L=p.L,d=L-hier,st=L<hier?'af':L===hier?'nu':'vooruit';
+      const plaag=typeof padPlaag==='function'?padPlaag(L):null;
+      const cadeau=typeof padCadeau==='function'?padCadeau(L):null;
+      const zwaar=(!plaag&&typeof padZwaar==='function')?padZwaar(L):0;
+      const cls=[st,plaag?'plaag':'',cadeau?'cadeau':'',zwaar?(zwaar>1?'zwaar superzwaar':'zwaar'):'',L>=100?'lang':'','v'+Math.max(0,d)].filter(Boolean).join(' ');
+      return '<button class="padlvl '+cls+'" data-l="'+L+'" style="left:'+p.x+'%;top:'+p.y+'px'+(d>0?';--v:'+d:'')+'">'+L+(L===hier?'<span class="luna">L</span>':'')+'</button>';
+    }).join('');
+    const nevel=mist?'<div class="pad-nevel">'+(typeof padTeken==='function'?padTeken('cadeau','Er wacht iets','in de tuin'):'')+'</div>':'';
+    const lesNr=v.id==='lindaroos2'?8:7;
+    app('<div class="vakbalk">'+kop+'</div><div class="padkopbeeld" style="background-image:url(\'img/laadschermen/'+v.ls+'-klein.webp\')"><div><small>Akte II · Les '+lesNr+'</small><h2>'+v.n+'</h2><p>'+v.prof+'</p></div></div>'
+     +'<div class="pad thema thema-herbologie'+(mist?' met-nevel':'')+'" style="height:'+H+'px">'+lijn+knoppen+nevel+'</div>');
+    document.querySelectorAll('.pv[data-v]').forEach(b=>b.onclick=()=>{if(typeof _padOud==='function')_padOud.call(V,b.dataset.v)});
+    document.querySelectorAll('.pv[data-akte]').forEach(b=>b.onclick=()=>tekenAkte2Pad(b.dataset.akte));
+    document.querySelectorAll('.padlvl').forEach(b=>b.onclick=()=>{
+      const L=+b.dataset.l;
+      if(L<=hier)ga('match3',L);
+      else toast('Eerst het level ervoor spelen.');
+    });
+    try{
+      const oud=document.getElementById('plekkaart');if(oud)oud.remove();
+      if(typeof htmlPlekKaart==='function'){
+        document.body.insertAdjacentHTML('beforeend',htmlPlekKaart());
+        document.querySelectorAll('#plekkaart .plekpin').forEach(b=>{
+          b.onclick=()=>typeof tikPlek==='function'&&tikPlek(b.dataset.soort,b.dataset.ga);
+        });
+      }
+    }catch(e){}
+    setTimeout(()=>{
+      try{
+        const a=document.querySelector('.pv.actief');if(a)a.scrollIntoView({inline:'center',block:'nearest'});
+        const n=document.querySelector('.padlvl.nu');
+        if(n){
+          const nav=document.getElementById('nav');
+          const onder=nav?nav.getBoundingClientRect().height:0;
+          const r=n.getBoundingClientRect();
+          window.scrollTo(0,Math.max(0,window.scrollY+r.bottom-(window.innerHeight-onder-18)));
+        }
+      }catch(e){}
+    },typeof RMP!=='undefined'&&RMP?0:350);
+  }
+
+  const _padOud=typeof V!=='undefined'&&V.pad?V.pad:null;
+  if(_padOud) V.pad=function(vid,...a){
+    try{
+      if(jaarKlaar()&&(!vid||AKTE2.some(x=>x.id===vid)||vid==='verweer'||vid==='lindaroos')){
+        tekenAkte2Pad(vid);
+        return;
+      }
+    }catch(e){}
+    const r=_padOud.apply(this,arguments);
+    try{
+      if(jaarKlaar()){
+        const balk=document.querySelector('.vakbalk');
+        if(balk&&!balk.querySelector('[data-akte]')){
+          balk.insertAdjacentHTML('beforeend',AKTE2.map(x=>'<button class="pv '+( (S.m3lvl||1)>=x.van?'open':'dicht')+'" data-akte="'+x.id+'"><img src="img/laadschermen/'+x.ls+'-klein.webp" alt="" loading="lazy"><span>'+x.n+'</span><small>'+( (S.m3lvl||1)>x.tot?'klaar':(S.m3lvl||1)>=x.van?'nu':'wacht')+'</small></button>').join(''));
+          document.querySelectorAll('.pv[data-akte]').forEach(b=>b.onclick=()=>tekenAkte2Pad(b.dataset.akte));
+        }
+      }
+    }catch(e){}
+    return r;
+  };
+
+  const _m3=typeof V!=='undefined'&&V.match3?V.match3:null;
+  if(_m3) V.match3=async function(n,...a){
+    const r=await _m3.apply(this,arguments);
+    try{
+      n=n||S.m3lvl||1;
+      const vak=typeof m3VakVoor==='function'?m3VakVoor(n):null;
+      const el=document.querySelector('.m3vak');
+      if(el&&vak&&vak.n)el.textContent=vak.n;
+    }catch(e){}
+    return r;
+  };
+
+  const _vh=typeof verhaal==='function'?verhaal:null;
+  if(_vh) window.verhaal=verhaal=function(regels,klaar){
+    if(!regels||!regels.length){if(typeof klaar==='function')try{klaar()}catch(e){}return}
+    return _vh.apply(this,arguments);
+  };
+
+})();

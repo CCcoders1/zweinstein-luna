@@ -31,7 +31,7 @@ const LES_KOSTEN=false;
   L.zetten=Math.max(16,L.zetten-Math.min(4,vi)+((S.m3kal||{})[n]?0:0));
   const plek=((n-1)%10)+1, adem=plek===1||plek===6;
   if(vi>=2){if(adem)L.kleuren=Math.min(L.kleuren||7,6);else L.kleuren=7}
-  const pat=[null,['rand','kruis'],['onder','midden'],['dambord','vol'],['kruis','vol'],['dambord','vol','rand']][vi];const kp=[null,['rij'],['hoeken'],['rij','dubbel'],['dubbel'],['hoeken','dubbel']][vi];
+  const viP=Math.min(5,Math.max(0,vi));const pat=[null,['rand','kruis'],['onder','midden'],['dambord','vol'],['kruis','vol'],['dambord','vol','rand']][viP];const kp=[null,['rij'],['hoeken'],['rij','dubbel'],['dubbel'],['hoeken','dubbel']][viP];
   const heeft=t=>L.doelen.some(x=>x[0]==t);
   if(!heeft('o')&&r()<.35+vi*.08){L.onkruid=pat[r()*pat.length|0];L.doelen.push(['o'])}
   if(!heeft('k')&&vi>=1&&r()<.25+vi*.08){
