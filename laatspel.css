@@ -115,3 +115,38 @@ h1.pagkop,.pagkop{font-family:Cinzel,Georgia,serif;font-size:1.35em;letter-spaci
 
 .dagboek{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .dagboek .hfdkaart.boeknieuw::after{top:8px;right:10px}
+
+
+/* v144: NIEUW-randje onder de nav, spoor naar Kas Zeven, rustiger pop-ups */
+.dagboek{padding-bottom:calc(132px + env(safe-area-inset-bottom));scroll-margin-bottom:calc(120px + env(safe-area-inset-bottom))}
+.dagboek .hfdkaart{overflow:hidden;position:relative}
+.dagboek .hfdkaart.boeknieuw::after,
+.boekextra .hfdkaart.boeknieuw::after{content:none!important;display:none!important}
+.dagboek .hfdkaart summary{flex-wrap:nowrap}
+.dagboek .hfdkaart summary>div{flex:1;min-width:0}
+.nieuwmerk{
+  display:inline-block;flex:0 0 auto;margin-left:auto;padding:1px 7px;border-radius:8px;
+  background:#7a1d12;color:#f6e3a1;font-size:.62em;letter-spacing:.06em;
+  text-transform:uppercase;font-weight:700;line-height:1.5;white-space:nowrap;align-self:center
+}
+body[data-view=dagboek]::after{
+  content:"";position:fixed;left:0;right:0;
+  bottom:calc(70px + env(safe-area-inset-bottom,0px));
+  height:36px;pointer-events:none;z-index:8;
+  background:linear-gradient(to bottom,rgba(246,234,208,0),var(--perk,#f6ead0) 88%)
+}
+#kasspoor{margin:4px 0 8px;padding:7px 10px;background:linear-gradient(#fbf3e4,#f0e0c0);border:1px solid rgba(138,100,20,.4);border-radius:12px;color:var(--ink,#2a1c0c);box-shadow:none}
+#kasspoor h3{margin:0 0 .3em;font-family:Cinzel,Georgia,serif;font-size:1.02em;color:var(--wijn,#6b1d0e);letter-spacing:.03em}
+#kasspoor p{margin:.12em 0 0;line-height:1.35}
+.spoorbaan{height:8px;border-radius:8px;background:rgba(106,29,14,.14);overflow:hidden;border:1px solid rgba(138,100,20,.35);margin:0 0 .15em}
+.spoorbaan>span{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#c9a227,#ecb84a);min-width:0}
+
+/* pop-ups: zelfde koppen en ruimte boven de nav */
+.modal:not(.metwinbg){padding:12px 12px calc(24px + env(safe-area-inset-bottom,0px))}
+.modal:not(.metwinbg) .modalin{max-height:calc(100vh - 128px - env(safe-area-inset-bottom,0px))}
+.modalin h2, .modalin.rococo h2{
+  font-family:Cinzel,Georgia,serif;letter-spacing:.04em;color:var(--wijn,#6b1d0e);
+  -webkit-text-fill-color:var(--wijn,#6b1d0e)
+}
+.modalin .knop.volgende{min-height:44px}
+.dagboek h1.pagkop{text-align:center;margin:.2em 0 .15em}

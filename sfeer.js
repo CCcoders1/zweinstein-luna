@@ -33,14 +33,14 @@ V.dagboek=V.verhaal=function(){
     if(!hfdOpen(i))return `<div class="kaart hfdslot">🔒 ${i===0?'Proloog':('Schooldag '+i+': '+h[0])} opent als je verder speelt.</div>`;
     const nieuw=!S.dagboek.gezien[i];
     const wie=h[1],tekst=h[2],cliff=h[3],kop=i===0?'Proloog':('Schooldag '+i);
-    return `<details class="kaart hfdkaart ${nieuw?'boeknieuw':''}" ${i===openIdx[openIdx.length-1]?'open':''}><summary>${portVan(wie)}<div><b>${kop}: ${h[0]}</b><small> ${wie}</small></div></summary><p>${tekst}</p>${cliff?`<p class="cliff">${cliff}</p>`:''}</details>`;
+    return `<details class="kaart hfdkaart ${nieuw?'boeknieuw':''}" ${i===openIdx[openIdx.length-1]&&(typeof innerHeight==='undefined'||innerHeight>=820)?'open':''}><summary>${portVan(wie)}<div><b>${kop}: ${h[0]}</b><small> ${wie}</small></div>${nieuw?'<span class="nieuwmerk">Nieuw</span>':''}</summary><p>${tekst}</p>${cliff?`<p class="cliff">${cliff}</p>`:''}</details>`;
   }).join('');
   let oud='';
   try{
     if(typeof VERHAAL!=='undefined'&&S.opgelost&&Object.keys(S.opgelost).some(k=>/^verhaal/.test(k)))
       oud=`<details class="kaart"><summary><b>Eerder gelezen: de wekelijkse bladen</b></summary>${VERHAAL.map(h=>`<p><b>${h[0]}</b> — ${h[1]} <i>${h[2]}</i></p>`).join('')}</details>`;
   }catch(e){}
-  app(`<div class="dagboek"><p><button class="linkknop" onclick="ga('home')">← Terug naar de Hal</button></p><h2>📖 Luna’s dagboek</h2><p class="klein" style="text-align:center">Het Mysterie van Kas Zeven</p>${typeof tilly==='function'?tilly('Elke schooldag schrijven we een blad. Tik een hoofdstuk aan om het terug te lezen. De zevende kaars gaat aan als het geheim open is.'):''}<div class="kaarsrij">${rij}</div>${kaarten}${oud}</div>`);
+  app(`<div class="dagboek"><p><button class="linkknop" onclick="ga('home')">← Terug naar de Hal</button></p><h1 class="pagkop">📖 Luna’s dagboek</h1><p class="klein" style="text-align:center">Het Mysterie van Kas Zeven</p>${typeof tilly==='function'?tilly('Hier bewaar je het mysterie. Tik een hoofdstuk aan om het terug te lezen. De zevende kaars gaat aan als het geheim open is.'):''}<div class="kaarsrij">${rij}</div>${kaarten}${oud}</div>`);
 };
 
 function vakSfeer(){
