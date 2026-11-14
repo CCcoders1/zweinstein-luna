@@ -130,7 +130,7 @@ V.bonus=()=>{app(`<h2>Bonusspellen</h2>${tilly('Hier spelen we tussendoor. Niet 
 const BONUSID=new Set(BONUS.map(b=>b[0]));
 /* ---------- meer ---------- */
 V.meer=()=>{const T=[['groei','hoed','Ontwikkeling & badges'],['album','boek','Kaartenalbum'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Ochtendpost']];
- app(`<h2>Meer</h2><div class="raster">${T.map(t=>`<button class="tegel" onclick="ga('${t[0]}')"><span class="ico">${icoon(t[1])}</span><b>${t[2]}</b></button>`).join('')}</div>`)};
+ app(`<h1 class="pagkop" id="meerkop">Meer</h1><div class="raster">${T.map(t=>`<button class="tegel" onclick="ga('${t[0]}')"><span class="ico">${icoon(t[1])}</span><b>${t[2]}</b></button>`).join('')}</div>`)};
 /* ---------- navigatie (max 5) ---------- */
 def('menuVariant','B');const NAV=[['pad','kaart','Kaart'],['kas','bloem','Kassen'],['home','','Hal'],['boek','boek','Boek'],['meer','lijst','Meer']];
 nav=function(act){const m={match3:'home',lessen:'meer',les:'meer',bonus:'meer'};const a=BONUSID.has(act)?'home':(m[act]||act);$('#nav').className='menu'+S.menuVariant;$('#nav').innerHTML=NAV.map(t=>t[0]=='home'?`<button class="hal ${a=='home'?'actief':''}" aria-label="Hal" onclick="ga('home')"><span class="halknop">${wapen(46)}</span><span>Hal</span></button>`:`<button class="${t[0]==a?'actief':''}" aria-label="${t[2]}" onclick="ga('${t[0]}')"><i class="rond">${icoon(t[1])}</i><span>${t[2]}</span></button>`).join('')};

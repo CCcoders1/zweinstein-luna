@@ -93,7 +93,7 @@ let cache={vr:null,sc:[]};
 const vrLijst=()=>cache.vr||vr().fc||[];
 const gereed=()=>AAN&&(ST==='klaar'||ST==='offline'&&!!vr().code||ST==='onbekend'&&!!vr().code);
 const sterren=n=>'★'.repeat(n)+'☆'.repeat(Math.max(0,3-n));
-const kop=()=>`<div class="mgkop"><img class="mgkopimg vrkopimg" src="img/ui/nav-vrienden-96.webp" alt=""><div><h2 class="mgtitel">Vrienden</h2><p class="mguitleg">Speel samen met vrienden die het spel ook hebben.</p></div></div>`;
+const kop=()=>`<div class="mgkop"><img class="mgkopimg vrkopimg" src="img/ui/nav-vrienden-96.webp" alt=""><div><h1 class="mgtitel pagkop">Vrienden</h1><p class="mguitleg">Speel samen met vrienden die het spel ook hebben.</p></div></div>`;
 const resterend=k=>{const nu=new Date(),eind=new Date(nu);eind.setHours(24,0,0,0);if(k[0]=='w')eind.setDate(eind.getDate()+(6-((nu.getDay()+6)%7)));const u=Math.max(0,Math.round((eind-nu)/36e5));return u<24?`nog ${u} uur`:`nog ${Math.round(u/24)} dagen`};
 const uitnodig=(klein)=>`<section class="vruitnodig${klein?' klein':''}"><p>🦉 <b>Nodig je vrienden uit!</b><br>Stuur je vriendcode naar iemand die het spel ook speelt. Dan zie je hier hoe ver jullie zijn.</p><button class="knop volgende" data-naar="vr">Vriend uitnodigen</button></section>`;
 const medaille=(plek,heeft)=>heeft?(['🥇','🥈','🥉'][plek-1]||plek+'.'):'·';

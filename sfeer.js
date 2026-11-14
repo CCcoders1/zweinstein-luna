@@ -60,10 +60,12 @@ function alsookChip(el){
   let t=(el.textContent||'').replace(/\s+/g,' ').trim();
   t=t.replace(/^✨\s*/,'').replace(/^🍬\s*/,'');
   t=t.replace(/^Nieuwe les!\s*/i,'Les: ').replace(/^Bijzonder moment:\s*/i,'');
+  t=t.replace(/\s+bij Professor\s+.+$/i,'');
   t=t.replace(/^De Smekkies-bonuskamer is open!?/i,'Bonuskamer');
   t=t.replace(/^Spreuklessen/i,'Spreuken');
   if(t.length>42)t=t.slice(0,40)+'…';
-  if(el.tagName==='BUTTON'||el.classList.contains('knop'))el.textContent=t;
+  const kn=(el.tagName==='BUTTON'||el.classList.contains('knop'))?el:(el.querySelector('button,.knop,h3,b,small')||el);
+  kn.textContent=t;
   return wrap;
 }
 
@@ -87,10 +89,14 @@ function halOrde(){
     ['#nieuwles','#mpknop','#bkhal','#halspreuk','#hwkaart'].forEach(s=>{const el=app.querySelector(s);if(el)gevonden.push(el)});
     app.querySelectorAll('.nieuwles,.mpknop,.bkhal').forEach(el=>{if(!gevonden.includes(el))gevonden.push(el)});
     let ook=document.getElementById('ookvandaag');
+    if(!ook||!app.contains(ook)){
+      ook=document.createElement('section');ook.id='ookvandaag';ook.className='ookvandaag';ook.innerHTML='<small>Ook vandaag</small><div class="ookrij"></div>';
+      const groet0=app.querySelector('.groet');
+      if(groet0)groet0.after(ook);else app.insertBefore(ook,app.firstChild);
+    }
+    const rij=ook.querySelector('.ookrij');
     if(gevonden.length){
-      if(!ook){ook=document.createElement('section');ook.id='ookvandaag';ook.className='ookvandaag';ook.innerHTML='<small>Ook vandaag</small><div class="ookrij"></div>'}
-      const rij=ook.querySelector('.ookrij');
-      gevonden.forEach(el=>{const w=alsookChip(el);if(w&&w.parentNode!==rij)rij.appendChild(w)});
+      gevonden.forEach(el=>{alsookChip(el);const kn=(el.closest&&el.matches('button,.knop,.ookchip'))?el:(el.querySelector('button,.knop,.ookchip')||el);if(rij&&kn&&kn.parentNode!==rij)rij.appendChild(kn)});
     }
 
     const rg=document.getElementById('halvr');
@@ -111,16 +117,21 @@ function halOrde(){
       }
     }
 
-    if(!document.getElementById('boekknop')){
+    let boek=document.getElementById('boekknop');
+    if(!boek){
       const nieuw=hfdNieuw()>=0;
-      const b=document.createElement('div');b.className='boekstuk';
-      b.innerHTML='<button type="button" class="knop'+(nieuw?' boeknieuw':'')+'" id="boekknop">📖 Dagboek</button>';
-      const na=document.getElementById('volgendestap')||groet||app.firstChild;
-      if(na&&na.id==='boekknop'){}
-      else if(na)na.insertAdjacentElement('afterend',b);
-      else app.insertAdjacentElement('afterbegin',b);
-      const kn=document.getElementById('boekknop');if(kn)kn.onclick=()=>ga('dagboek');
+      boek=document.createElement('button');
+      boek.type='button';
+      boek.id='boekknop';
+      boek.className='knop ookchip'+(nieuw?' boeknieuw':'');
+      boek.textContent='📖 Dagboek';
+      boek.onclick=()=>ga('dagboek');
+    }else{
+      boek.classList.toggle('boeknieuw',hfdNieuw()>=0);
+      if(!boek.onclick)boek.onclick=()=>ga('dagboek');
     }
+    if(rij&&boek.parentNode!==rij){boek.classList.add('ookchip');rij.appendChild(boek)}
+    document.querySelectorAll('.boekstuk').forEach(w=>{if(!w.contains(boek))w.remove()});
 
     if(!app.querySelector('.groet')){
       const g=document.createElement('div');g.className='groet';
@@ -151,6 +162,12 @@ function halOrde(){
         const b=el.querySelector('b');if(b&&/Geluid/.test(b.textContent||''))b.textContent='Geluid en weergave';
       }
     });
+    const groetNu=app.querySelector('.groet');
+    if(groetNu&&typeof zwHalSfeer==='function'&&!groetNu.querySelector('.halsfeer')){
+      const p=document.createElement('p');p.className='halsfeer';p.textContent=zwHalSfeer();
+      groetNu.appendChild(p);
+    }
+
     const volgorde=['.groet','#halharten','#ookvandaag','#volgendestap','.lokaal','#halvr','#wmkaart','#hwkaart','#morgenkaart','.dagdoelen','.halspel'];
     let anker=null;
     volgorde.forEach(sel=>{
@@ -160,14 +177,13 @@ function halOrde(){
       else if(el.previousElementSibling!==anker){anker.after(el);anker=el}
       else anker=el;
     });
-    const boek=document.getElementById('boekknop');
-    const rij=document.querySelector('#ookvandaag .ookrij');
-    if(boek&&rij&&boek.parentNode!==rij){
-      boek.classList.add('ookchip');
-      rij.appendChild(boek);
-      const wrap=document.querySelector('.boekstuk');
-      if(wrap&&!wrap.contains(boek))wrap.remove();
+    const boekNu=document.getElementById('boekknop');
+    const rijNu=document.querySelector('#ookvandaag .ookrij');
+    if(boekNu&&rijNu&&boekNu.parentNode!==rijNu){
+      boekNu.classList.add('ookchip');
+      rijNu.appendChild(boekNu);
     }
+    document.querySelectorAll('.boekstuk').forEach(w=>{if(!w.querySelector('#boekknop'))w.remove()});
   }catch(e){console.warn(e)}
 }
 
@@ -198,7 +214,15 @@ function meerOrde(){
     });
     if(rest.length)bak.push({titel:'Nog meer',rx:null,els:rest});
     const vers=app.querySelector('.zwversie');
-    const kop=app.querySelector('h1,h2');
+    let kop=app.querySelector('#app h1, #app h2, h1, h2');
+    if(kop&&kop.tagName!=='H1'){
+      const h=document.createElement('h1');h.className='pagkop';h.id='meerkop';h.textContent=(kop.textContent||'Meer').trim()||'Meer';
+      kop.replaceWith(h);kop=h;
+    }else if(kop){kop.classList.add('pagkop');if(!kop.id)kop.id='meerkop'}
+    else{
+      kop=document.createElement('h1');kop.className='pagkop';kop.id='meerkop';kop.textContent='Meer';
+      app.insertBefore(kop,app.firstChild);
+    }
     bak.forEach(g=>{
       if(!g.els.length)return;
       const sec=document.createElement('section');

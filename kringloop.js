@@ -315,6 +315,7 @@ function kopOrde(){
       les.classList.add('ookchip');
       let tx=(les.textContent||'').replace(/\s+/g,' ').trim();
       tx=tx.replace(/^✨\s*/,'').replace(/^Nieuwe les!\s*/i,'Les: ');
+      tx=tx.replace(/\s+bij Professor\s+.+$/i,'');
       if(tx.length>42)tx=tx.slice(0,40)+'…';
       les.textContent=tx;
       let ook=document.getElementById('ookvandaag');

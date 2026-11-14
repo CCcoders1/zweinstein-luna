@@ -88,3 +88,30 @@ body.halstrak #halvr.rgkort{
   background:linear-gradient(rgba(250,238,210,.98),rgba(236,214,170,.98));
 }
 body.halstrak #halvr.rgkort .rgteaser{margin:2px 0 0;font-size:.88em;line-height:1.3}
+
+/* v143: rustiger Hal, dagboek in Ook vandaag, sfeerzin, vaste paginakoppen */
+body.halstrak .kleinrij,
+body.halstrak #app > .bronlink,
+body.halstrak .lokaal .tilly,
+body.halstrak .lokaal .lk-tel,
+body.halstrak .schooldag-voortgang,
+body.halstrak .schooldoelenlijst{display:none!important}
+.groet .halsfeer{margin:.15em 0 .35em;font:italic .88em/1.35 Georgia,serif;color:#5a3a14;max-width:34em}
+#boekknop.ookchip{position:relative}
+#boekknop.boeknieuw::after{right:4px;top:-7px}
+body.halstrak .ookvandaag{margin:0 10px 6px;padding:4px 8px 6px}
+body.halstrak .ookrij{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;scrollbar-width:none}
+body.halstrak .ookchip,
+body.halstrak .ookrij .knop,
+body.halstrak .ookrij button,
+body.halstrak #boekknop.ookchip{
+  flex:0 1 auto;min-width:auto;min-height:40px;max-width:100%;
+  padding:6px 8px!important;font-size:.8em!important;white-space:nowrap
+}
+.groet .halsfeer{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.kantlijnen .kantlijn{margin:.4em 0;padding-left:.2em;font:italic .95em/1.45 Georgia,serif;color:#3b2a14}
+h1.pagkop,.pagkop{font-family:Cinzel,Georgia,serif;font-size:1.35em;letter-spacing:.04em;color:var(--wijn,#6a1d12);margin:.35em 12px .4em}
+.mgkop .pagkop{margin:.1em 0 .2em}
+
+.dagboek{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+.dagboek .hfdkaart.boeknieuw::after{top:8px;right:10px}
