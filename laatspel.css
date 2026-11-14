@@ -150,3 +150,54 @@ body[data-view=dagboek]::after{
 }
 .modalin .knop.volgende{min-height:44px}
 .dagboek h1.pagkop{text-align:center;margin:.2em 0 .15em}
+
+
+/* v145: leesbare combo's, duidelijke doelen, lichte winstviering, zuiniger op middenklasse-telefoons */
+.m3combo,.m3combo.m3combo-mooi{
+  position:absolute;left:4%;right:4%;top:34%;
+  font-size:clamp(30px,10vw,46px)!important;font-weight:800;font-style:italic;
+  letter-spacing:.02em;line-height:1.05;text-align:center;
+  background:linear-gradient(#fffbe0 10%,#ffd84a 45%,#c07a08 60%,#ffe58a 85%);
+  -webkit-background-clip:text;background-clip:text;color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+  -webkit-text-stroke:1.15px #5a3404;
+  text-shadow:none;filter:drop-shadow(0 3px 0 #5a3404) drop-shadow(0 0 12px rgba(255,210,90,.75));
+  pointer-events:none;z-index:5
+}
+#m3doelzin{
+  position:fixed;left:50%;top:226px;z-index:8;margin:0;max-width:min(20em,90vw);
+  padding:4px 12px;border-radius:999px;
+  background:linear-gradient(#fff8dc,#efd27a);border:1.5px solid #c9a227;
+  color:#3a2410;font:700 .98em/1.25 Georgia,serif;text-align:center;
+  opacity:0;transform:translate(-50%,-6px) scale(.96);
+  transition:opacity .22s ease,transform .22s ease;pointer-events:none
+}
+#m3doelzin.zien{opacity:1;transform:translate(-50%,0)}
+body.m3aan #toast,
+body[data-view=match3] #toast{
+  opacity:0!important;pointer-events:none!important;visibility:hidden!important
+}
+.modal:has(.ochtendpost){
+  align-items:flex-start!important;
+  padding:calc(8px + env(safe-area-inset-top,0px)) 10px calc(128px + env(safe-area-inset-bottom,0px))!important
+}
+.ochtendpost{
+  max-height:calc(100dvh - 168px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+  overflow-y:auto;margin-bottom:0!important;
+  padding-bottom:8px;-webkit-overflow-scrolling:touch
+}
+.ochtendpost #claim{
+  position:sticky;bottom:0;z-index:2;width:100%;min-height:48px;margin:10px 0 0;
+  box-shadow:0 -10px 16px var(--perk,#f6ead0)
+}
+.m3kaart.m3klaar{animation:m3klaar .7s cubic-bezier(.3,1.5,.5,1)}
+@keyframes m3klaar{0%{transform:scale(1)}35%{transform:scale(1.2)}70%{transform:scale(.96)}100%{transform:scale(1)}}
+.m3kaart.m3laatst{box-shadow:0 0 0 3px #ffe08a,0 0 14px rgba(255,210,80,.75)}
+.m3eind .hp-sterren{display:inline-block;font-size:1.7em;letter-spacing:.08em;color:#e8c56a;
+  text-shadow:0 0 10px rgba(255,210,80,.7);animation:m3sterpop .55s cubic-bezier(.3,1.6,.5,1)}
+@keyframes m3sterpop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.m3eindscore{font-size:1.12em;text-align:center;margin:.15em 0 .3em}
+@media(prefers-reduced-motion:reduce){
+  .m3combo,.m3combo.m3combo-mooi,#m3doelzin,.m3kaart.m3klaar,.m3eind .hp-sterren{animation:none!important;transition:none!important;filter:none}
+  #m3doelzin.zien{opacity:1;transform:translate(-50%,0)}
+}
