@@ -366,7 +366,7 @@ function mooiWinst(n,b){
       if(/huisschild/i.test(p.textContent||'')&&!p.classList.contains('schildmoment'))p.style.display='none';
     });
   }
-  if(!eind.querySelector('.winhaak')){
+  if(!eind.querySelector('.winhaak')&&!eind.querySelector('.fgcadeau')){
     const zin=typeof verhaalMorgen==='function'?verhaalMorgen():'';
     const kas=typeof kasMorgen==='function'&&S.kweek&&Object.keys(S.kweek).length?kasMorgen():'';
     const tekst=(zin||'Wat een les.')+(kas?' '+kas:'');
@@ -379,6 +379,10 @@ function mooiWinst(n,b){
     [...eind.querySelectorAll(':scope > button, :scope > .knop, :scope > .linkknop')].forEach(b=>act.appendChild(b));
     if(act.children.length)eind.appendChild(act);
   }
+  const hook=eind.querySelector('.winhaak'), gift=eind.querySelector('.fgcadeau'), act=eind.querySelector('.m3actie');
+  if(hook&&act)act.before(hook);
+  if(gift&&act)act.before(gift);
+  if(hook&&gift)gift.before(hook);
 }
 const _w=typeof m3Winst==='function'?m3Winst:null;
 if(_w)window.m3Winst=m3Winst=function(n,b,...a){
@@ -462,7 +466,17 @@ if(_lvl136){
             else L.zetten=(L.zetten|0)+6;
           }
         }
-        const ZETPLUS={190:10,210:8,220:12,230:8,250:8,263:4,265:8,295:6};
+        const ZETPLUS={190:10,210:8,220:12,230:8,250:8,263:4,265:8,295:6,321:12,466:16,520:10};
+        if(n>=301){
+          const Z=(L.zetten|0)+(L.extra|0), cap=Math.max(18,Z*9/10|0);
+          (L.doelen||[]).forEach(d=>{if(typeof d[0]==='number'&&d[1]>cap)d[1]=cap});
+          const obst=['o','k','p','i','d'].filter(x=>(L.doelen||[]).some(d=>d[0]===x));
+          if((L.pot|0)>=3&&obst.some(x=>x!=='p')){L.pot=2;(L.doelen||[]).forEach(d=>{if(d[0]==='p')d[1]=2})}
+          if((L.kleuren|0)>=7&&obst.length){
+            if(plek===5||plek===10)L.zetten=(L.zetten|0)+8;
+            else L.kleuren=6;
+          }
+        }
         if(ZETPLUS[n])L.zetten=(L.zetten|0)+ZETPLUS[n];
       }
     }catch(e){}

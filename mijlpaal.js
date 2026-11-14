@@ -68,7 +68,7 @@ const heeftKaart=()=>Object.keys(S.kaarten||{}).length>0;
 function dimMeer(){const q=s=>document.querySelector(s);
  if(!open('drank'))zwDicht(q('#meerkt'),VL(MPK.drank[1]+1),'De ketel komt vrij vanaf level '+(MPK.drank[1]+1)+'.');
  if(!lesOpen())zwDicht(q('#meerspreuk'),VL(lesVan()),'Professor Banning geeft je eerste les vanaf level '+lesVan()+'.');
- if(!moestuinOpen())zwDicht(q('#meermt'),'Als de pompoenmeter vol is','Maak pompoen-combi’s in de levels. Als de pompoenmeter bovenin vol is, mag je naar Hagrids moestuin.');
+ if(!moestuinOpen())zwDicht(q('#meermt'),'Als de pompoenmeter vol is','Hagrids moestuin is er het hele jaar. Elke pompoen-combi telt, ook als je een level opnieuw speelt. Is de meter vol, dan mag je drie pompoenen openen.');
  if(!heeftKaart())zwDicht(q('#app [onclick="ga(\'album\')"]'),VL(10),'Je eerste tovenaarskaart krijg je bij level 10.')}
 const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{dimMeer()}catch(e){console.warn(e)}return r};
 const _home2=V.home;V.home=(...a)=>{const r=_home2(...a);try{if(!lesOpen())document.querySelectorAll('#app [onclick="ga(\'spreuken\')"]').forEach(b=>zwDicht(b,VL(lesVan()),'Professor Banning geeft je eerste les vanaf level '+lesVan()+'.'))}catch(e){}return r};

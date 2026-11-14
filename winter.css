@@ -1,0 +1,74 @@
+/* Wintermagie — sneeuw, teaser en feestdagen. Geen tijdsdruk. */
+body.winter #tint{background:linear-gradient(180deg,rgba(180,210,235,.18),rgba(230,240,250,.06) 40%,transparent)}
+#wmdecor{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+#wmdecor i{position:absolute;top:-8px;left:var(--x);width:6px;height:6px;border-radius:50%;
+  background:radial-gradient(circle,#fff 0%,rgba(210,230,250,.2) 70%,transparent 71%);
+  animation:wmvallen 9s linear infinite;animation-delay:var(--d);opacity:.7}
+#wmdecor i:nth-child(3n){width:4px;height:4px;opacity:.45}
+#wmdecor i:nth-child(5n){width:8px;height:8px}
+@keyframes wmvallen{to{transform:translate3d(-24px,110vh,0)}}
+@media (prefers-reduced-motion:reduce){#wmdecor{display:none}}
+
+.wmkaart{margin:10px 0 8px;padding:12px 14px 11px;cursor:pointer;background:linear-gradient(180deg,#f4f8fd,#e8f0f8);border:1px solid rgba(90,130,170,.25)}
+.wmkaart.wmteaser{background:linear-gradient(180deg,#f7f4ee,#eef4fa)}
+.wmk-kop{display:flex;align-items:center;gap:10px}
+.wmk-kop h3{margin:0;font-size:1.05em;color:#1e3348}
+.wmk-kop small{display:block;color:#4a6278}
+.wmk-tel{margin-left:auto;display:flex;align-items:center;gap:4px;font-weight:700;color:#1e3348}
+.wmvlok{width:22px;height:22px;flex:none;filter:drop-shadow(0 1px 0 #fff)}
+.wmk-balk{height:6px;border-radius:99px;background:rgba(80,120,160,.15);margin:8px 0 6px;overflow:hidden}
+.wmk-balk i{display:block;height:100%;background:linear-gradient(90deg,#9fd0f0,#e8f6ff);border-radius:99px}
+.wmk-volg{margin:0;font-size:.9em;color:#355066}
+.wmk-klaar{color:#1a4a6e}
+.wmk-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.wmk-tags span{background:#fff;border:1px solid rgba(90,130,170,.25);border-radius:99px;padding:2px 8px;font-size:.8em;color:#1e3348}
+.wmkaart.wmfk{background:linear-gradient(180deg,#fff8ee,#f0efe8)}
+.wmkaart.wmsfk{background:linear-gradient(180deg,#fff5e8,#f6eee0)}
+
+.wmscherm{padding-bottom:24px}
+.wmkop{padding:8px 2px 12px}
+.wmkop-t small{letter-spacing:.04em;text-transform:uppercase;color:#4a6278;font-size:.78em}
+.wmkop-t h1{margin:.1em 0 .2em}
+.wmchip{display:flex;align-items:center;gap:4px;margin-left:6px;font-weight:700;color:#1e3348}
+.wmchip .wmvlok{width:16px;height:16px}
+.wmfm h2{margin-top:0}
+.wmtrofee{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px;background:#eef4fa;border-radius:10px}
+.wmtrofee .wmvlok{width:28px;height:28px}
+.feestarchief{margin-top:14px}
+
+/* Halloween-archief: geen dode Hal-kaart buiten het seizoen */
+body:not(.hw) #hwkaart.hwteaser{display:none}
+
+/* Lichtere drankchips op perkament */
+#m3voor .drankkeuze .drankchip,
+.drankkeuze .drankchip{
+  background:linear-gradient(180deg,#fffdf6,#f3ead4)!important;
+  color:#2a2014!important;
+  border:1px solid rgba(90,60,20,.28)!important;
+  box-shadow:0 1px 0 #fff inset,0 2px 6px rgba(40,24,8,.08)!important;
+}
+.drankkeuze .drankchip b,.drankkeuze .drankchip strong{color:#2a2014}
+.drankkeuze .drankchip small{color:#5a4a32}
+.drankkeuze .drankchip.aan,
+.drankkeuze .drankchip[aria-pressed="true"]{
+  background:linear-gradient(180deg,#fff4cc,#f0d48a)!important;
+  border-color:#a07820!important;
+}
+
+/* Winst + Fred & George: compact, knoppen blijven in beeld */
+.m3eind{display:flex;flex-direction:column;max-height:min(86vh,720px)}
+.m3eind .fgcadeau{display:flex;align-items:center;gap:8px;text-align:left;padding:6px 8px!important;margin:4px 0 2px!important;max-height:none}
+.m3eind .fgcadeau .fgcico{transform:scale(.42)!important;transform-origin:left center;flex:0 0 40px;margin:-18px 0!important;height:40px;overflow:hidden}
+.m3eind .fgcadeau p{margin:0;font-size:.86em;line-height:1.3}
+.m3eind .fgcadeau .fgmeter{height:5px;margin:3px 0 0}
+.m3eind .winhaak{margin:4px 0;font-size:.92em;max-height:3.6em;overflow:hidden}
+.m3eind .m3actie{position:sticky;bottom:0;margin-top:6px;padding-top:6px;background:linear-gradient(#fff0,var(--perkament,#f6edd8) 30%);z-index:2}
+.wmscherm .kaart,.wmscherm .hwblok{
+  background:linear-gradient(180deg,#f7f4ee,#eef3f8)!important;
+  color:#2a2014!important;
+  border:1px solid rgba(90,60,20,.18);
+}
+.wmscherm .hwblok h3,.wmscherm .hwstand b,.wmscherm .hwp-t{color:#1e3348}
+.wmscherm .klein,.wmscherm .hwp-s{color:#4a6278}
+.wmkop-t small,.wmkop-t h1,.wmkop-t p{color:#f6edd8;text-shadow:0 1px 10px rgba(0,0,0,.65)}
+.wmscherm .hwpad li{background:rgba(255,255,255,.7);border-radius:8px;padding:6px 8px;margin:4px 0}

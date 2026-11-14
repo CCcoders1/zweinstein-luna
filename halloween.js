@@ -4,7 +4,7 @@
    Testen: makerscherm (logo 3x, 9¾) → datum voor Halloween (localStorage zw_hwdatum, niet in de save). */
 (function(){
 const pad=n=>String(n).padStart(2,'0');
-const hwNu=()=>{const o=localStorage.getItem('zw_hwdatum');const n=new Date();if(o&&/^\d{4}-\d\d-\d\d$/.test(o)){const[y,m,d]=o.split('-').map(Number);return new Date(y,m-1,d,n.getHours(),n.getMinutes())}return n};
+const hwNu=()=>{if(typeof zwNu==='function')return zwNu();const o=localStorage.getItem('zw_testdatum')||localStorage.getItem('zw_hwdatum');const n=new Date();if(o&&/^\d{4}-\d\d-\d\d$/.test(o)){const[y,m,d]=o.split('-').map(Number);return new Date(y,m-1,d,n.getHours(),n.getMinutes())}return n};
 const dagVan=(d,i)=>new Date(d.getFullYear(),9,24+i);
 const stand=()=>{const d=hwNu();const i=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-dagVan(d,0))/864e5);return {d,i,j:d.getFullYear(),aan:i>=0&&i<=8,feest:i===7,voor:i<0&&i>=-2?-i:0,na:i>8}};
 window.hwStand=stand;
@@ -115,7 +115,7 @@ const naEvent=()=>{const st=stand();if(st.aan||!S.hw||S.hw.j!==st.j||!st.na)retu
 const claim=()=>{const h=H();if(!open())return;const s=STAP[h.stap];const t=s.g();h.stap++;bewaar();try{stats()}catch(e){}
  const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo hwfm hwopen"><div class="hwopen-ico">${s.ico=='🏆'?'<img src="img/hw/trofee-256.webp" alt="Gouden Pompoen">':s.ico=='🃏'?'<img src="img/kaarten/haast-onthoofde-henk.webp" alt="">':`<span>${s.ico}</span>`}</div><h2>${s.t}</h2><p>${t}</p><button class="knop volgende">Mooi!</button></div>`;
  document.body.appendChild(o);try{fx.speel(s.ico=='🏆'?'fanfare':'tover');vib([30,30,60])}catch(e){}o.querySelector('button').onclick=()=>{o.remove();V.halloween()}};
-V.halloween=()=>{const st=stand(),h=H();if(!st.aan&&!st.na)return V.home();
+V.halloween=()=>{const st=stand(),h=H();if(!st.aan&&!st.na&&!(S.hw&&(S.hw.tot|S.hw.stap)))return V.home();
  const rn=raadNu();
  app(`<div class="hwscherm"><div class="hwkop"><img src="img/hw/zaal-klein.webp" alt=""><div class="hwkop-t"><small>Halloweenweek in Zweinstein</small><h1>Henks sterfdagfeest</h1><p>${st.aan?(st.feest?'Vandaag is het feest! Alle snoepjes tellen dubbel.':dagenTxt(st)+' · feest op za 31 okt'):'De week is voorbij. Tot volgend jaar!'}</p></div></div>
  ${st.feest?`<section class="kaart hwblok hwfeestblok"><h3>🍽️ Feest in de Grote Zaal</h3>${h.feest?'<p>Je hebt aangeschoven bij het feestmaal. Wat een avond!</p>':'<p>Het feestmaal staat klaar.</p><button class="knop volgende" onclick="hwFeest()">Aan tafel!</button>'}</section>`:''}

@@ -230,3 +230,48 @@ body:has(.m3eind) #gids, body:has(.modal) #gids.zien{display:none!important}
 .m3eind .m3actie{position:relative!important;background:transparent!important}
 .m3eind .winhaak{margin-bottom:8px;max-height:4.6em;overflow:hidden}
 .m3eind .winhaak .tzin,.m3eind .winhaak p{font-size:.95em;line-height:1.35}
+
+/* Monogram-portretten (Stronk, Sinistra, Lindaroos, …) */
+.pportret.pmono{width:64px;height:76px;border-radius:8px;box-shadow:0 2px 0 #c9b48a,0 6px 14px rgba(40,24,8,.18);background:#1c140c}
+.pportret.pmono.mini,.pportret.pmono.vh-port{width:44px;height:52px}
+.vrkaart .pportret.pmono{width:72px;height:86px}
+
+/* Speciale-steen-combinaties */
+.m3combo.m3combo-mooi{font-size:1.35em;letter-spacing:.02em;text-shadow:0 0 12px #fff6c0,0 2px 0 #7a5a10,0 8px 18px rgba(80,40,0,.35);color:#fff8dc}
+
+/* v137: lichtere drankchips winnen van kringloop.css */
+#m3voor .drankkeuze .drankchip,
+.drankkeuze .drankchip{
+  background:linear-gradient(180deg,#fffdf6,#f3ead4)!important;
+  color:#2a2014!important;
+  border:1px solid rgba(90,60,20,.28)!important;
+  box-shadow:0 1px 0 #fff inset,0 2px 6px rgba(40,24,8,.08)!important;
+}
+.drankkeuze .drankchip small{color:#5a4a32!important;opacity:1}
+.drankkeuze .drankchip.aan,
+.drankkeuze .drankchip[aria-pressed="true"]{
+  background:linear-gradient(180deg,#fff4cc,#f0d48a)!important;
+  border-color:#a07820!important;
+}
+
+/* v137: winst + Fred&George compact, knoppen in beeld */
+.m3eind,.m3eind.has-winsterr{display:flex;flex-direction:column;max-height:min(84vh,700px);overflow:auto}
+.m3eind .fgcadeau{display:flex;align-items:center;gap:8px;text-align:left;padding:6px 8px!important;margin:4px 0 2px!important}
+.m3eind .fgcadeau .fgcico{transform:none!important;flex:0 0 48px;width:48px;height:48px;overflow:hidden;margin:0!important;display:flex;align-items:center;justify-content:center}
+.m3eind .fgcadeau p{margin:0!important;font-size:.86em!important;line-height:1.3}
+.m3eind .fgcadeau small{display:block;font-size:.75em;opacity:.8}
+.m3eind .fgcadeau .fgmeter{height:5px;margin:3px 0 0}
+.m3eind .winhaak{margin:4px 0 6px!important;font-size:.9em!important;max-height:3.4em!important;overflow:hidden}
+.m3eind .m3actie{position:sticky!important;bottom:0;z-index:4;margin-top:auto;padding:8px 0 2px!important;background:linear-gradient(180deg,transparent,var(--perkament,#f3e6c4) 28%)!important}
+
+.m3eind .fgcadeau .fgcico img{width:44px;height:44px;object-fit:contain}
+
+.pportret.pmono{width:72px;height:72px;border-radius:50%!important;box-shadow:0 2px 0 #c9b48a,0 6px 14px rgba(40,24,8,.18);background:#1c140c;flex:0 0 72px}
+.pportret.pmono.mini,.pportret.pmono.vh-port{width:44px;height:44px;flex-basis:44px}
+.vrkaart .pportret.pmono{width:84px;height:84px;flex:0 0 84px}
+.wmkaart.wmteaser{padding:8px 12px!important;margin:6px 0 4px!important}
+.m3eind:has(.fgcadeau) .winhaak{max-height:3.1em!important;margin:2px 0 4px!important}
+.m3eind:has(.fgcadeau) .winhaak .pportret,.m3eind:has(.fgcadeau) .winhaak img{width:36px!important;height:36px!important}
+.m3eind:has(.fgcadeau) .fgcadeau{max-height:58px;overflow:hidden;padding:4px 8px!important;margin:2px 0 4px!important}
+.m3eind:has(.fgcadeau) .fgcadeau small,.m3eind:has(.fgcadeau) .fgmeter{display:none}
+.m3eind:has(.fgcadeau) .m3actie .knop{margin:3px 0!important}

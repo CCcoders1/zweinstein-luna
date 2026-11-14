@@ -131,6 +131,15 @@ class Bord{
      for(let d=-1;d<=1;d++){for(let c=0;c<KOL;c++)extra.add([b[0]+d,c]+'');for(let r=0;r<RIJEN;r++)extra.add([r,b[1]+d]+'')}}
     else if(ta.s.match(/r[hv]/)&&tb.s.match(/r[hv]/)){ta.s='rh';tb.s='rv'}else if(ta.s=='bom'&&tb.s=='bom'){ta.s='bom2';tb.s='bom2'}}}
   if(effect=='los'){if(ta.s)extra.add(b+'');if(tb.s)extra.add(a+'')}
+  if(!this.sim){const A=ta.s||'',B=tb.s||'',ss=A+B;let txt=null;
+    if(A=='bal'&&B=='bal')txt='Dubbele Snaai!';
+    else if(effect=='bal'||A=='bal'||B=='bal')txt='Gouden Snaai!';
+    else if(A=='bom'&&B=='bom')txt='Dubbele ketel!';
+    else if(ss.includes('bom')&&/r[hv]/.test(ss))txt='Ketel + streep!';
+    else if(/r[hv]/.test(A)&&/r[hv]/.test(B))txt='Kruisraket!';
+    else if(effect=='nieuwcombi')txt='Grote ster!';
+    else if(effect=='combi')txt='Combinatie!';
+    if(txt)this.fx.push({t:'combitxt',r:b[0],c:b[1],txt})}
   await this.oplossen(a,b,extra,hooks);return true}
  async oplossen(a,b,extra,hooks){
   let eerste=true;
@@ -229,7 +238,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
   const el=ico.cloneNode(true);el.classList.add('m3vlieg');const z=cel*.9,x0=cr.left+(c+.5)*cel-z/2,y0=cr.top+(r+.5)*cel-z/2,x1=kr.left+kr.width/2-z/2,y1=kr.top+kr.height/2-z/2;el.style.cssText=`left:${x0}px;top:${y0}px;width:${z}px;height:${z}px`;document.body.appendChild(el);vliegers++;setTimeout(()=>{if(el.isConnected){el.remove();vliegers=Math.max(0,vliegers-1)}},1400);
   const dx=x1-x0,dy=y1-y0,sc=kr.width/z;el.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${dx*.35-30}px,${dy*.35-40}px) scale(1.25) rotate(-12deg)`,opacity:1,offset:.35},{transform:`translate(${dx}px,${dy}px) scale(${sc})`,opacity:.9}],{duration:620+Math.random()*220,easing:'cubic-bezier(.45,0,.25,1)',fill:'forwards'}).onfinish=()=>{if(!el.isConnected)return;el.remove();vliegers--;kaart.classList.remove('bump');void kaart.offsetWidth;kaart.classList.add('bump');try{fx.speel('klik')}catch(e){}}};
  const stofW=(x,y,kl,n)=>{if(deeltjes.length>260)n=Math.min(n,2);for(let i=0;i<n;i++){const a=Math.random()*6.283,v=.6+Math.random()*2.6;deeltjes.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-.8,l:1,k:i%3?kl:'#fff6d0',r:2+Math.random()*3.2,st:1})}};
- const combo=txt=>{const f=$('#m3fx');if(!f||RMP)return;f.querySelectorAll('.m3combo').forEach(x=>x.remove());const d=document.createElement('div');d.className='m3combo';d.textContent=txt;f.appendChild(d);setTimeout(()=>d.remove(),1400)};
+ const combo=txt=>{const f=$('#m3fx');if(!f||RMP)return;f.querySelectorAll('.m3combo').forEach(x=>x.remove());const d=document.createElement('div');d.className='m3combo m3combo-mooi';d.textContent=txt;f.appendChild(d);setTimeout(()=>d.remove(),1700)};
  const gloed=a=>{const f=$('#m3fx');if(!f||RMP)return;const g=document.createElement('div');g.className='m3gloed';g.style.setProperty('--a',a);f.appendChild(g);setTimeout(()=>g.remove(),800)};
  const C=(r,c)=>[(c+.5)*cel,(r+.5)*cel];
  const toonFx=()=>{let groot=0;const poef=[];b.fx.splice(0).forEach(f=>{const[px,py]=C(f.r,f.c);if(f.t=='strik'||f.t=='strikgroei'){const kleur=b.L&&b.L.plaag&&b.L.plaag.soort==='damp'?'#7ddea0':'#c084fc';for(let i=0;i<(RMP?2:7);i++)deeltjes.push({x:px,y:py,vx:(Math.random()-.5)*3,vy:-1-Math.random()*2,l:1,k:kleur,r:2.5,sq:1});return}if((f.t=='pu'||f.t=='schat'||f.t=='tik')&&window.m3PuFx){const cr=cv.getBoundingClientRect();m3PuFx(f,cr.left+(f.c+.5)*cel,cr.top+(f.r+.5)*cel,cel);if(f.t=='tik'){schud=Math.max(schud,2);try{krak(0)}catch(e){}}if(f.t=='schat'){schud=Math.max(schud,4);stofW(px,py,'#fff6d0',RMP?2:14)}return}if(f.t=='pof')poef.push([px,py,T.t[f.k]?T.t[f.k][1]:'#fff']);
@@ -244,7 +253,8 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
   if(f.t=='bal'){fxs.push({t:'snaai',x:px,y:py,doel:(f.doel||[]).map(([r,c])=>C(r,c)),l:0});groot+=2;gloed(.28);vib([20,30,20,30,20])}
   if(f.t=='straal')schud=6;
   if(f.t=='pot'){if(L.dropInh&&window.m3VliegItem){const i=b.doel.findIndex(d=>d.t==='p'),kaart=$('#m3d')&&$('#m3d').children[i],cr=cv.getBoundingClientRect();const d=m3Ding(L.dropInh[0]);toast((d?d.naam:'Item')+' verzameld!');m3VliegItem(L.dropInh[0],cr.left+(f.c+.5)*cel,cr.top+(f.r+.5)*cel,kaart&&kaart.querySelector('.m3ico'),0)}else{toast(T.pot+' verzameld!');vlieg('p',f.r,f.c)}fx.speel('munt')}
-  if(f.t=='nieuw'){fx.speel('goed');vib(30);fxs.push({t:'zwiep',x:px,y:py,s:f.s,run:(f.cel||[]).map(([r,c])=>C(r,c)),l:0});if(f.s=='bal')combo('Magisch!')}});
+  if(f.t=='nieuw'){fx.speel('goed');vib(30);fxs.push({t:'zwiep',x:px,y:py,s:f.s,run:(f.cel||[]).map(([r,c])=>C(r,c)),l:0});if(f.s=='bal')combo('Magisch!')}
+  if(f.t=='combitxt'){combo(f.txt);gloed(.45);schud=Math.max(schud,8);for(let i=0;i<(RMP?2:16);i++)deeltjes.push({x:px,y:py,vx:(Math.random()-.5)*5,vy:-1-Math.random()*4,l:1.2,k:i%2?'#ffe08a':'#c5f0ff',r:2+Math.random()*3,st:1})}});
   if(groot>=2)combo('Betoverend!');
   if(poef.length>=5){const cx=poef.reduce((a,p)=>a+p[0],0)/poef.length,cy=poef.reduce((a,p)=>a+p[1],0)/poef.length;fxs.push({t:'zwiep',x:cx,y:cy,run:poef.map(p=>[p[0],p[1]]),l:0,slow:1});slowTot=performance.now()+(RMP?0:750);poef.forEach(p=>{stofW(p[0],p[1],'#c58aff',RMP?1:5);stofW(p[0],p[1],'#ffd84a',RMP?0:3)});combo(poef.length>=8?'Fenomenaal!':'Toverpoeder!');const cr=cv.getBoundingClientRect();try{ampulLaad(poef.map(p=>[cr.left+p[0],cr.top+p[1]]))}catch(e){}}};
  const staf=()=>KU.speciaal('staf',Math.round(cel*2));
