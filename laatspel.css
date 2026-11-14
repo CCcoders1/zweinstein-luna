@@ -352,3 +352,13 @@ body.akte2-kas .kasdecor .kd-rank{opacity:1;filter:saturate(1.2)}
 }
 .boekextra .hfdkaart p{color:#f3e6c8;line-height:1.45}
 
+
+/* v152: ontdekkingen in de huiskamer, albumserie Tuin van Lindaroos */
+.hkvondst{position:absolute;z-index:3;min-width:44px;min-height:44px;padding:4px 6px;border:0;border-radius:12px;background:rgba(255,248,220,.92);color:#3a2410;box-shadow:0 0 0 2px rgba(212,175,55,.65),0 4px 10px rgba(0,0,0,.35);font-size:1.2em;line-height:1;cursor:pointer}
+.hkvondst.gevonden{background:rgba(255,248,220,.7);box-shadow:0 0 0 1px rgba(212,175,55,.4);opacity:.88}
+.hkvondst small{display:block;font-size:.62em;letter-spacing:.02em;max-width:5.5em;white-space:normal;line-height:1.15;margin-top:2px}
+.hkvlijst{margin:8px 0 0;padding:0;list-style:none}
+.hkvlijst li{margin:0 0 6px;padding:8px 10px;border-radius:10px;background:rgba(42,28,12,.06)}
+.hkvlijst li.heb{background:rgba(80,110,40,.12)}
+.aserie.tuinserie .aserkop small{display:block;margin-top:2px}
+.aserie.tuinserie .tuinnoot{margin:.2em 12px .6em;font-size:.88em;color:#3a2410;opacity:.9}

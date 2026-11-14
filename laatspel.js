@@ -1139,3 +1139,246 @@ window.winHaakZin=function(n){
     return r;
   };
 })();
+
+/* v152: Akte II verdiepen — subplot Lindaroos/Stronk, albumserie zonder zaad/schilden, ontdekkingen in de huiskamer. Geen economie. */
+(function(){
+  const SERIE='Tuin van Lindaroos';
+  const TITELZIN='Tuinverzorgster van Lindaroos';
+  const KAARTEN_TUIN=[
+    ['Het pad dat wachtte','Z','De aarde was warm en de paden lagen al klaar, alsof iemand ons al jaren verwachtte.','img/laadschermen/herbologie.webp',SERIE,1,610],
+    ['Het naamloze zakje','Z','Linnen, bleek van ouderdom, en erin iets dat bijna niets woog. Alleen met twee handen.','img/kas/potje2.webp',SERIE,1,630],
+    ['De tuinkalender van 1947','Z','Lente, zomer, herfst, winter — en de laatste regel leeg. Ruimte voor wie na hem kwam.','img/kas/stronk-bord.webp',SERIE,1,650],
+    ['De kruk bij het portret','Z','Stronk ging zitten, keek, en zei alleen dat hij goed werk had nagelaten. Toen veegde hij aarde van zijn knie.','img/huiskamer/hoek.webp',SERIE,1,700],
+    ['Lentegeur','Z','De eerste rij geurde naar lenteregen, midden in de kas. We gingen niet verder dan die rij.','img/kas/affodil-3.webp',SERIE,1,750],
+    ['Een zaad voor later','L','Sommige tuinen haasten zich niet. Bewaar een zaadje voor de jaren die nog komen.','img/kas/eigoud-4.webp',SERIE,1,800]
+  ];
+  const SUB_TUIN=[
+    {id:'lindaroos',naam:'Bartholomeus Lindaroos',kop:'De tuinman en zijn jaar',stappen:[
+      {level:600,tekst:'Hij boog in zijn lijst, in zijn tuin. Niet als een held, als iemand die eindelijk weer thuis is en het werk nog niet af vond.'},
+      {level:670,tekst:'We zetten een kruk voor zijn portret. Hij glimlachte kleiner dan bij het openen. Alsof dit gewoner was, en daardoor mooier.'},
+      {level:710,tekst:'Drie eersteklassers fluisterden goeiemorgen tegen hem. Hij knikte één keer, heel beleefd. De paden werden groener waar ze niet eens hadden gelopen.'},
+      {level:790,tekst:'De poort staat op een kier. Niet op slot, niet wijd open. Hij zei dat dit van de school is, zolang iemand haar kent.'},
+      {level:800,tekst:'Bewaar een zaadje voor later, zei hij. Sommige tuinen haasten zich niet. En de zevende kaars mag blijven branden.'}
+    ]},
+    {id:'stronk',naam:'Professor Stronk',kop:'Stronk blijft even staan',stappen:[
+      {level:600,tekst:'Hij zei bijna niets toen de deur openging. Hij veegde zijn handen af aan zijn jas, en dat was voor Stronk een toespraak.'},
+      {level:630,tekst:'Hij pakte een gieter, Tilly de andere. Toen het zaad beide handen voelde, ging de schil open. Eén groen oog, heel klein. Hij knikte.'},
+      {level:670,tekst:'Hij ging op de kruk zitten en zei alleen dat Lindaroos goed werk had nagelaten. Toen veegde hij aarde van zijn knie.'},
+      {level:720,tekst:'Planten reageren op gezelschap, zei hij. Dat staat in geen toets, en het is toch waar. Laat de klas kort blijven.'},
+      {level:770,tekst:'We zaaien dit niet om morgen te oogsten, zei hij. We zaaien het zodat de kas in oktober iets te zeggen heeft. U begrijpt dat inmiddels.'}
+    ]}
+  ];
+  const VONDSTEN=[
+    {id:'blad',van:600,ico:'📜',n:'Een blad uit 1947',pos:['18%','28%'],
+      wie:'Tilly',tekst:'Op de vensterbank van de huiskamer lag een blad dat niet in een band hoort. Een tuinkalender, in een rustige hand. Ik heb hem niet meegenomen. Ik heb hem alleen even laten zien, en weer neergelegd.'},
+    {id:'kruk',van:650,ico:'🪑',n:'Een krukje bij de haard',pos:['62%','58%'],
+      wie:'Professor Stronk',tekst:'Iemand zette een kruk bij de haard, precies zo hoog als in de kas. Ik blijf niet lang. Alleen tot de thee koud wordt. Lindaroos zou hetzelfde hebben gedaan.'},
+    {id:'zakje',van:700,ico:'👜',n:'Een zakje zonder naam',pos:['72%','22%'],
+      wie:'Bartholomeus Lindaroos',tekst:'In de vensterbank lag linnen, bleek van ouderdom. Erin iets dat bijna niets weegt. Niet openmaken om te hebben. Openmaken om te bewaren, later, met twee handen.'}
+  ];
+
+  function lvl(){return S.m3lvl|0}
+  function tuinOpen(){return lvl()>=600||KAARTEN_TUIN.some(k=>S.kaarten&&S.kaarten[k[0]])}
+  function portHtml(wie){
+    try{if(typeof portret==='function'){const k=typeof wieIs==='function'?wieIs(wie):null;return k?portret(k,'sm'):portret(wie,'sm')}}catch(e){}
+    return '';
+  }
+  function verzekerKaarten(){
+    if(typeof KAARTEN==='undefined'||!KAARTEN)return;
+    KAARTEN_TUIN.forEach(k=>{if(!KAARTEN.some(x=>x[0]===k[0]))KAARTEN.push(k.slice())});
+    if(tuinOpen()&&window.KAARTSERIES&&!KAARTSERIES.includes(SERIE))KAARTSERIES.push(SERIE);
+  }
+  function tuinCompleet(){return KAARTEN_TUIN.every(k=>S.kaarten&&S.kaarten[k[0]])}
+  function vierCompleet(){
+    if(!tuinCompleet())return;
+    S.serieBel=S.serieBel||{};
+    if(S.serieBel[SERIE])return;
+    S.serieBel[SERIE]=1;
+    S.titels=S.titels||[];
+    if(!S.titels.includes(TITELZIN))S.titels.push(TITELZIN);
+    if(typeof bewaar==='function')bewaar();
+    try{
+      if(typeof verhaal==='function')verhaal([['Tilly','De serie Tuin van Lindaroos is compleet, Luna. Je bent nu Tuinverzorgster van Lindaroos. Er lag geen zaadje bij — alleen een groet, bewaard voor wie de tuin kent.']]);
+      else if(typeof toast==='function')toast('Serie Tuin van Lindaroos compleet: '+TITELZIN);
+    }catch(e){}
+  }
+  function geefTuinKaarten(){
+    if(!tuinOpen())return [];
+    verzekerKaarten();
+    S.kaarten=S.kaarten||{};
+    const nieuw=[];
+    KAARTEN_TUIN.forEach(k=>{
+      if(lvl()>k[6]&&!S.kaarten[k[0]]){S.kaarten[k[0]]=(S.kaarten[k[0]]||0)+1;nieuw.push(k[0])}
+    });
+    if(nieuw.length&&typeof bewaar==='function')bewaar();
+    if(tuinCompleet())vierCompleet();
+    return nieuw;
+  }
+  function toonNieuweKaarten(namen){
+    if(!namen||!namen.length)return;
+    if(document.querySelector('[data-pop="tuinkaart"]'))return;
+    const lijst=namen.map(n=>'<b>'+n+'</b>').join(', ');
+    const o=document.createElement('div');
+    o.className='modal verhaalm';
+    o.dataset.pop='tuinkaart';
+    o.innerHTML='<div class="perkament modalin rococo"><h2>Nieuw in je album</h2><p>In de tuin van Lindaroos vond je: '+lijst+'. Tilly bewaart de serie apart, zonder zaadje of schilden.</p><button type="button" class="knop volgende" id="tkok">Naar het album</button><button type="button" class="linkknop" id="tklater">Later</button></div>';
+    document.body.appendChild(o);
+    const ok=o.querySelector('#tkok'), later=o.querySelector('#tklater');
+    const weg=()=>{try{if(typeof popupSluit==='function')popupSluit(o);else o.remove()}catch(e){try{o.remove()}catch(x){}}};
+    if(ok)ok.onclick=()=>{weg();try{ga('album')}catch(e){}};
+    if(later)later.onclick=weg;
+  }
+  function tuinCheck(){
+    try{
+      const n=geefTuinKaarten();
+      if(n.length)setTimeout(()=>toonNieuweKaarten(n),800);
+    }catch(e){}
+  }
+
+  // geen willekeurige drop van deze kaarten
+  const _trek=typeof trekKaart==='function'?trekKaart:null;
+  if(_trek) window.trekKaart=trekKaart=function(){
+    let k;
+    for(let i=0;i<40;i++){k=_trek.apply(this,arguments);if(!k||!k[5])return k}
+    const alle=(typeof KAARTEN!=='undefined'&&KAARTEN)||[];
+    return alle.find(x=>!x[5])||k;
+  };
+
+  // nooit een zaadje als juist deze serie wordt beloond
+  const _zz=typeof zeldzaamZaad==='function'?zeldzaamZaad:null;
+  if(_zz) window.zeldzaamZaad=zeldzaamZaad=function(bron,opt){
+    try{
+      if(bron==='album'&&tuinCompleet()&&!(S.serieBel||{})[SERIE]){
+        const andere=((typeof KAARTSERIES!=='undefined'&&KAARTSERIES)||[]).some(n=>{
+          if(n===SERIE)return false;
+          if((S.serieBel||{})[n])return false;
+          const alle=(typeof KAARTEN!=='undefined'&&KAARTEN)||[];
+          const ks=alle.filter(k=>k[4]===n);
+          return ks.length&&ks.every(k=>S.kaarten&&S.kaarten[k[0]]);
+        });
+        if(!andere)return null;
+      }
+    }catch(e){}
+    return _zz.apply(this,arguments);
+  };
+
+  function htmlSubTuin(){
+    const n=lvl();
+    return SUB_TUIN.map(s=>{
+      const stappen=s.stappen.filter(st=>n>=st.level);
+      if(!stappen.length)return '';
+      const port=portHtml(s.naam);
+      return '<details class="kaart hfdkaart tuinsub"><summary>'+port+'<div><b>'+s.kop+'</b><small> '+s.naam+'</small></div></summary>'
+        +stappen.map(st=>'<p>'+st.tekst+'</p>').join('')+'</details>';
+    }).join('');
+  }
+
+  const _home=typeof V!=='undefined'&&V.home?V.home:null;
+  if(_home)V.home=function(){
+    const r=_home.apply(this,arguments);
+    try{tuinCheck()}catch(e){}
+    return r;
+  };
+  const _w=typeof m3Winst==='function'?m3Winst:null;
+  if(_w) window.m3Winst=m3Winst=function(){
+    const r=_w.apply(this,arguments);
+    try{setTimeout(tuinCheck,600)}catch(e){}
+    return r;
+  };
+
+  const _db=typeof V!=='undefined'&&V.dagboek?V.dagboek:null;
+  if(_db)V.dagboek=V.verhaal=function(){
+    const r=_db.apply(this,arguments);
+    try{
+      if(document.querySelector('.tuinsub'))return r;
+      const html=htmlSubTuin();
+      if(!html)return r;
+      const kop=[...document.querySelectorAll('#app h3')].find(h=>/Vrienden en leraren/.test(h.textContent||''));
+      if(!kop)return r;
+      const sect=kop.closest('section')||kop.parentElement;
+      const leeg=sect&&sect.querySelector('.hfdslot');
+      if(leeg)leeg.remove();
+      kop.insertAdjacentHTML('afterend',html);
+    }catch(e){}
+    return r;
+  };
+
+  const _al=typeof V!=='undefined'&&V.album?V.album:null;
+  if(_al)V.album=function(){
+    try{verzekerKaarten()}catch(e){}
+    const r=_al.apply(this,arguments);
+    try{
+      if(tuinCompleet())vierCompleet();
+      const koppen=[...document.querySelectorAll('#app .aserkop h3')];
+      const h=koppen.find(x=>x.textContent===SERIE);
+      if(!h)return r;
+      const serie=h.closest('.aserie');
+      if(serie){
+        serie.classList.add('tuinserie');
+        const sm=serie.querySelector('.aserkop small');
+        if(sm){sm.textContent=sm.textContent.replace(/\s*·\s*$/,'').replace('Compleet','Compleet · '+TITELZIN)}
+        if(!serie.querySelector('.tuinnoot')){
+          const noot=tuinCompleet()
+            ?'<p class="klein tuinnoot">Compleet: '+TITELZIN+'. Deze serie geeft een titel en een scène, geen zaadje of schilden.</p>'
+            :'<p class="klein tuinnoot">Kaarten uit de tuin van Lindaroos, als je verder speelt in Akte II. Deze serie geeft een titel en een scène, geen zaadje of schilden.</p>';
+          const kaarten=serie.querySelector('.album');
+          if(kaarten)kaarten.insertAdjacentHTML('beforebegin',noot);
+          else serie.insertAdjacentHTML('beforeend',noot);
+        }
+      }
+    }catch(e){}
+    return r;
+  };
+
+  function hkOntdek(){S.hkOntdek=S.hkOntdek&&typeof S.hkOntdek==='object'?S.hkOntdek:{};return S.hkOntdek}
+  function vondstenOpen(){return VONDSTEN.filter(v=>lvl()>=v.van)}
+  function toonVondst(v){
+    const gev=!!hkOntdek()[v.id];
+    if(!gev){hkOntdek()[v.id]=1;if(typeof bewaar==='function')bewaar()}
+    const o=document.createElement('div');
+    o.className='modal verhaalm';
+    o.dataset.pop='hkvondst';
+    o.innerHTML='<div class="perkament modalin rococo weekbrief"><h2>'+v.n+'</h2><div class="wbport">'+portHtml(v.wie)+'<p><b>'+v.wie+':</b> '+v.tekst+'</p></div><button type="button" class="knop volgende" id="hvok">Ik bewaar het</button></div>';
+    document.body.appendChild(o);
+    const kn=o.querySelector('#hvok');
+    if(kn)kn.onclick=()=>{try{if(typeof popupSluit==='function')popupSluit(o);else o.remove()}catch(e){try{o.remove()}catch(x){}}try{V.huiskamer()}catch(e){}};
+  }
+  const _hk=typeof V!=='undefined'&&V.huiskamer?V.huiskamer:null;
+  if(_hk)V.huiskamer=function(){
+    const r=_hk.apply(this,arguments);
+    try{
+      const open=vondstenOpen();
+      if(!open.length)return r;
+      const kamer=document.querySelector('.hkamer');
+      if(kamer&&!kamer.querySelector('.hkvondst')){
+        open.forEach(v=>{
+          const heb=!!hkOntdek()[v.id];
+          const b=document.createElement('button');
+          b.type='button';
+          b.className='hkvondst'+(heb?' gevonden':'');
+          b.style.left=v.pos[0];b.style.top=v.pos[1];
+          b.setAttribute('aria-label',heb?(v.n+' (gevonden)'):('Ontdek: '+v.n));
+          b.innerHTML=v.ico+'<small>'+(heb?v.n:'Iets ligt hier')+'</small>';
+          b.onclick=()=>toonVondst(v);
+          kamer.appendChild(b);
+        });
+      }
+      if(!document.querySelector('.hkvlijst')){
+        const lijst=open.map(v=>{
+          const heb=!!hkOntdek()[v.id];
+          return '<li class="'+(heb?'heb':'')+'">'+v.ico+' <b>'+(heb?v.n:'Iets wacht nog')+'</b>'+(heb?' · gevonden':' · tik in de kamer')+'</li>';
+        }).join('');
+        const anker=document.querySelector('.hkscherm .hklijst');
+        const blok='<section class="kaart rococo hkvblok"><h3>Ontdekt in de huiskamer</h3><p class="klein">In Akte II laat de tuin kleine dingen achter bij de haard. Geen schilden, alleen kijken.</p><ul class="hkvlijst">'+lijst+'</ul></section>';
+        if(anker&&anker.closest('section'))anker.closest('section').insertAdjacentHTML('afterend',blok);
+        else{
+          const root=document.querySelector('.hkscherm');
+          if(root)root.insertAdjacentHTML('beforeend',blok);
+        }
+      }
+    }catch(e){}
+    return r;
+  };
+
+  try{verzekerKaarten()}catch(e){}
+})();
