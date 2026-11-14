@@ -10,7 +10,8 @@ const STUK=[
   {id:'kruid',n:'Vensterkruid',ico:'🌿',zin:'Een potje op de vensterbank. Het ruikt naar thuis.'},
   {id:'plaid',n:'De mosterdplaid',ico:'🧶',zin:'Gebreid, een beetje te groot, precies goed.'},
   {id:'vuur',n:'Het haardvuur',ico:'🔥',zin:'Het knettert zacht. Niemand hoeft te haasten.'},
-  {id:'kop',n:'De theekop',ico:'☕',zin:'Er blijft altijd een slok over voor een vriendin.'}
+  {id:'kop',n:'De theekop',ico:'☕',zin:'Er blijft altijd een slok over voor een vriendin.'},
+  {id:'huisvaan',n:'De huisvaan van Huffelpuf',ico:'💛',zin:'Een gele vaan boven de haard. Jullie hebben hem samen verdiend, in jullie eigen tempo.',huis:1}
 ];
 function weekKey(){
   const d=(typeof zwNu==='function'?zwNu():new Date());
@@ -31,7 +32,7 @@ function H(){
   return h;
 }
 function zoek(id){return STUK.find(s=>s.id===id)}
-function volgende(){const h=H();return STUK.find(s=>!h.gehad.includes(s.id))}
+function volgende(){const h=H();return STUK.find(s=>!s.huis&&!h.gehad.includes(s.id))}
 function naWinst(){
   try{
     const h=H();

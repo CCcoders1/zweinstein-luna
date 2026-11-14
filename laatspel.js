@@ -1,5 +1,4 @@
-/* v140: rijp, uilenpost-pakketjes en vliegende sleutels na level 300.
-   Bot speelt ze; max 2 obstakeltypen; ritme per 10 blijft. Geen economie. */
+/* v141: rijp, uilenpost en sleutels; vanaf 401 combinaties (max 2 typ) en seizoenskleur. Geen economie. */
 (function(){
 const INTRO={302:'ijs',312:'pak',322:'sleutel'};
 const KAART={
@@ -14,6 +13,18 @@ const LES={
 };
 
 function plekVan(n){return ((n-1)%10)+1}
+function seizoenVan(n,d){
+  d=d||(typeof zwNu==='function'?zwNu():new Date());
+  const m=d.getMonth(), day=d.getDate();
+  const winterKal=(m===11)||(m===0&&day<=6);
+  let prim,sec,band;
+  if(n<=450){prim='pak';sec='ijs';band='herfst'}
+  else if(n<=500){prim='ijs';sec='sleutel';band='winter'}
+  else if(n<=550){prim='pak';sec='sleutel';band='lente'}
+  else {prim='sleutel';sec='ijs';band='zomer'}
+  if(winterKal){if(prim!=='ijs'){sec=prim;prim='ijs'}band='winter'}
+  return {prim,sec,band,winterKal};
+}
 function laatVan(n){
   n=+n||0;if(n<302||n>600)return null;
   if(INTRO[n])return {soort:INTRO[n],intro:1};
@@ -22,12 +33,21 @@ function laatVan(n){
   if(n<=311)return {soort:'ijs'};
   if(n<=321)return {soort:'pak'};
   if(n<=331)return {soort:'sleutel'};
-  /* Na de intro-reeks: alleen op plek 2 en 7, zodat pieken en adem hun ritme houden. */
-  if(plek!==2&&plek!==7)return null;
-  const pool=['ijs','pak','sleutel'];
-  return {soort:pool[(n*5+3)%3]};
+  /* 302–400: alleen plek 2 en 7, één type, ritme intact. */
+  if(n<401){
+    if(plek!==2&&plek!==7)return null;
+    const pool=['ijs','pak','sleutel'];
+    return {soort:pool[(n*5+3)%3]};
+  }
+  /* 401–600: combinaties (max 2 typ) op 2 en 7, één seizoenstype op 3 en 8. */
+  const sz=seizoenVan(n);
+  const derde=['ijs','pak','sleutel'].find(x=>x!==sz.prim&&x!==sz.sec);
+  if(plek===2||plek===7)return {soort:sz.prim,extra:sz.sec,seizoen:sz.band,winter:sz.winterKal};
+  if(plek===3||plek===8)return {soort:plek===3?sz.prim:(derde||sz.sec),seizoen:sz.band,winter:sz.winterKal};
+  return null;
 }
 window.laatVan=laatVan;
+window.seizoenVan=seizoenVan;
 
 function typen(L){
   const t=new Set();
@@ -37,6 +57,7 @@ function typen(L){
   if(L.plaag)t.add('plaag');
   (L.doelen||[]).forEach(d=>{if(d[0]==='i'||d[0]==='d')t.add(d[0])});
   if(L.laat&&L.laat.soort)t.add(L.laat.soort);
+  if(L.laat&&L.laat.extra)t.add(L.laat.extra);
   return t;
 }
 function stripTot(L,max){
@@ -62,8 +83,14 @@ if(_lv)window.m3Level=m3Level=function(n){
       if((L.zetten|0)>32)L.zetten=32;
       if((L.zetten|0)<28)L.zetten=28;
     }
-    if(!(L.doelen||[]).some(d=>d[0]===info.soort))(L.doelen||(L.doelen=[])).push([info.soort]);
+    const soorten=[info.soort,info.extra].filter(Boolean);
+    soorten.forEach(s=>{if(!(L.doelen||[]).some(d=>d[0]===s))(L.doelen||(L.doelen=[])).push([s])});
     stripTot(L, info.intro?1:2);
+    if(info.extra){
+      L.zetten=(L.zetten|0)+8;
+      if((L.zetten|0)>48)L.zetten=48;
+      if((L.zetten|0)<32)L.zetten=32;
+    }
     if((L.kleuren|0)>=7)L.kleuren=6;
     if(info.soort==='pak'){
       if(info.intro){if((L.zetten|0)<40)L.zetten=40}
@@ -102,11 +129,18 @@ if(_lv)window.m3Level=m3Level=function(n){
       }
     }
     if(info.soort==='pak'&&!info.intro&&(L.zetten|0)>50)L.zetten=50;
-    const SZ={322:16,323:24,324:18,325:20,327:24,337:22,487:24,577:20};if(SZ[n])L.zetten=SZ[n];
+    const SZ={322:16,323:24,324:18,325:20,327:24,337:22,577:20,
+      462:30,467:28,492:30,507:36,513:40,522:44,532:44,537:42,583:16};
+    if(n===487&&!info.extra)SZ[487]=24;
+    if(SZ[n])L.zetten=SZ[n];
     if(n===322)(L.doelen||[]).forEach(d=>{if(typeof d[0]==='number')d[1]=20});
-    if(n===323||n===327||n===487){
+    if(n===583)(L.doelen||[]).forEach(d=>{if(typeof d[0]==='number')d[1]=20});
+    if(n===323||n===327||(n===487&&!info.extra)){
       L.onkruid=0;L.doelen=(L.doelen||[]).filter(d=>d[0]!=='o');
       L.pot=2;if(!L.doelen.some(d=>d[0]==='p'))L.doelen.push(['p',2]);
+    }
+    if(n===413||(n===487&&info.extra)){
+      L.pot=0;L.doelen=(L.doelen||[]).filter(d=>d[0]!=='p');
     }
   }catch(e){}
   return L;
@@ -115,29 +149,34 @@ if(_lv)window.m3Level=m3Level=function(n){
 if(typeof Bord==='function'){
   Bord.prototype.laatInit=function(){
     const info=this.L&&this.L.laat;if(!info)return;
-    const soort=info.soort,intro=!!info.intro;
-    if(soort==='ijs'){
-      this.ijs=[];
-      for(let r=0;r<RIJEN;r++){this.ijs[r]=[];for(let c=0;c<KOL;c++){
-        if(this.kist[r][c]||(this.strik&&this.strik[r][c])){this.ijs[r][c]=0;continue}
-        let laag=0;
-        if(intro)laag=(r>=2&&r<=5&&c>=1&&c<=5)?1:0;
-        else laag=(r>=1&&r<=6&&c>=0&&c<=6&&((r+c)%2===0))?1:0;
-        this.ijs[r][c]=laag;
-      }}
-    }
-    if(soort==='pak'){
-      const plekken=intro?[[2,1],[2,3],[2,5],[3,4]]:[[1,1],[1,3],[1,5],[2,2]];
+    const intro=!!info.intro;
+    const soorten=[info.soort,info.extra].filter(Boolean);
+    /* Pakketjes eerst, zodat rijp en sleutels die vakken overslaan. */
+    if(soorten.includes('pak')){
+      const plekken=intro?[[2,1],[2,3],[2,5],[3,4]]:(info.extra?[[1,1],[1,4],[2,2]]:[[1,1],[1,3],[1,5],[2,2]]);
       plekken.forEach(([r,c])=>{
         if(!this.binnen(r,c)||this.kist[r][c]||(this.strik&&this.strik[r][c]))return;
         const t=this.tegel(-2,r,c,r);t.pak=1;this.g[r][c]=t;
       });
     }
-    if(soort==='sleutel'){
+    if(soorten.includes('ijs')){
+      this.ijs=[];
+      const combo=soorten.length>1;
+      for(let r=0;r<RIJEN;r++){this.ijs[r]=[];for(let c=0;c<KOL;c++){
+        if(this.kist[r][c]||(this.strik&&this.strik[r][c])||(this.g[r][c]&&this.g[r][c].k===-2)){this.ijs[r][c]=0;continue}
+        let laag=0;
+        if(intro)laag=(r>=2&&r<=5&&c>=1&&c<=5)?1:0;
+        else if(combo)laag=(r>=3&&r<=6&&c>=0&&c<=6&&((r+c)%2===0))?1:0;
+        else laag=(r>=1&&r<=6&&c>=0&&c<=6&&((r+c)%2===0))?1:0;
+        this.ijs[r][c]=laag;
+      }}
+    }
+    if(soorten.includes('sleutel')){
       this.sleutel=[];for(let r=0;r<RIJEN;r++){this.sleutel[r]=[];for(let c=0;c<KOL;c++)this.sleutel[r][c]=0}
       const plekken=intro?[[3,2],[4,4],[5,1],[2,5],[6,3],[3,6]]:[[2,3],[3,1],[4,5],[5,2],[3,4],[6,0],[1,6]];
       plekken.forEach(([r,c])=>{
         if(!this.binnen(r,c)||this.kist[r][c]||!this.g[r][c]||this.g[r][c].k<0)return;
+        if(this.ijs&&this.ijs[r]&&this.ijs[r][c])return;
         this.sleutel[r][c]=1;
       });
     }
@@ -147,8 +186,10 @@ if(typeof Bord==='function'){
       if(t==='sleutel'&&this.sleutel)return this.sleutel.flat().reduce((a,b)=>a+b,0);
       return 0;
     };
-    if(!this.doel.some(d=>d.t===soort))this.doel.push({t:soort,n:0,over:0});
-    this.doel.forEach(d=>{if(d.t===soort){d.n=tel(soort);d.over=d.n}});
+    soorten.forEach(soort=>{
+      if(!this.doel.some(d=>d.t===soort))this.doel.push({t:soort,n:0,over:0});
+      this.doel.forEach(d=>{if(d.t===soort){d.n=tel(soort);d.over=d.n}});
+    });
   };
   Bord.prototype.laatVoorWis=function(r,c,wis){
     if(!this.ijs||!this.ijs[r]||!this.ijs[r][c])return false;
@@ -206,7 +247,14 @@ if(typeof Bord==='function'){
         ctx.save();
         ctx.globalAlpha=.92;
         const g=ctx.createLinearGradient(x,yy,x+cel,yy+cel);
-        g.addColorStop(0,'rgba(230,250,255,.92)');g.addColorStop(.55,'rgba(150,210,240,.7)');g.addColorStop(1,'rgba(70,150,210,.75)');
+        const sz=(this.L&&this.L.laat&&this.L.laat.seizoen)||'';
+        const winter=this.L&&this.L.laat&&this.L.laat.winter;
+        let c0='rgba(230,250,255,.92)',c1='rgba(150,210,240,.7)',c2='rgba(70,150,210,.75)';
+        if(sz==='herfst'){c0='rgba(255,236,210,.9)';c1='rgba(180,200,220,.7)';c2='rgba(90,140,180,.75)'}
+        else if(sz==='lente'){c0='rgba(230,255,240,.9)';c1='rgba(160,220,200,.7)';c2='rgba(70,160,150,.75)'}
+        else if(sz==='zomer'){c0='rgba(255,248,220,.9)';c1='rgba(180,210,230,.7)';c2='rgba(80,150,200,.75)'}
+        if(sz==='winter'||winter){c0='rgba(240,252,255,.96)';c1='rgba(170,220,250,.8)';c2='rgba(80,160,230,.8)'}
+        g.addColorStop(0,c0);g.addColorStop(.55,c1);g.addColorStop(1,c2);
         ctx.fillStyle=g;ctx.beginPath();ctx.roundRect(x+1,yy+1,cel-2,cel-2,cel*.18);ctx.fill();
         ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=Math.max(2,cel*.07);
         ctx.stroke();
@@ -377,6 +425,13 @@ window.winHaakZin=function(n){
   const tien=Math.floor(n/10)*10;
   if(HAAK[tien]&&n-tien<=2)return HAAK[tien];
   if(info){
+    if(info.extra){
+      if(info.seizoen==='herfst')return 'Oogstpost en een eerste laagje rijp, allebei netjes. De kas ruikt al naar later.';
+      if(info.seizoen==='winter')return 'Rijp én een fladderende sleutel, en jij bleef rustig. Dat is winteren als een heks.';
+      if(info.seizoen==='lente')return 'Een pakketje en een sleutel, alsof de gang weer opengaat. Mooi gedaan.';
+      if(info.seizoen==='zomer')return 'Een zomersleutel, een laat laagje rijp, en jij hield ze allebei bij.';
+      return 'Twee lessen tegelijk, en jij hield ze allebei bij.';
+    }
     if(info.soort==='ijs')return 'Weer een tegel rijp minder. De toren wordt er een beetje vriendelijker van.';
     if(info.soort==='pak')return 'Weer een groet uit het boswachtershuis, netjes op de onderste rij.';
     if(info.soort==='sleutel')return 'Die sleutel fladderde, en jij was geduldiger. Dat wint bijna altijd.';

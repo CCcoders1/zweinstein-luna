@@ -1,0 +1,11 @@
+/* Compact, warm huisdoel onder de ranglijst-teaser. Geen tijdsdruk. */
+#huisdoelwrap{margin:8px 0 10px}
+.huisdoel{padding:10px 12px 12px;background:linear-gradient(180deg,#f7ecd0,#ead6ae);border:1px solid rgba(160,120,40,.35);border-radius:14px;color:#3b2a14}
+.huisdoel .hdkop{font-size:.95em;margin:0 0 4px;color:#6b4a14}
+.huisdoel .hdzin{margin:0 0 8px;font-size:.88em;line-height:1.4}
+.huisdoel .hdbalk{height:8px;border-radius:99px;background:rgba(80,50,10,.15);overflow:hidden}
+.huisdoel .hdbalk i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#e8c45a,#c9a227);transition:width .4s ease}
+@media (max-width:370px){
+  .huisdoel{padding:8px 10px}
+  .huisdoel .hdzin{font-size:.84em}
+}

@@ -56,7 +56,10 @@ async function sync(forceer){if(!AAN||!S.naam||!S.huis)return false;if(ST==='nie
  if(bezig)return bezig;
  bezig=(async()=>{try{const v=vr();opruimen();const code=await rpc('upsert_me',{p_name:String(S.naam).slice(0,24),p_house:S.huis||'',p_level:S.m3lvl|0});if(code&&v.code!==code){v.code=code;bewaar()}
   const rows=[];Object.entries(v.sc).forEach(([k,o])=>Object.entries(o).forEach(([c,s])=>{if(s>0)rows.push({period_key:k,challenge_id:c,score:Math.min(s|0,1e6)})}));
-  if(rows.length&&v.vuil!==0){await rpc('submit_scores',{rows});v.vuil=0;bewaar()}
+  const KNOWN=new Set(['smek','ster3','kik','lvl','schild']);
+  const bekend=rows.filter(r=>KNOWN.has(r.challenge_id)), extra=rows.filter(r=>!KNOWN.has(r.challenge_id));
+  if(bekend.length&&v.vuil!==0){await rpc('submit_scores',{rows:bekend});v.vuil=0;bewaar()}
+  if(extra.length){try{await rpc('submit_scores',{rows:extra});window.zwHuisRpc=1}catch(e){window.zwHuisRpc=0}}
   if(!v.lsInit){v.lsq=v.lsq||{};Object.entries(S.lvSter||{}).forEach(([l,x])=>{if((x|0)>0&&+l>0)v.lsq[l]=Math.max(v.lsq[l]|0,x|0)});v.lsInit=1}
   const ls=Object.entries(v.lsq||{}).map(([l,x])=>({level:+l,stars:Math.min(3,x|0)})).filter(r=>r.level>0);
   for(let i=0;i<ls.length;i+=400){await rpc('submit_level_stars',{rows:ls.slice(i,i+400)})}
@@ -168,7 +171,7 @@ function halPaneel(){if(document.body.dataset.view!=='home'||!S.naam)return;cons
  const st=rangStand();
  const html=`<div class="halvrkop"><b>🛡️ Ranglijst</b><span><b class="rgplek">#${st.plek} van ${st.tot}</b>${rangPijl(st.plek)} <i class="rgopen">▾</i></span></div><ol class="rgmini">${vijfRijen(st).map(r=>rgRijGat(r,22)).join('')}</ol>`;
  if(!el){el=document.createElement('section');el.id='halvr';el.className='halvr rgstrook rococo';el.setAttribute('role','button');el.setAttribute('aria-expanded','false');el.setAttribute('aria-label','Hele ranglijst uitklappen');const voor=app.querySelector('.dagdoelen');if(voor)voor.before(el);else app.appendChild(el);el.onclick=()=>rgUitklap(el)}
- if(el.innerHTML!==html)el.innerHTML=html;const o=document.getElementById('rgover');if(o&&o.dataset.html!==rgVolHtml())rgVulOver(o)}
+ if(el.innerHTML!==html)el.innerHTML=html;const o=document.getElementById('rgover');if(o&&o.dataset.html!==rgVolHtml())rgVulOver(o);try{window.zwHuisTeken&&zwHuisTeken()}catch(e){}}
 /* Uitklappen: de hele ranglijst als laag over de Hal (geen sprong in de pagina). Inklappen: kop, knop of ernaast tikken. */
 const rgVolHtml=()=>rangStand().L.map(m=>rgRij(m,24)).join('');
 function rgVulOver(o){const h=rgVolHtml();o.dataset.html=h;const ol=o.querySelector('ol');if(ol)ol.innerHTML=h}
@@ -214,4 +217,5 @@ if(AAN){try{if(typeof NAV!=='undefined'&&!NAV.some(t=>t[0]==='samen')){const i=N
  try{nav(document.body.dataset.view||'home')}catch(e){}
  setTimeout(()=>sync(),2500);setInterval(()=>{if(vr().vuil||Object.keys(vr().lsq||{}).length)sync()},3*60e3);setInterval(()=>sync(),30*60e3);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>sync(),1500)});window.addEventListener('online',()=>sync())}
+window.zwTel=tel;window.zwWeekKey=weekKey;window.zwScoresVan=scoresVan;window.zwMijnId=mijnId;
 })();

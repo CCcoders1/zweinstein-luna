@@ -387,7 +387,9 @@ function mooiWinst(n,b){
     haak=document.createElement('div');haak.className='winhaak';
     const kn=eind.querySelector('button, .m3actie');if(kn)kn.before(haak);else eind.appendChild(haak);
   }
-  haak.innerHTML=typeof tilly==='function'?tilly(tekst):('<p>'+tekst+'</p>');
+  const port=(typeof portret==='function'?portret('tilly','sm'):'');
+  haak.className='winhaak';
+  haak.innerHTML=port?('<div class="whport">'+port+'</div><p>'+tekst+'</p>'):('<p>'+tekst+'</p>');
   if(oud&&oud!==haak)oud.remove();
   if(!eind.querySelector('.m3actie')){
     const act=document.createElement('div');act.className='m3actie';
@@ -398,6 +400,7 @@ function mooiWinst(n,b){
   if(hook&&act)act.before(hook);
   if(gift&&act)act.before(gift);
   if(hook&&gift)gift.before(hook);
+  eind.querySelectorAll('.feli').forEach(el=>{el.style.display='none'});
 }
 const _w=typeof m3Winst==='function'?m3Winst:null;
 if(_w)window.m3Winst=m3Winst=function(n,b,...a){
