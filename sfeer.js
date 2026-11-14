@@ -163,6 +163,8 @@ function halOrde(){
     }
     const tk=document.getElementById('taakknop'), st=document.getElementById('volgendestap');
     if(tk&&st)tk.style.display='none';
+    const speelDup=document.getElementById('speelknop');
+    if(speelDup&&st)speelDup.style.display='none';
     const lok=app.querySelector('.lokaal');
     if(lok){
       const kop=lok.querySelector('.lk-kop');
@@ -192,7 +194,7 @@ function halOrde(){
       }
     }
 
-    const volgorde=['.groet','#halharten','#ookvandaag','#volgendestap','.lokaal','#halvr','#wmkaart','#hwkaart','#morgenkaart','.dagdoelen','.halspel'];
+    const volgorde=['.groet','#halharten','#ookvandaag','#volgendestap','.lokaal','#wmkaart','#hwkaart','#halvr','#morgenkaart','.dagdoelen','.halspel'];
     let anker=null;
     volgorde.forEach(sel=>{
       const el=app.querySelector(sel);

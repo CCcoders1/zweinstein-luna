@@ -1385,7 +1385,7 @@ window.winHaakZin=function(n){
 
 /* v153: Nu in Zweinstein (klok, weer, wie er rondloopt) + 3★-verhaalknipoog */
 (function(){
-  function nuLok(){return new Date()}
+  function nuLok(){return typeof zwNu==='function'?zwNu():new Date()}
   function uurWoord(u){return ['twaalf','één','twee','drie','vier','vijf','zes','zeven','acht','negen','tien','elf'][((u%24)+24)%12]}
   function klokTekst(d){
     const h=d.getHours(), m=d.getMinutes();

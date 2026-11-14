@@ -149,13 +149,13 @@ function volgendeStap(opt){
       const vol=stage.v.taken.find(t=>!S.taken[t[0]]);
       const af=stage.v.taken.filter(t=>S.taken[t[0]]).length;
       if(vol){
-        if((S.schilden|0)>=vol[2])return {id:'doel',titel:'Volgende hersteldoel',tekst:`“${vol[1]}” · ${vol[2]} huisschilden. Daarna speel je verder.`,knop:vol[1],ga:()=>{const b=document.getElementById('taakknop');b?b.click():ga('home')}};
+        if((S.schilden|0)>=vol[2])return {id:'doel',titel:vol[1],tekst:`${vol[2]} huisschilden. Daarna speel je verder.`,knop:'Afronden',ga:()=>{const b=document.getElementById('taakknop');b?b.click():ga('home')}};
         const nodig=vol[2]-(S.schilden|0);
-        return {id:'level',titel:'Speel level '+(S.m3lvl||1),tekst:`Nog ${nodig} ${nodig===1?'huisschild':'huisschilden'} voor “${vol[1]}”.`,knop:'Spelen · Level '+(S.m3lvl||1),ga:()=>ga('match3')};
+        return {id:'level',titel:'Speel level '+(S.m3lvl||1),tekst:`Nog ${nodig} ${nodig===1?'huisschild':'huisschilden'} voor “${vol[1]}”.`,knop:'Spelen',ga:()=>ga('match3')};
       }
-      if((S.m3lvl||1)<=stage.einde)return {id:'level',titel:'Maak de schooldag af',tekst:`De tien doelen zijn klaar. Win level ${S.m3lvl} (de dag loopt tot ${stage.einde}).`,knop:'Spelen · Level '+(S.m3lvl||1),ga:()=>ga('match3')};
+      if((S.m3lvl||1)<=stage.einde)return {id:'level',titel:'Maak de schooldag af',tekst:`De tien doelen zijn klaar. Win level ${S.m3lvl} (de dag loopt tot ${stage.einde}).`,knop:'Spelen',ga:()=>ga('match3')};
     }
-    return {id:'level',titel:'Speel verder',tekst:'Level '+(S.m3lvl||1)+' wacht.',knop:'Spelen · Level '+(S.m3lvl||1),ga:()=>ga('match3')};
+    return {id:'level',titel:'Speel verder',tekst:'Level '+(S.m3lvl||1)+' wacht.',knop:'Spelen',ga:()=>ga('match3')};
   }catch(e){return {id:'level',titel:'Speel verder',tekst:'',knop:'Spelen',ga:()=>ga('match3')}}
 }
 

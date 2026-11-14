@@ -473,3 +473,11 @@ body[data-view="kas"] #app>:not(.kassfeer){position:relative;z-index:1}
   .kt-sfeer.stil i,.kassfeer.stil .kasstof{opacity:0}
   .kt-sfeer::before,.kt-sfeer::after{opacity:.55}
 }
+
+/* v157: Hal rustiger — één gouden stap, winterkaart boven de vouw, compactere schooldagstrook */
+body.halstrak:has(#volgendestap) #speelknop{display:none!important}
+body.halstrak:has(#volgendestap) .lokaal{padding-bottom:8px}
+body.halstrak .lokaal .halverr{margin:6px 0 0;font:italic .92em/1.35 Georgia,serif}
+body.halstrak #volgendestap h3{font-size:1.08em}
+body.halstrak #wmkaart,body.halstrak #hwkaart{margin:6px 10px 8px}
+body.halstrak #halvr{margin-top:4px}

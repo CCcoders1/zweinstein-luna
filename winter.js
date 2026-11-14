@@ -11,7 +11,8 @@ window.zwNu=function(){
 const dag0=d=>{const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setHours(0,0,0,0);return x};
 function seizoenVan(d){
   const x=dag0(d),y=x.getFullYear(),m=x.getMonth(),dd=x.getDate();
-  const start= (m===0&&dd<=6) ? new Date(y-1,11,1) : new Date(y,11,1);
+  /* Tot en met 20 jan hoort bij de winter die op 6 jan eindigde, anders reset S.wm en verdwijnt de na-periode. */
+  const start= (m===0&&dd<=20) ? new Date(y-1,11,1) : new Date(y,11,1);
   start.setHours(0,0,0,0);
   const eind=new Date(start.getFullYear()+1,0,6);eind.setHours(23,59,59,0);
   const teaserVan=new Date(start.getFullYear(),10,14);
