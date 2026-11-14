@@ -127,9 +127,11 @@ function tekst(st){
   const rest=Math.max(0,D.doel-st.som);
   if(st.klaar)return {kop:'💛 Huffelpuf-huisdoel',zin:'Samen gehaald. Wat fijn dat jullie dit samen deden.',p:100};
   let wie;
+  const online=typeof zwOnlineStatus==='function'?zwOnlineStatus():'';
+  const later=(online&&online!=='klaar')?' Zodra jullie weer verbonden zijn, tellen de punten van iedereen mee.':'';
   if(st.net&&st.anderen)wie='Jullie hebben samen '+st.som+' van de '+D.doel+' '+D.eenheid+'.';
-  else if(st.mijn)wie='Jij hebt al '+st.mijn+' '+D.eenheid+'. Samen streven jullie naar '+D.doel+'.'+(st.rls===0?' Als je vrienden ook spelen, komt hun aandeel erbij zodra het verbonden is.':'');
-  else wie='Samen '+D.doel+' '+D.eenheid+' deze week, in jullie eigen tempo.';
+  else if(st.mijn)wie='Jij hebt al '+st.mijn+' '+D.eenheid+'. Samen streven jullie naar '+D.doel+'.'+(st.rls===0||later?later||' Als je vrienden ook spelen, komt hun aandeel erbij zodra het verbonden is.':'');
+  else wie='Samen '+D.doel+' '+D.eenheid+' deze week, in jullie eigen tempo.'+later;
   const staart=rest?(' Nog '+rest+', als jullie zin hebben.'):'';
   return {kop:'💛 Huffelpuf-huisdoel deze week',zin:D.ico+' '+D.zin+' '+wie+staart,p};
 }

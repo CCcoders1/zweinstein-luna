@@ -79,3 +79,12 @@ body.halstrak #halvr{margin-bottom:12px}
   overflow:visible!important;
   margin-bottom:calc(72px + env(safe-area-inset-bottom))!important;
 }
+
+/* Ranglijst-teaser en huisdoel blijven in de flow, met ruimte boven de menubalk. */
+body.halstrak #app, body[data-view=home] #app{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+body.halstrak #halvr.rgkort{
+  margin:4px 10px 0;
+  padding:6px 12px 4px;
+  background:linear-gradient(rgba(250,238,210,.98),rgba(236,214,170,.98));
+}
+body.halstrak #halvr.rgkort .rgteaser{margin:2px 0 0;font-size:.88em;line-height:1.3}

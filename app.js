@@ -23,7 +23,7 @@ const vandaag=()=>new Date().toISOString().slice(0,10);
 const dagGedachte=()=>{const d=vandaag().split('-').join('')*1;return GEDACHTEN[d%GEDACHTEN.length]};
 const tilly=t=>`<div class="tilly"><span class="gez">🧝‍♀️</span><div><b>Tilly:</b> ${t}</div></div>`;
 const foutT=t=>{fx.fout();return tilly(t)};
-function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('zien');if(!e.onclick)e.onclick=()=>{clearTimeout(toast.t);e.classList.remove('zien')};clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('zien'),toastDuur(t))}
+function toast(t){const e=$('#toast');if(!e)return;e.textContent=t;e.classList.add('zien');if(!e.onclick)e.onclick=()=>{clearTimeout(toast.t);e.classList.remove('zien')};clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('zien'),toastDuur(t))}
 function toastDuur(t){return Math.min(8000,Math.max(4000,String(t||'').length*70))}
 const HOEK='<svg viewBox="0 0 70 70" class="hoek {c}"><g fill="none" stroke="#b8860b" stroke-width="2.2" stroke-linecap="round"><path d="M4 66V20C4 10 10 4 20 4h46"/><path d="M12 58V26c0-8 6-14 14-14h32"/><path d="M26 26c8-6 16 2 10 8s-14-2-6-6"/><circle cx="20" cy="20" r="3" fill="#d4af37"/><path d="M40 12c4-6 10-6 12 0M12 40c-6 4-6 10 0 12"/></g></svg>';
 const lijst=html=>`<div class="perkament lijst">${['lb','rb','lo','ro'].map(c=>HOEK.replace('{c}',c)).join('')}${html}</div>`;

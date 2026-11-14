@@ -1,4 +1,4 @@
-const C='zweinstein-v141';
+const C='zweinstein-v142';
 const F=["./", "index.html", "manifest.json", "CREDITS.txt", "bundel.css", "bundel.js", "img/icoon-192.png", "img/icoon-512.png", "img/lakzegel.webp", "img/sneeuwuil.webp", "img/perkament.webp", "img/perkament-sm.webp", "img/sterrenhemel-sm.webp", "img/hal-zaal-sm.webp", "img/ui/nav-hal-96.webp", "img/ui/nav-kaart-96.webp", "img/ui/nav-kassen-96.webp", "img/ui/nav-boek-96.webp", "img/ui/nav-meer-96.webp", "img/ui/nav-vrienden-96.webp", "img/ui/schild-64.webp", "img/smekkies/zak-half-128.webp", "img/laadschermen/herbologie-klein.webp"];
 const KRITIEK=["./","index.html","bundel.js","bundel.css"];
 async function zetIn(c,u){

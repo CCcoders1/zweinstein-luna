@@ -151,7 +151,7 @@ function halOrde(){
         const b=el.querySelector('b');if(b&&/Geluid/.test(b.textContent||''))b.textContent='Geluid en weergave';
       }
     });
-    const volgorde=['.groet','#halharten','#volgendestap','.lokaal','#wmkaart','#hwkaart','.boekstuk','#ookvandaag','#morgenkaart','#halvr','.dagdoelen','.halspel'];
+    const volgorde=['.groet','#halharten','#ookvandaag','#volgendestap','.lokaal','#halvr','#wmkaart','#hwkaart','#morgenkaart','.dagdoelen','.halspel'];
     let anker=null;
     volgorde.forEach(sel=>{
       const el=app.querySelector(sel);
@@ -160,6 +160,14 @@ function halOrde(){
       else if(el.previousElementSibling!==anker){anker.after(el);anker=el}
       else anker=el;
     });
+    const boek=document.getElementById('boekknop');
+    const rij=document.querySelector('#ookvandaag .ookrij');
+    if(boek&&rij&&boek.parentNode!==rij){
+      boek.classList.add('ookchip');
+      rij.appendChild(boek);
+      const wrap=document.querySelector('.boekstuk');
+      if(wrap&&!wrap.contains(boek))wrap.remove();
+    }
   }catch(e){console.warn(e)}
 }
 

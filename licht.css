@@ -227,7 +227,7 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 /* popup-wachtrij: wachtende popups onzichtbaar en niet aanklikbaar (geen display:none → geen flits) */
 .modal.wacht,.ritueel.wacht{visibility:hidden!important;pointer-events:none!important;animation:none!important}
 .modal.weg,.ritueel.weg{opacity:0!important;transition:opacity .35s ease!important}
-.p-verder{position:absolute;right:max(12px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));z-index:5;min-height:44px;padding:8px 16px;border-radius:22px;border:1.5px solid #c9a227;background:rgba(250,238,210,.95);color:#3a2410;font:600 15px Georgia,serif;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.p-verder{position:absolute;right:max(12px,env(safe-area-inset-right));bottom:calc(90px + env(safe-area-inset-bottom));z-index:5;min-height:44px;padding:8px 16px;border-radius:22px;border:1.5px solid #c9a227;background:rgba(250,238,210,.95);color:#3a2410;font:600 15px Georgia,serif;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 /* ====== Laadschermen ====== */
 #laadscherm{position:fixed;inset:0;z-index:60;background:#2a2a3a;opacity:0;transition:opacity .6s ease;overflow:hidden;touch-action:none}
 #laadscherm.aan{opacity:1}

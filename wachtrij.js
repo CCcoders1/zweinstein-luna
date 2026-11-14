@@ -17,7 +17,7 @@
  function sluit(e){if(!e||!e.isConnected)return;e.classList.add('weg');e.style.pointerEvents='none';setTimeout(()=>{e.remove();volgende()},350)}
  window.popupSluit=sluit;
  function veilig(e){if(e._veilig)return;e._veilig=1;
-  if(!e.dataset.geenverder&&!e.querySelector('.p-verder')){const k=document.createElement('button');k.type='button';k.className='p-verder';k.textContent='Verder ›';k.onclick=ev=>{ev.stopPropagation();sluit(e)};e.appendChild(k)}
+  if(!e.dataset.geenverder&&!e.querySelector('.p-verder, .knop, button, .linkknop')){const k=document.createElement('button');k.type='button';k.className='p-verder';k.textContent='Verder ›';k.onclick=ev=>{ev.stopPropagation();sluit(e)};e.appendChild(k)}
   e.addEventListener('pointerdown',()=>{window._popTik=[Date.now(),e]},true)}
  /* globale foutafhandeling: app loopt nooit vast */
  const fout=(msg)=>{try{console.warn('[veiligheidsnet]',msg);const t=window._popTik;if(t&&Date.now()-t[0]<2000&&t[1].isConnected)sluit(t[1]);

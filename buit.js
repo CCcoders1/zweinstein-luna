@@ -40,7 +40,7 @@ function buitVoor(id){const k=id.startsWith('drank')?'drank':id.startsWith('memo
 /* tasknop */
 document.body.insertAdjacentHTML('beforeend',`<button id="tasknop" aria-label="Verzamelboek"><svg class="icn" viewBox="0 0 24 24"><path d="M5 9h14l-1 11H6zM9 9V7a3 3 0 016 0v2M5 9c0-2 2-3 3-3M19 9c0-2-2-3-3-3"/></svg><span id="tasn"></span></button>`);
 $('#tasknop').onclick=()=>ga('boek');
-function tasTeller(){const n=S.nieuwBuit;$('#tasn').textContent=n?n:'';$('#tasknop').classList.toggle('nieuw',n>0)}
+function tasTeller(){const n=S.nieuwBuit,t=$('#tasn'),k=$('#tasknop');if(t)t.textContent=n?n:'';if(k)k.classList.toggle('nieuw',n>0)}
 IP.vlieg='M12 8a2 2 0 110 4 2 2 0 010-4zM12 12v8M10 9C6 5 3 6 3 9s4 3 7 1M14 9c4-4 7-3 7 0s-4 3-7 1';IP.fles='M10 3h4M10 3v5l-4 7a4 4 0 004 6h4a4 4 0 004-6l-4-7V3M7 15h10';IP.hoorn='M5 20c2-8 6-14 15-17-3 5-5 10-6 17z';IP.slang='M4 18c4 0 4-4 8-4s4 4 8 4M4 12c4 0 4-4 8-4s4 4 8 4M17 6l3-2';IP.steen='M6 10l4-5h5l4 5-2 8H8z';IP.veer='M5 20L19 6M19 6c-6 0-11 3-12 10 5-1 10-4 12-10zM9 15h4';
 function buitIcoon(it){if(it.startsWith('kaart:'))return icoon('boek');return icoon(ITEMS[it][3])}
 function buitVlucht(it){const naam=it.startsWith('kaart:')?it.slice(6):ITEMS[it][1];const zr=it.startsWith('kaart:')?'Z':ITEMS[it][2];
