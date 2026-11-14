@@ -514,3 +514,15 @@ body.halstrak #halvr{margin-top:4px}
   .meerblok .tegel,.meerblok .knop{min-height:56px;padding:.45em .5em}
   .meerblok .tegel b,.meerblok .knop b{font-size:.95em}
 }
+
+/* v159: portretten in verhaalscènes ademen en knipperen, stil bij verminderde beweging */
+.verhaalm .vh-p{position:relative;overflow:hidden;border-radius:50%;width:92px;height:92px;display:flex;align-items:center;justify-content:center}
+.verhaalm .vh-p .pportret,
+.verhaalm .vh-p .tportret,
+.verhaalm .vh-p img{width:92px;height:92px;object-fit:cover;border-radius:50%;animation:vhadem 5.2s ease-in-out infinite;transform-origin:50% 80%}
+.verhaalm .vh-p::after{content:"";position:absolute;left:10%;right:10%;top:30%;height:16%;border-radius:50% 50% 40% 40%;background:rgba(28,16,8,.72);opacity:0;transform:scaleY(0);transform-origin:50% 0;pointer-events:none;animation:vhknip 5.6s ease-in-out 1.8s infinite}
+@keyframes vhadem{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(1.5px) scale(1.03)}}
+@keyframes vhknip{0%,36%,44%,100%{opacity:0;transform:scaleY(0)}38%,41%{opacity:.8;transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){
+  .verhaalm .vh-p .pportret,.verhaalm .vh-p .tportret,.verhaalm .vh-p img,.verhaalm .vh-p::after{animation:none!important}
+}
