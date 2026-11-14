@@ -1660,3 +1660,32 @@ window.winHaakZin=function(n){
     addEventListener('load',()=>{try{mo.observe(document.body,{childList:true,subtree:true})}catch(e){}});
   }
 })();
+
+/* v156: lichte sfeerlaag in de Kassen en bij de Ketel (geen economie, RMP-stil) */
+(function(){
+  function rmp(){try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}}
+  function zetKasSfeer(){
+    const app=document.getElementById('app');
+    if(!app||app.querySelector('.kassfeer'))return;
+    app.insertAdjacentHTML('afterbegin','<div class="kassfeer" aria-hidden="true"><i class="kaszon"></i><i class="kasstof"></i><i class="kasstof"></i><i class="kasstof"></i></div>');
+    if(rmp())app.querySelector('.kassfeer').classList.add('stil');
+  }
+  function zetMijnkasSfeer(){
+    const kam=document.querySelector('.mk-kamer');
+    if(!kam||kam.querySelector('.kassfeer'))return;
+    kam.insertAdjacentHTML('afterbegin','<div class="kassfeer mk-sfeer" aria-hidden="true"><i class="kaszon"></i><i class="kasstof"></i><i class="kasstof"></i><i class="kasstof"></i></div>');
+    if(rmp())kam.querySelector('.kassfeer').classList.add('stil');
+  }
+  function zetKetelSfeer(){
+    const kt=document.getElementById('kt');
+    if(!kt||kt.querySelector('.kt-sfeer'))return;
+    kt.insertAdjacentHTML('beforeend','<div class="kt-sfeer" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>');
+    if(rmp())kt.querySelector('.kt-sfeer').classList.add('stil');
+  }
+  const _kas=V.kas;
+  if(_kas)V.kas=function(){const r=_kas.apply(this,arguments);try{zetKasSfeer()}catch(e){}return r};
+  const _mk=V.mijnkas;
+  if(_mk)V.mijnkas=function(){const r=_mk.apply(this,arguments);try{zetMijnkasSfeer()}catch(e){}return r};
+  const _kt=V.ketel;
+  if(_kt)V.ketel=function(){const r=_kt.apply(this,arguments);try{zetKetelSfeer()}catch(e){}return r};
+})();

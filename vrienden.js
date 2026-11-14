@@ -93,7 +93,7 @@ let cache={vr:null,sc:[]};
 const vrLijst=()=>cache.vr||vr().fc||[];
 const gereed=()=>AAN&&(ST==='klaar'||ST==='offline'&&!!vr().code||ST==='onbekend'&&!!vr().code);
 const sterren=n=>'★'.repeat(n)+'☆'.repeat(Math.max(0,3-n));
-const kop=()=>`<div class="mgkop"><img class="mgkopimg vrkopimg" src="img/ui/nav-vrienden-96.webp" alt=""><div><h1 class="mgtitel pagkop">Vrienden</h1><p class="mguitleg">Speel samen met vrienden die het spel ook hebben.</p></div></div>`;
+const kop=()=>`<div class="mgkop"><img class="mgkopimg vrkopimg" src="img/ui/nav-vrienden-96.webp" alt=""><div><h1 class="mgtitel pagkop">Vrienden</h1><p class="mguitleg">Samen op school, en met vrienden die het spel ook hebben.</p></div></div>`;
 const resterend=k=>{const nu=new Date(),eind=new Date(nu);eind.setHours(24,0,0,0);if(k[0]=='w')eind.setDate(eind.getDate()+(6-((nu.getDay()+6)%7)));const u=Math.max(0,Math.round((eind-nu)/36e5));return u<24?`nog ${u} uur`:`nog ${Math.round(u/24)} dagen`};
 const uitnodig=(klein)=>`<section class="vruitnodig${klein?' klein':''}"><p>🦉 <b>Nodig je vrienden uit!</b><br>Stuur je vriendcode naar iemand die het spel ook speelt. Dan zie je hier hoe ver jullie zijn.</p><button class="knop volgende" data-naar="vr">Vriend uitnodigen</button></section>`;
 const medaille=(plek,heeft)=>heeft?(['🥇','🥈','🥉'][plek-1]||plek+'.'):'·';
@@ -110,28 +110,64 @@ function vrHtml(){const v=vr(),code=v.code||'······',F=vrLijst();
  <section class="vrnieuw"><label for="vrin">Vriend toevoegen met code</label><div class="vrknoppen"><input id="vrin" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123"><button class="knop volgende" id="vradd">Toevoegen</button></div></section>
  <section class="vrlijst"><h3>Mijn vrienden</h3>${F.length?`<ul>${F.map(f=>`<li>${kroon(f.house)}<span class="vrnaam">${esc(f.name||'?')}</span><span class="vrlv">level ${f.level|0}</span><button class="linkknop vrweg" data-id="${esc(f.id)}" data-n="${esc(f.name)}" aria-label="Verwijderen">✕</button></li>`).join('')}</ul>`:'<p class="klein">Nog geen vrienden. Deel je code met iemand die het spel ook heeft!</p>'}</section>`}
 function uitHtml(){const sub=V.samen.sub||'d';return `<div class="vrtabs vrsub"><button class="${sub=='d'?'actief':''}" data-s="d">Vandaag</button><button class="${sub=='w'?'actief':''}" data-s="w">Deze week</button></div>${bord(sub=='d'?dagKey():weekKey(),vrLijst(),cache.sc)}`}
+function statusZin(){
+  if(ST==='klaar')return '';
+  if(ST==='offline')return '<p class="vrlet">Even geen verbinding. Je voortgang staat op deze telefoon en gaat mee zodra de uilenpost weer vliegt.</p>';
+  if(ST==='nietklaar'||ST==='uit'||!AAN)return '<p class="vrlet">De uilenpost is even niet bereikbaar. Hieronder zie je jouw ranglijst, je eigen telling van vandaag en je schoolvrienden. Echte vrienden en samen-uitdagingen komen hier terug zodra de verbinding er weer is.</p>';
+  return '<p class="vrlet">De uilen vliegen nog. Lukt het niet, dan blijft alles gewoon op deze telefoon staan.</p>';
+}
+function lokaalUit(k){
+  const v=vr(),sc=v.sc[k]||{};
+  return kies(k).map(c=>{const u=UIT[c],n=sc[c]|0;
+    return `<section class="vrbord vrlokaal"><h3>${u.i} ${u.n}</h3><p class="vrjouw">Jij: <b>${n}</b> ${u.e}</p></section>`}).join('')+
+    `<p class="klein vruitleg">⏳ ${resterend(k)}. Dit is jouw telling op deze telefoon. Vergelijken met vrienden kan weer zodra de uilenpost vliegt. Er staat nu geen extra beloning klaar.</p>`;
+}
+function lokaalUitHtml(){
+  const sub=V.samen.sub||'d';
+  return `<div class="vrtabs vrsub"><button class="${sub=='d'?'actief':''}" data-s="d">Vandaag</button><button class="${sub=='w'?'actief':''}" data-s="w">Deze week</button></div>${lokaalUit(sub=='d'?dagKey():weekKey())}`;
+}
+function schoolKaarten(){
+  const lijst=typeof PERS_VRIEND!=='undefined'?PERS_VRIEND:['tilly','ron','hermelien','hagrid','fred','george'];
+  const titel=['Kennis','Klasgenoot','Maatje','Goede vriend','Boezemvriend','Vriend voor altijd'];
+  const nv=k=>Math.min(5,Math.floor(Math.sqrt(((S.vriend&&S.vriend[k])||0)/3)));
+  return `<section class="vrschool"><h3>Schoolvrienden</h3><p class="klein">Deze vriendinnen en vrienden zijn altijd in Zweinstein, ook zonder verbinding. Hier zijn geen punten mee te verdienen.</p><div class="vrschoolrij">${lijst.map(k=>{
+    const p=typeof PERS!=='undefined'&&PERS[k],n=nv(k);
+    const img=typeof portret==='function'?portret(k):'';
+    return `<article class="vrkaart vrschoolkaart">${img}<div><h4>${p?p.n:k}</h4><small>${p?p.rol:''}</small><p>${p?p.b:''}</p><div class="vrniv"><span class="harten">${'♥'.repeat(n)}<i>${'♥'.repeat(5-n)}</i></span> ${titel[n]||''}</div></div></article>`;
+  }).join('')}</div><p class="klein"><button type="button" class="linkknop" data-naarleraren="1">Alle vrienden en leraren</button></p></section>`;
+}
+function vrWachtHtml(){
+  const v=vr(),F=vrLijst();
+  const code=v.code?`<section class="vrcode"><p>Jouw vriendcode</p><div class="vrcodeveld">${esc(v.code)}</div><p class="klein">Die kun je alvast bewaren. Delen en vrienden toevoegen kan zodra de uilenpost weer vliegt.</p></section>`:
+    `<section class="vrcode"><p>Jouw vriendcode</p><div class="vrcodeveld">······</div><p class="klein">Je krijgt een code zodra de uilenpost weer vliegt. Daarmee kunnen vrienden je toevoegen.</p></section>`;
+  const lijst=F.length?`<section class="vrlijst"><h3>Mijn vrienden</h3><ul>${F.map(f=>`<li>${kroon(f.house)}<span class="vrnaam">${esc(f.name||'?')}</span><span class="vrlv">level ${f.level|0}</span></li>`).join('')}</ul><p class="klein">Wijzigingen bewaar je hier zodra er weer verbinding is.</p></section>`:'';
+  return code+lijst+schoolKaarten();
+}
 function teken(){const app=$('#app');if(!app||document.body.dataset.view!=='samen')return;
- if(!gereed()){app.innerHTML=`<div class="perkament lijst mgkader vrkader">${kop()}${rangHtml().replace(uitnodig(),'')}<p class="vrbinnen">🦉 <b>Vrienden: binnenkort!</b><br>De uilen worden nog getraind. Straks kun je hier vrienden toevoegen en samen uitdagingen spelen.</p><button class="knop" onclick="ga('home')">Terug naar de Hal</button></div>`;return}
  const tab=V.samen.tab||'rang';
+ const online=ST==='klaar';
+ const inhoud=tab=='rang'?rangHtml().replace(online?'__nope__':uitnodig(),''):tab=='uit'?(online?uitHtml():lokaalUitHtml()):(online?vrHtml()+schoolKaarten():vrWachtHtml());
  app.innerHTML=`<div class="perkament lijst mgkader vrkader">${kop()}
- ${ST==='offline'?'<p class="klein vrlet">Even geen verbinding. Je voortgang wordt bewaard en later verstuurd.</p>':''}
+ ${statusZin()}
  <div class="vrtabs vrhoofd"><button class="${tab=='rang'?'actief':''}" data-t="rang">Ranglijst</button><button class="${tab=='uit'?'actief':''}" data-t="uit">Uitdagingen</button><button class="${tab=='vr'?'actief':''}" data-t="vr">Vrienden</button></div>
- ${tab=='rang'?rangHtml():tab=='uit'?uitHtml():vrHtml()}
+ ${inhoud}
  <button class="knop" onclick="ga('home')">Terug naar de Hal</button></div>`;
+ try{app.scrollTop=0;window.scrollTo(0,0)}catch(e){}
  app.querySelectorAll('.vrhoofd button').forEach(b=>b.onclick=()=>{V.samen.tab=b.dataset.t;teken()});
  app.querySelectorAll('.vrsub button').forEach(b=>b.onclick=()=>{V.samen.sub=b.dataset.s;teken()});
  app.querySelectorAll('[data-naar]').forEach(b=>b.onclick=()=>{V.samen.tab=b.dataset.naar;teken()});
+ app.querySelectorAll('[data-naarleraren]').forEach(b=>b.onclick=()=>ga('vrienden'));
  if(tab!=='vr')return;const v=vr();
  const deelTekst=`Speel je mee in Zweinstein? Open ${LINK} en zet de app op je beginscherm. Voeg mij daarna toe als vriend: tik onderaan op Vrienden → Vrienden en vul mijn code in: ${v.code}`;
- $('#vrkopie').onclick=async()=>{try{await navigator.clipboard.writeText(v.code);toast('Code gekopieerd')}catch(e){prompt('Jouw vriendcode:',v.code)}};
- $('#vrdeel').onclick=async()=>{try{if(navigator.share){await navigator.share({text:deelTekst});return}}catch(e){if(e&&e.name==='AbortError')return}window.open('https://wa.me/?text='+encodeURIComponent(deelTekst),'_blank')};
- const inp=$('#vrin');inp.oninput=()=>{inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'')};
- $('#vradd').onclick=async()=>{const c=inp.value.trim();if(c.length!==6){toast('Een vriendcode heeft 6 tekens');return}$('#vradd').disabled=true;
+ const kopie=$('#vrkopie');if(kopie)kopie.onclick=async()=>{try{await navigator.clipboard.writeText(v.code);toast('Code gekopieerd')}catch(e){prompt('Jouw vriendcode:',v.code)}};
+ const deel=$('#vrdeel');if(deel)deel.onclick=async()=>{try{if(navigator.share){await navigator.share({text:deelTekst});return}}catch(e){if(e&&e.name==='AbortError')return}window.open('https://wa.me/?text='+encodeURIComponent(deelTekst),'_blank')};
+ const inp=$('#vrin');if(inp)inp.oninput=()=>{inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'')};
+ const add=$('#vradd');if(!add)return;add.onclick=async()=>{const c=inp.value.trim();if(c.length!==6){toast('Een vriendcode heeft 6 tekens');return}add.disabled=true;
   try{const r=await rpc('add_friend_by_code',{code:c});if(r&&r.ok){toast(`🦉 ${r.name||'Je vriend'} is nu je vriend!`);await laad()}else toast(({zelf:'Dat is je eigen code 🙂',onbekend:'Deze code kennen we niet. Klopt hij?',vol:'Je hebt al heel veel vrienden'})[r&&r.reden]||'Dat lukte niet')}
   catch(e){fout(e);toast('Dat lukte nu niet. Probeer het straks nog eens.')}finally{const b=$('#vradd');if(b)b.disabled=false}};
  app.querySelectorAll('.vrweg').forEach(b=>b.onclick=async()=>{if(!confirm(`${b.dataset.n||'Deze vriend'} verwijderen als vriend?`))return;try{await rpc('remove_friend',{fid:b.dataset.id});await laad()}catch(e){toast('Dat lukte nu niet')}})}
 async function laad(){await sync(true);if(ST==='klaar'){try{const [s]=await Promise.all([scoresVan([dagKey(),weekKey()])]);cache={vr:vr().fc||[],sc:s||[]}}catch(e){fout(e)}}teken();toonPop()}
-V.samen=(tab)=>{if(tab)V.samen.tab=tab;const app=$('#app');if(!AAN){teken();return}if(!vr().code||ST==='onbekend')app.innerHTML=`<div class="perkament lijst mgkader vrkader">${kop()}<p class="vrbinnen">🦉 De uilen vliegen…</p></div>`;else teken();laad()};
+V.samen=(tab)=>{if(tab)V.samen.tab=tab;teken();if(AAN)laad()};
 /* ---------- Ranglijst (v119): verdiende huisschilden = som van beste sterren per level ----------
    Echte spelers: jij (lokaal S.lvSter) + vrienden (level_stars, opgehaald in de bestaande sync, max 1x per 10 min).
    Zeven vaste personages staan op een vast percentage van het maximum (3 x gehaalde levels van de beste echte speler). */
