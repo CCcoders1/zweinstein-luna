@@ -272,3 +272,54 @@ body[data-view=pad] #app{padding-top:7.6rem}
 @keyframes knipIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes knipUit{to{opacity:0;transform:translateY(10px)}}
 @media (prefers-reduced-motion:reduce){.zwknip,.zwknip.weg{animation:none}}
+
+/* v149: zichtbare plantgroei + tuin van Lindaroos */
+.kpot, .mk-pot, .mk-vloer{position:relative}
+.kpot .plantimg, .mk-pot .plantimg, .mk-vloer .plantimg,
+.kpot .kplant img, .mk-pot .kplant img{
+  transform-origin:50% 100%;
+  transform:scale(calc(0.42 + var(--groei, 0) * 0.58)) !important;
+  transition:transform .9s ease;
+}
+.kpot-groei{
+  display:block;height:5px;border-radius:4px;margin:3px auto 0;max-width:78%;
+  background:linear-gradient(90deg,#5a7a28,#c9a227);box-shadow:0 0 0 1px rgba(40,24,8,.25);
+}
+.kpot-groei.klaar{background:linear-gradient(90deg,#c9a227,#ffe28a)}
+.tuinbalk{
+  position:relative;height:22px;border-radius:11px;margin:8px 10px 14px;
+  background:#e8d8b0;border:1px solid #c9a227;overflow:hidden;
+}
+.tuinbalk span{display:block;height:100%;background:linear-gradient(90deg,#6a8a38,#c9a227);border-radius:11px}
+.tuinbalk em{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-style:normal;font-size:12px;font-weight:700;color:#2a1c0c;letter-spacing:.01em;
+  text-shadow:0 1px 0 rgba(255,246,216,.7);
+}
+.mk-tuin{
+  position:fixed;z-index:33;
+  left:calc(10px + env(safe-area-inset-left));
+  right:calc(10px + env(safe-area-inset-right));
+  top:calc(54px + env(safe-area-inset-top));
+  margin:0;padding:8px 10px 10px;border-radius:14px;
+  background:linear-gradient(180deg,#3a4a22,#243014);
+  border:1px solid #c9a227;color:#f3e4c0;text-align:center;
+  box-shadow:0 4px 14px rgba(0,0,0,.4);
+}
+.mk-tuin p{margin:0 0 8px;font-weight:700;font-size:14px;color:#ffe9a8}
+.mk-tuin small{display:block;margin-top:8px;color:#e8d8b0;font-size:12px}
+.mk-tuinbed{display:flex;justify-content:center;align-items:flex-end;gap:6px;min-height:42px}
+.mk-tuinplant{
+  display:block;width:10px;height:18px;border-radius:8px 8px 3px 3px;
+  background:#3a4a22;opacity:.4;transform-origin:50% 100%;
+}
+.mk-tuinplant.wacht{opacity:.75;background:#7a9a3a;height:28px}
+.mk-tuinplant.aan{opacity:1;background:linear-gradient(180deg,#b8d46a,#4a7a28);height:38px;box-shadow:0 0 6px rgba(200,220,80,.45)}
+.kas-aktezin{text-align:center;color:#3a2a12;margin:6px 12px 10px;font-weight:600}
+body.akte2-kas .kasdecor .kd-rank{opacity:1;filter:saturate(1.2)}
+@media (prefers-reduced-motion:reduce){
+  .kpot .plantimg, .mk-pot .plantimg, .mk-vloer .plantimg, .kpot .kplant img, .mk-pot .kplant img{transition:none}
+}
+
+.mk-lab{white-space:normal!important;line-height:1.15;font-size:11px;max-width:100%;text-align:center}
+.kas-aktezin{background:rgba(255,246,216,.88);border:1px solid #c9a227;border-radius:12px;padding:8px 12px;margin:8px 12px 10px;color:#2a1c0c!important;font-weight:700;text-shadow:none}

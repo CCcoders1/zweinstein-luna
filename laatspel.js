@@ -609,3 +609,141 @@ window.winHaakZin=function(n){
 })();
 
 })();
+
+/* v149: Akte II-halsfeer, zichtbare plantgroei, tuinbed in de eigen kas */
+(function(){
+  const TUINZIN=[
+    'Achter het portret ruikt het naar regen die nog moet vallen.',
+    'Lindaroos knikte vanochtend, heel klein, toen we de Hal in kwamen.',
+    'De tuin wacht. Niet ongeduldig. Gewoon, als een bed dat net is opgemaakt.',
+    'Er ligt nog een zakje zonder naam, ergens onder een plank. We hoeven niet te rennen.',
+    'De zevende kaars brandt nog. Precies genoeg om verder te lezen.'
+  ];
+  const _hal=typeof zwHalSfeer==='function'?zwHalSfeer:null;
+  window.zwHalSfeer=function(){
+    try{
+      if(typeof zwTerug==='function'&&zwTerug())return _hal?_hal():'Fijn dat je er weer bent. Je ochtendpost wacht.';
+      if((S.m3lvl|0)>=600 || (S.dagboek&&S.dagboek.gezien&&S.dagboek.gezien[30])){
+        const dag=(typeof vandaag==='function'?vandaag():'')||'';
+        const i=Math.abs((dag+'tuin').split('').reduce((a,c)=>((a<<5)-a)+c.charCodeAt(0)|0,0))%TUINZIN.length;
+        if((dag.charCodeAt(dag.length-1)||0)%3===0) return TUINZIN[i];
+      }
+    }catch(e){}
+    return _hal?_hal():'In de Hal ruikt het naar bijenwas en een beetje monnikskap.';
+  };
+
+  function groeiDeel(p){
+    if(!p||typeof ZADEN==='undefined'||!ZADEN[p.z])return 0;
+    const tot=ZADEN[p.z][2]*6e4;
+    if(!tot)return 0;
+    return Math.max(0,Math.min(1,(Date.now()-p.t+(p.bonus||0))/tot));
+  }
+  function zwKasGroei(root){
+    try{
+      const r=root||document;
+      r.querySelectorAll('.kpot[data-i],.mk-pot[data-i],.mk-vloer[data-i]').forEach(k=>{
+        const i=+k.dataset.i;
+        const p=typeof pot==='function'?pot(i):(S.kweek||{})[i];
+        const g=p?groeiDeel(p):0;
+        k.style.setProperty('--groei', g.toFixed(3));
+        let b=k.querySelector('.kpot-groei');
+        if(!p){if(b)b.style.width='0';return}
+        if(!b){b=document.createElement('span');b.className='kpot-groei';b.setAttribute('aria-hidden','true');k.appendChild(b)}
+        b.style.width=(g*100).toFixed(1)+'%';
+        const st=typeof stadium==='function'?stadium(p):-1;
+        b.classList.toggle('klaar',st===4);
+        const lab=k.querySelector('.mk-lab');
+        if(lab&&p&&st>=0&&st<4){
+          const naam=(ZADEN[p.z]&&ZADEN[p.z][0])||'';
+          lab.textContent=naam?naam+' · '+Math.round(g*100)+'%':'';
+        }
+      });
+    }catch(e){}
+  }
+  function zwTuinBed(){
+    try{
+      if(((S.m3lvl|0)<600)&&!(S.dagboek&&S.dagboek.gezien&&S.dagboek.gezien[30]))return '';
+      const L=window.zwDagboekHfd||[];
+      const start=31,n=Math.max(0,L.length-start);
+      if(!n)return '';
+      let gezien=0,open=0;
+      for(let i=start;i<L.length;i++){
+        if(typeof window.zwHfdOpen==='function'&&window.zwHfdOpen(i))open++;
+        if(S.dagboek&&S.dagboek.gezien&&S.dagboek.gezien[i])gezien++;
+      }
+      const plantjes=Array.from({length:n},(_,i)=>{
+        const st=i<gezien?'aan':i<open?'wacht':'dicht';
+        return '<i class="mk-tuinplant '+st+'" style="--n:'+i+'"></i>';
+      }).join('');
+      return '<div class="mk-tuin" aria-label="Tuin van Lindaroos: '+gezien+' van '+n+' bladen verzorgd"><p>De tuin van Lindaroos</p><div class="mk-tuinbed">'+plantjes+'</div><small>'+gezien+' van '+n+' bladen verzorgd'+(open>gezien?' · er staat iets nieuw te groeien':'')+'</small></div>';
+    }catch(e){return ''}
+  }
+  const _mk=V.mijnkas;
+  if(_mk)V.mijnkas=function(){
+    const r=_mk.apply(this,arguments);
+    try{
+      const bed=zwTuinBed();
+      if(bed&&!document.querySelector('.mk-tuin')){
+        const sc=document.getElementById('mkscroll');
+        const titel=document.querySelector('#app .mk-titel, #app h2.mk-titel');
+        if(sc)sc.insertAdjacentHTML('beforebegin',bed);
+        else if(titel)titel.insertAdjacentHTML('afterend',bed);
+      }
+      zwKasGroei();
+      clearInterval(V.mijnkas._groei);
+      V.mijnkas._groei=setInterval(()=>{
+        if(document.body.dataset.view!=='mijnkas'){clearInterval(V.mijnkas._groei);return}
+        zwKasGroei();
+      },8000);
+    }catch(e){}
+    return r;
+  };
+  const _kas=V.kas;
+  if(_kas)V.kas=function(){
+    const r=_kas.apply(this,arguments);
+    try{
+      zwKasGroei();
+      const akte2=((S.m3lvl|0)>=600)||!!(S.dagboek&&S.dagboek.gezien&&S.dagboek.gezien[30]);
+      if(akte2){
+        document.body.classList.add('akte2-kas');
+        const zetZin=()=>{
+          if(document.body.dataset.view!=='kas'||document.querySelector('.kas-aktezin'))return;
+          const zin='<p class="kas-aktezin klein">Kas zeven is open. In je eigen kas groeit de tuin van Lindaroos mee, blad voor blad.</p>';
+          const anker=document.querySelector('#app .kweekopdr, #app h2.pagkop, #app .pagkop, #app h2');
+          if(anker)anker.insertAdjacentHTML(anker.classList.contains('kweekopdr')?'beforebegin':'afterend',zin);
+        };
+        zetZin();
+        setTimeout(zetZin,80);
+        setTimeout(zetZin,250);
+      }
+      clearInterval(V.kas._groei);
+      V.kas._groei=setInterval(()=>{
+        if(document.body.dataset.view!=='kas'){clearInterval(V.kas._groei);return}
+        zwKasGroei();
+      },8000);
+    }catch(e){}
+    return r;
+  };
+  window.zwKasGroei=zwKasGroei;
+})();
+
+
+/* v149: verhaalkaart niet laten staan als je naar een ander scherm tikt */
+(function(){
+  function zwSluitVerhaal(){
+    try{
+      document.querySelectorAll('.verhaal,.verhaalm,.ritueel').forEach(el=>{
+        if(el.classList.contains('zw-wacht'))return;
+        try{el.remove()}catch(e){}
+      });
+    }catch(e){}
+  }
+  const _ga=typeof ga==='function'?ga:null;
+  if(_ga)window.ga=function(s,...a){
+    try{
+      const nu=document.body&&document.body.dataset.view;
+      if(s&&s!==nu&&s!=='home')zwSluitVerhaal();
+    }catch(e){}
+    return _ga.apply(this,arguments);
+  };
+})();

@@ -230,7 +230,7 @@ function collectie(){
   const brouw=Object.keys(S.drankOoit||S.drank||{}).filter(k=>((S.drankOoit||{})[k]||(S.drank[k]|0)>0)).length;
   const tit=S.titels.length;
   return {clueN,hfd,album,albumT,brouw,tit,
-    html:`<div class="collestrook" id="collestrook"><small>Je collectie</small><p>Dagboek ${hfd}/31 · Aanwijzingen ${clueN}/23 · Drankjes ${brouw}/4 · Album ${album}${albumT?'/'+albumT:''}${tit?(' · '+tit+' titels'):''}</p></div>`};
+    html:`<div class="collestrook" id="collestrook"><small>Je collectie</small><p>Dagboek ${hfd}/${(window.zwDagboekHfd&&window.zwDagboekHfd.length)||31} · Aanwijzingen ${clueN}/${(window.zwVerhaal&&window.zwVerhaal.clues&&window.zwVerhaal.clues.length)||23} · Drankjes ${brouw}/4 · Album ${album}${albumT?'/'+albumT:''}${tit?(' · '+tit+' titels'):''}</p></div>`};
 }
 window.zwMorgen=morgenZin;
 
