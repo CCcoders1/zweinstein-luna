@@ -38,7 +38,7 @@ const MONO={stronk:{l:'PS',k:'#c4a035',a:'#3a2a10'},sinistra:{l:'AS',k:'#2a3d6e'
  const _gids=gids;gids=function(t,o={}){const r=_gids(t,o);try{const G=document.getElementById('gids');G.classList.add('metstaand');G.querySelector('.gav').innerHTML=staand('m-'+(o.mood||'praat'))}catch(e){}return r};
  /* --- dialogen: portret per spreker --- */
  const _vh=verhaal;
- verhaal=function(regels,klaar){if(document.querySelector('.modal'))return setTimeout(()=>verhaal(regels,klaar),800);let i=0;const o=document.createElement('div');o.className='modal verhaalm';document.body.appendChild(o);
+ verhaal=function(regels,klaar){if(document.querySelector('.modal:not(.zw-wacht)'))return setTimeout(()=>verhaal(regels,klaar),800);let i=0;const o=document.createElement('div');o.className='modal verhaalm';document.body.appendChild(o);
   const toon=()=>{const[w,t]=regels[i];const k=wieIs(w);if(k)groei(k,1);
    o.innerHTML=`<div class="modalin rococo vh"><div class="vh-p">${k?portret(k,'vh-port '+(i%2?'m-blij':'m-praat')):`<div class="vh-ico">${icoon((typeof SPREKER!='undefined'&&SPREKER[w])||'hoed')}</div>`}</div><div class="vh-t"><b>${w}</b><p>${t}</p></div><button class="knop volgende" id="vhv">${i<regels.length-1?'Verder':'Oké!'}</button></div>`;
    try{fx.speel('kras')}catch(e){}o.querySelector('#vhv').onclick=()=>{i++;if(i<regels.length)toon();else{o.remove();klaar&&klaar()}}};toon()};

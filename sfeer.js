@@ -275,7 +275,8 @@ let vhT=0;
 function wachtVerhaal(){
   if(document.body.dataset.view==='dagboek'||document.querySelector('#app .boek,#app .boekextra'))return;
   if(!opHal())return;
-  if(document.querySelector('.modal,.verhaal,.ritueel,#intro')){vhT=setTimeout(wachtVerhaal,900);return}
+  if(document.querySelector('.modal:not(.zw-wacht),.verhaal:not(.zw-wacht),.ritueel:not(.zw-wacht),#intro')){vhT=setTimeout(wachtVerhaal,900);return}
+  if(window._zwSchoolWacht){vhT=setTimeout(wachtVerhaal,900);return}
   /* Eerste ochtendpost eerst, anders ligt het verhaal over Spelen. */
   if(S.login&&S.login.laatst!== (typeof vandaag==='function'?vandaag():'')){return}
   const i=hfdNieuw();

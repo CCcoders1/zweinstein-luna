@@ -442,4 +442,63 @@ window.winHaakZin=function(n){
   return TILLY[n%TILLY.length];
 };
 
+
+/* v147: één pop-up tegelijk. Schildwissel blijft in de DOM (economietest),
+   maar is verborgen tot de vorige brief of het ritueel weg is. Geen economie. */
+(function(){
+  const PRI={'ochtend':0,'login':1,'schildwissel':2,'welkom':4};
+  function rijEl(el){
+    if(!el||!el.classList)return false;
+    if(el.querySelector&&el.querySelector('.m3eind,.m3voor'))return false;
+    if(el.classList.contains('m3eind')||el.classList.contains('m3voor'))return false;
+    const pop=el.dataset&&el.dataset.pop;
+    if(pop&&['ochtend','login','schildwissel','welkom'].indexOf(pop)>=0)return true;
+    if(el.classList.contains('ritueel')||el.classList.contains('verhaalm'))return true;
+    if(el.classList.contains('modal')&&el.querySelector&&el.querySelector('.ochtendpost,.schildw,.vh'))return true;
+    return false;
+  }
+  function zichtbaar(el){
+    if(!el||el.classList.contains('zw-wacht'))return false;
+    try{
+      const st=getComputedStyle(el);
+      return st.display!=='none'&&st.visibility!=='hidden';
+    }catch(e){return !!el.isConnected}
+  }
+  function ietsZichtbaar(){
+    return [...document.querySelectorAll('.modal,.verhaal,.ritueel,#intro')].some(zichtbaar);
+  }
+  function verberg(el){if(!el||el.classList.contains('zw-wacht'))return;el.classList.add('zw-wacht');el.setAttribute('aria-hidden','true')}
+  function toon(el){if(!el)return;el.classList.remove('zw-wacht');el.removeAttribute('aria-hidden')}
+  function rang(el){const p=el&&el.dataset&&el.dataset.pop;return PRI.hasOwnProperty(p)?PRI[p]:(el.classList.contains('verhaalm')?3:5)}
+  function volgende(){
+    if(ietsZichtbaar())return;
+    const wacht=[...document.querySelectorAll('.modal.zw-wacht,.verhaal.zw-wacht,.ritueel.zw-wacht')].filter(el=>el.isConnected);
+    if(!wacht.length)return;
+    wacht.sort((a,b)=>rang(a)-rang(b));
+    toon(wacht[0]);
+  }
+  function aanmelden(el){
+    if(!rijEl(el)||el._zwq)return;
+    el._zwq=1;
+    const anderen=[...document.querySelectorAll('.modal,.verhaal,.ritueel,#intro')].filter(x=>x!==el&&zichtbaar(x));
+    if(anderen.length)verberg(el);
+  }
+  const mo=new MutationObserver(muts=>{
+    let weg=false;
+    muts.forEach(m=>{
+      m.addedNodes.forEach(n=>{
+        if(n.nodeType!==1)return;
+        if(rijEl(n))aanmelden(n);
+        n.querySelectorAll&&n.querySelectorAll('.modal,.ritueel,.verhaalm').forEach(aanmelden);
+      });
+      m.removedNodes.forEach(n=>{
+        if(n.nodeType===1&&(n.classList&&(n.classList.contains('modal')||n.classList.contains('ritueel')||n.classList.contains('verhaal')||n.classList.contains('verhaalm'))))weg=true;
+      });
+    });
+    if(weg)setTimeout(volgende,40);
+  });
+  mo.observe(document.body,{childList:true,subtree:true});
+  window.zwPopVolgende=volgende;
+})();
+
 })();

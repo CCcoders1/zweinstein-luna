@@ -64,7 +64,7 @@ function bonusVrij(b){if(S.bonusOpen[b[0]])return true;const v=VAK1.find(x=>x.id
 function bonusCheck(){BONUS.forEach(b=>{if(!S.bonusOpen[b[0]]&&bonusVrij(b)){S.bonusOpen[b[0]]=1;bewaar();setTimeout(()=>verhaal([['Tilly',`${b[5]} Luna, we hebben iets nieuws ontdekt: <b>${b[1]}</b>! Je vindt het onder Bonus. Daar verdien je extra Smekkies en kaarten.`]],()=>{}),700)}})}
 /* verhaalmoment */
 const SPREKER={Tilly:'tilly','Professor Stronk':'blad','Professor Sneep':'ketel','Professor Banning':'stok','Hagrid':'huis','Professor Sinistra':'telescoop','Professor Anderling':'hoed'};
-function verhaal(regels,klaar){if(document.querySelector('.modal')){return setTimeout(()=>verhaal(regels,klaar),800)}let i=0;const o=document.createElement('div');o.className='modal verhaalm';document.body.appendChild(o);
+function verhaal(regels,klaar){if(document.querySelector('.modal:not(.zw-wacht)')){return setTimeout(()=>verhaal(regels,klaar),800)}let i=0;const o=document.createElement('div');o.className='modal verhaalm';document.body.appendChild(o);
  const toon=()=>{const[w,t]=regels[i];o.innerHTML=`<div class="modalin rococo vh"><div class="vh-p">${w=='Tilly'?tillySVG(i%2?'blij':'praat'):`<div class="vh-ico">${icoon(SPREKER[w]||'hoed')}</div>`}</div><div class="vh-t"><b>${w}</b><p>${t}</p></div><button class="knop volgende" id="vhv">${i<regels.length-1?'Verder':'Oké!'}</button></div>`;
   try{fx.speel('kras')}catch(e){}$('#vhv').onclick=()=>{i++;if(i<regels.length)toon();else{o.remove();klaar&&klaar()}}};toon()}
 /* kweekpotten */
@@ -104,7 +104,17 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home='zaal';try{zetDecor('zaal')
  try{loginCheck&&loginCheck()}catch(e){}
  if(!S.verhaalGezien[v.id+j]){
   if(S.login&&S.login.laatst&&S.login.laatst!==(typeof vandaag==='function'?vandaag():'')){/* ochtendpost eerst; intro komt na claimen */}
-  else{S.verhaalGezien[v.id+j]=1;bewaar();setTimeout(()=>verhaal(v.intro),RMP?50:600)}
+  else{
+    window._zwSchoolWacht=1;
+    const startIntro=()=>{
+      if(document.querySelector('.modal:not(.zw-wacht),.ritueel:not(.zw-wacht)'))return setTimeout(startIntro,800);
+      window._zwSchoolWacht=0;
+      if(S.verhaalGezien[v.id+j])return;
+      S.verhaalGezien[v.id+j]=1;bewaar();
+      verhaal(v.intro);
+    };
+    setTimeout(startIntro,RMP?50:600);
+  }
  }else uilenpostCheck();
  potCheck();stats()};
 function spellenHal(){const open=BONUS.filter(b=>S.bonusOpen[b[0]]);const dicht=BONUS.find(b=>!S.bonusOpen[b[0]]);return `<section class="halspel"><h3>Spellen</h3><div class="hs-rij"><button class="hs hs-hoofd" onclick="ga('match3')"><i class="rond">${icoon('ster')}</i><b>Level ${S.m3lvl}</b><small>${m3VakVoor(S.m3lvl).n}</small></button>${open.map(b=>`<button class="hs" onclick="ga('${b[0]}')"><i class="rond">${icoon(b[2])}</i><b>${b[1]}</b></button>`).join('')}${dicht?`<button class="hs dicht" onclick="toast('Nog op slot: ${dicht[5].replace(/'/g,'’')}')"><i class="rond">${icoon('slot')}</i><b>${dicht[1]}</b><small>binnenkort</small></button>`:''}</div></section>`}

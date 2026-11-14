@@ -215,3 +215,45 @@ body[data-view=match3] #toast{
   .m3combo,.m3combo.m3combo-mooi,#m3doelzin,.m3kaart.m3klaar,.m3eind .hp-sterren{animation:none!important;transition:none!important;filter:none}
   #m3doelzin.zien{opacity:1;transform:translate(-50%,0)}
 }
+
+/* v147: pop-ups in de wachtrij, niet over elkaar */
+.modal.zw-wacht,.verhaal.zw-wacht,.ritueel.zw-wacht,.verhaalm.zw-wacht{
+  display:none!important
+}
+/* Boek: geen doorschemeren van het vorige scherm tijdens het omslaan.
+   flits.js houdt een .appgeest (vorige view, z-index 1) 1,5s boven #app;
+   die plus #app.inkomen (start deels doorzichtig) liet de Hal door de bladzijde heen. */
+body[data-view=boek] .appgeest{opacity:0!important;visibility:hidden!important;pointer-events:none}
+body[data-view=boek] #app.inkomen{animation:none!important;opacity:1!important}
+body[data-view=boek] #app{
+  background:#ead6ae;background:linear-gradient(180deg,#f7edd6 0%,#ead6ae 100%);
+  border-radius:14px;margin:8px 8px 16px;overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);position:relative;z-index:2
+}
+.boek{isolation:isolate;overflow:hidden;background:#3a1e0c;background:radial-gradient(ellipse at 30% 20%,#6a3a1c,#3a1e0c 70%,#24120a)!important}
+.blad{background-color:#f6e8c4!important;background-image:linear-gradient(90deg,rgba(120,80,30,.25),transparent 6%),linear-gradient(#f6e8c4,#e4cc98)!important;opacity:1!important}
+.blad.omslaan{animation:zwOmslaan .55s cubic-bezier(.4,0,.2,1);opacity:1!important}
+@keyframes zwOmslaan{
+  0%{transform:perspective(1200px) rotateY(-55deg);filter:brightness(.92);opacity:1}
+  100%{transform:none;filter:none;opacity:1}
+}
+@media (prefers-reduced-motion:reduce){.blad.omslaan{animation:none}}
+/* Kaart: oplichtende verhaalplekken */
+.plekkaart{margin:8px 10px 12px;padding:8px 8px 10px;background:linear-gradient(180deg,#f7edd6,#ead6ae);border:1px solid var(--lijn,rgba(212,175,55,.55));border-radius:12px;color:#2a1c0c;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+/* body heeft overflow-x:hidden, daardoor werkt sticky niet; op de Kaart blijft de rij onder de kop staan. */
+body[data-view=pad] .plekkaart{position:fixed;left:8px;right:8px;top:60px;z-index:11;margin:0;background:linear-gradient(180deg,#f7edd6,#ead6ae)}
+body[data-view=pad] #app{padding-top:7.6rem}
+.plekkaart>small{display:block;letter-spacing:.08em;text-transform:uppercase;font-size:.68em;opacity:.75;margin:0 2px 6px}
+.plekrij{display:flex;gap:4px;overflow-x:hidden;padding:2px 0 4px}
+.plekpin{flex:1 1 0;min-width:0;min-height:58px;padding:5px 2px;border-radius:12px;border:1.5px solid rgba(168,128,31,.55);background:linear-gradient(180deg,#f8f0dc,#e6d0a4);color:#2a1c0c;font:inherit;font-size:.72em;line-height:1.15;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative}
+.plekpin b{font-weight:700}
+.plekpin .plekico{font-size:1.25em;line-height:1}
+.plekpin.dicht{opacity:.45}
+.plekpin.wacht{box-shadow:0 0 0 1px rgba(232,197,106,.7)}
+.plekpin.aan{border-color:#c9a227;box-shadow:0 0 0 2px rgba(255,220,100,.75),0 0 16px rgba(255,200,80,.7);background:linear-gradient(180deg,#fff8dc,#f0d36a)}
+.plekpin.aan i{position:absolute;top:2px;right:4px;font-style:normal;font-size:.7em;color:#6b1d0e;font-weight:700}
+@media (prefers-reduced-motion:reduce){.plekpin.aan{box-shadow:0 0 0 2px rgba(255,220,100,.7)}}
+@media (prefers-reduced-motion:no-preference){
+  .plekpin.aan{animation:plekgloed 2.8s ease-in-out infinite}
+  @keyframes plekgloed{50%{box-shadow:0 0 0 2px rgba(255,220,100,.8),0 0 20px rgba(255,200,80,.7)}}
+}

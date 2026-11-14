@@ -39,7 +39,7 @@ function toonZin(wie,tekst,cliff,klaar){
 }
 function wachtStil(fn,n){
   n=n||0;
-  if(document.querySelector('.modal,.verhaal,.ritueel,#intro,.m3eind,.m3voor')){if(n<40)setTimeout(()=>wachtStil(fn,n+1),800);return}
+  if(document.querySelector('.modal:not(.zw-wacht),.verhaal:not(.zw-wacht),.ritueel:not(.zw-wacht),#intro,.m3eind,.m3voor')){if(n<40)setTimeout(()=>wachtStil(fn,n+1),800);return}
   fn();
 }
 
@@ -283,5 +283,61 @@ V.dagboek=V.verhaal=function(){
 
 ontgrendelClues();
 window.zwVerhaal={tussen:TUSSEN,clues:CLUES,paren:PAREN,briefPS,ontgrendelClues};
+
+const PLEK_KAART=[
+  {soort:'kas',naam:'Kassen',ga:'kas',ico:'🌿'},
+  {soort:'ketel',naam:'Ketel',ga:'ketel',ico:'⚗️'},
+  {soort:'huiskamer',naam:'Huiskamer',ga:'huiskamer',ico:'🔥'},
+  {soort:'winter',naam:'Winter',ga:'winter',ico:'❄️'},
+  {soort:'album',naam:'Album',ga:'album',ico:'📖'},
+  {soort:'feest',naam:'De Hal',ga:'home',ico:'🕯️'}
+];
+function htmlPlekKaart(){
+  const gevonden=(S.dagboek&&S.dagboek.plek)||{};
+  const knoppen=PLEK_KAART.map(p=>{
+    const scenes=PLEK.filter(x=>x[1]===p.soort);
+    const open=scenes.filter(x=>vrij(x[6]));
+    const gezien=open.filter(x=>gevonden[x[0]]);
+    const st=gezien.length?'aan':open.length?'wacht':'dicht';
+    const titel=gezien.length?gezien[gezien.length-1][2]:(open.length?'Hier is iets te zien.':'Hier gebeurt later iets.');
+    return `<button type="button" class="plekpin ${st}" data-soort="${p.soort}" data-ga="${p.ga}" aria-label="${p.naam}. ${titel}"><span class="plekico">${p.ico}</span><b>${p.naam}</b>${gezien.length?`<i>${gezien.length}</i>`:''}</button>`;
+  }).join('');
+  return `<section class="plekkaart" id="plekkaart"><small>Spoor van Kas Zeven</small><div class="plekrij">${knoppen}</div></section>`;
+}
+function tikPlek(soort,gaNaar){
+  const gevonden=(S.dagboek&&S.dagboek.plek)||{};
+  const scenes=PLEK.filter(x=>x[1]===soort);
+  const open=scenes.filter(x=>vrij(x[6]));
+  const gezien=open.filter(x=>gevonden[x[0]]);
+  if(gezien.length){
+    const s=gezien[gezien.length-1];
+    toonZin(s[3],s[4],s[5]);
+    return;
+  }
+  if(open.length){
+    if(typeof ga==='function'&&gaNaar)ga(gaNaar);
+    else toast('Ga naar deze plek, dan vertelt Tilly het.');
+    return;
+  }
+  toast('Hier gebeurt later iets. Speel verder, dan vertelt Tilly het.');
+}
+const _padPlek=V.pad;
+if(_padPlek)V.pad=function(){
+  const r=_padPlek.apply(this,arguments);
+  try{
+    const oud=document.getElementById('plekkaart');if(oud)oud.remove();
+    document.body.insertAdjacentHTML('beforeend',htmlPlekKaart());
+    document.querySelectorAll('#plekkaart .plekpin').forEach(b=>{
+      b.onclick=()=>tikPlek(b.dataset.soort,b.dataset.ga);
+    });
+  }catch(e){}
+  return r;
+};
+const _gaPlek=typeof ga==='function'?ga:null;
+if(_gaPlek)window.ga=function(s,...a){
+  const uit=_gaPlek.apply(this,arguments);
+  try{if((document.body.dataset.view||s)!=='pad'){const el=document.getElementById('plekkaart');if(el)el.remove()}}catch(e){}
+  return uit;
+};
 
 })();
