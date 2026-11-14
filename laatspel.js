@@ -1706,8 +1706,32 @@ window.winHaakZin=function(n){
       const app=document.getElementById('app');
       if(!app||app.querySelector('#mk-tuin3d'))return r;
       app.insertAdjacentHTML('beforeend',
-        '<section class="kaart sierlijst" id="mk-tuin3d"><h3>Test: 3D-tuin naar Kas Drie</h3><p class="klein">Een proefomgeving in de stijl van het oude pc-spel. Het gewone spel verandert hier niet door.</p><a class="knop" href="tuin3d.html">Open de 3D-tuin</a></section>');
+        '<section class="kaart sierlijst" id="mk-tuin3d"><h3>Test: 3D-tuin met drie deuren</h3><p class="klein">Een proefomgeving in de stijl van het oude pc-spel, met deuren naar de Kassen, Hagrids moestuin en de Grote Hal. Het gewone spel verandert hier niet door.</p><a class="knop" href="tuin3d.html">Open de 3D-tuin</a></section>');
     }catch(e){}
     return r;
   };
+})();
+
+/* v161: vanuit de 3D-testtuin eenmalig het gekozen 2D-scherm openen */
+(function(){
+  try{
+    const q=new URLSearchParams(location.search);
+    const waar=q.get('open');
+    if(!(waar==='kas'||waar==='moestuin'||waar==='home'))return;
+    const _s=window.startApp;
+    if(!_s)return;
+    window.startApp=function(){
+      const r=_s.apply(this,arguments);
+      try{
+        if(!window.S||!S.naam)return r;
+        setTimeout(function(){
+          try{
+            history.replaceState({},'',location.pathname+(location.hash||''));
+            if(typeof ga==='function')ga(waar);
+          }catch(e){}
+        },280);
+      }catch(e){}
+      return r;
+    };
+  }catch(e){}
 })();
