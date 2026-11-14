@@ -1,4 +1,4 @@
-/* v163: 3D-testtuin als knooppunt. Zelfgemaakte low-poly geometrie, geen EA/Warner-assets. */
+/* v164: 3D-testtuin als knooppunt. Zelfgemaakte low-poly geometrie, geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -327,9 +327,9 @@
       g.strokeStyle='#7a5a14';g.lineWidth=3;g.strokeRect(22,22,w-44,h-44);
       const regels=tekst.split('\n');
       g.textAlign='center';g.textBaseline='middle';
-      g.font=regels.length>1?'bold 78px Georgia,Palatino,serif':'bold 96px Georgia,Palatino,serif';
+      g.font=regels.length>1?'bold 92px Georgia,Palatino,serif':'bold 128px Georgia,Palatino,serif';
       g.lineJoin='round';
-      const stap=regels.length>1?100:0;
+      const stap=regels.length>1?108:0;
       regels.forEach((r,i)=>{
         const y=h/2+(i-(regels.length-1)/2)*stap;
         g.lineWidth=8;g.strokeStyle='#1a1004';g.strokeText(r,w/2,y);
@@ -352,9 +352,9 @@
     sokkel: new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xe8d8b0}),
     ijzer: new THREE.MeshLambertMaterial({color:0x1a1a1c}),
     grind: new THREE.MeshLambertMaterial({map:T.grind}),
-    water: new THREE.MeshPhongMaterial({map:T.water,color:0x8ef0e8,transparent:true,opacity:0.9,depthWrite:false,shininess:110,specular:0xffffff,emissive:0x146070,emissiveIntensity:0.45}),
+    water: new THREE.MeshPhongMaterial({map:T.water,color:0xb8fff6,transparent:true,opacity:0.92,depthWrite:false,shininess:140,specular:0xffffff,emissive:0x1a98a0,emissiveIntensity:0.72}),
     rimpel: new THREE.MeshBasicMaterial({map:T.rimpel,transparent:true,opacity:0.35,depthWrite:false,side:THREE.DoubleSide}),
-    glinster: new THREE.MeshBasicMaterial({map:T.glinster,transparent:true,opacity:0.45,depthWrite:false,side:THREE.DoubleSide}),
+    glinster: new THREE.MeshBasicMaterial({map:T.glinster,transparent:true,opacity:0.7,depthWrite:false,side:THREE.DoubleSide}),
     wolk: new THREE.MeshBasicMaterial({map:T.wolk,transparent:true,opacity:0.9,depthWrite:false,fog:false,side:THREE.DoubleSide}),
     rank: new THREE.MeshLambertMaterial({map:T.rank,transparent:true,depthWrite:false,side:THREE.DoubleSide}),
     nevel: new THREE.MeshBasicMaterial({map:T.nevel,transparent:true,opacity:0.65,depthWrite:false,fog:false,side:THREE.DoubleSide}),
@@ -390,7 +390,7 @@
   scene.background=new THREE.Color(0x1a62c4);
   scene.fog=new THREE.Fog(0x4a86c0,48,120);
 
-  const camera=new THREE.PerspectiveCamera(52,innerWidth/Math.max(1,innerHeight),0.18,160);
+  const camera=new THREE.PerspectiveCamera(52,innerWidth/Math.max(1,innerHeight),0.28,160);
   const renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'default'});
   renderer.setClearColor(0x1a62c4,1);
   renderer.setPixelRatio(Math.min(1.1,window.devicePixelRatio||1));
@@ -609,15 +609,33 @@
     const rail2=rail.clone();rail2.position.y=1.0;voeg(rail2);
   }
   function boog(x,z,r){
+    r=r||2.2;
     const g=new THREE.Group();g.position.set(x,0,z);world.add(g);
-    const b=new THREE.Mesh(new THREE.TorusGeometry(r||2.2,0.07,6,20,Math.PI),mat.ijzer);
+    const b=new THREE.Mesh(new THREE.TorusGeometry(r,0.07,6,20,Math.PI),mat.ijzer);
     b.position.set(0,1.7,0);g.add(b);
     for(let i=1;i<=7;i++){
       const a=Math.PI*i/8;
       const sp=new THREE.Mesh(new THREE.ConeGeometry(0.05,0.2,4),mat.ijzer);
-      sp.position.set(Math.cos(a)*(r||2.2),1.7+Math.sin(a)*(r||2.2),0);
+      sp.position.set(Math.cos(a)*r,1.7+Math.sin(a)*r,0);
       sp.rotation.z=a-Math.PI/2;g.add(sp);
     }
+    // ranken over de ijzeren boog, zoals op de referentie
+    // ranken aan de schouders van de boog; top midden vrij zodat borden leesbaar blijven
+    const hoeken=[0.22,0.42,0.62,0.88,2.26,2.52,2.72,2.92];
+    hoeken.forEach((a,i)=>{
+      const lang=0.65+((i%3)*0.2), breed=0.42+((i%2)*0.14);
+      const p=new THREE.Mesh(new THREE.PlaneGeometry(breed,lang),mat.rank);
+      p.position.set(Math.cos(a)*r,1.7+Math.sin(a)*r-lang*0.22,0.1+(i%2?0.02:-0.06));
+      p.rotation.z=a-Math.PI/2;
+      g.add(p);
+      if(i%2===0){
+        const k=new THREE.Mesh(new THREE.PlaneGeometry(breed*0.9,lang*0.65),mat.klimop);
+        k.position.set(Math.cos(a)*r*0.98,1.7+Math.sin(a)*r-lang*0.18,-0.1);
+        k.rotation.z=a-Math.PI/2;
+        g.add(k);
+      }
+    });
+    return g;
   }
   pilaar(-2.2,1.5);pilaar(2.2,1.5);
   pilaar(-5.5,1.5);pilaar(5.5,1.5);
@@ -664,7 +682,7 @@
     gl.rotation.x=-Math.PI/2;gl.position.set(x,0.28,z);voeg(gl);waterVlakken.push(gl);
   }
   // bassin bij de fontein + goot naar het oosten, onder de brug door, een stukje erna
-  waterBak(-5.45,9.7,2.9,2.55);
+  waterBak(-5.05,9.7,3.9,3.3);
   waterBak(-3.15,9.7,2.0,1.35);
   waterBak(3.15,9.7,2.0,1.35);
   waterBak(4.7,9.7,1.3,1.6);
@@ -674,7 +692,7 @@
     wv.rotation.x=-Math.PI/2;wv.position.set(0,0.12,9.7);voeg(wv);waterVlakken.push(wv);
   })();
   // collision voor het water, uitgezonderd de brug (x -1.7..1.7)
-  solid(-5.5,9.7,2.8,2.6,0.6);
+  solid(-5.05,9.7,4.0,3.4,0.6);
   solid(-3.2,9.7,1.8,1.5,0.5);
   solid(3.2,9.7,1.8,1.5,0.5);
   solid(4.7,9.7,1.4,1.8,0.5);
@@ -684,31 +702,48 @@
   box(mat.sokkel,fx,0.7,fz,1.15,0.28,1.15);
   box(mat.sokkel,fx,0.95,fz,0.85,0.22,0.85);
   const fig=new THREE.Group();fig.position.set(fx,1.08,fz);fig.rotation.y=Math.PI/2;world.add(fig);
-  const steen=new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xb8b09e});
-  function fbox(x,y,z,w,h,d,ry){
-    const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),steen);
-    m.position.set(x,y,z);if(ry)m.rotation.y=ry;fig.add(m);
+  const steen=new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xcac2ae,side:THREE.DoubleSide});
+  const steenDonker=new THREE.MeshLambertMaterial({map:T.zandsteen,color:0x7a7366});
+  function fbol(x,y,z,r,sx,sy,sz,matS){
+    const m=new THREE.Mesh(new THREE.SphereGeometry(r,10,8),matS||steen);
+    m.position.set(x,y,z);m.scale.set(sx||1,sy||1,sz||1);fig.add(m);return m;
   }
-  fbox(0,0.28,0,0.42,0.55,0.7);           // lijf
-  fbox(0,0.62,0.28,0.36,0.32,0.4);        // borst/nek
-  const figKop=new THREE.Mesh(new THREE.BoxGeometry(0.32,0.28,0.42),steen);
-  figKop.position.set(0,0.78,0.48);fig.add(figKop);
-  const oogKuilt=new THREE.Mesh(new THREE.SphereGeometry(0.035,5,4),new THREE.MeshLambertMaterial({color:0x2a2824}));
-  oogKuilt.position.set(-0.08,0.84,0.66);fig.add(oogKuilt);
-  const oogRkuil=oogKuilt.clone();oogRkuil.position.x=0.08;fig.add(oogRkuil);
-
-  fbox(0,0.72,0.72,0.18,0.12,0.22);       // snuit
-  fbox(-0.1,0.98,0.4,0.06,0.18,0.06);     // oor
-  fbox(0.1,0.98,0.4,0.06,0.18,0.06);
-  fbox(-0.28,-0.02,0.18,0.14,0.2,0.18);   // voorpoten
-  fbox(0.28,-0.02,0.18,0.14,0.2,0.18);
-  fbox(-0.22,-0.02,-0.22,0.16,0.2,0.22);
-  fbox(0.22,-0.02,-0.22,0.16,0.2,0.22);
-  // vleugels
-  const vleugelG=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.7,0.9),steen);
-  vleugelG.position.set(-0.32,0.7,-0.05);vleugelG.rotation.set(-0.3,0.15,-0.6);fig.add(vleugelG);
-  const vleugelR=vleugelG.clone();vleugelR.position.x=0.32;vleugelR.rotation.z=0.6;fig.add(vleugelR);
-  const mondPlek=new THREE.Vector3(); // wereldpunt van de snuit, later gezet
+  function fcap(x,y,z,r,l,rx,ry,rz){
+    const m=new THREE.Mesh(new THREE.CapsuleGeometry(r,l,4,8),steen);
+    m.position.set(x,y,z);m.rotation.set(rx||0,ry||0,rz||0);fig.add(m);return m;
+  }
+  fbol(0,0.26,0.02,0.32,0.9,0.85,1.2);          // lijf
+  fbol(0,0.52,0.22,0.24,0.95,0.8,1.05);         // borst
+  fbol(0,0.78,0.42,0.22,0.95,0.88,1.12);        // kop
+  fbol(0,0.7,0.68,0.12,0.75,0.6,1.25);          // snuit
+  fbol(0,0.66,0.86,0.055,0.8,0.55,0.7,steenDonker); // bekopening
+  const oogM=new THREE.MeshLambertMaterial({color:0x2a2620});
+  fbol(-0.08,0.86,0.58,0.035,1,1,0.8,oogM);
+  fbol(0.08,0.86,0.58,0.035,1,1,0.8,oogM);
+  // oren / kleine hoorntjes
+  const figOorL=new THREE.Mesh(new THREE.ConeGeometry(0.05,0.16,6),steen);
+  figOorL.position.set(-0.12,1.02,0.38);figOorL.rotation.z=0.25;fig.add(figOorL);
+  const figOorR=figOorL.clone();figOorR.position.x=0.12;figOorR.rotation.z=-0.25;fig.add(figOorR);
+  // poten
+  fcap(-0.2,0.02,0.22,0.07,0.16,0.9,0,0.2);
+  fcap(0.2,0.02,0.22,0.07,0.16,0.9,0,-0.2);
+  fcap(-0.18,0.02,-0.2,0.075,0.18,0.7,0,0.15);
+  fcap(0.18,0.02,-0.2,0.075,0.18,0.7,0,-0.15);
+  fbol(0,0.2,-0.38,0.08,0.6,0.5,1.4);           // staart
+  // vleugels: afgeronde vleugelvorm, geen platte planken
+  const vleugelVorm=new THREE.Shape();
+  vleugelVorm.moveTo(0,0);
+  vleugelVorm.quadraticCurveTo(0.08,0.42,0.02,0.92);
+  vleugelVorm.quadraticCurveTo(0.38,0.78,0.7,0.42);
+  vleugelVorm.quadraticCurveTo(0.55,0.18,0.22,0.04);
+  vleugelVorm.closePath();
+  const vGeo=new THREE.ExtrudeGeometry(vleugelVorm,{depth:0.045,bevelEnabled:true,bevelThickness:0.018,bevelSize:0.018,bevelSegments:2,curveSegments:6});
+  const vL=new THREE.Mesh(vGeo,steen);
+  vL.position.set(-0.22,0.42,-0.08);vL.rotation.set(-0.55,0.85,-1.15);fig.add(vL);
+  const vR=new THREE.Mesh(vGeo,steen);
+  vR.position.set(0.22,0.42,-0.08);vR.rotation.set(-0.55,-0.85,1.15);fig.add(vR);
+  // mond in wereldruimte (rotY=PI/2: lokaal +Z → wereld +X)
+  const mondX=fx+0.86,mondY=1.08+0.70,mondZ=fz;
   schijf(mat.schaduw,fx,fz,1.1);
   solid(fx,fz,1.5,1.5,2.0);
 
@@ -727,9 +762,13 @@
     const s=new THREE.Mesh(new THREE.TorusGeometry(0.07,0.012,5,10),mat.druppel.clone());
     s.rotation.x=Math.PI/2;s.visible=false;voeg(s);spatten.push(s);
   }
-  const straal=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.05,0.7,6),mat.druppel.clone());
-  straal.position.set(fx+0.95,1.95,fz);
-  straal.rotation.z=-Math.PI/2.6;
+  const straalKromme=new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(mondX,mondY,mondZ),
+    new THREE.Vector3(mondX+0.45,mondY+0.55,mondZ),
+    new THREE.Vector3(mondX+1.15,0.3,mondZ)
+  );
+  const straal=new THREE.Mesh(new THREE.TubeGeometry(straalKromme,14,0.028,6,false),mat.druppel.clone());
+  straal.material.opacity=0.7;
   voeg(straal);
 
   // houten brug met stenen dek en treden, over de beek
@@ -777,11 +816,11 @@
     schijf(mat.schaduw,x,z,0.7);
     solid(x,z,1.2,0.55,0.55);
   }
-  bak(-3.2,4.6,0);bak(3.2,9.0,0);bak(-3.2,20.2,0);bak(3.2,20.4,0);
+  bak(-10.2,11.2,0);bak(3.2,9.0,0);bak(-3.2,20.2,0);bak(3.2,20.4,0);
 
   /* bloemetjes als kaartjes */
   const bloemen=[];
-  const bloemPlek=[[-3.2,4.6],[-3.0,4.75],[-3.4,4.5],[3.2,9.0],[3.0,9.15],[3.4,8.85],[-3.2,20.2],[-3.0,20.35],[3.2,20.4],[3.4,20.25]];
+  const bloemPlek=[[-10.2,11.2],[-10.0,11.35],[-10.4,11.1],[3.2,9.0],[3.0,9.15],[3.4,8.85],[-3.2,20.2],[-3.0,20.35],[3.2,20.4],[3.4,20.25]];
   bloemPlek.forEach(([x,z],i)=>{
     const f=new THREE.Mesh(new THREE.PlaneGeometry(0.18,0.26),mat.bloem);
     f.position.set(x+(rnd(i)-.5)*0.2,0.68,z+(rnd(i+3)-.5)*0.15);
@@ -839,7 +878,7 @@
   });
   const klinkK=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,6),new THREE.MeshLambertMaterial({color:0xc9a227}));
   klinkK.position.set(-0.18,1.35,0.22);deurKas.add(klinkK);
-  maakBord(mat.bordKas,gevelKas,0,2.95,0.36,2.3,0.58);
+  maakBord(mat.bordKas,gevelKas,0,3.18,0.38,3.35,0.86);
   (function(){
     const r=new THREE.Mesh(new THREE.PlaneGeometry(2.2,2.0),mat.rank);
     r.position.set(-2.2,2.8,0.4);gevelKas.add(r);
@@ -888,7 +927,7 @@
   const hlat=new THREE.Mesh(new THREE.BoxGeometry(1.35,0.08,0.07),mat.hout);
   hlat.position.set(-0.14,0.45,0);deurH.add(hlat);
   const hlat2=hlat.clone();hlat2.position.y=0.9;deurH.add(hlat2);
-  maakBord(mat.bordHagrid,gevelH,0,1.95,0.22,2.15,0.58);
+  maakBord(mat.bordHagrid,gevelH,0,2.05,0.24,2.45,0.7);
   // pompoenen
   function pompoen(x,z,s){
     const p=new THREE.Mesh(new THREE.SphereGeometry(0.28*s,8,6),mat.pompoen);
@@ -942,7 +981,7 @@
   const ven=new THREE.Mesh(new THREE.PlaneGeometry(0.7,1.1),mat.glow);
   ven.position.set(0,3.55,0.45);gevelHal.add(ven);
   box(mat.zandsteen,0,3.55,0.5,0.9,1.3,0.12,0,gevelHal);
-  maakBord(mat.bordHal,gevelHal,0,2.98,0.72,2.25,0.56);
+  maakBord(mat.bordHal,gevelHal,0,3.08,0.74,2.55,0.68);
   (function(){
     const r=new THREE.Mesh(new THREE.PlaneGeometry(2.4,1.8),mat.rank);
     r.position.set(0,3.7,0.85);gevelHal.add(r);
@@ -1027,7 +1066,10 @@
 
   const camOff=new THREE.Vector3(0.7,2.55,-6.8);
   const kijkVooruit=2.3;
+  const CAM_MIN=4.15,CAM_MIN_Y=2.4;
   const camPos=new THREE.Vector3(0,2.6,2.0);
+  const CAM_ZOEK=new THREE.Vector3();
+  const LOOK_CAM=new THREE.Vector3();
   camera.position.copy(camPos);
   let doel=null,lopen=false,loopT=0,naarBinnen=false;
   const snelheid=2.2;
@@ -1051,10 +1093,10 @@
   }
   function botsCam(x,y,z){
     if(y<0.35)return true;
-    const r=0.42;
+    const r=0.9;
     for(let i=0;i<col.length;i++){
       const c=col[i];
-      if(x>c.minx-r&&x<c.maxx+r&&z>c.minz-r&&z<c.maxz+r&&y<(c.h||3.4)+0.15)return true;
+      if(x>c.minx-r&&x<c.maxx+r&&z>c.minz-r&&z<c.maxz+r&&y<(c.h||3.4)+0.9)return true;
     }
     return false;
   }
@@ -1379,19 +1421,89 @@
     );
     return out;
   }
-  function volgCamera(dt){
-    const ideal=cameraPlek(TMP);
-    const ox=held.position.x, oy=held.position.y+1.45, oz=held.position.z;
-    let bx=ox,by=oy,bz=oz;
-    for(let i=1;i<=12;i++){
-      const t=i/12;
-      const px=ox+(ideal.x-ox)*t, py=oy+(ideal.y-oy)*t, pz=oz+(ideal.z-oz)*t;
-      if(botsCam(px,py,pz))break;
-      bx=px;by=py;bz=pz;
+  function camOffset(out,lat,h,back){
+    const facing=held.rotation.y, sx=Math.sin(facing), cz=Math.cos(facing);
+    out.set(
+      held.position.x+sx*back+cz*lat,
+      held.position.y+h,
+      held.position.z+cz*back-sx*lat
+    );
+    return out;
+  }
+  function camPadVrij(px,py,pz,kijk){
+    if(py<CAM_MIN_Y-0.05)return false;
+    if(pz<2.2||pz>31||px<-20||px>20)return false;
+    const hx=held.position.x, hy=held.position.y+1.45, hz=held.position.z;
+    const dist=Math.hypot(px-hx,py-hy,pz-hz);
+    if(dist<CAM_MIN-0.2)return false;
+    const stappen=12;
+    for(let i=0;i<=stappen;i++){
+      const t=0.22+i/stappen*0.78;
+      const x=hx+(px-hx)*t, y=hy+(py-hy)*t, z=hz+(pz-hz)*t;
+      if(botsCam(x,y,z))return false;
     }
-    if(Math.hypot(bx-ox,bz-oz)<1.6)by=Math.max(by,oy+0.7);
-    if(by<1.15)by=1.15;
-    camPos.lerp(TMP.set(bx,by,bz),1-Math.exp(-4.2*dt));
+    if(kijk){
+      for(let i=0;i<=10;i++){
+        const t=i/10*0.84;
+        const x=px+(kijk.x-px)*t, y=py+(kijk.y-py)*t, z=pz+(kijk.z-pz)*t;
+        if(botsCam(x,y,z))return false;
+      }
+    }
+    return true;
+  }
+  let camCacheAan=false,camHeldX=0,camHeldZ=0,camFacingWas=0;
+  function hoekVerschil(a,b){let d=a-b;while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;return d}
+  function zoekCamera(out){
+    const kijk=kijkPunt(LOOK_CAM);
+    if(camCacheAan
+      && Math.abs(hoekVerschil(held.rotation.y,camFacingWas))<0.16
+      && Math.hypot(held.position.x-camHeldX,held.position.z-camHeldZ)<1.0
+      && camPadVrij(CAM_ZOEK.x,CAM_ZOEK.y,CAM_ZOEK.z,kijk)){
+      return out.copy(CAM_ZOEK);
+    }
+    const cands=[
+      [camOff.x, camOff.y, camOff.z],
+      [camOff.x*0.4, camOff.y, camOff.z],
+      [0, camOff.y, camOff.z],
+      [-camOff.x, camOff.y, camOff.z],
+      [camOff.x, camOff.y+0.7, camOff.z*0.9],
+      [0, camOff.y+0.5, camOff.z],
+      [-0.3, 3.2, -5.6],
+      [0.3, 3.4, -5.2]
+    ];
+    for(let i=0;i<cands.length;i++){
+      const c=cands[i];
+      camOffset(out,c[0],c[1],c[2]);
+      if(camPadVrij(out.x,out.y,out.z,kijk)){camCacheAan=true;camHeldX=held.position.x;camHeldZ=held.position.z;camFacingWas=held.rotation.y;return out;}
+    }
+    // ring: eerst bijna recht achter, dan opzij, op twee hoogtes en afstanden
+    const hx=held.position.x, hz=held.position.z, facing=held.rotation.y;
+    const dists=[6.4,5.4,4.5], hoogtes=[2.55,3.15,3.75];
+    const spreiding=[0,0.35,-0.35,0.7,-0.7,1.05,-1.05,1.4,-1.4,1.85,-1.85,2.4,-2.4];
+    for(let d=0;d<dists.length;d++){
+      for(let h=0;h<hoogtes.length;h++){
+        for(let s=0;s<spreiding.length;s++){
+          const a=facing+Math.PI+spreiding[s];
+          out.set(hx+Math.sin(a)*dists[d], held.position.y+hoogtes[h], hz+Math.cos(a)*dists[d]);
+          if(camPadVrij(out.x,out.y,out.z,kijk)){camCacheAan=true;camHeldX=held.position.x;camHeldZ=held.position.z;camFacingWas=held.rotation.y;return out;}
+        }
+      }
+    }
+    // laatste redmiddel: hoger, op min. afstand, achter
+    camOffset(out,0,4.2,-CAM_MIN);
+    if(out.y<CAM_MIN_Y)out.y=CAM_MIN_Y;
+    camCacheAan=true;camHeldX=held.position.x;camHeldZ=held.position.z;camFacingWas=held.rotation.y;
+    return out;
+  }
+  function volgCamera(dt){
+    zoekCamera(CAM_ZOEK);
+    const hx=held.position.x, hy=held.position.y+1.45, hz=held.position.z;
+    camPos.lerp(CAM_ZOEK,1-Math.exp(-4.2*dt));
+    // niet door het figuur of een muur heen interpoleren
+    if(Math.hypot(camPos.x-hx,camPos.y-hy,camPos.z-hz)<CAM_MIN-0.35 || botsCam(camPos.x,camPos.y,camPos.z)){
+      camPos.copy(CAM_ZOEK);
+    }
+    if(camPos.y<CAM_MIN_Y)camPos.y=CAM_MIN_Y;
     camera.position.copy(camPos);
     camera.lookAt(kijkPunt(LOOK));
   }
@@ -1435,22 +1547,21 @@
       if(T.glinster){T.glinster.offset.x=-t*0.06;T.glinster.offset.y=t*0.08}
       if(T.rimpel){T.rimpel.offset.x=t*0.05;T.rimpel.offset.y=Math.sin(t*0.7)*0.03}
       straal.scale.y=1+Math.sin(t*5)*0.12;straal.material.opacity=0.55+Math.sin(t*6)*0.15;
-      const mondX=fx+0.72,mondY=1.80,mondZ=fz;
       const nDrup=licht?8:druppels.length;
       druppels.forEach((d,i)=>{
         if(i>=nDrup){d.visible=false;return}
         d.visible=true;
-        const u=(t*0.7+d.userData.fase)%1;
-        const spreid=(d.userData.boog-1)*0.38;
-        d.position.set(mondX+u*1.75, mondY+0.55*u-2.07*u*u, mondZ+spreid*u);
-        d.scale.setScalar(1.15-u*0.55);
-        d.material.opacity=0.85-u*0.6;
-        if(u>0.9 && spatten[d.userData.boog]){
+        const u=(t*0.65+d.userData.fase)%1;
+        const spreid=(d.userData.boog-1)*0.32;
+        d.position.set(mondX+u*1.15, mondY+3.32*u-4.82*u*u, mondZ+spreid*u);
+        d.scale.setScalar(1.2-u*0.5);
+        d.material.opacity=0.9-u*0.55;
+        if(u>0.88 && spatten[d.userData.boog]){
           const s=spatten[d.userData.boog];
           s.visible=true;
           s.position.set(d.position.x,0.3,d.position.z);
-          s.scale.setScalar(0.6+(u-0.9)*8);
-          s.material.opacity=0.5-(u-0.9)*4;
+          s.scale.setScalar(0.7+(u-0.88)*9);
+          s.material.opacity=0.55-(u-0.88)*4;
         }
       });
       if(!licht && !RMP){
@@ -1505,7 +1616,7 @@
     requestAnimationFrame(tic);
   }
 
-  cameraPlek(camPos);
+  zoekCamera(camPos);
   camera.position.copy(camPos);
   camera.lookAt(kijkPunt(LOOK));
   requestAnimationFrame(tic);
@@ -1514,7 +1625,7 @@
     const NAMED={
       poort:{x:0,z:5.6,y:0},
       pad:{x:0,z:7.6,y:0},
-      fontein:{x:1.05,z:6.2,y:Math.atan2(-5.6-1.05,9.7-6.2)*0.92},
+      fontein:{x:-4.0,z:6.2,y:Math.atan2(-5.6-(-4.0),9.7-6.2)},
       brug:{x:0,z:9.7,y:0},
       deur:{x:0,z:26.4,y:0},
       kas:{x:0,z:26.4,y:0},
@@ -1525,10 +1636,8 @@
     held.position.set(P.x,0,P.z);
     held.rotation.y=P.y;
     lopen=false;doel=null;mark.visible=false;
-    cameraPlek(camPos);
-    if(botsCam(camPos.x,camPos.y,camPos.z)){
-      camPos.set(held.position.x+0.4,held.position.y+2.1,held.position.z-2.2);
-    }
+    camCacheAan=false;
+    zoekCamera(camPos);
     camera.position.copy(camPos);
     camera.lookAt(kijkPunt(LOOK));
     zetDeurKaart();
