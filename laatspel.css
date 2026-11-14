@@ -406,3 +406,25 @@ body.akte2-kas .kasdecor .kd-rank{opacity:1;filter:saturate(1.2)}
   body.halstrak #volgendestap{margin-top:2px;padding:6px 10px 8px}
   body.halstrak #volgendestap p{font-size:.86em;margin:.1em 0 .3em}
 }
+
+
+/* v155: bordplezier — hint, landing blijft in canvas, bijna-spanning, combo-ring */
+.m3hintgloed{position:absolute;box-sizing:border-box;border-radius:18%;pointer-events:none;
+  border:3px solid #ffe08a;box-shadow:inset 0 0 10px rgba(255,230,140,.55),0 0 14px rgba(255,210,80,.9);
+  animation:m3hintpulse 1.15s ease-in-out infinite}
+@keyframes m3hintpulse{50%{border-color:#fff6c0;box-shadow:inset 0 0 14px rgba(255,240,180,.7),0 0 22px rgba(255,230,140,1);transform:scale(1.03)}}
+#m3bijna{margin:.15em 0 0;font:700 .82em/1.25 Georgia,serif;color:#ffe9a8;
+  text-shadow:0 1px 3px rgba(0,0,0,.65);letter-spacing:.02em;
+  animation:m3bijnapuls 1.4s ease-in-out infinite}
+@keyframes m3bijnapuls{50%{opacity:.72;transform:scale(1.03)}}
+body.m3bijna .m3bord{box-shadow:0 0 0 2px #fff4c8,0 0 0 5px #c9a227,0 0 0 7px #7a5410,0 0 0 10px rgba(255,226,140,.85),0 0 28px rgba(255,200,80,.45),0 14px 30px rgba(0,0,0,.55)!important}
+body.m3bijna .m3kaart.m3laatst{box-shadow:0 0 0 3px #ffe08a,0 0 18px rgba(255,210,80,.95);animation:m3klaar 1.2s ease-in-out infinite}
+.m3vonkring{position:absolute;left:50%;top:46%;width:12%;padding-top:12%;margin:-6% 0 0 -6%;
+  border:3px solid rgba(255,232,150,.85);border-radius:50%;pointer-events:none;
+  box-shadow:0 0 16px rgba(255,220,120,.7);animation:m3vonkring .7s ease-out forwards}
+@keyframes m3vonkring{0%{transform:scale(.35);opacity:.9}100%{transform:scale(3.6);opacity:0}}
+@media(prefers-reduced-motion:reduce){
+  .m3hintgloed,#m3bijna,.m3vonkring,body.m3bijna .m3kaart.m3laatst{animation:none!important}
+  .m3hintgloed{transform:none;border-color:#ffe08a;box-shadow:inset 0 0 8px rgba(255,230,140,.5),0 0 12px rgba(255,210,80,.7)}
+  #m3bijna{opacity:1;transform:none}
+}
