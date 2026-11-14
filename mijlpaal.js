@@ -90,7 +90,7 @@ function winKnoppen(n){const ms=[...document.querySelectorAll('.m3eind')];const 
  if(volg&&!leraar){volg.className='knop volgende';volg.textContent='Verder › Level '+(n+1);volg.onclick=()=>{weg();naWinst(()=>speelVolgende(n+1))}}
  if(kas){kas.className='knop';kas.textContent='Naar de kas';kas.onclick=()=>{weg();naWinst(()=>ga('kas'))}}
  if(volg&&kas&&!leraar)kas.before(volg);
- const hal=document.createElement('button');hal.className='linkknop';hal.textContent='Naar De Hal';hal.onclick=()=>{weg();ga('home')};(kas||volg||m.lastChild).after(hal)}
+ const hal=document.createElement('button');hal.className='linkknop';hal.textContent='Naar de Hal';hal.onclick=()=>{weg();ga('home')};(kas||volg||m.lastChild).after(hal)}
 const _mwV=m3Winst;m3Winst=function(n,b,...a){const r=_mwV.call(this,n,b,...a);try{winKnoppen(n)}catch(e){console.warn(e)}return r};
 
 /* ---------- Alles resetten: alleen in het verborgen makerscherm (logo 3x + 9¾) ---------- */

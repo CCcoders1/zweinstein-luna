@@ -103,3 +103,8 @@ html{background:#0c1124}
 .ritueel p,.ritueel li,.ritueel small{color:#3b2412!important}
 
 .modal{animation:rFade .5s ease both}.modal .modalin{animation:rIn .6s .1s cubic-bezier(.2,.7,.2,1) both}@media(prefers-reduced-motion:reduce){.modal,.modal .modalin{animation:none!important}}
+
+@media (max-width:800px){
+  .vandaag{background-image:linear-gradient(rgba(16,20,38,.94),rgba(6,8,18,.96)),url(img/perkament-sm.webp)!important}
+  .blad{background-image:linear-gradient(90deg,rgba(120,80,30,.25),transparent 6%),linear-gradient(rgba(246,232,196,.97),rgba(228,204,152,.97)),url(img/perkament-sm.webp)}
+}

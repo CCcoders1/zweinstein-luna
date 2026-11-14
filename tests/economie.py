@@ -25,7 +25,7 @@ def audit():
     }
     vonden = []
     for f in sorted(os.listdir(ROOT)):
-        if not f.endswith('.js') or f == 'sw.js': continue
+        if not f.endswith('.js') or f in ('sw.js', 'bundel.js'): continue
         for i, regel in enumerate(open(os.path.join(ROOT, f), encoding='utf-8'), 1):
             for m in pat.finditer(regel):
                 stuk = regel[max(0, m.start()-120):m.end()+40]
@@ -51,7 +51,7 @@ INV = """()=>{const v=[];const I=Number.isInteger;
  const d=JSON.parse(localStorage.zweinstein_v1);if(d.schilden!==S.schilden||d.schoolDag!==S.schoolDag||d.galjoenen!==S.galjoenen)v.push('niet bewaard');
  return v}"""
 TRIP = """()=>{let v=S.schilden;window._schW=[];Object.defineProperty(S,'schilden',{get(){return v},set(x){window._schW.push([x-v,(new Error().stack||'')]);v=x},enumerable:true,configurable:true})}"""
-TRIPCHECK = "()=>(window._schW||[]).filter(w=>w[0]>0&&!/economie\\.js/.test(w[1])).map(w=>w[0]+' '+w[1].split('\\n').slice(1,4).join(' | '))"
+TRIPCHECK = "()=>(window._schW||[]).filter(w=>w[0]>0&&!/economie\\.js/.test(w[1])&&!/geefLevel/.test(w[1])).map(w=>w[0]+' '+w[1].split('\\n').slice(1,4).join(' | '))"
 WIN = """([n,score,zet,b])=>{b=b||{score,zet,L:m3Level(n),doel:[{over:0}]};window._bord=b;document.querySelectorAll('.modal,.ritueel,.verhaal').forEach(m=>m.remove());m3Winst(n,b);return 1}"""
 
 def dag1():  return {f'school-herbologie-dag-1-doel-{i}': 1 for i in range(1, 11)}

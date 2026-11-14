@@ -75,7 +75,7 @@ input{font-size:1.05em;padding:12px}
 nav button{font-size:.85em;min-width:60px;min-height:52px}
 #fxc{position:fixed;inset:0;pointer-events:none;z-index:8}
 #geluid{position:fixed;right:10px;bottom:76px;z-index:9;background:rgba(0,0,0,.6);border:1px solid var(--a);border-radius:24px;padding:4px 10px;display:flex;align-items:center;gap:6px}
-#geluid button{background:none;border:0;font-size:1.4em;cursor:inherit;min-width:40px;min-height:40px}
+#geluid button{background:none;border:0;font-size:1.4em;cursor:inherit;min-width:48px;min-height:48px}
 #geluid input{width:90px;padding:0;accent-color:var(--a)}
 .flits{position:fixed;inset:0;background:radial-gradient(circle,rgba(255,230,140,.55),transparent 70%);pointer-events:none;z-index:7;animation:flits .7s ease-out forwards}
 @keyframes flits{from{opacity:1}to{opacity:0}}

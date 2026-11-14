@@ -168,3 +168,9 @@ html,body{overflow-x:hidden;max-width:100%}
 h1{font-size:clamp(1.4em,7vw,2.2em);overflow-wrap:anywhere}
 .onthul h1,h1.onthul{font-size:clamp(1.6em,9vw,2.4em)!important}
 #decor{inset:0}
+
+@media (max-width:800px){
+  #decor.plafond .mid:before{background-image:url(img/sterrenhemel-sm.webp)}
+  .perkament{background-image:linear-gradient(rgba(246,231,193,.82),rgba(232,208,154,.86)),url(img/perkament-sm.webp)}
+  #intro{background-image:url(img/sterrenhemel-sm.webp)}
+}

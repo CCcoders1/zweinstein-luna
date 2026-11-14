@@ -98,5 +98,106 @@ body.halstrak .morgenkaart.mkcompact .mk-extra{display:none}
 /* Instellingen: perkament, geen donkere kaart */
 #grootvak{background:linear-gradient(180deg,#f7f1e3,#efe4cc)!important;color:#3b2a14!important;border:1px solid rgba(138,90,18,.28)}
 #grootvak .grootlabel,#grootvak .grootlabel span,#grootvak .klein{color:#3b2a14!important}
-.gpsfeer label{display:flex!important;justify-content:flex-start!important;align-items:center;gap:10px;width:100%;color:#3b2a14}
-#luid{min-width:44px;min-height:44px}
+/* Geluid en weergave: vinkjes links, tekst ernaast, schuifjes op een rij */
+#app .gpsfeer{
+  display:flex;flex-direction:column;gap:8px;margin:12px 0;text-align:left;
+}
+#app .gpsfeer label,
+#app .gpsfeer .gpcheck,
+#app .gpsfeer .gpslider,
+.gpsfeer label{
+  display:flex!important;align-items:center;justify-content:flex-start!important;
+  gap:12px;width:100%;margin:0;padding:8px 4px;box-sizing:border-box;
+  font-weight:600;color:#3b2a14!important;
+}
+#app .gpsfeer .gpcheck input[type=checkbox]{
+  width:24px;height:24px;min-width:24px;margin:0;flex:0 0 24px;
+  accent-color:#c9a227;
+}
+#app .gpsfeer .gpcheck span{flex:1;text-align:left}
+#app .gpsfeer .gpslider span{flex:0 0 78px;text-align:left}
+#app .gpsfeer .gpslider input[type=range]{flex:1;min-height:32px;margin:0}
+
+/* Tikvlakken minstens 48×48, ook als het icoon kleiner is */
+#luid,#luid.uiluid{
+  min-width:48px!important;min-height:48px!important;
+  width:48px!important;height:48px!important;
+}
+#terug,.gsluit,.sluitknop,#m3pauzeknop,.icoonknop,button.klein,.lksluit,
+#geluid .rij button, .bovenbalk button, nav button,
+.hpicoon, .kopregel button {
+  min-width:48px;min-height:48px;
+}
+#terug,.gsluit,.sluitknop{display:inline-flex;align-items:center;justify-content:center}
+
+/* Mobiel: lichtere achtergrondplaatjes */
+@media (max-width:800px){
+  html{background-image:url(img/sterrenhemel-sm.webp)}
+  .plafond, .sterhemel, body.hal .bg{
+    background-image:url(img/sterrenhemel-sm.webp);
+  }
+}
+
+/* Splash: meteen sfeer, geen leeg scherm tijdens het laden */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(90,55,12,.4), transparent 55%),
+    #120c06;
+  color:#f4e4c1;text-align:center;padding:24px;
+  transition:opacity .45s ease;
+}
+#splash .splashkaarsen{display:flex;gap:22px;margin-bottom:22px}
+#splash .kaars{
+  width:10px;height:42px;border-radius:4px 4px 2px 2px;
+  background:linear-gradient(#f4e4c1,#c9a06a);
+  position:relative;
+  box-shadow:0 0 16px rgba(255,180,60,.35);
+}
+#splash .kaars::before{
+  content:"";position:absolute;left:50%;top:-12px;transform:translateX(-50%);
+  width:8px;height:12px;border-radius:50% 50% 40% 40%;
+  background:radial-gradient(circle at 40% 30%,#fff6c8,#ffb03a 55%,#d06010);
+  box-shadow:0 0 14px 4px rgba(255,170,50,.7);
+  animation:splashvlam 1.2s ease-in-out infinite alternate;
+}
+#splash .kaars:nth-child(2)::before{animation-delay:.3s}
+#splash .kaars:nth-child(3)::before{animation-delay:.6s}
+@keyframes splashvlam{
+  from{transform:translateX(-50%) scale(.9);opacity:.85}
+  to{transform:translateX(-50%) scale(1.08);opacity:1}
+}
+#splash p{margin:0;font-family:Georgia,serif;font-size:18px;letter-spacing:.02em}
+#splash .splashsub{margin-top:8px;font-size:14px;opacity:.75}
+html.klaar #splash{opacity:0;pointer-events:none}
+
+/* Lakzegel mag de eerste letter niet bedekken */
+button.knop.volgende, .knop.volgende{
+  padding-left:54px!important;padding-right:18px!important;
+}
+#rin{padding-left:54px!important}
+
+/* Header-badges en voetteksten: tikvlak minstens 48px hoog */
+#smekbadge,#sterbadge,.heeftlbl{
+  min-height:48px;display:inline-flex;align-items:center;justify-content:center;
+}
+#app a, footer a, .bronnen a{
+  min-height:48px;display:inline-flex;align-items:center;padding:8px 4px;
+}
+
+/* Winst: sterren duidelijk goud, citaat niet afkappen onder de knoppen */
+.winsterr-sterren{
+  color:#c9a227!important;
+  -webkit-text-stroke:1px #6b3a10;
+  text-shadow:0 1px 0 #6b3a10,0 0 14px rgba(255,200,70,.85);
+  font-size:2.15em!important;
+}
+.m3eind .winhaak, .m3eind.has-winsterr .winhaak{
+  max-height:none!important;overflow:visible!important;
+  margin-bottom:12px!important;
+}
+.m3eind .m3actie{margin-top:8px}
+/* Instellingen: toast dekt de schuifjes niet */
+body[data-view=geluid] #app{padding-bottom:88px}
+#toast{z-index:40}

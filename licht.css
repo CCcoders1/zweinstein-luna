@@ -313,7 +313,7 @@ body[data-view=match3] #decor .mist,body[data-view=match3] #amb{opacity:.35!impo
 #sterbadge{background:url(img/ui/pil-320.webp) center/100% 100% no-repeat!important;border:0!important;box-shadow:0 2px 6px rgba(0,0,0,.3)!important;padding:4px 14px 4px 38px!important;min-height:34px;box-sizing:border-box}
 #sterbadge>svg{display:none!important}
 #smekbadge{background:url(img/ui/pil-leeg-320.webp) center/100% 100% no-repeat!important;border:0!important;box-shadow:0 2px 6px rgba(0,0,0,.3)!important;padding:2px 14px 2px 8px!important;min-height:34px;box-sizing:border-box}
-#luid.uiluid{background:url(img/ui/luidspreker-128.webp) center/contain no-repeat!important;border:0!important;box-shadow:none!important;width:40px!important;height:40px!important}
+#luid.uiluid{background:url(img/ui/luidspreker-128.webp) center/contain no-repeat!important;border:0!important;box-shadow:none!important;width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important}
 #luid.uiluid>svg{opacity:0}
 /* level-gehaald-achtergrond */
 .modal.metwinbg{background:rgba(12,17,36,.55)!important;overflow:hidden}

@@ -197,3 +197,12 @@ body.in-intro header{opacity:0;pointer-events:none}
 .ochtendpost .kdag b{display:block;font-size:1.05em;margin-top:2px}
 .smekgroot{top:72px;font-size:28px}
 .smekgroot small{font-size:14px}
+
+@media (max-width:800px){
+  button.knop{background-image:linear-gradient(rgba(250,236,200,.95),rgba(226,198,140,.95)),url(img/perkament-sm.webp)}
+  .vandaag{background-image:linear-gradient(rgba(250,238,210,.95),rgba(232,208,160,.95)),url(img/perkament-sm.webp)}
+  .ov-rol{background-image:url(img/perkament-sm.webp)}
+  #decor .ver{background-image:url(img/sterrenhemel-sm.webp)}
+  .ritueel{background-image:radial-gradient(rgba(10,6,20,.6),rgba(5,3,10,.95)),url(img/sterrenhemel-sm.webp)}
+  .r-brief{background-image:linear-gradient(rgba(250,238,210,.97),rgba(232,208,160,.97)),url(img/perkament-sm.webp)}
+}
