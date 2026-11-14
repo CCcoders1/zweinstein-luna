@@ -99,9 +99,12 @@ function halOrde(){
       if(!rg.querySelector('.rgteaser')){
         try{
           const p=document.createElement('p');p.className='rgteaser';
-          let zin='Tik om de hele ranglijst te zien';
-          try{if(typeof rangStand==='function'&&typeof rangLijnTekst==='function')zin=rangLijnTekst(rangStand())}
-          catch(e){const n=S.sterren|0;zin='Je hebt '+n+' schilden verdiend met levels. Tik voor de ranglijst.'}
+          let zin='Tik om de hele ranglijst te zien.';
+          try{
+            if(typeof zwRangLijn==='function')zin=zwRangLijn();
+            else if(typeof rangStand==='function'&&typeof rangLijnTekst==='function')zin=rangLijnTekst(rangStand());
+            else{let s=0;Object.values(S.lvSter||{}).forEach(x=>s+=Math.min(3,x|0));zin='Je hebt '+s+' schilden verdiend met levels. Tik voor de ranglijst.'}
+          }catch(e){let s=0;Object.values(S.lvSter||{}).forEach(x=>s+=Math.min(3,x|0));zin='Je hebt '+s+' schilden verdiend met levels. Tik voor de ranglijst.'}
           p.innerHTML=zin;
           const kop=rg.querySelector('.halvrkop');if(kop)kop.after(p);else rg.appendChild(p);
         }catch(e){}
@@ -192,9 +195,11 @@ function meerOrde(){
   }catch(e){console.warn(e)}
 }
 
+let vhT=0;
 function wachtVerhaal(){
+  if(document.body.dataset.view==='dagboek'||document.querySelector('#app .boek,#app .boekextra'))return;
   if(!opHal())return;
-  if(document.querySelector('.modal,.verhaal,.ritueel,#intro')){setTimeout(wachtVerhaal,900);return}
+  if(document.querySelector('.modal,.verhaal,.ritueel,#intro')){vhT=setTimeout(wachtVerhaal,900);return}
   const i=hfdNieuw();
   if(i<0)return;
   if(i!==0&&i!==boekDag()+1)return;
@@ -205,7 +210,7 @@ const homeOud=V.home;
 V.home=function(...a){
   document.body.dataset.view='home';
   const r=homeOud.apply(this,a);
-  try{halOrde();setTimeout(halOrde,80);setTimeout(halOrde,180);setTimeout(wachtVerhaal,1400)}catch(e){console.warn(e)}
+  try{halOrde();setTimeout(halOrde,80);setTimeout(halOrde,180);clearTimeout(vhT);vhT=setTimeout(wachtVerhaal,1400)}catch(e){console.warn(e)}
   return r;
 };
 const meerOud=V.meer;
@@ -246,6 +251,7 @@ addEventListener('pointerdown',()=>{padPas()},{once:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)padStop();else padPas()});
 const gaOud=ga;
 ga=function(s,...a){
+  if(s&&s!=='home'){try{clearTimeout(vhT)}catch(e){}}
   const r=gaOud.call(this,s,...a);
   try{vakSfeer();setTimeout(padPas,80)}catch(e){}
   return r;

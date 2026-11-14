@@ -13,10 +13,10 @@ const PERS={
 const PERS_VRIEND=['tilly','ron','hermelien','hagrid'],PERS_LERAAR=['sneep','anderling','banning','lupos','zwamdrift'];
 (()=>{const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
  const src=(k,w)=>`img/personages/${k}-${w}.webp`;
- window.portret=(k,cls='')=>PERS[k]?`<img class="pportret ${cls}" src="${src(k,128)}" srcset="${src(k,128)} 1x, ${src(k,256)} 2x" alt="${PERS[k].n}" decoding="async">`:'';
+ window.portret=(k,cls='')=>PERS[k]?`<img class="pportret ${cls}" src="${src(k,128)}" srcset="${src(k,128)} 1x, ${src(k,256)} 2x" alt="${PERS[k].n}" decoding="async" ${k=='tilly'?'':'loading="lazy"'}>`:'';
  const staand=(cls='')=>`<img class="tstaand ${cls}" src="img/personages/tilly-staand-240.webp" srcset="img/personages/tilly-staand-240.webp 1x, img/personages/tilly-staand-480.webp 2x" alt="Tilly">`;
  window.wieIs=n=>{n=(n||'').toLowerCase();return n.includes('tilly')?'tilly':n.includes('ron')?'ron':n.includes('hermelien')?'hermelien':n.includes('hagrid')?'hagrid':n.includes('sneep')?'sneep':n.includes('anderling')?'anderling':n.includes('banning')?'banning':n.includes('lupos')?'lupos':n.includes('zwamdrift')?'zwamdrift':null};
- Object.values(PERS).forEach((_,i)=>{});['tilly','tilly-staand','ron','hermelien','hagrid'].forEach(k=>{const i=new Image();i.src=k=='tilly-staand'?'img/personages/tilly-staand-240.webp':src(k,128)});
+ Object.values(PERS).forEach((_,i)=>{});['tilly','tilly-staand'].forEach(k=>{const i=new Image();i.src=k=='tilly-staand'?'img/personages/tilly-staand-240.webp':src(k,128)});
  /* vriendschap: alleen cosmetisch */
  S.vriend=S.vriend||{};const groei=(k,n=1)=>{if(!PERS[k])return;S.vriend[k]=(S.vriend[k]||0)+n;bewaar()};window.vriendGroei=groei;
  const niveau=k=>{const x=S.vriend[k]||0;return Math.min(5,Math.floor(Math.sqrt(x/3)))};

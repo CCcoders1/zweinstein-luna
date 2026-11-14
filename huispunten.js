@@ -17,7 +17,7 @@ if(!S.lvSchild||typeof S.lvSchild!='object'){S.lvSchild={};Object.keys(S.lvSter)
 const STER2=70,STER3=95,STER3_VROEG=150,ZWAAR_F=.85; /* v123: levels 1–30 3★ vanaf Z×150 (bot: ~77% 3★ van de winsten i.p.v. 95%) */
 const grens=(n,L)=>{L=L||(typeof m3Level=='function'?m3Level(n):null);const Z=L?((L.zetten|0)+(L.extra|0)):20;const f=((window.lvZwaar&&lvZwaar(n))|0)?ZWAAR_F:1;const r=x=>Math.round(x/10)*10;return [r(Z*STER2*f),r(Z*((n|0)>=1&&(n|0)<=30?STER3_VROEG:STER3)*f)]};
 window.m3SterGrens=grens;
-const sterVan=(b,n)=>{const g=grens(n,b&&b.L),sc=(b&&b.score)|0;return sc>=g[1]?3:sc>=g[0]?2:1};
+const sterVan=(b,n)=>{const g=grens(n,b&&b.L),sc=(b&&(b._sterScore!=null?b._sterScore:b.score))|0;return sc>=g[1]?3:sc>=g[0]?2:1};
 window.m3SterVan=sterVan;
 if(typeof m3Winst=='function'){const _w=m3Winst;window.m3Winst=m3Winst=function(n,b,...a){const st=sterVan(b,n),oud=S.lvSter[n]|0;const sch=ECO.geefLevel(n,st);  /* v126: centraal in economie.js */window._schildTekst=sch?`<b>+${sch} ${sch==1?'huisschild':'huisschilden'}</b> voor de lokalen · `:`<b>Maximaal aantal huisschilden voor dit level al gehaald</b> · `;const r=_w.call(this,n,b,...a);
  try{const h=HP[S.huis];const p=document.querySelector('.m3eind p');if(p&&h){const erbij=Math.max(0,PUNT[st]-(PUNT[oud]||0));p.insertAdjacentHTML('afterend',`<p class="hp-winst"><span class="hp-sterren">${'★'.repeat(st)}${'☆'.repeat(3-st)}</span><br>${erbij?`+${erbij} huispunten voor ${h.naam}`:`Je beste score blijft ${'★'.repeat(oud)}`}<br><small>Score ${((b&&b.score)|0).toLocaleString('nl-NL')} · 2 sterren vanaf ${grens(n,b&&b.L)[0].toLocaleString('nl-NL')} · 3 sterren vanaf ${grens(n,b&&b.L)[1].toLocaleString('nl-NL')}</small></p>`)}}catch(e){}return r}}

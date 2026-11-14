@@ -27,7 +27,7 @@ function plusje(x,y,t){const e=document.createElement('div');e.className='m3plus
 /* ---------- het feest ---------- */
 async function feest(b){const log={pop:0,boem:0,spec:0,score0:b.score|0};window._feestLog=log;
  const cv=document.getElementById('m3c'),zEl=document.getElementById('m3z');if(!cv||!zEl)return;
- const zet0=b.zet;let over=zet0,sp=1,taps=0;
+ const zet0=(b._feestZet!=null?b._feestZet:b.zet)|0;let over=zet0,sp=1,taps=0;
  // geen bijeffecten: geen doel-telling (pompoengroei), geen schatkist-beloningen, geen zeldzame zaadjes
  b.telDoel=()=>{};b.zaadKist=1;const push=b.fx.push;b.fx.push=function(...f){return push.apply(this,f.map(x=>x&&x.t=='schat'?{t:'tik',r:x.r,c:x.c,s:x.s}:x&&x.t=='vrij'?{t:'plank',r:x.r,c:x.c,over:0}:x))};
  b.wacht=ms=>new Promise(r=>setTimeout(r,ms/sp));

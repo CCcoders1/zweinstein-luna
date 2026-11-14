@@ -8,7 +8,8 @@ const P={
  felix:{n:'Felix',vorm:'klein',kl:['#fff0a0','#b98a1a'],gl:'#ffd95e',dop:'goud',lv:.25,goud:1},
  licht:{n:'Lichtbrouwsel',vorm:'peer',kl:['#fffbd0','#7fd0a0'],gl:'#f0ffb0',dop:'kurk',lv:.38,kern:'#fffbe0'},
  diep:{n:'Diep Licht',vorm:'hart',kl:['#a8c8ff','#3a2a8a'],gl:'#7aa0ff',dop:'was',was:'#2c2a6a',lv:.34,kern:'#d8e6ff'},
- vocht:{n:'Levende Dood',vorm:'vierkant',kl:['#8fb89a','#1f3b2e'],gl:'#6fbf9a',dop:'was',was:'#1d1d1d',lv:.32}};
+ vocht:{n:'Levende Dood',vorm:'vierkant',kl:['#8fb89a','#1f3b2e'],gl:'#6fbf9a',dop:'was',was:'#1d1d1d',lv:.32},
+ wissel:{n:'Wisselzalf',vorm:'peer',kl:['#c8f0ff','#2f6f8a'],gl:'#7ec8e3',dop:'kurk',lv:.36}};
 window.FLESJES=P;
 /* silhouet in een 100×140 vak */
 function vorm(g,v){g.beginPath();

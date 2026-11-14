@@ -28,7 +28,7 @@ function geef(c){if(c.smek)S.galjoenen=(S.galjoenen|0)+c.smek;if(c.kik&&window.k
 const wachtend=()=>MP.find(m=>open(m[0])&&!S.mpAf[m[0]]);
 /* eerste keer gespeeld: cadeau */
 function klaar(k){const m=MPK[k];if(!m||!open(k)||S.mpAf[k])return;S.mpAf[k]=1;geef(m[5]);
- const toon=(p=0)=>{if(document.querySelector('.modal')){if(p<40)T(()=>toon(p+1),1500);return}
+ const toon=(p=0)=>{const v=document.body.dataset.view;if(document.querySelector('.modal')||(v&&v!=='home'&&v!=='undefined')){if(p<40)T(()=>toon(p+1),1500);return}
   const o=modal(`<h2>Gelukt!</h2><p>${port(m[2])} <b>${m[3]}:</b> Prachtig gedaan, Luna! Dit is voor jou.</p><p class="mpcadeau">🎁 ${cadeauTekst(m[5])}</p><p class="klein">${m[6]} staat nu bij Spellen in De Hal. Daar kun je het altijd oefenen, maar dan zonder beloning.</p><button class="knop volgende" id="mpok">Dank je wel!</button>`);
   try{fx.speel('fanfare')}catch(e){}o.querySelector('#mpok').onclick=()=>o.remove()};T(()=>toon(),1800)}
 window.mijlpaalKlaar=klaar;

@@ -57,7 +57,7 @@ const ECO={REST,WISSEL,MAXST,
     notitie. Wordt de app tijdens het feest gesloten, dan maakt winHerstel() bij de volgende start de winst af met de
     score van het winmoment: level gewonnen, sterren (min 1), schilden en Smekkies – precies één keer. */
  winStart(n,b){if(!b||b.sim||b._ecoStart)return;b._ecoStart=1;
-  S.winBezig={n:int(n),sc:int(b.score),z:Math.max(0,int(b.zet)),zw:((window.lvZwaar&&lvZwaar(n))|0)?1:0,t:nu()};bewaar()},
+  S.winBezig={n:int(n),sc:int(b._sterScore!=null?b._sterScore:b.score),z:Math.max(0,int(b.zet)),zw:((window.lvZwaar&&lvZwaar(n))|0)?1:0,t:nu()};bewaar()},
  winKlaar(n){if(S.winBezig&&int(S.winBezig.n)===int(n)){delete S.winBezig;bewaar()}},
  winHerstel(){const w=S.winBezig;if(!w)return 0;delete S.winBezig;const n=int(w.n);if(n<1){bewaar();return 0}
   let st=1;try{const g=m3SterGrens(n);st=int(w.sc)>=g[1]?3:int(w.sc)>=g[0]?2:1}catch(e){}

@@ -1,0 +1,54 @@
+/* v135: drankjes, collectie, kop, juice */
+.drankkeuze{margin:8px 0 10px;padding:8px 10px;border-radius:12px;background:rgba(20,16,40,.28)}
+.drankkeuze>p{margin:.2em 0 .5em}
+.drankrij{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.drankchip{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:88px;padding:8px 6px 10px;border-radius:12px;border:1px solid rgba(239,210,122,.45);background:rgba(18,12,28,.45);color:inherit;font:inherit;cursor:pointer}
+.drankchip b{font-size:.88em;line-height:1.15;text-align:center}
+.drankchip small{font-size:.72em;opacity:.85;text-align:center;line-height:1.2}
+.drankchip.op{opacity:.62}
+.drankchip.aan{border-color:#efd27a;box-shadow:0 0 0 2px rgba(239,210,122,.55),0 0 16px rgba(239,210,122,.25);background:rgba(60,40,10,.4)}
+.drankchip.vandag:not(.aan){box-shadow:inset 0 0 0 1px rgba(160,220,255,.4)}
+.drankketel{text-align:center;margin:.4em 0 0}
+.drankactief{position:absolute;right:8px;top:8px;filter:drop-shadow(0 0 8px gold)}
+.m3hud{position:relative}
+.wisselgloed{position:absolute;border-radius:18%;pointer-events:none;box-shadow:inset 0 0 0 3px #7ec8e3,0 0 16px rgba(126,200,227,.8);animation:wisselpulse 1.2s ease-in-out infinite}
+@keyframes wisselpulse{50%{opacity:.45}}
+@media(prefers-reduced-motion:reduce){.wisselgloed{animation:none}}
+
+.morgenkaart{margin:6px 10px 10px;padding:8px 12px 10px}
+.morgenkaart>small{display:block;letter-spacing:.08em;text-transform:uppercase;font-size:.68em;opacity:.75;margin:0 0 3px}
+.morgenkaart p{margin:.15em 0;line-height:1.35}
+.collestrook{margin-top:6px;padding-top:6px;border-top:1px solid rgba(239,210,122,.25)}
+.collestrook small{letter-spacing:.08em;text-transform:uppercase;font-size:.65em;opacity:.75}
+.collestrook p{margin:.15em 0 0;font-size:.88em}
+.winhaak{margin:.6em 0 0;font-size:.95em;line-height:1.35;opacity:.95}
+.dagbonusps,.dagplekzin{margin:.4em 0;line-height:1.35}
+#dagplekzin{padding:6px 10px}
+
+/* Kop: alleen hartjes, Smekkies en schilden. Geen punten/reeks over de groet. */
+body.kopstrak #stats .schild-t,
+body.kopstrak #stats .vuur-t,
+body.kopstrak #stats .hoed-t,
+body.kopstrak #weer,
+body.kopstrak #stats span.schild-t,
+body.kopstrak #stats span.vuur-t{display:none!important}
+body.kopstrak #koprit{
+  position:fixed;top:calc(8px + env(safe-area-inset-top,0px));
+  right:calc(220px + env(safe-area-inset-right,0px));
+  left:auto;height:34px;margin:0;z-index:36;
+  display:flex;align-items:center;gap:2px
+}
+body.kopstrak #koprit #halharten,
+body.kopstrak #koprit #halharten.harten{position:static;transform:none;margin:0;justify-content:flex-end}
+body.kopstrak #koprit #halharten .htimer,
+body.kopstrak #koprit #halharten .hvonk{display:none!important}
+body.kopstrak #tasknop{display:none!important}
+body.kopstrak #koprit #halharten .hart2,
+body.kopstrak #koprit #halharten .hsvg{width:22px;height:20px}
+body.kopstrak .groet{margin-right:12px!important}
+body.halstrak #halharten:not(.in-kop){display:none}
+body[data-view=dagboek] #toast,body:has(.m3voor) #toast{opacity:0!important;pointer-events:none!important;visibility:hidden}
+
+/* Juice: bijzondere stenen en winst */
+.m3combo{letter-spacing:.02em;text-shadow:0 0 12px rgba(255,230,140,.8)}
+.m3eind .m3ster{filter:drop-shadow(0 0 16px rgba(255,210,90,.65))}

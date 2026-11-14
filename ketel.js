@@ -6,6 +6,7 @@ const IW=768,IH=1152,WATER='#3f5a63',TAFEL=150;const TAFELIMG=new Image();TAFELI
 const RECEPT=[
  {id:'slaap',naam:'Slaapdrankje',zin:'Een rustig paars drankje voor een goede nachtrust.',kl:['#6d6fa8','#9b86d6'],beloning:15,stap:[['in','valeriaan'],['roer',3,1],['in','varkensgras'],['roer',2,1]]},
  {id:'opkikker',naam:'Opkikkerdrankje',zin:'Warm je op als je verkouden bent. Er komt stoom uit je oren!',kl:['#c8693a','#ff8a3a'],beloning:20,stap:[['in','wolfsmelk'],['roer',3,1],['in','alsem'],['roer',3,1]]},
+ {id:'wissel',naam:'Wisselzalf',zin:'Een heldere zalf: je ziet meteen een zet die werkt.',kl:['#7ec8e3','#3a7ca5'],beloning:25,stap:[['in','valeriaan'],['roer',2,1],['in','alsem'],['roer',3,1]]},
  {id:'felix',naam:'Felix Fortunatis',zin:'Vloeibaar geluk, glanzend als goud. Heel lastig om te brouwen.',kl:['#b98a3a','#d9b04a','#ffd95e'],beloning:40,slot:'Brouw eerst een Slaapdrankje en een Opkikkerdrankje.',stap:[['in','affodil'],['roer',3,1],['in','mandragora'],['roer',2,-1],['in','wolfsmelk'],['roer',3,1]]}];
 const INGR=['valeriaan','varkensgras','wolfsmelk','alsem','affodil','mandragora'];
 S.drank=S.drank&&typeof S.drank=='object'?S.drank:{};
@@ -77,7 +78,7 @@ function klaar(){const r=K.r;K.klaarT=performance.now();K.doel=hex(r.kl[r.kl.len
  const E=K.E;for(let i=0;i<60;i++)K.ster.push({x:E.cx+(Math.random()-.5)*E.rx*1.6,y:E.cy+(Math.random()-.5)*E.ry*1.2,vx:(Math.random()-.5)*60,vy:-30-Math.random()*90,l:1+Math.random(),k:Math.random()<.5?'#fff3b0':'#ffd76a'});
  setTimeout(()=>{if(!geluid('lof-'+(1+Math.random()*9|0),1))try{fx.speel('goed')}catch(e){}},1500);
  const eerst=!(S.drank[r.id]|0);if(eerst)S.galjoenen=(S.galjoenen|0)+r.beloning;S.drank[r.id]=(S.drank[r.id]|0)+1;bewaar();try{stats()}catch(e){}
- setTimeout(()=>{const k=$('#ktkaart');if(!k||!K||K.r!==r)return;k.innerHTML=`<div class="kt-gelukt">${window.flesModel?flesModel(r.id,{h:92}):''}<div><b>Gelukt! ✨</b><p>Je ${r.naam} glanst in het flesje. ${r.zin}</p>${(S.drank[r.id]|0)<=1?`<p class="kt-bel">+${r.beloning} Smekkies</p>`:`<p class="klein">Je hebt er nu ${S.drank[r.id]} gebrouwen.</p>`}</div></div><div class="kt-rk"><button class="knop klein" id="ktnog">Nog een drankje</button><button class="knop klein" id="ktwp">Naar de werkplaats</button></div>`;
+ setTimeout(()=>{const k=$('#ktkaart');if(!k||!K||K.r!==r)return;k.innerHTML=`<div class="kt-gelukt">${window.flesModel?flesModel(r.id,{h:92}):''}<div><b>Gelukt! ✨</b><p>Je ${r.naam} glanst in het flesje. ${r.zin} Neem het mee vóór een level, als je wilt. Het hoeft niet.</p>${(S.drank[r.id]|0)<=1?`<p class="kt-bel">+${r.beloning} Smekkies</p>`:`<p class="klein">Je hebt er nu ${S.drank[r.id]} gebrouwen.</p>`}</div></div><div class="kt-rk"><button class="knop klein" id="ktnog">Nog een drankje</button><button class="knop klein" id="ktwp">Naar de werkplaats</button></div>`;
   $('#ktnog').onclick=()=>{K.r=null;K.klaarT=0;K.glans=0;K.doel=hex(WATER);kaart();tip('Kies hierboven een drankje.')};$('#ktwp').onclick=()=>{K.r=null;K.klaarT=0;K.glans=0;naarOv()}},1800)}
 const meng=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t);
 
