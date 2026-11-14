@@ -1,0 +1,102 @@
+/* v138: compacte Hal, grotere tekst, soepeler op een trage telefoon */
+html.groottekst{font-size:118%}
+body.groottekst .knop,body.groottekst button.knop,body.groottekst #speelknop,
+body.groottekst #stapknop,body.groottekst #taakknop,body.groottekst #nav button,
+body.groottekst .dd,body.groottekst .tegel,body.groottekst .ookchip,
+body.groottekst .wmk-lijn,body.groottekst .linkknop{
+  min-height:48px
+}
+body.groottekst #nav{font-size:1.06em}
+body.groottekst #stats,body.groottekst header{font-size:1.05em}
+body.groottekst .akaart b,body.groottekst h1,body.groottekst h2,body.groottekst h3{line-height:1.25}
+
+/* Hal: Spelen + Volgende stap boven de vouw */
+body.halstrak .lokaal .scene,
+body.halstrak .lokaal .scene-mist,
+body.halstrak .lokaal .voortgang{display:none!important;height:0!important;background-image:none!important}
+body.halstrak .lokaal{margin:4px 10px 8px;padding:8px 12px 10px}
+body.halstrak .lokaal .lk-kop h2{font-size:1.12em;margin:.05em 0 .15em}
+body.halstrak .lokaal .lk-kop small{font-size:.72em;letter-spacing:.04em}
+body.halstrak .lokaal .lk-tel{font-size:.82em;margin:2px 0 8px;line-height:1.3}
+body.halstrak #speelknop{min-height:52px;width:100%;font-size:1.12em;margin:0 0 6px}
+body.halstrak #taakknop{min-height:46px;width:100%;margin:0 0 4px}
+body.halstrak #volgendestap{margin:4px 10px 6px;padding:8px 12px 10px}
+body.halstrak #volgendestap small{font-size:.7em;letter-spacing:.06em}
+body.halstrak #volgendestap h3{font-size:1.05em;margin:.08em 0 .15em}
+body.halstrak #volgendestap p{margin:.15em 0 .45em;font-size:.9em;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+body.halstrak #volgendestap .knop{min-height:50px;width:100%;font-size:1.06em}
+body.halstrak .boekstuk{margin:8px 10px 6px}
+body.halstrak .halverr{margin:4px 14px 8px;font-size:.85em;line-height:1.35;opacity:.9}
+body.halstrak #morgenkaart{margin:8px 10px 10px}
+
+/* seizoenskaart: één regel, inklapbaar */
+.wmkaart{margin:6px 10px!important;padding:6px 10px 8px!important}
+.wmkaart .wmk-lijn{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:4px 0;margin:0;text-align:left;color:inherit;font:inherit;min-height:44px;cursor:pointer}
+.wmkaart .wmk-lijn h3{margin:0;font-size:1em;line-height:1.2}
+.wmkaart .wmk-lijn small{display:block;opacity:.8;font-size:.8em}
+.wmkaart .wmk-chev{margin-left:auto;font-size:1.1em;opacity:.7;flex:0 0 28px;text-align:center}
+.wmkaart .wmk-tel{display:flex;align-items:center;gap:4px;font-weight:700}
+.wmkaart.wmcompact .wmk-extra{display:none}
+.wmkaart .wmk-extra{margin-top:4px}
+.wmkaart .wmk-extra .knop{width:100%;margin-top:6px}
+.wmkaart .wmvlok{width:28px;height:28px;flex:0 0 28px}
+
+/* animaties alleen transform/opacity */
+#wmdecor i{will-change:transform,opacity}
+
+@media (max-height:760px){
+  body.halstrak .groet{margin:2px 68px 0 10px}
+  body.halstrak .groet h2{font-size:1.12em}
+  body.halstrak .lokaal .lk-tel{display:none}
+  body.halstrak #halharten{transform:scale(.88);transform-origin:top center}
+}
+
+/* Huffelpuf-huiskamer */
+.hkscherm{padding:8px 12px 24px}
+.hkscherm h1{font-size:1.35em;margin:.2em 0 .3em}
+.hkamer{position:relative;height:min(72vw,340px);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#3a2a18,#1c140c);margin:8px 0 14px;box-shadow:inset 0 0 40px rgba(0,0,0,.35)}
+.hkamer .hkbg,.hkamer .hkbgleeg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hkbgleeg{background:radial-gradient(ellipse at 30% 70%,#5a3d1c,#2a1c10)}
+.hkstuk{position:absolute;margin:0;width:28%;max-width:120px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+.hkstuk img{width:100%;height:auto;border-radius:8px;display:block}
+.hkstuk.hkemo{width:auto;background:rgba(255,248,230,.92);color:#3b2a14;padding:4px 8px;border-radius:10px;font-size:.85em;display:flex;flex-direction:column;align-items:center;gap:2px}
+.hkstuk.hkemo small{font-size:.7em}
+.hklijst{list-style:none;margin:0;padding:0}
+.hklijst li{padding:8px 4px;border-bottom:1px solid rgba(80,50,20,.12);min-height:44px;display:flex;align-items:center;gap:8px}
+.hklijst li.dicht{opacity:.55}
+.hklijst li.wacht{font-weight:700}
+.hkklaar .knop{width:100%;min-height:50px}
+
+label.grootlabel, .gpsfeer label{display:flex;align-items:center;gap:10px;min-height:44px;font-size:1.02em}
+
+/* Hal: geen dubbele schooldag-uitleg boven de vouw */
+body.halstrak .schooldag-voortgang,
+body.halstrak .schooldoelenlijst{display:none!important}
+body.halstrak .morgenkaart{margin:8px 10px 10px;padding:4px 10px}
+body.halstrak .morgenkaart .mk-lijn{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:0;padding:6px 0;margin:0;color:inherit;font:inherit;min-height:44px;text-align:left;cursor:pointer;font-size:.92em}
+body.halstrak .morgenkaart.mkcompact .mk-extra{display:none}
+
+/* Grotere tekst: duidelijke, volle rij */
+#grootvak{margin:10px 0 16px;padding:10px 14px}
+#grootvak .grootlabel{display:flex!important;align-items:center;justify-content:flex-start!important;gap:12px;min-height:48px;font-size:1.12em;color:var(--ink,#3b2a14);width:100%}
+#grootvak .grootlabel input{width:22px;height:22px;flex:0 0 22px;accent-color:#8a5a12}
+#grootvak .klein{margin:0 0 4px 34px}
+
+/* Huiskamer: leesbaar perkament, stabiele knop */
+.hkscherm .kaart,.hkscherm .hkklaar{background:linear-gradient(180deg,#f7f1e3,#efe4cc)!important;color:#3b2a14}
+.hkscherm .hkklaar p,.hkscherm .kaart p,.hkscherm .kaart h3,.hkscherm li{color:#3b2a14}
+#hkzet, .hkklaar .knop.volgende{animation:none!important;width:100%;min-height:52px}
+.hkamer .hkbgleeg{background:
+  radial-gradient(ellipse at 50% 80%,rgba(90,60,25,.35),transparent 55%),
+  url(img/huiskamer/hoek.webp) center/cover;
+  filter:saturate(.7) brightness(.85);opacity:.85}
+
+/* Album-inleiding: geen decoratie over de letters */
+#app .album, #app > p{position:relative;z-index:1}
+
+/* Instellingen: perkament, geen donkere kaart */
+#grootvak{background:linear-gradient(180deg,#f7f1e3,#efe4cc)!important;color:#3b2a14!important;border:1px solid rgba(138,90,18,.28)}
+#grootvak .grootlabel,#grootvak .grootlabel span,#grootvak .klein{color:#3b2a14!important}
+.gpsfeer label{display:flex!important;justify-content:flex-start!important;align-items:center;gap:10px;width:100%;color:#3b2a14}
+#luid{min-width:44px;min-height:44px}

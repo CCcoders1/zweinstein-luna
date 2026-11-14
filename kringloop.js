@@ -256,9 +256,11 @@ function zetHalExtra(){
   if(document.getElementById('morgenkaart'))return;
   const dag=dagBonus();
   const col=collectie();
-  const html=`<section class="morgenkaart rococo" id="morgenkaart"><small>Als je later zin hebt</small><p>${morgenZin()}</p><p class="klein">Vandaag past <b>${dag.drankNaam}</b> bij de les, gebrouwen van ${dag.kruidNaam}. Alleen als je wilt.</p>${col.html}</section>`;
-  const na=app.querySelector('.lokaal')||document.getElementById('halvr')||document.querySelector('.boekstuk')||document.getElementById('volgendestap');
+  const html=`<section class="morgenkaart rococo mkcompact" id="morgenkaart"><button type="button" class="mk-lijn" id="mklijn">Als je later zin hebt <span class="wmk-chev" aria-hidden="true">▾</span></button><div class="mk-extra" hidden><p>${morgenZin()}</p><p class="klein">Vandaag past <b>${dag.drankNaam}</b> bij de les, gebrouwen van ${dag.kruidNaam}. Alleen als je wilt.</p>${col.html}</div></section>`;
+  const na=document.getElementById('halvr')||document.querySelector('.dagdoelen')||document.getElementById('wmkaart')||app.querySelector('.lokaal')||document.querySelector('.boekstuk')||document.getElementById('volgendestap');
   if(na)na.insertAdjacentHTML('afterend',html);else app.insertAdjacentHTML('beforeend',html);
+  const lijn=document.getElementById('mklijn'), extra=document.querySelector('#morgenkaart .mk-extra');
+  if(lijn&&extra)lijn.onclick=()=>{const openN=extra.hasAttribute('hidden');if(openN)extra.removeAttribute('hidden');else extra.setAttribute('hidden','');const k=document.getElementById('morgenkaart');if(k)k.classList.toggle('mkcompact',!openN);const ch=lijn.querySelector('.wmk-chev');if(ch)ch.textContent=openN?'▴':'▾'};
 }
 
 const _home=V.home;
@@ -269,7 +271,17 @@ V.home=function(...a){
       try{zetHalExtra();kopOrde()}catch(e){}
       const v=dagVerras();
       if(v&&(document.body.dataset.view==='home'||document.body.dataset.view==='undefined'||!document.body.dataset.view)){
-        setTimeout(()=>{if(!document.querySelector('.modal,.verhaal')&&(document.body.dataset.view==='home'||document.body.dataset.view==='undefined'||!document.body.dataset.view))toast(v)},2200);
+        setTimeout(()=>{
+          if(document.querySelector('.modal,.verhaal'))return;
+          if(!(document.body.dataset.view==='home'||document.body.dataset.view==='undefined'||!document.body.dataset.view))return;
+          const app=document.getElementById('app');
+          if(app&&!app.querySelector('.halverr')){
+            const p=document.createElement('p');p.className='halverr klein';p.textContent=v;
+            const na=document.getElementById('speelknop')||app.querySelector('.lokaal')||document.getElementById('volgendestap');
+            if(na&&na.parentNode)na.parentNode.insertBefore(p,na.nextSibling);
+            else app.appendChild(p);
+          }
+        },800);
       }
     },200);
   }catch(e){}
@@ -281,8 +293,7 @@ const _vs=window.volgendeStap;
 /* volgendeStap is niet op window; we haken de kaarttekst na. */
 function vulStapBonus(){
   const el=document.querySelector('#volgendestap p');if(!el||el.dataset.bonus)return;
-  const d=dagBonus();el.dataset.bonus=1;
-  el.insertAdjacentHTML('beforeend',` Vandaag past een ${d.drankNaam} bij de les, als je er een hebt.`);
+  el.dataset.bonus=1; /* drankje staat in “Als je later zin hebt”, niet dubbel in Volgende stap */
 }
 
 /* ---------- kop opruimen: hartjes in de header, tas kleiner ---------- */

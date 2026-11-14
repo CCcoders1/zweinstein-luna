@@ -117,9 +117,10 @@ V.login=function(){
 
 const loginCheckOud=window.loginCheck||loginCheck;
 loginCheck=function(){
-  const L=S.login;if(L.laatst===vandaag()||window._loginGepland===vandaag())return;window._loginGepland=vandaag();
+  const L=S.login||(S.login={dag:0,laatst:''});if(L.laatst===vandaag()||window._loginGepland===vandaag())return;window._loginGepland=vandaag();
   if(L.laatst&&L.laatst!==gisteren()){const gemist=Math.round((new Date(vandaag())-new Date(L.laatst))/864e5)-1;
     if(gemist==1&&S.tijdverdrijver>0){S.tijdverdrijver--;toast('Je Tijdverdrijver draaide de tijd terug: je reeks is bewaard!');if(S.dagKlaar===ymd(new Date(Date.now()-2*864e5)))S.dagKlaar=gisteren()}else{L.dag=0}}
+  if(!L.laatst)return; /* eerste bezoek: Volgende stap wijst naar de brief, Spelen blijft zichtbaar */
   setTimeout(()=>V.login(),(typeof RMX!=='undefined'&&RMX)?200:1400);
 };
 window.loginCheck=loginCheck;

@@ -135,11 +135,23 @@ function halOrde(){
     const lok=app.querySelector('.lokaal');
     if(lok){
       const kop=lok.querySelector('.lk-kop');
-      ['#taakknop','#speelknop'].forEach(id=>{
-        const b=lok.querySelector(id);if(b&&kop)kop.after(b);
-      });
+      const speel=lok.querySelector('#speelknop');
+      const taak=lok.querySelector('#taakknop');
+      /* Spelen eerst, taak daaronder: beide boven de vouw */
+      if(speel&&kop)kop.after(speel);
+      if(taak&&speel)speel.after(taak);
+      else if(taak&&kop)kop.after(taak);
+      const sc=lok.querySelector('.scene');
+      if(sc){sc.style.backgroundImage='none';sc.replaceChildren();sc.setAttribute('hidden','')}
     }
-    const volgorde=['.groet','#halharten','#volgendestap','.boekstuk','#ookvandaag','#wmkaart','#hwkaart','.lokaal','#halvr','.dagdoelen','.halspel'];
+    /* Geluid-tegel: duidelijkere naam */
+    document.querySelectorAll('#app button,#app .tegel').forEach(el=>{
+      if(/Geluiden toevoegen/.test(el.textContent||'')){
+        el.childNodes.forEach(n=>{if(n.nodeType===3&&/Geluiden/.test(n.textContent||''))n.textContent=' Geluid en weergave'});
+        const b=el.querySelector('b');if(b&&/Geluid/.test(b.textContent||''))b.textContent='Geluid en weergave';
+      }
+    });
+    const volgorde=['.groet','#halharten','#volgendestap','.lokaal','#wmkaart','#hwkaart','.boekstuk','#ookvandaag','#morgenkaart','#halvr','.dagdoelen','.halspel'];
     let anker=null;
     volgorde.forEach(sel=>{
       const el=app.querySelector(sel);
@@ -193,7 +205,7 @@ function meerOrde(){
           'Tovertweelings Topfopshop':'Fopshop',
           'De Groene Alruin (kruidenwinkel)':'Kruidenwinkel',
           'Hagrids moestuin':'Moestuin',
-          'Geluiden toevoegen':'Geluid',
+          'Geluiden toevoegen':'Geluid en weergave',
           'Vrienden & leraren':'Vrienden',
           'Ontwikkeling & badges':'Badges',
           'Spreuklessen':'Spreuklessen',
@@ -223,6 +235,8 @@ function wachtVerhaal(){
   if(document.body.dataset.view==='dagboek'||document.querySelector('#app .boek,#app .boekextra'))return;
   if(!opHal())return;
   if(document.querySelector('.modal,.verhaal,.ritueel,#intro')){vhT=setTimeout(wachtVerhaal,900);return}
+  /* Eerste ochtendpost eerst, anders ligt het verhaal over Spelen. */
+  if(S.login&&S.login.laatst!== (typeof vandaag==='function'?vandaag():'')){return}
   const i=hfdNieuw();
   if(i<0)return;
   if(i!==0&&i!==boekDag()+1)return;

@@ -30,14 +30,21 @@ const x2=()=>stand().kerst?2:1;
 const VLOK=`<svg class="wmvlok" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="#d7eefe" stroke-width="1.6" stroke-linecap="round"><path d="M16 3v26M5 9.5l22 13M5 22.5l22-13"/><path d="M16 7l-3-3M16 7l3-3M16 25l-3 3M16 25l3 3M8 11l-4 0M8 11l-2-3M24 21h4M24 21l2 3M8 21H4M8 21l-2 3M24 11h4M24 11l2-3"/></g></svg>`;
 
 const KAARTEN_WM=[
-  ['De Winteruil','Z','Een sneeuwwitte uil met rijp op de veren. In de winter brengt hij post die naar dennen en kaneel ruikt.','Feestdagen'],
-  ['Sinterklaas op Zweinstein','Z','Op 5 december zet Hagrid stiekem een schoen bij de haard van de Hal. De volgende ochtend ligt er altijd een rotskoekje in, en soms een briefje.','Feestdagen'],
-  ['Het Kerstfeest in de Grote Zaal','L','Twaalf kerstbomen, berijpt fruit en een plafond vol sneeuw dat binnen niet smelt. De zevende kaars knipoogt extra vriendelijk.','Feestdagen'],
-  ['De Sneeuwbloem van Kas Zeven','Z','Een bloem die alleen bloeit als er sneeuw op het glas van kas zeven ligt. In haar kelk zit een zilveren druppel, als een bevroren groet van B.L.','Feestdagen']
+  ['De Winteruil','Z','Een sneeuwwitte uil met rijp op de veren. In de winter brengt hij post die naar dennen en kaneel ruikt.','img/kaarten/de-winteruil.webp','Feestdagen'],
+  ['Sinterklaas op Zweinstein','Z','Op 5 december zet Hagrid stiekem een schoen bij de haard van de Hal. De volgende ochtend ligt er altijd een rotskoekje in, en soms een briefje.','img/kaarten/sinterklaas-op-zweinstein.webp','Feestdagen'],
+  ['Het Kerstfeest in de Grote Zaal','L','Twaalf kerstbomen, berijpt fruit en een plafond vol sneeuw dat binnen niet smelt. De zevende kaars knipoogt extra vriendelijk.','img/kaarten/het-kerstfeest-in-de-grote-zaal.webp','Feestdagen'],
+  ['De Sneeuwbloem van Kas Zeven','Z','Een bloem die alleen bloeit als er sneeuw op het glas van kas zeven ligt. In haar kelk zit een zilveren druppel, als een bevroren groet van B.L.','img/kaarten/de-sneeuwbloem-van-kas-zeven.webp','Feestdagen'],
+  ['Rijp op kas zeven','Z','Op een winterochtend lag het rijp in de vorm van een hartje op het glas. Niemand veegde het weg.','img/kaarten/rijp-op-kas-zeven.webp','Feestdagen'],
+  ['De zevende kaars','L','Zes vlammen branden, de zevende wacht. Onder het sterrenplafond lijkt ze toch te groeten.','img/kaarten/de-zevende-kaars.webp','Feestdagen']
 ];
 function zetKaart(naam){S.kaarten=S.kaarten||{};const nw=!S.kaarten[naam];S.kaarten[naam]=(S.kaarten[naam]||0)+1;try{window.serieNaKaart&&serieNaKaart(nw)}catch(e){}return (nw?'Nieuw in je album: ':'Die had je al: ')+naam}
 function voegSerie(){try{
-  KAARTEN_WM.forEach(k=>{if(typeof KAARTEN!=='undefined'&&!KAARTEN.some(x=>x[0]===k[0]))KAARTEN.push([k[0],k[1],k[2],'',k[3],1])});
+  KAARTEN_WM.forEach(k=>{
+    if(typeof META==='object'&&META)META[k[0]]=[k[3],k[4]];
+    const al=typeof KAARTEN!=='undefined'&&KAARTEN.find(x=>x[0]===k[0]);
+    if(al){al[3]=k[3];al[4]=k[4];if(al[5]==null)al[5]=1}
+    else if(typeof KAARTEN!=='undefined')KAARTEN.push([k[0],k[1],k[2],k[3],k[4],1]);
+  });
   if(window.KAARTSERIES&&!KAARTSERIES.includes('Feestdagen'))KAARTSERIES.push('Feestdagen');
 }catch(e){}}
 voegSerie();
@@ -95,22 +102,37 @@ function sneeuw(){
   document.body.classList.toggle('wmsint',!!(st.aan&&st.sint));
   if(!(st.aan||st.voor)){if(d)d.remove();return}
   if(!d){d=document.createElement('div');d.id='wmdecor';d.setAttribute('aria-hidden','true');document.body.appendChild(d)}
-  if(!d.childElementCount){d.innerHTML=Array.from({length:28},(_,i)=>`<i style="--i:${i};--d:${(i*1.7%7).toFixed(1)}s;--x:${(i*17%100)}%"></i>`).join('')}
+  if(!d.childElementCount){const n=(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4)?8:12;d.innerHTML=Array.from({length:n},(_,i)=>`<i style="--i:${i};--d:${(i*1.7%7).toFixed(1)}s;--x:${(i*17%100)}%"></i>`).join('')}
 }
 setInterval(sneeuw,2000);sneeuw();
 
 const dagenTxt=st=>{if(st.kerst)return 'vandaag is het Kerstfeest';if(st.sint)return 'vandaag is het Sinterklaas';const rest=Math.max(0,36-st.i);return rest<=1?'laatste winterdag':'nog '+rest+' dagen winter'};
+function kaartOpen(){try{return sessionStorage.getItem('wmkaartOpen')==='1'}catch(e){return false}}
+function zetKaartOpen(v){try{sessionStorage.setItem('wmkaartOpen',v?'1':'0')}catch(e){}}
 function kaartHtml(){
   const st=stand(),h=W();
-  if(!st.aan){if(st.voor)return `<section class="wmkaart wmteaser rococo" id="wmkaart" onclick="toast('❄️ Vanaf 1 december: Wintermagie in Zweinstein.')"><div class="wmk-kop">${VLOK}<div><h3>Wintermagie komt eraan</h3><small>Vanaf 1 december · sneeuw, Sinterklaas en Kerst in de Hal</small></div></div></section>`;return ''}
+  const bel=st.aan&&open();
+  const wijd=kaartOpen()||bel;
+  const chev=wijd?'▴':'▾';
+  if(!st.aan){if(st.voor)return `<section class="wmkaart wmteaser rococo ${wijd?'':'wmcompact'}" id="wmkaart"><button type="button" class="wmk-lijn" id="wmklijn">${VLOK}<div><h3>Wintermagie komt eraan</h3><small>Vanaf 1 december</small></div><span class="wmk-chev" aria-hidden="true">${chev}</span></button><div class="wmk-extra"${wijd?'':' hidden'}><p class="klein">Sneeuw, Sinterklaas en Kerst in de Hal. Geen haast, het komt vanzelf.</p><button type="button" class="knop klein" id="wmnaar">Kijk alvast</button></div></section>`;return ''}
   const v=volgende(),vorig=h.stap?STAP[h.stap-1].n:0,p=v?Math.min(100,(h.tot-vorig)/Math.max(1,v.n-vorig)*100):100;
   const nieuwSc=SC.some((s,i)=>s.d<=st.i&&!h.sc[i]),raad=raadNu()!=null;
-  const kop=st.kerst?'Kerstfeest in de Grote Zaal':st.sint?'Sinterklaas in Zweinstein':'Wintermagie';
-  return `<section class="wmkaart rococo ${st.kerst?'wmfk':''} ${st.sint?'wmsfk':''}" id="wmkaart" onclick="ga('winter')"><div class="wmk-kop">${VLOK}<div><h3>${kop}</h3><small>${dagenTxt(st)}</small></div><span class="wmk-tel">${VLOK}<b>${h.tot}</b></span></div>
+  const kop=st.kerst?'Kerstfeest':st.sint?'Sinterklaas':'Wintermagie';
+  return `<section class="wmkaart rococo ${st.kerst?'wmfk':''} ${st.sint?'wmsfk':''} ${wijd?'':'wmcompact'}" id="wmkaart"><button type="button" class="wmk-lijn" id="wmklijn">${VLOK}<div><h3>${kop}</h3><small>${dagenTxt(st)}${bel?' · beloning klaar':''}</small></div><span class="wmk-tel">${VLOK}<b>${h.tot}</b></span><span class="wmk-chev" aria-hidden="true">${chev}</span></button>
+    <div class="wmk-extra"${wijd?'':' hidden'}>
     <div class="wmk-balk"><i style="width:${p.toFixed(0)}%"></i></div>
-    <p class="wmk-volg">${open()?'<b class="wmk-klaar">✨ Een beloning is klaar!</b>':v?`Volgende: ${v.ico} ${v.t} <b>bij ${v.n} vlokjes</b>`:'Alle winterbeloningen verdiend.'}</p>
-    ${nieuwSc||raad||(st.kerst&&!h.feest)||(st.sint&&!h.sint)?`<div class="wmk-tags">${st.kerst&&!h.feest?'<span>🎄 Kerstfeest</span>':''}${st.sint&&!h.sint?'<span>🎁 Sinterklaas</span>':''}${nieuwSc?'<span>📜 Verhaal</span>':''}${raad?'<span>❓ Raadsel</span>':''}</div>`:''}</section>`}
-function kaartVerf(){const k=document.getElementById('wmkaart');if(k&&document.body.dataset.view==='home'){const h=kaartHtml();if(h)k.outerHTML=h;else k.remove()}}
+    <p class="wmk-volg">${bel?'<b class="wmk-klaar">✨ Een beloning is klaar!</b>':v?`Volgende: ${v.ico} ${v.t} <b>bij ${v.n} vlokjes</b>`:'Alle winterbeloningen verdiend.'}</p>
+    ${nieuwSc||raad||(st.kerst&&!h.feest)||(st.sint&&!h.sint)?`<div class="wmk-tags">${st.kerst&&!h.feest?'<span>🎄 Kerstfeest</span>':''}${st.sint&&!h.sint?'<span>🎁 Sinterklaas</span>':''}${nieuwSc?'<span>📜 Verhaal</span>':''}${raad?'<span>❓ Raadsel</span>':''}</div>`:''}
+    <button type="button" class="knop klein" id="wmnaar">Naar Wintermagie</button>
+    </div></section>`}
+function bindWmKaart(){
+  const k=document.getElementById('wmkaart');if(!k)return;
+  const extra=k.querySelector('.wmk-extra');
+  const lijn=document.getElementById('wmklijn');
+  if(lijn)lijn.onclick=e=>{e.preventDefault();e.stopPropagation();if(!extra)return;const openN=extra.hasAttribute('hidden');if(openN)extra.removeAttribute('hidden');else extra.setAttribute('hidden','');k.classList.toggle('wmcompact',!openN);zetKaartOpen(openN);const ch=lijn.querySelector('.wmk-chev');if(ch)ch.textContent=openN?'▴':'▾'};
+  const naar=document.getElementById('wmnaar');if(naar)naar.onclick=e=>{e.preventDefault();e.stopPropagation();ga('winter')};
+}
+function kaartVerf(){const k=document.getElementById('wmkaart');if(k&&document.body.dataset.view==='home'){const h=kaartHtml();if(h){k.outerHTML=h;bindWmKaart()}else k.remove()}}
 
 const raadVrij=()=>{const st=stand(),h=W();if(!st.aan)return [];const l=[];const max=Math.min(36,st.i);for(let i=0;i<=max;i++)if(!h.raad[i])l.push(i);return l};
 const raadNu=()=>{const st=stand(),l=raadVrij();return l.includes(st.i)?st.i:l[0]};
@@ -119,7 +141,7 @@ function speel(s,klaar){let i=0;const regels=[[s.w,s.x],['Tilly',s.c]];
   if(typeof verhaal==='function')return verhaal(regels,klaar);
   klaar&&klaar()}
 
-const feestGeef=()=>{const h=W();if(h.feest)return '';h.feest=1;S.galjoenen+=30;geef(40);bewaar();try{stats()}catch(e){}return '+40 Sneeuwvlokjes · +30 Smekkies'};
+const feestGeef=()=>{const h=W();if(h.feest)return '';h.feest=1;S.galjoenen+=30;geef(40);const k=zetKaart('De zevende kaars');bewaar();try{stats()}catch(e){}return '+40 Sneeuwvlokjes · +30 Smekkies · '+k};
 const sintGeef=()=>{const h=W();if(h.sint)return '';h.sint=1;S.galjoenen+=15;geef(20);bewaar();try{stats()}catch(e){}return '+20 Sneeuwvlokjes · +15 Smekkies, en een denkbeeldig rotskoekje'};
 function feestScherm(){const o=document.createElement('div');o.className='modal wmfeestm';
   o.innerHTML=`<div class="modalin rococo wmfm"><h2>Kerstfeest in de Grote Zaal</h2><p>Twaalf bomen, berijpt fruit, en sneeuw die van het plafond dwarrelt zonder nat te worden. De zevende kaars houdt zich stil, en knipoogt toch.</p><div id="wmfmres"></div><button class="knop volgende" id="wmaan">Aanschuiven</button></div>`;
@@ -136,8 +158,8 @@ const feestPopup=()=>{const st=stand(),h=W();
 const naEvent=()=>{const st=stand();if(st.aan||!S.wm||S.wm.j!==st.j||!st.na)return;const h=S.wm;const l=[];while(open()){l.push(STAP[h.stap].ico+' '+STAP[h.stap].g());h.stap++}if(!l.length)return;bewaar();try{stats()}catch(e){}
   setTimeout(()=>{const o=document.createElement('div');o.className='modal';o.innerHTML=`<div class="modalin rococo wmfm"><h2>Bewaard tot de dooi</h2><p>De winter is voorbij, maar dit had je nog verdiend:</p><ul class="hwlijst">${l.map(x=>`<li>${x}</li>`).join('')}</ul><button class="knop volgende">Dank je</button></div>`;document.body.appendChild(o);o.querySelector('button').onclick=()=>o.remove()},1400)};
 
-function zetKaartOpHal(){sneeuw();const app=document.getElementById('app');if(!app||document.body.dataset.view!=='home')return;const h=kaartHtml();if(!h){const o=document.getElementById('wmkaart');if(o)o.remove();return}let k=document.getElementById('wmkaart');if(k){k.outerHTML=h;k=document.getElementById('wmkaart')}else{const na=document.getElementById('ookvandaag')||app.querySelector('.groet')||app.firstChild;if(na)na.insertAdjacentHTML('afterend',h);else app.insertAdjacentHTML('afterbegin',h);k=document.getElementById('wmkaart')}
-  const ook=document.getElementById('ookvandaag');if(k&&ook&&k.previousElementSibling!==ook)ook.after(k)}
+function zetKaartOpHal(){sneeuw();const app=document.getElementById('app');if(!app||document.body.dataset.view!=='home')return;const h=kaartHtml();if(!h){const o=document.getElementById('wmkaart');if(o)o.remove();return}let k=document.getElementById('wmkaart');if(k){k.outerHTML=h;k=document.getElementById('wmkaart')}else{const na=app.querySelector('.lokaal')||document.getElementById('volgendestap')||app.querySelector('.groet')||app.firstChild;if(na)na.insertAdjacentHTML('afterend',h);else app.insertAdjacentHTML('afterbegin',h);k=document.getElementById('wmkaart')}
+  bindWmKaart()}
 const _home=V.home;V.home=(...a)=>{const r=_home(...a);try{zetKaartOpHal();setTimeout(zetKaartOpHal,80);setTimeout(zetKaartOpHal,220);feestPopup();naEvent()}catch(e){console.warn(e)}return r};
 
 const claim=()=>{const h=W();if(!open())return;const s=STAP[h.stap];const t=s.g();h.stap++;bewaar();try{stats()}catch(e){}
@@ -161,7 +183,7 @@ V.winter=()=>{
   const c=document.getElementById('wmclaim');if(c)c.onclick=claim;
   const fb=document.getElementById('wmfeestbtn');if(fb)fb.onclick=feestScherm;
   const sb=document.getElementById('wmsintbtn');if(sb)sb.onclick=sintScherm;
-  document.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{const i=+b.dataset.sc;speel(SC[i],()=>{if(!h.sc[i]){h.sc[i]=1;geef(10);toast('📜 +10 Sneeuwvlokjes')}V.winter()})});
+  document.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{const i=+b.dataset.sc;speel(SC[i],()=>{if(!h.sc[i]){h.sc[i]=1;geef(10);let extra='📜 +10 Sneeuwvlokjes';if(i===0)extra+=' · '+zetKaart('Rijp op kas zeven');if(i===3||i===4)extra+=' · '+zetKaart('De zevende kaars');toast(extra)}V.winter()})});
   document.querySelectorAll('.hwopties [data-o]').forEach(b=>b.onclick=()=>{if(rn==null)return;const k=+b.dataset.o,R=RA[rn%RA.length];const res=document.getElementById('wmraadres');
     if(k===R[4]){h.raad[rn]=1;geef(15);S.galjoenen+=10;bewaar();try{stats();fx.speel('goed')}catch(e){}res.innerHTML=`<div class="hwgoed">${typeof tilly==='function'?tilly('<b>Goed zo!</b> '+R[5]):R[5]}<p>+15 Sneeuwvlokjes · +10 Smekkies</p><button class="knop klein" id="wmrv">Verder</button></div>`;document.querySelectorAll('.hwopties button').forEach(x=>x.disabled=true);document.getElementById('wmrv').onclick=()=>V.winter()}
     else{b.disabled=true;b.classList.add('mis');try{fx.speel('kras')}catch(e){}res.innerHTML='<p class="klein hwhint">Hmm, dat is het niet. Probeer gerust nog eens, er is geen haast.</p>'}});
