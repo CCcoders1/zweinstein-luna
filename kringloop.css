@@ -52,3 +52,95 @@ body[data-view=dagboek] #toast,body:has(.m3voor) #toast{opacity:0!important;poin
 /* Juice: bijzondere stenen en winst */
 .m3combo{letter-spacing:.02em;text-shadow:0 0 12px rgba(255,230,140,.8)}
 .m3eind .m3ster{filter:drop-shadow(0 0 16px rgba(255,210,90,.65))}
+
+
+/* ===== v136 polish: startscherm, les-banner, win/verlies ===== */
+body.halstrak .nieuwles,
+body.halstrak #nieuwles,
+#ookvandaag .nieuwles,
+#ookvandaag #nieuwles{
+  font-size:.82em!important;
+  margin:0!important;
+  padding:8px 10px!important;
+  min-height:44px;
+  width:auto!important;
+  max-width:100%;
+  background:rgba(40,28,8,.55)!important;
+  color:#f6e6b8!important;
+  box-shadow:none!important;
+  animation:none!important;
+  border-radius:12px;
+  line-height:1.2;
+}
+#ookvandaag .nieuwles.ookchip{display:inline-flex;align-items:center;justify-content:center}
+
+.m3voor[data-compact]{
+  display:flex;flex-direction:column;
+  max-height:calc(100dvh - 56px - 88px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+  overflow:hidden;padding-bottom:0;margin-bottom:0;
+}
+.m3voor-rol{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+.m3voor-vast{
+  flex:none;position:relative;z-index:4;
+  background:linear-gradient(180deg,transparent 0,rgba(20,14,8,.55) 14%,rgba(20,14,8,.92) 28%);
+  padding:6px 0 4px;margin:0;
+}
+body[data-view=match3] .m3voor[data-compact]{
+  /* heel het startscherm blijft boven de navigatie */
+  margin-bottom:0;
+}
+.m3voor[data-compact] .drankkeuze{margin:4px 0 6px;padding:6px 8px}
+.m3voor[data-compact] .drankkeuze>p{margin:.1em 0 .35em;font-size:.82em}
+.m3voor[data-compact] .drankrij{grid-template-columns:repeat(4,1fr);gap:5px}
+.m3voor[data-compact] .drankchip{min-height:64px;padding:4px 3px 6px;gap:1px}
+.m3voor[data-compact] .drankchip b{font-size:.72em;line-height:1.1}
+.m3voor[data-compact] .drankchip small{font-size:.62em;line-height:1.15}
+.m3voor[data-compact] .drankchip .flesje, .m3voor[data-compact] .drankchip svg{width:20px!important;height:28px!important}
+.m3voor[data-compact] .drankketel{margin:.2em 0 0}
+.m3voor[data-compact] #m3start{margin:6px 0 2px}
+.m3voor[data-compact] .kortweg,
+.m3voor[data-compact] .lv-teaser{display:none}
+.m3voor[data-compact] .fgreeks,
+.m3voor[data-compact] .reekswinst{margin:4px 0;padding:4px 8px;font-size:.85em}
+.m3voor[data-compact] h2{margin:.25em 0 .15em}
+.m3voor[data-compact] .plaagregel{font-size:.85em;margin:.3em 0}
+@media (max-height:780px){
+  .m3voor[data-compact] h2{font-size:1.15em}
+  .m3voor[data-compact] .drankchip{min-height:58px}
+  .m3voor[data-compact] .m3doelen{font-size:.9em}
+  .m3voor[data-compact] .harten{transform:scale(.88);transform-origin:left center}
+  .m3voor[data-compact] .bokeuze{margin:4px 0}
+}
+
+.winsterr{text-align:center;margin:.35em 0 .5em}
+.winsterr-sterren{display:block;font-size:1.85em;letter-spacing:.18em;line-height:1.1;filter:drop-shadow(0 0 10px rgba(255,210,90,.75));animation:sterpop .7s ease}
+.schildmoment{margin:.35em 0 0;padding:8px 12px;border-radius:12px;background:linear-gradient(180deg,rgba(80,50,8,.55),rgba(40,24,6,.5));border:1px solid rgba(239,210,122,.45);font-size:.95em}
+.schildmoment b{color:#ffe7a0}
+.winhaak{margin:.7em 0 .2em;padding:8px 10px 10px;border-radius:12px;background:rgba(16,28,22,.45);border:1px solid rgba(180,220,190,.2)}
+.winhaak .tzin,.winhaak p{margin:.2em 0;line-height:1.4}
+@keyframes sterpop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.winsterr-sterren{animation:none}}
+
+.m3eind.troostend h2{color:#f3e2b0}
+.m3eind .troost{margin:.5em 0 .7em;padding:8px 10px;border-radius:12px;background:rgba(20,32,28,.45);border:1px solid rgba(180,220,190,.22);line-height:1.4}
+
+.m3voor[data-compact] .drankketel{display:none}
+@media (max-width:370px){
+  .m3voor[data-compact] .drankrij{grid-template-columns:1fr 1fr!important;gap:6px}
+  .m3voor[data-compact] .drankchip{min-height:54px}
+}
+/* Winst: sterren en schilden in beeld, knoppen eronder, geen dubbele schild-icoon */
+.m3eind.has-winsterr{display:flex;flex-direction:column;max-height:min(76vh,640px);overflow:auto}
+.m3eind.has-winsterr>.m3ster,.m3eind.has-winsterr .winbg{display:none!important}
+.m3eind .m3actie{position:sticky;bottom:0;padding:8px 0 4px;background:linear-gradient(180deg,transparent,#ead6ae 28%);z-index:2}
+.m3eind .m3actie .knop{width:100%;margin:4px 0}
+body:has(.modal) #smekcv,body:has(.modal) .smaak,body:has(.modal) .smekgroot,
+body:has(.m3eind) #smekcv,body:has(.m3eind) .smaak,body:has(.m3eind) .smekgroot,
+body:has(.modal) #gids,body:has(.m3eind) #gids{opacity:0!important;visibility:hidden;pointer-events:none!important}
+.m3eind.troostend .tilly:not(.troost .tilly):not(.troost){display:none}
+.m3eind.troostend .troost .tilly{display:flex}
+
+.m3eind .fgcadeau{padding:6px 8px;margin:4px 0;font-size:.88em;line-height:1.3}
+.m3eind .fgcadeau .fgcico{transform:scale(.75);transform-origin:center;margin:0 auto .2em}
+.m3eind.has-winsterr{max-height:min(62vh,560px)}
+.m3eind .m3actie{position:sticky!important;bottom:0;z-index:4;padding-top:10px;background:linear-gradient(180deg,transparent,#ead6ae 36%)!important}

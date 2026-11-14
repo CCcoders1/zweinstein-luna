@@ -28,13 +28,19 @@ const LES_KOSTEN=false;
  /* --- moeilijkheid en obstakels per vak (levels 1-30 handgemaakt blijven) --- */
  const _lvl=m3Level;m3Level=function(n){const L=_lvl(n);const vi=Math.floor((n-1)/VAK_LEVELS);if(n<=30||vi<1)return L;
   const d=(n-1)%VAK_LEVELS;const r=rngVan(n*131+7);
-  L.zetten=Math.max(16,L.zetten-Math.min(4,vi)+((S.m3kal||{})[n]?0:0));if(vi>=2)L.kleuren=7;
+  L.zetten=Math.max(16,L.zetten-Math.min(4,vi)+((S.m3kal||{})[n]?0:0));
+  const plek=((n-1)%10)+1, adem=plek===1||plek===6;
+  if(vi>=2){if(adem)L.kleuren=Math.min(L.kleuren||7,6);else L.kleuren=7}
   const pat=[null,['rand','kruis'],['onder','midden'],['dambord','vol'],['kruis','vol'],['dambord','vol','rand']][vi];const kp=[null,['rij'],['hoeken'],['rij','dubbel'],['dubbel'],['hoeken','dubbel']][vi];
   const heeft=t=>L.doelen.some(x=>x[0]==t);
   if(!heeft('o')&&r()<.35+vi*.08){L.onkruid=pat[r()*pat.length|0];L.doelen.push(['o'])}
-  if(!heeft('k')&&vi>=1&&r()<.25+vi*.08){L.kist=kp[r()*kp.length|0];L.doelen.push(['k'])}
+  if(!heeft('k')&&vi>=1&&r()<.25+vi*.08){
+    const typen=['o','p'].filter(heeft).length+(L.plaag?1:0);
+    if(typen<2){L.kist=kp[r()*kp.length|0];L.doelen.push(['k'])}
+  }
   if(L.doelen.length>3)L.doelen=L.doelen.slice(-3);
   if(!L.doelen.some(x=>x[0]=='o'))L.onkruid=0;if(!L.doelen.some(x=>x[0]=='k'))L.kist=0;if(!L.doelen.some(x=>x[0]=='p'))L.pot=0;
+  if((L.kleuren|0)>=7&&(L.pot|0)>=3){L.pot=2;L.doelen.forEach(x=>{if(x[0]==='p')x[1]=2})}
   L.doelen.forEach(x=>{if(typeof x[0]=='number'){x[0]=x[0]%L.kleuren;x[1]=Math.min(45,x[1]+vi*2+(d/25|0))}});
   return L};
  if(!S.kalV2){S.kalV2=1;if(S.m3kal)Object.keys(S.m3kal).forEach(n=>{try{if(m3Level(+n).kist)delete S.m3kal[n]}catch(e){}});bewaar()}

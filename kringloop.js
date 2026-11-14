@@ -1,4 +1,4 @@
-/* ====== v135 Kringloop: drankjes als optionele levelhulp, schooldagbonus, terugkeer zonder druk ====== */
+/* ====== v136 Kringloop: drankjes als optionele levelhulp, schooldagbonus, terugkeer zonder druk ====== */
 (function(){
 'use strict';
 S.drank=S.drank&&typeof S.drank=='object'?S.drank:{};
@@ -70,9 +70,41 @@ V.match3=async function(n,...a){
       else voor.insertAdjacentHTML('beforeend',keuzeHTML());
       bindKeuze();
     }
+    compactStart();
   }catch(e){console.warn(e)}
   return r;
 };
+
+
+/* v136: drankjes + Start blijven in beeld, ook op 360×740. */
+function compactStart(){
+  const v=document.querySelector('.m3voor');if(!v||v.dataset.compact)return;
+  v.dataset.compact=1;
+  const p=v.querySelector('.drankkeuze>p');
+  if(p)p.textContent='Drankje meenemen? Hoeft niet.';
+  const kort={opkikker:'Opkikker',felix:'Felix',slaap:'Slaapdrankje',wissel:'Wisselzalf'};
+  v.querySelectorAll('.drankchip').forEach(c=>{const b=c.querySelector('b');if(b&&kort[c.dataset.dr])b.textContent=kort[c.dataset.dr]});
+  v.querySelectorAll('p').forEach(el=>{
+    if(/Binnenkort zie je hier/.test(el.textContent||''))el.classList.add('kortweg');
+  });
+  const rol=document.createElement('div');rol.className='m3voor-rol';
+  const voet=document.createElement('div');voet.className='m3voor-vast';
+  const drank=v.querySelector('.drankkeuze');
+  const start=v.querySelector('#m3start');
+  while(v.firstChild)rol.appendChild(v.firstChild);
+  if(drank)voet.appendChild(drank);
+  if(start)voet.appendChild(start);
+  v.appendChild(rol);v.appendChild(voet);
+  const pas=()=>{
+    const nav=document.getElementById('nav');
+    const top=v.getBoundingClientRect().top;
+    const bot=(nav?nav.getBoundingClientRect().top:innerHeight-80)-6;
+    const h=Math.max(240,bot-top);
+    v.style.maxHeight=h+'px';
+    v.style.overflow='hidden';
+  };
+  pas();requestAnimationFrame(pas);setTimeout(pas,200);
+}
 
 /* ---------- toepassen bij start van het bord ---------- */
 function volgSter(b){
@@ -266,8 +298,22 @@ function kopOrde(){
   document.querySelectorAll('#stats .schild-t,#stats .vuur-t,#stats .hoed-t,#weer').forEach(e=>{e.style.display='none'});
   const app=document.getElementById('app');
   document.querySelectorAll('header #nieuwles,header .nieuwles,header #mpknop,#koprit #nieuwles,#koprit .nieuwles,#koprit #mpknop,#koprit .mpknop').forEach(el=>{if(app&&el.parentNode!==app)app.insertBefore(el,app.firstChild)});
+  try{
+    const les=document.getElementById('nieuwles');
+    if(les&&!les.classList.contains('ookchip')){
+      les.classList.add('ookchip');
+      let tx=(les.textContent||'').replace(/\s+/g,' ').trim();
+      tx=tx.replace(/^✨\s*/,'').replace(/^Nieuwe les!\s*/i,'Les: ');
+      if(tx.length>42)tx=tx.slice(0,40)+'…';
+      les.textContent=tx;
+      let ook=document.getElementById('ookvandaag');
+      if(!ook){ook=document.createElement('section');ook.id='ookvandaag';ook.className='ookvandaag';ook.innerHTML='<small>Ook vandaag</small><div class="ookrij"></div>';const groet=document.querySelector('.groet');if(groet)groet.after(ook);else if(app)app.insertBefore(ook,app.firstChild)}
+      const rij=ook.querySelector('.ookrij');const wrap=les.closest('div[style]')||les;
+      if(rij&&wrap.parentNode!==rij)rij.appendChild(wrap);
+    }
+  }catch(e){}
 }
-setInterval(()=>{try{if(document.body.classList.contains('halstrak')||document.body.dataset.view==='home'){if(!document.getElementById('morgenkaart'))zetHalExtra();kopOrde();vulStapBonus()}}catch(e){}},2500);
+setInterval(()=>{try{kopOrde();if(document.body.classList.contains('halstrak')||document.body.dataset.view==='home'){if(!document.getElementById('morgenkaart'))zetHalExtra();vulStapBonus()}}catch(e){}},2500);
 
 /* Ochtendpost: extra regel over kruid/drank van de dag. */
 const _login=V.login;
@@ -301,18 +347,76 @@ function plekZin(waar){
   }catch(e){}return r};
 });
 
-/* Win-viering: een verhaalhaakje. */
+/* Win-viering: sterren en schilden eerst, daarna een warm verhaalhaakje. */
+function mooiWinst(n,b){
+  const eind=document.querySelector('.m3eind');if(!eind)return;
+  eind.classList.add('has-winsterr');
+  const sterEl=eind.querySelector('.m3ster');if(sterEl)sterEl.style.display='none';
+  if(!eind.querySelector('.winsterr')){
+    const st=typeof sterVan==='function'?sterVan(b,n):(S.lvSter&&S.lvSter[n]|0);
+    const sterren='★'.repeat(Math.max(1,st||1))+'☆'.repeat(Math.max(0,3-(st||1)));
+    let sch=window._schildTekst||'';
+    sch=sch.replace(/\s*·\s*$/,'').trim();
+    const blok=document.createElement('div');blok.className='winsterr';
+    blok.innerHTML=`<span class="winsterr-sterren" aria-label="${st||1} sterren">${sterren}</span><p class="schildmoment">${sch||'Een ster voor de lokalen.'}</p>`;
+    const h2=eind.querySelector('h2');if(h2)h2.after(blok);else eind.insertAdjacentElement('afterbegin',blok);
+    const oud=eind.querySelector('.hp-sterren');if(oud){const p=oud.closest('p');if(p)p.style.display='none'}
+    // verberg de oude schildregel, die staat nu in .schildmoment
+    [...eind.querySelectorAll(':scope > p')].forEach(p=>{
+      if(/huisschild/i.test(p.textContent||'')&&!p.classList.contains('schildmoment'))p.style.display='none';
+    });
+  }
+  if(!eind.querySelector('.winhaak')){
+    const zin=typeof verhaalMorgen==='function'?verhaalMorgen():'';
+    const kas=typeof kasMorgen==='function'&&S.kweek&&Object.keys(S.kweek).length?kasMorgen():'';
+    const tekst=(zin||'Wat een les.')+(kas?' '+kas:'');
+    const wrap=document.createElement('div');wrap.className='winhaak';
+    wrap.innerHTML=typeof tilly==='function'?tilly(tekst):('<p>'+tekst+'</p>');
+    const kn=eind.querySelector('button');if(kn)kn.before(wrap);else eind.appendChild(wrap);
+  }
+  if(!eind.querySelector('.m3actie')){
+    const act=document.createElement('div');act.className='m3actie';
+    [...eind.querySelectorAll(':scope > button, :scope > .knop, :scope > .linkknop')].forEach(b=>act.appendChild(b));
+    if(act.children.length)eind.appendChild(act);
+  }
+}
 const _w=typeof m3Winst==='function'?m3Winst:null;
 if(_w)window.m3Winst=m3Winst=function(n,b,...a){
   const r=_w.apply(this,arguments);
   try{
-    const zin=verhaalMorgen();
-    const wacht=()=>{
-      const eind=document.querySelector('.m3eind');if(!eind){setTimeout(wacht,400);return}
-      if(eind.querySelector('.winhaak'))return;
-      eind.insertAdjacentHTML('beforeend',`<p class="winhaak">${zin} ${kasMorgen()&&(S.kweek&&Object.keys(S.kweek).length)?' '+kasMorgen():''}</p>`);
+    const wacht=k=>{
+      const eind=document.querySelector('.m3eind');if(!eind){if(k<20)setTimeout(()=>wacht(k+1),400);return}
+      mooiWinst(n,b);
     };
-    setTimeout(wacht,500);
+    setTimeout(()=>wacht(0),400);
+    setTimeout(()=>wacht(0),900);
+  }catch(e){}
+  return r;
+};
+
+/* Verliesscherm: troostend, en duidelijk wanneer Tilly helpt. */
+const _ver136=typeof m3Verlies==='function'?m3Verlies:null;
+if(_ver136)window.m3Verlies=m3Verlies=function(n,b,...a){
+  const r=_ver136.apply(this,arguments);
+  try{
+    const eind=document.querySelector('.m3eind');
+    if(eind&&!eind.querySelector('.troost')){
+      eind.classList.add('troostend');
+      const h2=eind.querySelector('h2');if(h2)h2.textContent='Bijna, Luna';
+      const pech=(S.m3pech&&S.m3pech[n])|0;
+      let zin='Zo dichtbij. We kijken rustig nog een keer, ik help zoeken.';
+      if(pech>=5)zin='Ik blijf bij je. Volgende keer lig er een bom, een streep én drie extra zetten voor je klaar.';
+      else if(pech>=3)zin='Ik help je een handje: volgende keer krijg je een extra bom en drie zetten. We komen er wel.';
+      eind.querySelectorAll('.tilly').forEach(el=>{if(!el.closest('.troost'))el.style.display='none'});
+      const p=document.createElement('div');p.className='troost';
+      p.innerHTML=typeof tilly==='function'?tilly(zin):('<p>'+zin+'</p>');
+      const kn=eind.querySelector('button');if(kn)kn.before(p);else eind.appendChild(p);
+      if(!eind.querySelector('.m3actie')){
+        const act=document.createElement('div');act.className='m3actie';
+        [...eind.querySelectorAll(':scope > button, :scope > .knop, :scope > .linkknop')].forEach(b=>act.appendChild(b));
+        if(act.children.length)eind.appendChild(act);
+      }
+    }
   }catch(e){}
   return r;
 };
@@ -331,5 +435,51 @@ if(typeof MutationObserver==='function'){
   addEventListener('load',()=>{try{mo.observe(document.body,{childList:true,subtree:true});luiBeeld()}catch(e){}});
 }
 
+
+/* v136: ontwerpregels altijd, ook als een eerdere laag potten/kleuren terugzet. */
+const _lvl136=typeof m3Level==='function'?m3Level:null;
+if(_lvl136){
+  window.m3Level=m3Level=function(n){
+    const L=_lvl136.apply(this,arguments);
+    try{
+      if(n>=151){
+        const plek=((n-1)%10)+1, adem=plek===1||plek===6;
+        if(adem)L.kleuren=Math.min(L.kleuren||7,6);
+        if((L.kleuren|0)>=7&&(L.pot|0)>=3){L.pot=2; (L.doelen||[]).forEach(d=>{if(d[0]==='p')d[1]=2})}
+        const typ=['o','k','p'].filter(x=>(L.doelen||[]).some(d=>d[0]===x));
+        if(L.plaag)typ.push('plaag');
+        if(typ.length>2&&typ.includes('k')){L.kist=0;L.doelen=(L.doelen||[]).filter(d=>d[0]!=='k')}
+        if((L.kleuren|0)>=7){
+          const zw=(typeof lvZwaar==='function'?lvZwaar(n):0)|0;
+          const minZ=zw>=2?24:zw>=1?26:28;
+          const Z0=(L.zetten|0)+(L.extra|0);
+          if(Z0<minZ)L.zetten=(L.zetten|0)+(minZ-Z0);
+          const Z=(L.zetten|0)+(L.extra|0), cap=Math.max(18,Z*9/10|0);
+          (L.doelen||[]).forEach(d=>{if(typeof d[0]==='number'&&d[1]>cap)d[1]=cap});
+          const obst=typ.length+((L.doelen||[]).some(d=>d[0]==='i'||d[0]==='d')?1:0);
+          if(obst>=2){
+            if(plek!==5&&plek!==10)L.kleuren=6;
+            else L.zetten=(L.zetten|0)+6;
+          }
+        }
+        const ZETPLUS={190:10,210:8,220:12,230:8,250:8,263:4,265:8,295:6};
+        if(ZETPLUS[n])L.zetten=(L.zetten|0)+ZETPLUS[n];
+      }
+    }catch(e){}
+    return L;
+  };
+}
+
+
+/* Elke gewonnen les geeft de planten in de kas een beetje extra zon (2 min), zodat een schooldag voelbaar is. */
+const KWEEK_LES=120000;
+const _wKas=typeof m3Winst==='function'?m3Winst:null;
+if(_wKas)window.m3Winst=m3Winst=function(n,b,...a){
+  const r=_wKas.apply(this,arguments);
+  try{
+    if(S.kweek){let n2=0;Object.values(S.kweek).forEach(p=>{if(p&&p.z){p.bonus=(p.bonus|0)+KWEEK_LES;n2++}});if(n2)bewaar()}
+  }catch(e){}
+  return r;
+};
 window.zwKring={DRANKEN,dagBonus,collectie,morgenZin};
 })();

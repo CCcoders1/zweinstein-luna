@@ -185,7 +185,30 @@ function meerOrde(){
       sec.className='meerblok kaart rococo';
       sec.innerHTML='<h3>'+g.titel+'</h3><div class="raster meergrid"></div>';
       const grid=sec.querySelector('.raster');
-      g.els.forEach(el=>{el.classList.remove('volgende');grid.appendChild(el)});
+      g.els.forEach(el=>{
+        el.classList.remove('volgende','klein');
+        el.classList.add('tegel');
+        const kaart={
+          'Toverdranken brouwen in je eigen ketel':'Ketel',
+          'Tovertweelings Topfopshop':'Fopshop',
+          'De Groene Alruin (kruidenwinkel)':'Kruidenwinkel',
+          'Hagrids moestuin':'Moestuin',
+          'Geluiden toevoegen':'Geluid',
+          'Vrienden & leraren':'Vrienden',
+          'Ontwikkeling & badges':'Badges',
+          'Spreuklessen':'Spreuklessen',
+          'Voortgang bewaren':'Voortgang bewaren'
+        };
+        const b=el.querySelector('b');
+        const ruw=(b?b.textContent:el.textContent||'').replace(/\s+/g,' ').trim();
+        for(const [van,naar] of Object.entries(kaart)){
+          if(ruw.includes(van)||(el.textContent||'').includes(van)){
+            if(b)b.textContent=naar;
+            else{const ico=el.querySelector('.ico,img,.pportret');el.childNodes.forEach(n=>{if(n.nodeType===3)n.textContent='';});const t=document.createElement('b');t.textContent=naar;el.appendChild(t)}
+          }
+        }
+        grid.appendChild(el);
+      });
       if(vers)vers.before(sec);else app.appendChild(sec);
     });
     app.querySelectorAll('.tegel,button').forEach(b=>{

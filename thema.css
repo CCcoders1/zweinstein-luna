@@ -1,0 +1,232 @@
+/* ===== v136 thema: één palet, typografie en componenten =====
+   Zweinstein = perkament + goud, Huffelpuf-accent. Menu's zijn documenten op het kasteel.
+   Gemaakt voor groot contrast en leesbare tekst (62+). */
+:root{
+  --ink:#2a1c0c;
+  --perk:#f6ead0;
+  --perk-diep:#e8d4a8;
+  --goud:#e8c56a;
+  --goud-diep:#8a6414;
+  --steen:#1c1610;
+  --steen-2:#2a2116;
+  --wijn:#6b1d0e;
+  --huffel:#ecb84a;
+  --ok:#215c21;
+  --fout:#8a2a1a;
+  --lijn:rgba(212,175,55,.55);
+  --fs-xs:.9rem;
+  --fs-s:1rem;
+  --fs-m:1.08rem;
+  --fs-l:1.32rem;
+  --fs-xl:1.55rem;
+  --lh:1.45;
+  --ruim-1:4px;--ruim-2:8px;--ruim-3:12px;--ruim-4:16px;--ruim-5:24px;
+  --rond:12px;
+  --schaduw:0 8px 22px rgba(0,0,0,.4);
+  --tijd:.22s ease;
+  --licht-bg-boven:#4a3a22;
+  --licht-bg-onder:#1c1610;
+  --licht-paneel:rgba(36,28,16,.92);
+  --licht-tekst:#f6ead0;
+  --licht-inkt:#2a1c0c;
+  --licht-goud:#ffe08a;
+  --licht-vignet:.28;
+}
+
+html::before{
+  background:radial-gradient(ellipse at 70% -10%,#6a5428 0%,#3a2e18 42%,#14100a 100%)!important;
+}
+#tint{background:linear-gradient(rgba(80,55,16,.22),transparent 42%,rgba(12,8,4,.38))!important}
+body{font-size:17px;line-height:var(--lh);color:var(--perk)}
+p,li,td,th,label,small,.klein{line-height:var(--lh)}
+.klein{font-size:var(--fs-xs)!important;line-height:1.4}
+h1{font-size:var(--fs-xl);line-height:1.2;margin:.3em var(--ruim-3) .45em}
+h2{font-size:var(--fs-l);line-height:1.25;margin:.3em var(--ruim-3) .45em}
+h3{font-size:var(--fs-m);margin:.2em var(--ruim-2) .4em;color:var(--goud)}
+#app>h1,#app>h2,.dagboek>h2,.perkament>h2,.fgshop h2{
+  text-align:center;color:var(--goud);text-shadow:0 0 10px rgba(255,200,80,.28)
+}
+
+/* Oppervlak: perkament voor menu's, kaarten, brieven, pop-ups */
+.kaart,.meerblok,.ochtendpost,.m3voor,.lokaal,
+.halvr,.volgendestap,#volgendestap,.morgenkaart,
+.dagboek,.fgkader,.vrkader,.albumkop,
+.perkament,.modalin,.mpmodal,.ochtendpost .brief,
+body[data-view=login] #app>div,body[data-view=backup] .perkament,
+body[data-view=geluid] .perkament,body[data-view=geluidstap] .perkament,
+body[data-view=fopshop] .perkament,body[data-view=album] .perkament,
+.schooldag-kaart,.ookvandaag{
+  background:linear-gradient(180deg,#f7edd6 0%,#ead6ae 100%)!important;
+  color:var(--ink)!important;
+  border:1px solid var(--lijn)!important;
+  border-radius:var(--rond)!important;
+  box-shadow:var(--schaduw),inset 0 0 40px rgba(120,80,20,.12)!important;
+}
+.kaart h1,.kaart h2,.kaart h3,
+.meerblok h3,.ochtendpost h2,.m3voor h2,
+.halvr h3,.halvr .halvrkop,.volgendestap h3,#volgendestap h3,
+.morgenkaart h3,.dagboek h2,.modalin h2,.perkament h2,.lokaal h2,
+.schooldag-kaart h3{
+  color:var(--wijn)!important;-webkit-text-fill-color:var(--wijn)!important;
+  background:none!important;text-shadow:none!important;filter:none!important
+}
+.kaart p,.kaart li,.meerblok p,.m3voor p,.m3voor li,.ochtendpost p,
+.halvr p,.halvr .rgteaser,.dagboek p,.modalin p,.perkament p,.lokaal p,
+.morgenkaart p,#volgendestap p,.klein{
+  color:inherit
+}
+body.halstrak .halvr.rgkort .rgteaser{color:var(--ink)!important}
+.tilly{background:linear-gradient(180deg,rgba(247,237,214,.96),rgba(232,212,170,.96))!important;color:var(--ink)!important;border:1px solid var(--lijn)!important}
+.tilly.st-zacht{background:linear-gradient(180deg,rgba(247,237,214,.96),rgba(232,212,170,.96))!important}
+.tilly b{color:var(--wijn)!important}
+
+/* Tegels in Meer en rasters: zelfde kaart, grote tikvlakken */
+.tegel,.meerblok .tegel,.meerblok .knop,.raster .tegel{
+  background:linear-gradient(180deg,#f8f0dc,#e6d0a4)!important;
+  color:var(--ink)!important;
+  border:1.5px solid rgba(168,128,31,.65)!important;
+  border-radius:var(--rond)!important;
+  box-shadow:0 3px 0 rgba(90,60,10,.25),0 6px 14px rgba(0,0,0,.2)!important;
+  min-height:64px;
+  font-size:var(--fs-s);
+  line-height:1.3;
+  padding:10px 12px;
+}
+.tegel b,.meerblok .tegel b{color:var(--wijn)!important;font-size:1.02em;display:block}
+.tegel small{color:var(--ink)!important;opacity:.8}
+.tegel .ico,.tegel .icn{filter:none;color:var(--goud-diep)}
+
+/* Knoppen: primair = goud, secundair = omlijnd perkament */
+button.knop, .knop{
+  min-height:48px;
+  font-size:1.05rem;
+  line-height:1.25;
+  padding:10px 18px;
+  border-radius:8px;
+  letter-spacing:.03em;
+  transition:transform var(--tijd),box-shadow var(--tijd),filter var(--tijd);
+}
+button.knop.volgende, .knop.volgende, #speelknop, #m3start, .halknop-cta{
+  background:linear-gradient(#ffe08a,#d4a017)!important;
+  color:#1a1000!important;
+  border:1.5px solid #8a6414!important;
+  box-shadow:0 0 0 2px rgba(212,175,55,.28),0 4px 10px rgba(0,0,0,.35)!important;
+  font-weight:700;
+}
+button.knop:not(.volgende), .knop:not(.volgende){
+  background:linear-gradient(#f7edd6,#e4cf9e)!important;
+  color:var(--ink)!important;
+  border:1.5px solid #a8801f!important;
+  box-shadow:0 2px 0 rgba(90,60,10,.2)!important;
+}
+button.knop.klein, .knop.klein{min-height:44px;font-size:1rem;padding:8px 14px}
+button.linkknop, .linkknop{
+  background:none!important;border:0!important;box-shadow:none!important;
+  color:var(--wijn)!important;min-height:44px;font-size:1.02rem;
+  text-decoration:underline;text-underline-offset:3px;padding:8px 10px
+}
+.m3voor .linkknop, .dagboek .linkknop, .perkament .linkknop{color:var(--wijn)!important}
+button.knop:disabled{filter:grayscale(.7);opacity:.55}
+@media (hover:hover){
+  button.knop:not(:disabled):hover{transform:translateY(-1px)}
+}
+
+/* Vaste terugknop: perkament, nooit donkerpaars */
+#terug{
+  background:linear-gradient(#f7edd6,#e4cf9e)!important;
+  color:var(--ink)!important;
+  border:1.5px solid #a8801f!important;
+  border-radius:22px!important;
+  min-height:44px;font-size:1rem;
+  box-shadow:var(--schaduw)
+}
+#terug .icn{stroke:var(--wijn);color:var(--wijn)}
+
+/* Navigatie blijft perkament, iets grotere labels */
+#nav{background:linear-gradient(#f6e7c4,#e3c991)!important;border-top:2px solid #c9a227!important}
+#nav button span{color:var(--ink)!important;font-size:12px;font-weight:700}
+#nav button.actief span{color:var(--wijn)!important}
+
+/* Header rustig goud op steen */
+header{background:linear-gradient(rgba(16,12,6,.92),rgba(20,14,8,.82))!important;border-bottom:1px solid var(--lijn)!important}
+#logo,#logo span{color:var(--goud)!important}
+
+/* Modals en viering */
+.modalin.rococo, .modalin{
+  background:linear-gradient(180deg,#f7edd6,#ead6ae)!important;
+  color:var(--ink)!important
+}
+.m3eind h2{color:var(--wijn)!important;-webkit-text-fill-color:var(--wijn)!important}
+.m3eind .m3eindscore, .m3eind p{color:var(--ink)}
+.schildmoment{background:linear-gradient(180deg,#fff3c8,#e8c56a)!important;color:var(--ink)!important;border-color:#8a6414!important}
+.winhaak,.troost{background:rgba(255,250,235,.55)!important;border:1px solid var(--lijn)!important;color:var(--ink)!important}
+
+/* Ranglijst-overlay, instellingen, events: zelfde documentstijl */
+.rglijst, .rgoverlay, #rgov, .fopshop, .fgitems .fgitem{
+  border-radius:var(--rond)
+}
+
+/* Albumkaarten: geen felle neon */
+.akaart{border-radius:var(--rond);border:1px solid var(--lijn)}
+
+/* Spacing-rust in lijsten */
+#app{padding-left:0;padding-right:0}
+#app>h2+#app .raster, .meerblok{margin-left:var(--ruim-3);margin-right:var(--ruim-3)}
+.meerblok{margin:10px 12px 14px;padding:10px 8px 12px}
+.meerblok h3{letter-spacing:.06em;text-transform:uppercase;font-size:.92rem;opacity:.9}
+
+/* Contrast-fix: geen lichtgrijze tekst op perkament, geen bruine inkt op donker */
+.m3voor[data-compact], .m3voor[data-compact] p, .m3voor[data-compact] li,
+.m3voor[data-compact] .m3doelen, .m3voor[data-compact] .m3vak{color:var(--ink)!important}
+
+/* Toegankelijk: tikvlakken en focus */
+button:focus-visible, .tegel:focus-visible, a:focus-visible{
+  outline:3px solid var(--huffel);outline-offset:2px
+}
+
+/* Animatie: één timing, respect voor reduced motion */
+#app.inkomen{animation:bladzij var(--tijd) ease-out}
+@keyframes bladzij{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  #app.inkomen, .winsterr-sterren, .nieuwles, .fgzweef{animation:none!important}
+  button.knop{transition:none}
+}
+
+/* Schooldag-seizoen: lichte tint, geen zware filters */
+body[data-schoolseizoen=herfst] #tint{background:linear-gradient(rgba(160,70,16,.16),transparent 50%,rgba(12,8,4,.3))!important}
+body[data-schoolseizoen=winter] #tint{background:linear-gradient(rgba(180,200,220,.12),transparent 50%,rgba(8,12,20,.3))!important}
+body[data-schoolseizoen=lente] #tint{background:linear-gradient(rgba(120,170,80,.12),transparent 50%,rgba(12,8,4,.28))!important}
+body[data-schoolseizoen=zomer] #tint{background:linear-gradient(rgba(220,180,40,.14),transparent 50%,rgba(12,8,4,.28))!important}
+
+/* Secundaire knoppen: geen lakzegel, anders verdwijnt de eerste letter (Later → Ater) */
+button.knop:not(.volgende):before, .knop:not(.volgende):before{content:none!important;display:none!important}
+button.knop:not(.volgende), .knop:not(.volgende){padding-left:18px!important;padding-right:18px!important}
+.schildmoment{color:#2a1c0c!important;background:linear-gradient(180deg,#fff6d0,#f0d27a)!important}
+.schildmoment b{color:#6b1d0e!important}
+
+/* Nieuwe les altijd als compacte chip, ook vóór alsook */
+body.halstrak #nieuwles,
+body.halstrak .nieuwles{
+  display:inline-flex!important;align-items:center;justify-content:center;
+  max-width:calc(100% - 24px);
+  margin:4px 12px 6px!important;
+  font-size:.84em!important;
+  min-height:44px;padding:8px 12px!important;
+}
+body.halstrak #nieuwles + div, body.halstrak div:has(> #nieuwles){text-align:left;margin:0 12px}
+#gpmelding{max-width:min(92vw,360px)!important}
+#gpmelding .knop{margin:6px}
+
+body[data-view=home] #terug,
+body[data-view=meer] #terug,
+body[data-view=kas] #terug,
+body[data-view=pad] #terug{display:none!important}
+body:has(.m3eind) #gids, body:has(.modal) #gids.zien{display:none!important}
+
+/* Startknop: lakzegel at niet de letters op */
+#m3start:before{display:none!important}
+#m3start{padding-left:20px!important;padding-right:20px!important;min-width:min(80%,280px)}
+/* Winsthaak niet onder de knoppen schuiven */
+.m3eind .m3actie{position:relative!important;background:transparent!important}
+.m3eind .winhaak{margin-bottom:8px;max-height:4.6em;overflow:hidden}
+.m3eind .winhaak .tzin,.m3eind .winhaak p{font-size:.95em;line-height:1.35}

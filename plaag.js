@@ -30,8 +30,8 @@ function maakStrik(img){const w=img.naturalWidth,h=img.naturalHeight,c=document.
 function zorgStrik(){if(strikKlaar)return;const a=window._rank1,b=window._rank2;if(!a||!a.complete||!a.naturalWidth)return;window._strik1=maakStrik(a);if(b&&b.complete&&b.naturalWidth)window._strik2=maakStrik(b);strikKlaar=1}
 /* 1 = rank (AUW, vast). 2 = het recept, alleen op de introductieles. */
 /* Balans per plaaglevel (tools2/plaagsim.py, bot-simulatie). dek = deel van het bord dat bij de start onder de plaag zit, z = aantal zetten.
-   Vroege plaaglevels zijn zonder flesje te halen; later is het flesje plus boosters nodig. */
-window.PLAAGBAL=window.PLAAGBAL||{35:{dek:.6,z:24},48:{dek:.7,z:22},61:{dek:.75,z:40},74:{z:36},88:{z:17},100:{z:30},235:{z:30},248:{z:22},261:{z:18}};
+   Vroege plaaglevels zijn zonder flesje te halen; 74/88/100 (v136) hebben dek < 1 zodat je ook zonder flesje kunt beginnen. 88 is een normaal level in het ritme (plek 8), 100 is de piek (plek 10). Het flesje haalt driekwart van de strik weg. */
+window.PLAAGBAL=window.PLAAGBAL||{35:{dek:.6,z:24},48:{dek:.7,z:22},61:{dek:.75,z:40},74:{dek:.58,z:38},88:{dek:.66,z:24},100:{dek:.76,z:28},235:{z:30},248:{z:22},261:{z:18}};
 function plaagDek(n){const b=window.PLAAGBAL[n];return b&&b.dek!=null?b.dek:1}
 const RECEPT=[3,3],RING=[[2,3],[4,3],[3,2],[3,4]];
 function strikVeld(n){const p=plaagVan(n);return !!(p&&!p.intro)}
@@ -103,7 +103,7 @@ window.strikTegen=strikTegen;
 
 const _lvP=m3Level;m3Level=function(n){const L=_lvP(n);const p=plaagVan(n);if(!p)return L;L.plaag=p;L.onkruid=0;
  if(p.intro){L.doelen=[['recept',4]];L.kist=0;L.pot=0;delete L.dropInh;L.kleuren=5;L.zetten=Math.max(L.zetten|0,24);return L}
- L.doelen=(L.doelen||[]).filter(d=>d[0]!=='o').map(d=>d.slice());if(!L.doelen.length)L.doelen=[[0,18]];if(p.soort==='damp')L.kleuren=Math.max(L.kleuren|0,7);else L.kleuren=p.zwaar?Math.max(L.kleuren|0,7):Math.min(L.kleuren|0||6,6);const pb=window.PLAAGBAL[n];if(pb&&pb.z)L.zetten=pb.z;return L};
+ L.doelen=(L.doelen||[]).filter(d=>d[0]!=='o').map(d=>d.slice());if(!L.doelen.length)L.doelen=[[0,18]];if(p.soort==='damp')L.kleuren=Math.max(L.kleuren|0,7);else L.kleuren=p.zwaar?Math.max(L.kleuren|0,7):Math.min(L.kleuren|0||6,6);const pb=window.PLAAGBAL[n];if(pb&&pb.z)L.zetten=pb.z;if((L.kleuren|0)>=7&&(L.pot|0)>=3){L.pot=2;L.doelen.forEach(d=>{if(d[0]==='p')d[1]=2})}return L};
 const _kalP=m3Kalibreer;m3Kalibreer=async function(n,th){if(!plaagVan(n))return _kalP(n,th);S.m3kal=S.m3kal||{};if(S.m3kal[n]==null||S.m3kal[n]>6){S.m3kal[n]=6;bewaar()}return Math.min(6,S.m3kal[n])};
 const _vm3=V.match3;V.match3=async function(n,...a){n=n||S.m3lvl||1;const p=plaagVan(n);if(p){S.m3kal=S.m3kal||{};if(S.m3kal[n]==null||S.m3kal[n]>6){S.m3kal[n]=6;bewaar()}}
  const r=await _vm3.call(this,n,...a);const h=document.querySelector('.m3voor h2');if(p&&h&&!document.querySelector('.plaagregel'))h.insertAdjacentHTML('afterend',`<p class="plaagregel">${p.regel}</p>`);return r};

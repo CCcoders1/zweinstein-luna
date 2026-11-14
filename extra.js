@@ -50,7 +50,8 @@ function zetDecor(k){if(k===huidigDecor)return;huidigDecor=k;const c=DECORS[k]||
  d.querySelector('.fg').innerHTML=k=='kaart'?'':`<svg class="rankfg l" viewBox="0 0 120 400"><path d="M0 400C60 330 10 260 50 200S20 80 70 10" stroke="#3d6b2a" stroke-width="5" fill="none"/>${[340,270,200,130,60].map((y,i)=>`<path class="blad" style="animation-delay:${i*.8}s" d="M${40+(i%2)*15} ${y}q26 -10 36 -32q-30 6 -36 32" fill="#4f8a37"/>`).join('')}<circle cx="70" cy="12" r="8" fill="#e9a8c4"/><circle cx="48" cy="205" r="6" fill="#f3d6e4"/></svg><svg class="rankfg r" viewBox="0 0 120 400"><path d="M0 400C60 330 10 260 50 200S20 80 70 10" stroke="#3d6b2a" stroke-width="5" fill="none"/>${[320,240,160,90].map((y,i)=>`<path class="blad" style="animation-delay:${i*.6}s" d="M${42+(i%2)*12} ${y}q26 -10 36 -32q-30 6 -36 32" fill="#5a9a40"/>`).join('')}<circle cx="70" cy="12" r="7" fill="#f7e3a1"/></svg>`;
  if(k=='kamer'&&S.huis)d.querySelector('.bg').style.filter=`sepia(.3) hue-rotate(${{griffoendor:-10,huffelpuf:20,ravenklauw:180,zwadderich:90}[S.huis]}deg) saturate(1.1) brightness(.75)`;else d.querySelector('.bg').style.filter='';
  amb.room(k)}
-function zetTijd(){const t=tijdSfeer();document.body.dataset.tijd=t;document.body.dataset.seizoen=seizoen();document.body.dataset.weer=weer.soort||'onbekend'}
+function schoolSeizoen(){try{const i=typeof schoolDag==='function'?(schoolDag().index|0):0;return i<8?'herfst':i<15?'winter':i<23?'lente':'zomer'}catch(e){return seizoen()}}
+function zetTijd(){const t=tijdSfeer();document.body.dataset.tijd=t;document.body.dataset.seizoen=seizoen();document.body.dataset.schoolseizoen=schoolSeizoen();document.body.dataset.weer=weer.soort||'onbekend'}
 /* ---------- parallax ---------- */
 let px=0,py=0,tx=0,ty=0;
 if(!RMX){addEventListener('mousemove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5});
