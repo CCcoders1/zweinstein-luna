@@ -16,9 +16,18 @@ function weekKey(){
   return 'w-'+j+'-W'+String(w).padStart(2,'0');
 }
 function hash(s){let h=7;for(const c of s)h=(Math.imul(h,31)+c.charCodeAt(0))>>>0;return h}
+function seizoenHuis(){
+  try{if(typeof hwStand==='function'&&hwStand().aan)return 'hw'}catch(e){}
+  try{if(typeof zwWinterStand==='function'&&zwWinterStand().aan)return 'wm'}catch(e){}
+  return '';
+}
 function doelVan(k){
   if(hash(k)%2===0)return {id:'huis',n:'sterren',eenheid:'sterren',doel:24,ico:'⭐',zin:'Samen sterren verzamelen, in jullie eigen tempo.'};
-  return {id:'huispomp',n:"pompoen- of sneeuwvlokcombi's",eenheid:"combi's",doel:12,ico:'🎃',zin:'Elke speciale combi telt, ook van een vriend. Geen haast.'};
+  /* huispomp telt nog steeds de pompoenmeter (jaar-rond) en sneeuwvlokken; de Halloween-regel is buiten het seizoen weg. */
+  const sz=seizoenHuis();
+  if(sz==='hw')return {id:'huispomp',n:"pompoen-combi's",eenheid:"combi's",doel:12,ico:'🎃',zin:'Elke pompoen-combi telt, ook van een vriend. Geen haast.'};
+  if(sz==='wm')return {id:'huispomp',n:'sneeuwvlokken',eenheid:'vlokjes',doel:12,ico:'❄️',zin:'Sneeuwvlokken uit levels tellen mee, ook van een vriend. Geen haast.'};
+  return {id:'huispomp',n:'speciale combinaties',eenheid:'combinaties',doel:12,ico:'✨',zin:'Speciale combinaties in een level tellen mee, ook van een vriend. Geen haast.'};
 }
 function H(){
   S.huisdoel=S.huisdoel||{kl:{}};

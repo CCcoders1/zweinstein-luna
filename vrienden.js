@@ -150,9 +150,9 @@ function teken(){const app=$('#app');if(!app||document.body.dataset.view!=='same
  app.innerHTML=`<div class="perkament lijst mgkader vrkader">${kop()}
  ${statusZin()}
  <div class="vrtabs vrhoofd"><button class="${tab=='rang'?'actief':''}" data-t="rang">Ranglijst</button><button class="${tab=='uit'?'actief':''}" data-t="uit">Uitdagingen</button><button class="${tab=='vr'?'actief':''}" data-t="vr">Vrienden</button></div>
- ${inhoud}
- <button class="knop" onclick="ga('home')">Terug naar de Hal</button></div>`;
+ ${inhoud}</div>`;
  try{app.scrollTop=0;window.scrollTo(0,0)}catch(e){}
+ if(tab=='rang'){try{const ik=app.querySelector('.vrik');const nav=document.getElementById('nav');if(ik){const nb=nav?nav.getBoundingClientRect().top:innerHeight;if(ik.getBoundingClientRect().bottom>nb-12)ik.scrollIntoView({block:'nearest',behavior:'auto'})}}catch(e){}}
  app.querySelectorAll('.vrhoofd button').forEach(b=>b.onclick=()=>{V.samen.tab=b.dataset.t;teken()});
  app.querySelectorAll('.vrsub button').forEach(b=>b.onclick=()=>{V.samen.sub=b.dataset.s;teken()});
  app.querySelectorAll('[data-naar]').forEach(b=>b.onclick=()=>{V.samen.tab=b.dataset.naar;teken()});

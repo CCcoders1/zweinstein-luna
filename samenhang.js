@@ -137,6 +137,7 @@ uilenpostCheck=function(){
 window.uilenpostCheck=uilenpostCheck;
 
 /* ---------- één duidelijke volgende stap in de Hal ---------- */
+window.volgendeStap=volgendeStap;
 function volgendeStap(opt){
   try{
     opt=opt||{};

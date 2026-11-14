@@ -55,7 +55,7 @@ V.dagboek=V.verhaal=function(){
     if(typeof VERHAAL!=='undefined'&&S.opgelost&&Object.keys(S.opgelost).some(k=>/^verhaal/.test(k)))
       oud=`<details class="kaart"><summary><b>Eerder gelezen: de wekelijkse bladen</b></summary>${VERHAAL.map(h=>`<p><b>${h[0]}</b> — ${h[1]} <i>${h[2]}</i></p>`).join('')}</details>`;
   }catch(e){}
-  app(`<div class="dagboek"><p><button class="linkknop" onclick="ga('home')">← Terug naar de Hal</button></p><h1 class="pagkop">📖 Luna’s dagboek</h1><p class="klein" style="text-align:center">${onder}</p>${typeof tilly==='function'?tilly(boekZin):''}<div class="kaarsrij">${rij}</div>${tuin}${kaarten}${oud}</div>`);
+  app(`<div class="dagboek"><h1 class="pagkop">📖 Luna’s dagboek</h1><p class="klein" style="text-align:center">${onder}</p>${typeof tilly==='function'?tilly(boekZin):''}<div class="kaarsrij">${rij}</div>${tuin}${kaarten}${oud}</div>`);
 };
 
 function vakSfeer(){
@@ -267,7 +267,11 @@ function meerOrde(){
           'Vrienden & leraren':'Vrienden',
           'Ontwikkeling & badges':'Badges',
           'Spreuklessen':'Spreuklessen',
-          'Voortgang bewaren':'Voortgang bewaren'
+          'Voortgang bewaren':'Voortgang bewaren',
+          'Huffelpuf-huiskamer':'Huiskamer',
+          'Griffoendor-huiskamer':'Huiskamer',
+          'Ravenklauw-huiskamer':'Huiskamer',
+          'Zwadderich-huiskamer':'Huiskamer'
         };
         const b=el.querySelector('b');
         const ruw=(b?b.textContent:el.textContent||'').replace(/\s+/g,' ').trim();

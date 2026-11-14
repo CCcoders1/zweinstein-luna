@@ -87,10 +87,28 @@ function winKnoppen(n){const ms=[...document.querySelectorAll('.m3eind')];const 
  o.dataset.geenverder=1;const pv=o.querySelector('.p-verder');if(pv)pv.remove();
  const volg=m.querySelector('#m3volg'),kas=m.querySelector('#m3verder');const leraar=volg&&/^Eerst naar/.test(volg.textContent);
  const weg=()=>{o.remove();document.querySelectorAll('.modal.wacht').length||0};
- if(volg&&!leraar){volg.className='knop volgende';volg.textContent='Verder › Level '+(n+1);volg.onclick=()=>{weg();naWinst(()=>speelVolgende(n+1))}}
- if(kas){kas.className='knop';kas.textContent='Naar de kas';kas.onclick=()=>{weg();naWinst(()=>ga('kas'))}}
- if(volg&&kas&&!leraar)kas.before(volg);
- const hal=document.createElement('button');hal.className='linkknop';hal.textContent='Naar de Hal';hal.onclick=()=>{weg();ga('home')};(kas||volg||m.lastChild).after(hal)}
+ if(volg&&!leraar){volg.textContent='Verder › Level '+(n+1);volg.onclick=()=>{weg();naWinst(()=>speelVolgende(n+1))}}
+ if(kas){kas.textContent='Naar de kas';kas.onclick=()=>{weg();naWinst(()=>ga('kas'))}}
+ let stap=null;try{if(typeof window.volgendeStap==='function')stap=window.volgendeStap({geenPost:true})}catch(e){}
+ const naarDoel=stap&&stap.id&&stap.id!=='level';
+ const hal=document.createElement('button');
+ if(naarDoel){
+  if(volg)volg.className='knop';
+  if(kas)kas.className='knop';
+  hal.className='knop volgende';
+  hal.textContent=stap.knop==='Afronden'?'Afronden in de Hal':(stap.knop||'Naar de Hal');
+  hal.onclick=()=>{weg();naWinst(()=>ga('home'))};
+  if(volg)volg.before(hal);else if(kas)kas.before(hal);else m.appendChild(hal);
+  if(volg&&kas)volg.after(kas);
+ }else{
+  if(volg&&!leraar)volg.className='knop volgende';
+  if(kas)kas.className='knop';
+  if(volg&&kas&&!leraar)kas.before(volg);
+  hal.className='linkknop';
+  hal.textContent='Naar de Hal';
+  hal.onclick=()=>{weg();ga('home')};
+  (kas||volg||m.lastChild).after(hal);
+ }}
 const _mwV=m3Winst;m3Winst=function(n,b,...a){const r=_mwV.call(this,n,b,...a);try{winKnoppen(n)}catch(e){console.warn(e)}return r};
 
 /* ---------- Alles resetten: alleen in het verborgen makerscherm (logo 3x + 9¾) ---------- */

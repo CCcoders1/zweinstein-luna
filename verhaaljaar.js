@@ -331,7 +331,12 @@ if(_padPlek)V.pad=function(){
   const r=_padPlek.apply(this,arguments);
   try{
     const oud=document.getElementById('plekkaart');if(oud)oud.remove();
-    document.body.insertAdjacentHTML('beforeend',htmlPlekKaart());
+    const appEl=document.getElementById('app');
+    const html=htmlPlekKaart();
+    const anker=appEl&&(appEl.querySelector('.schooldag-kaart')||appEl.querySelector('.padkopbeeld')||appEl.querySelector('.vakbalk'));
+    if(anker)anker.insertAdjacentHTML('afterend',html);
+    else if(appEl)appEl.insertAdjacentHTML('afterbegin',html);
+    else document.body.insertAdjacentHTML('beforeend',html);
     document.querySelectorAll('#plekkaart .plekpin').forEach(b=>{
       b.onclick=()=>tikPlek(b.dataset.soort,b.dataset.ga);
     });
