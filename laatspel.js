@@ -1382,3 +1382,217 @@ window.winHaakZin=function(n){
 
   try{verzekerKaarten()}catch(e){}
 })();
+
+/* v153: Nu in Zweinstein (klok, weer, wie er rondloopt) + 3★-verhaalknipoog */
+(function(){
+  function nuLok(){return new Date()}
+  function uurWoord(u){return ['twaalf','één','twee','drie','vier','vijf','zes','zeven','acht','negen','tien','elf'][((u%24)+24)%12]}
+  function klokTekst(d){
+    const h=d.getHours(), m=d.getMinutes();
+    let rh=h, rm=Math.round(m/5)*5;
+    if(rm===60){rm=0;rh=(rh+1)%24}
+    const deze=uurWoord(rh), volg=uurWoord(rh+1);
+    let frase;
+    if(rm===0)frase=deze+' uur';
+    else if(rm===5)frase='vijf over '+deze;
+    else if(rm===10)frase='tien over '+deze;
+    else if(rm===15)frase='kwart over '+deze;
+    else if(rm===20)frase='tien voor half '+volg;
+    else if(rm===25)frase='vijf voor half '+volg;
+    else if(rm===30)frase='half '+volg;
+    else if(rm===35)frase='vijf over half '+volg;
+    else if(rm===40)frase='tien over half '+volg;
+    else if(rm===45)frase='kwart voor '+volg;
+    else if(rm===50)frase='tien voor '+volg;
+    else frase='vijf voor '+volg;
+    const dig=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+    return {frase:frase, dig:dig, label:dig+' · '+frase};
+  }
+  function weerRegel(){
+    try{
+      if(typeof weer==='object'&&weer&&weer.ok){
+        const z={
+          regen:'Regen tegen de hoge ramen',
+          onweer:'Onweer boven de torens',
+          sneeuw:'Sneeuw over het kasteelpark',
+          helder:weer.dag?'Heldere lucht boven het meer':'Heldere nacht, sterren scherp',
+          bewolkt:'Bewolkt boven de torens',
+          mist:'Mist tot aan het Verboden Bos',
+          licht:'Lichte wolken, zacht toverweer'
+        };
+        return {ico:weer.ico||'', tekst:z[weer.soort]||('Boven het kasteel: '+(weer.tekst||'stil weer'))};
+      }
+    }catch(e){}
+    const sez=typeof seizoen==='function'?seizoen():'';
+    const fb={herfst:'Een stille herfstlucht',winter:'Koude heldere lucht',lente:'Lente in de binnenplaats',zomer:'Zomers licht in de Hal',kerst:'Winterlucht, feestelijk stil'};
+    return {ico:'', tekst:fb[sez]||'Een stille lucht boven de torens'};
+  }
+  function sezNu(){
+    try{if(typeof seizoen==='function'){const s=seizoen();if(s)return s}}catch(e){}
+    try{if(typeof schoolSeizoen==='function')return schoolSeizoen()}catch(e){}
+    return '';
+  }
+  const WIE=[
+    {id:'tilly-ochtend',wie:'Tilly',na:6,tot:11,zin:'Tilly zet de ketel bij het vuur.',groet:'De Hal is nog stil, Luna. Ik heb water opgezet. Als je wilt, zit ik even bij je tot de eerste les begint.'},
+    {id:'tilly-middag',wie:'Tilly',na:11,tot:17,zin:'Tilly loopt langs de huistafels met een dienblad.',groet:'Ik bracht een kop voor onderweg. Niet omdat je die nodig hebt. Omdat het fijn is, tussendoor.'},
+    {id:'tilly-avond',wie:'Tilly',na:17,tot:22,zin:'Tilly vouwt een servet bij het vuur, heel precies.',groet:'De dag zakt een beetje. Dat geeft niet. Avonden in de Hal zijn gemaakt om rustig in te zakken.'},
+    {id:'tilly-nacht',wie:'Tilly',na:22,tot:6,zin:'Tilly loopt met een kaars langs de tafels.',groet:'Bijna iedereen slaapt. Ik blijf nog even. De kaarsen mogen niet alleen de wacht houden.'},
+    {id:'stronk',wie:'Professor Stronk',na:7,tot:18,zin:'Professor Stronk komt binnen met aarde onder haar nagels.',groet:'De kassen hebben vannacht goed gedronken, juffrouw Leeflang. Kom later gerust kijken. Geen haast.'},
+    {id:'hagrid',wie:'Hagrid',na:8,tot:20,zin:'Hagrid zwaait vanaf de grote deuren, een brief in zijn vuist.',groet:'Er kwam een uil voor de keuken, maar ik dacht: ik breng het zelf wel. Even zwaaien is ook post.'},
+    {id:'banning',wie:'Professor Banning',na:8,tot:17,zin:'Professor Banning neuriet een oefening, bijna in de maat.',groet:'Een goede zwaai begint in de pols, niet in de haast. Dat geldt voor lessen, en voor thee.'},
+    {id:'anderling',wie:'Professor Anderling',na:7,tot:16,zin:'Professor Anderling loopt met een lijst die bijna netjes blijft.',groet:'De roosters kloppen vandaag. Bijna. Als u een stoel zoekt: de Huffelpuf-tafel heeft er altijd één over.'},
+    {id:'huffel-middag',wie:'Tilly',na:12,tot:15,huis:'huffelpuf',zin:'Aan de Huffelpuf-tafel staat al een extra kop klaar.',groet:'Iemand van ons huis heeft thee gezet en is even weggegaan. De kop is nog warm. Dat is ook een groet.'},
+    {id:'hermelien',wie:'Hermelien',na:9,tot:21,minLvl:12,zin:'Hermelien heeft een stapel boeken die bijna haar kin haalt.',groet:'Ik breng deze terug naar de kast, echt. Maar kijk, dit hoofdstuk over tuinkalenders… later misschien.'},
+    {id:'ron',wie:'Ron',na:11,tot:20,minLvl:12,zin:'Ron ruikt of er nog iets eetbaars op de tafel staat.',groet:'Ik zoek niks bijzonders. Alleen of de schaal nog een keer langs is geweest. Dat is onderzoek, toch?'},
+    {id:'lupos',wie:'Professor Lupos',na:16,tot:21,minLvl:20,zin:'Professor Lupos groet vanaf de schaduw van een pilaar.',groet:'Goede avond. Een rustige Hal is ook een soort schild. Fijn dat u er bent.'},
+    {id:'sinistra',wie:'Professor Sinistra',na:19,tot:23,zin:'Professor Sinistra gaat naar de toren, een kaart onder haar arm.',groet:'De lucht is helder genoeg om te oefenen. U hoeft niet mee. Maar de trap is verlicht.'},
+    {id:'sneep',wie:'Professor Sneep',na:14,tot:19,minLvl:30,zin:'Professor Sneep steekt de Hal over, zonder te blijven hangen.',groet:'Ik ben op doorreis, Leeflang. Probeer vandaag precies te werken. Dat is geen compliment. Hooguit een advies.'},
+    {id:'hagrid-herfst',wie:'Hagrid',sez:'herfst',na:9,tot:18,zin:'Hagrid veegt een nat blad van zijn jas, bij de deuren.',groet:'De paden zijn glad, Luna. En de pompoenen worden te groot voor hun hok, als ik niet uitkijk.'},
+    {id:'tilly-winter',wie:'Tilly',sez:'winter',na:8,tot:20,zin:'Tilly legt een extra sjaal over een stoel bij het vuur.',groet:'Het tocht bij de grote deuren. Deze sjaal is voor wie hem nodig heeft. Of voor later, dat mag ook.'},
+    {id:'hagrid-winter',wie:'Hagrid',sez:'winter',na:8,tot:17,zin:'Hagrid schudt sneeuw van zijn jas, voor hij verder loopt.',groet:'Buiten is het een mooie soort koud. Binnen is thee beter. Ik blijf niet lang, de wezens wachten.'},
+    {id:'tilly-kerst',wie:'Tilly',sez:'kerst',zin:'Tilly recht een slinger die niemand ziet hangen.',groet:'Hij hing bijna recht. Nu wel. Kerst in de Hal mag gerust een beetje stilletjes mooi zijn.'},
+    {id:'tilly-lente',wie:'Tilly',sez:'lente',na:8,tot:18,zin:'Tilly heeft een takje moesbloem op de huistafel gelegd.',groet:'Het rook zo naar buiten, ik kon het niet laten. Het mag blijven staan tot het hangt. Dat is ook een seizoen.'},
+    {id:'tilly-zomer',wie:'Tilly',sez:'zomer',na:10,tot:19,zin:'Tilly heeft de ramen op een kier gezet, de kaarsen blijven aan.',groet:'Zomer in de Hal is een rare mix: warm licht, en toch bijenwas. Ik vind het fijn.'},
+    {id:'lindaroos',wie:'Lindaroos',minLvl:600,zin:'Het portret van Lindaroos knikt, alsof de tuin groet.',groet:'Goedendag. De paden zijn vochtig, precies goed. U hoeft niets te forceren. Alleen even kijken is al werk.'},
+    {id:'stronk-akte2',wie:'Professor Stronk',minLvl:600,na:8,tot:16,zin:'Professor Stronk veegt haar handen af, op weg naar de tuin.',groet:'Kas zeven heeft vanochtend gedronken. Als u later komt, zet ik de kruk bij het portret.'}
+  ];
+  function hashZ(s,n){let h=7;for(const c of String(s))h=(Math.imul(h,31)+c.charCodeAt(0))>>>0;return n?h%n:h}
+  function pastTijd(w,h){
+    if(w.na==null||w.tot==null)return true;
+    if(w.na===w.tot)return true;
+    if(w.na<w.tot)return h>=w.na&&h<w.tot;
+    return h>=w.na||h<w.tot;
+  }
+  function wieNu(d){
+    const h=d.getHours(), lvl=S.m3lvl|0, huis=S.huis||'', sez=sezNu();
+    const lijst=WIE.filter(w=>{
+      if(w.minLvl&&lvl<w.minLvl)return false;
+      if(w.huis&&w.huis!==huis)return false;
+      if(w.sez&&w.sez!==sez)return false;
+      if(!pastTijd(w,h))return false;
+      return true;
+    });
+    const pool=lijst.length?lijst:WIE.filter(w=>!w.minLvl&&!w.sez&&!w.huis&&pastTijd(w,h));
+    const bron=pool.length?pool:WIE;
+    const sleutel=(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+'-'+h)+(huis||'')+(lvl>=600?'a2':'');
+    return bron[hashZ(sleutel,bron.length)];
+  }
+  function portHtml(wie){
+    try{
+      if(typeof portret==='function'){
+        const k=typeof wieIs==='function'?wieIs(wie):null;
+        return portret(k||wie,'sm')||'';
+      }
+    }catch(e){}
+    return '';
+  }
+  function zetNuIn(){
+    try{
+      if((document.body.dataset.view||'')!=='home'&&document.body.dataset.view)return;
+      const app=document.getElementById('app');if(!app)return;
+      const groet=app.querySelector('.groet');if(!groet)return;
+      const d=nuLok(), kl=klokTekst(d), we=weerRegel(), wie=wieNu(d);
+      let vak=document.getElementById('nuinzw');
+      if(!vak||vak.parentNode!==groet){
+        if(vak)vak.remove();
+        vak=document.createElement('div');vak.id='nuinzw';vak.className='nuinzw';
+        const hs=groet.querySelector('.halsfeer');
+        if(hs&&hs.nextSibling)groet.insertBefore(vak,hs.nextSibling);
+        else groet.appendChild(vak);
+      }
+      const hs=groet.querySelector('.halsfeer');
+      if(hs){
+        const t=hs.textContent||'';
+        if(!/ochtendpost wacht|Fijn dat je er weer bent/i.test(t))hs.remove();
+      }
+      const ico=we.ico?we.ico+' ':'';
+      const port=portHtml(wie.wie);
+      vak.innerHTML='<small>Nu in Zweinstein</small>'
+        +'<div class="nuinzw-meta"><span id="nuinklok">'+kl.label+'</span><span id="nuinweer">'+ico+we.tekst+'</span></div>'
+        +'<button type="button" class="nuinzw-wie" id="nuinwie" aria-label="Groet '+(wie.wie||'')+'">'
+        +(port?'<span class="whport">'+port+'</span>':'')+'<p>'+wie.zin+'</p></button>';
+      const kn=document.getElementById('nuinwie');
+      if(kn) kn.onclick=function(){toonWie(wie)};
+    }catch(e){}
+  }
+  function toonWie(wie){
+    if(document.querySelector('.modal:not(.zw-wacht),.verhaalm:not(.zw-wacht),.ritueel:not(.zw-wacht)'))return;
+    const o=document.createElement('div');o.className='modal';o.dataset.pop='nuinwie';
+    const port=portHtml(wie.wie);
+    o.innerHTML='<div class="perkament modalin rococo weekbrief"><h2>'+(wie.wie||'In de Hal')+'</h2>'
+      +'<div class="wbport">'+(port||'')+'<p><b>'+(wie.wie||'')+':</b> '+(wie.groet||wie.zin)+'</p></div>'
+      +'<button type="button" class="knop volgende" id="nuinok">Ik zwaai terug</button></div>';
+    document.body.appendChild(o);
+    const sl=()=>{try{o.remove()}catch(e){}};
+    const b=o.querySelector('#nuinok');if(b)b.onclick=sl;
+    o.addEventListener('click',e=>{if(e.target===o)sl()});
+  }
+  let tick=0;
+  function startTick(){
+    clearInterval(tick);
+    tick=setInterval(()=>{
+      if((document.body.dataset.view||'')!=='home')return;
+      const d=nuLok(), kl=klokTekst(d), el=document.getElementById('nuinklok');
+      if(el)el.textContent=kl.label;
+    },20000);
+  }
+  const _home=typeof V!=='undefined'?V.home:null;
+  if(_home)V.home=function(){
+    const r=_home.apply(this,arguments);
+    try{zetNuIn();setTimeout(zetNuIn,90);setTimeout(zetNuIn,220);startTick()}catch(e){}
+    return r;
+  };
+  const _tw=typeof toonWeer==='function'?toonWeer:null;
+  if(_tw)window.toonWeer=function(){const r=_tw.apply(this,arguments);try{zetNuIn()}catch(e){}return r};
+
+  const KNIP_HUIS={
+    huffelpuf:[
+      'Drie sterren. Aan de Huffelpuf-tafel gaat een kop thee een klein stukje de lucht in.',
+      'Drie sterren, en ergens klopt een das tevreden met zijn poot.'
+    ],
+    griffoendor:[
+      'Drie sterren. Aan de Griffoendor-tafel gaat een zacht gejuich op, en zakt weer.',
+      'Drie sterren. Een leeuw op een vaandel lijkt even zijn manen te schudden.'
+    ],
+    ravenklauw:[
+      'Drie sterren. Iemand aan de Ravenklauw-tafel knikt, als bij een net bewijs.',
+      'Drie sterren. Een uil op een raamstijl draait haar kop, tevreden genoeg.'
+    ],
+    zwadderich:[
+      'Drie sterren. Aan de Zwadderich-tafel gaat een wenkbrauw omhoog. Dat is al heel wat.',
+      'Drie sterren. Zelfs een groene slinger lijkt even stiller te hangen, uit respect.'
+    ]
+  };
+  const KNIP_SEIZ={
+    herfst:['Drie sterren. Buiten dwarrelt een blad alsof het applaudisseert.'],
+    winter:['Drie sterren. De rijp op de ramen tekent er stilletjes een krans bij.'],
+    kerst:['Drie sterren, en een slinger boven de tafel tintelt even mee.'],
+    lente:['Drie sterren. Ergens in een pot gaat een knop open, puur van trots.'],
+    zomer:['Drie sterren. Het licht in de Hal is even een tikje gouden.']
+  };
+  function sterKnipoog(n,st){
+    if((st|0)<3)return '';
+    const huis=S.huis||'huffelpuf';
+    const sez=sezNu();
+    const pool=[].concat(KNIP_HUIS[huis]||KNIP_HUIS.huffelpuf, KNIP_SEIZ[sez]||[]);
+    const sleutel=String(n||'')+'-'+(typeof vandaag==='function'?vandaag():'')+'-'+huis+'-'+sez;
+    return pool[hashZ(sleutel,pool.length)]||pool[0];
+  }
+  function zetSterKnip(n,b){
+    try{
+      const eind=document.querySelector('.m3eind');if(!eind)return;
+      const st=(typeof m3SterVan==='function'?m3SterVan(b,n):(typeof sterVan==='function'?sterVan(b,n):0))|0;
+      const zin=sterKnipoog(n,st);if(!zin)return;
+      let p=eind.querySelector('.sterknip');
+      const blok=eind.querySelector('.winsterr')||eind.querySelector('.winsterr-sterren')||eind.querySelector('h2');
+      if(!p){p=document.createElement('p');p.className='sterknip';if(blok)blok.appendChild(p);else return}
+      p.textContent=zin;
+    }catch(e){}
+  }
+  const _w=typeof m3Winst==='function'?m3Winst:null;
+  if(_w)window.m3Winst=m3Winst=function(n,b){
+    const r=_w.apply(this,arguments);
+    try{setTimeout(()=>zetSterKnip(n,b),500);setTimeout(()=>zetSterKnip(n,b),1100)}catch(e){}
+    return r;
+  };
+})();
