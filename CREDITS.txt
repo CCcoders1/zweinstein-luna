@@ -348,3 +348,12 @@ v176 — 3D-tuin
   HDRI). 3D-smeedijzer van buizen, krullen en speerpunten
   (zelfgemaakt). Toverstaf in Luna's rechterhand via een
   vingerpose. Geen EA/Warner-assets.
+
+v177 — 3D-tuin
+  Vaste volgcamera achter Luna (geen botsings-zoektocht meer).
+  Tweede gouden joystick rechtsonder draait de kijkhoek
+  (horizontaal yaw, licht verticaal pitch); loslaten houdt de
+  stand vast. Knop Achter erboven zet de camera weer achter haar.
+  Hagen hoger zodat de camera tussen de paden blijft. Hagen en
+  muren die het zicht op Luna blokkeren worden tijdelijk
+  doorzichtig. Zelfgemaakt, geen EA/Warner-assets.

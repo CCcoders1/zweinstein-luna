@@ -49,7 +49,7 @@ html,body{margin:0;height:100%;background:#1e56b8;overflow:hidden;font-family:Ge
   margin:0;font-size:.75rem;color:rgba(246,230,194,.8);text-shadow:0 1px 2px #000;
 }
 #deurkaart{
-  position:fixed;left:0;right:0;bottom:0;z-index:4;padding:0 16px calc(16px + env(safe-area-inset-bottom,0px)) calc(140px + env(safe-area-inset-left,0px));
+  position:fixed;left:0;right:0;bottom:0;z-index:4;padding:0 calc(140px + env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) calc(140px + env(safe-area-inset-left,0px));
   background:linear-gradient(transparent,rgba(12,8,4,.55) 40%);
 }
 #deurkaart[hidden],#nowebgl[hidden],#overgang[hidden],#laden[hidden]{display:none!important;pointer-events:none}
@@ -114,17 +114,40 @@ html,body{margin:0;height:100%;background:#1e56b8;overflow:hidden;font-family:Ge
   transition:width .2s ease;
 }
 #laden .laden-pct{margin:8px 0 0;font-size:.85rem;color:#5a4010}
-body.laden-bezig #ui .hint,body.laden-bezig #loopstok,body.laden-bezig #meta{opacity:0}
+body.laden-bezig #ui .hint,body.laden-bezig #loopstok,body.laden-bezig #camstok,body.laden-bezig #camreset,body.laden-bezig #meta{opacity:0}
 
+#camstok{
+  pointer-events:auto;position:absolute;z-index:6;
+  right:calc(14px + env(safe-area-inset-right,0px));
+  bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  width:120px;height:120px;touch-action:none;-webkit-tap-highlight-color:transparent;
+}
+#camring{
+  position:absolute;inset:0;border-radius:50%;
+  background:rgba(16,10,4,.48);
+  border:3px solid rgba(212,168,40,.9);
+  box-shadow:0 8px 20px rgba(0,0,0,.45),inset 0 0 18px rgba(0,0,0,.35);
+}
+#camknop{
+  position:absolute;left:50%;top:50%;width:60px;height:60px;margin:-30px 0 0 -30px;
+  border-radius:50%;border:2px solid #f7e7b0;
+  background:linear-gradient(#f3d789,#d4a017);
+  box-shadow:0 2px 0 #8a6a12,0 6px 14px rgba(0,0,0,.4);
+}
+#camstok.aan #camknop{background:linear-gradient(#fff3c0,#e8b41c)}
+#camlabel{
+  position:absolute;left:0;right:0;top:-22px;text-align:center;
+  font:600 .92rem/1 Georgia,"Palatino Linotype",serif;letter-spacing:.08em;
+  color:#f6e6c2;text-shadow:0 1px 3px #000;pointer-events:none;
+}
 #camreset{
   pointer-events:auto;position:absolute;z-index:6;
-  right:calc(10px + env(safe-area-inset-right,0px));
-  bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  width:56px;height:56px;min-width:56px;min-height:56px;padding:0;
-  border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  right:calc(44px + env(safe-area-inset-right,0px));
+  bottom:calc(148px + env(safe-area-inset-bottom,0px));
+  width:56px;height:36px;min-width:56px;min-height:36px;padding:0 10px;
+  border-radius:999px;display:flex;align-items:center;justify-content:center;
 }
-#camreset svg{display:block;color:#3a2408}
-#camreset span{font:600 .58rem/1 Georgia,"Palatino Linotype",serif;letter-spacing:.04em;color:#3a2408}
+#camreset span{font:600 .62rem/1 Georgia,"Palatino Linotype",serif;letter-spacing:.04em;color:#3a2408}
 #tuindebug{
   display:none;position:absolute;z-index:8;pointer-events:none;
   left:calc(10px + env(safe-area-inset-left,0px));

@@ -1,4 +1,4 @@
-/* v176: 3D-testtuin, HP1-sfeer. Kasseipaden, lichtere hagen, stapelwolken, 3D-smeedijzer, staf in de hand. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v177: 3D-testtuin. Vaste volgcamera, camerajoystick, hogere hagen, fade bij occlusie. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -746,12 +746,47 @@
   }
   const speerPos=[];
   const haagBladPos=[];
+  const haagFade=[];
+  function maakFadeMesh(mesh){
+    if(!mesh||!mesh.material)return mesh;
+    const m=mesh.material.clone();
+    mesh.material=m;
+    mesh.userData.fadeOc=1;
+    mesh.userData.fadeMat=m;
+    mesh.userData.fadeOp=1;
+    haagFade.push(mesh);
+    return mesh;
+  }
+  function smeltInGroep(grp){
+    grp.updateMatrixWorld(true);
+    const groepen=new Map();
+    const kind=[...grp.children];
+    kind.forEach(o=>{
+      if(!o.isMesh||!o.material)return;
+      const g=o.geometry.clone();
+      o.updateWorldMatrix(true,false);
+      g.applyMatrix4(o.matrixWorld);
+      const k=o.material.uuid;
+      if(!groepen.has(k))groepen.set(k,{mat:o.material,geos:[],meshes:[]});
+      groepen.get(k).geos.push(g);
+      groepen.get(k).meshes.push(o);
+    });
+    groepen.forEach(gr=>{
+      const geom=gr.geos.length>1?voegGeos(gr.geos):gr.geos[0];
+      const mesh=new THREE.Mesh(geom,gr.mat);
+      mesh.matrixAutoUpdate=false;
+      scene.add(mesh);
+      maakFadeMesh(mesh);
+      gr.meshes.forEach(o=>{if(o.parent)o.parent.remove(o)});
+    });
+  }
   function muur(x,z,w,d,h,y0){
-    h=h||3.2;y0=y0||0;
+    h=(h||3.2)+1.9;y0=y0||0;
     const tint=haagMats[Math.floor(rnd(x*9+z*13)*haagMats.length)%haagMats.length];
+    const grp=new THREE.Group();
     // blokvormig zoals HP1, scherpe randen; bladkaarten maken de silhouet oneffen
-    box(tint,x,y0+h/2,z,w,h,d);
-    box(haagOnderMat,x,y0+0.14,z,w*1.02,0.28,d*1.02);
+    box(tint,x,y0+h/2,z,w,h,d,0,grp);
+    box(haagOnderMat,x,y0+0.14,z,w*1.02,0.28,d*1.02,0,grp);
     box(mat.grondSchaduw,x,0.03,z,w+0.50,0.06,d+0.50);
     const langs=w>=d?w:d, dwars=w>=d?d:w, alongX=w>=d;
     // bobbelige, klonterige kam zoals HP1
@@ -763,7 +798,7 @@
       const dd=dwars*(0.86+rnd(i+4)*0.30);
       const px=alongX?x+tt*langs:x+(rnd(i+6)-.5)*dwars*0.18;
       const pz=alongX?z+(rnd(i+7)-.5)*dwars*0.18:z+tt*langs;
-      box(tint,px,y0+h+hh*0.32,pz,alongX?ww:dd,hh,alongX?dd:ww);
+      box(tint,px,y0+h+hh*0.32,pz,alongX?ww:dd,hh,alongX?dd:ww,0,grp);
     }
     if(langs>=2.4){
       const ns=Math.max(2,Math.round(langs/0.7));
@@ -786,6 +821,7 @@
       const side=(i%2?1:-1)*dwars*0.52;
       haagBladPos.push(alongX?px:x+side,y0+h-0.04,alongX?z+side:pz, alongX?0:Math.PI/2, 0.7+rnd(i+3)*0.45);
     }
+    smeltInGroep(grp);
     solid(x,z,w,d,y0+h+0.45);
   }
 
@@ -1007,7 +1043,8 @@
   (function plaatsBladKaarten(){
     const n=haagBladPos.length/5;if(!n)return;
     const dummy=new THREE.Object3D();
-    const inst=new THREE.InstancedMesh(new THREE.PlaneGeometry(0.38,0.26),mat.bladHaag,n);
+    const inst=new THREE.InstancedMesh(new THREE.PlaneGeometry(0.38,0.26),mat.bladHaag.clone(),n);
+    maakFadeMesh(inst);
     inst.frustumCulled=true;
     for(let i=0;i<n;i++){
       const o=i*5;
@@ -2211,11 +2248,15 @@
   const mark=new THREE.Mesh(new THREE.RingGeometry(0.22,0.34,16),new THREE.MeshBasicMaterial({color:0xe6c25a,transparent:true,opacity:0.85,side:THREE.DoubleSide,depthWrite:false}));
   mark.rotation.x=-Math.PI/2;mark.visible=false;scene.add(mark);
 
-  const camOff=new THREE.Vector3(0.52,1.85,-5.2);
-  const kijkVooruit=1.7;
-  const CAM_MIN=4.0,CAM_MIN_Y=1.5;
-  let camYaw=0,camPitch=0;
-  const CAM_PITCH_MIN=-0.22,CAM_PITCH_MAX=0.5;
+  const camOff=new THREE.Vector3(0,0,-6.0);
+  const kijkVooruit=0.85;
+  const CAM_MIN=3.2,CAM_MIN_Y=1.5;
+  const CAM_DIST=6.0;
+  const CAM_LOOK_Y=1.25;
+  const CAM_PITCH_MIN=20*Math.PI/180,CAM_PITCH_MAX=40*Math.PI/180;
+  const CAM_YAW_SNEL=Math.PI/2;
+  const CAM_PITCH_SNEL=0.55;
+  let camYaw=0,camPitch=28*Math.PI/180;
   function camHoek(){return camYaw}
   function wikkelYaw(a){
     while(a>Math.PI)a-=Math.PI*2;while(a<-Math.PI)a+=Math.PI*2;
@@ -2229,6 +2270,7 @@
   const snelheid=2.2;
   let nabij=null;
   let stokAan=false,stokKracht=0,stokDx=0,stokDz=0,camVast=false;
+  let camStokAan=false,camStokKracht=0,camStokDx=0,camStokDy=0,camStokId=null;
   const loopStok=$('loopstok'), loopKnop=$('loopknop');
 
   function bots(x,z,r){
@@ -2288,10 +2330,13 @@
     }
     return null;
   }
+  function inElZone(el,x,y,p){
+    if(!el)return false;
+    const r=el.getBoundingClientRect(),m=p==null?48:p;
+    return x>=r.left-m&&x<=r.right+m&&y>=r.top-m&&y<=r.bottom+m;
+  }
   function inStokZone(x,y){
-    if(!loopStok)return false;
-    const r=loopStok.getBoundingClientRect(),p=48;
-    return x>=r.left-p&&x<=r.right+p&&y>=r.top-p&&y<=r.bottom+p;
+    return inElZone(loopStok,x,y,48)||inElZone($('camstok'),x,y,48)||inElZone($('camreset'),x,y,24);
   }
   function tikDeur(ev){
     const r=canvas.getBoundingClientRect();
@@ -2315,7 +2360,7 @@
     if(hintEl)hintEl.style.opacity='0.35';
   }
   function pointerOpUi(ev){
-    return ev.target&&ev.target.closest&&ev.target.closest('a,button,#nowebgl,#overgang,#loopstok,#laden,#deurkaart,#camreset,#tuindebug');
+    return ev.target&&ev.target.closest&&ev.target.closest('a,button,#nowebgl,#overgang,#loopstok,#camstok,#laden,#deurkaart,#camreset,#tuindebug');
   }
   const wijzers=new Map();
   let laatTouch=0;
@@ -2335,6 +2380,7 @@
     if(!ev||ev.pointerType!=='mouse')return false;
     if(performance.now()<laatTouch+800)return true;
     if(stokAan&&stokId!=null&&ev.pointerId!==stokId)return true;
+    if(camStokAan&&camStokId!=null&&ev.pointerId!==camStokId)return true;
     if(kijkAan&&kijkId!=null&&ev.pointerId!==kijkId)return true;
     return false;
   }
@@ -2343,9 +2389,10 @@
     if(negeerMuis(ev))return;
     if(pointerOpUi(ev))return;
     if(stokAan&&ev.pointerId===stokId)return;
-    if(ev.pointerId===stokId)return;
+    if(camStokAan&&ev.pointerId===camStokId)return;
+    if(ev.pointerId===stokId||ev.pointerId===camStokId)return;
     if(inStokZone(ev.clientX,ev.clientY))return;
-    if(ev.target&&ev.target.closest&&ev.target.closest('#loopstok'))return;
+    if(ev.target&&ev.target.closest&&ev.target.closest('#loopstok,#camstok,#camreset'))return;
     eersteTikGeluid();
     ev.preventDefault&&ev.preventDefault();
     kijkAan=true;kijkId=ev.pointerId;kijkSleep=false;
@@ -2364,11 +2411,7 @@
     if(!kijkSleep && Math.hypot(ev.clientX-kijkStartX,ev.clientY-kijkStartY)>14){
       kijkSleep=true;doel=null;mark.visible=false;
     }
-    if(kijkSleep){
-      camYaw=wikkelYaw(camYaw-dx*0.0075);
-      camPitch=Math.max(CAM_PITCH_MIN,Math.min(CAM_PITCH_MAX,camPitch+dy*0.0055));
-      camCacheAan=false;camVast=false;
-    }
+    // slepen op het scherm draait de camera niet meer; alleen de camerajoystick doet dat
   }
   function losKijk(ev){
     if(!kijkAan||(kijkId!=null&&ev.pointerId!==kijkId))return;
@@ -2380,19 +2423,24 @@
   canvas.addEventListener('pointerdown',startKijk,{passive:false});
   canvas.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation()},{capture:true});
   window.addEventListener('pointermove',function(ev){
-    if(negeerMuis(ev)&&ev.pointerId!==stokId&&ev.pointerId!==kijkId)return;
+    if(negeerMuis(ev)&&ev.pointerId!==stokId&&ev.pointerId!==camStokId&&ev.pointerId!==kijkId)return;
+    if(camStokAan&&(camStokId==null||ev.pointerId===camStokId)){ev.preventDefault();merkWijzer(ev,'camstok');zetCamStok(ev.clientX,ev.clientY);return}
     if(stokAan&&(stokId==null||ev.pointerId===stokId)){ev.preventDefault();merkWijzer(ev,'stok');zetStok(ev.clientX,ev.clientY);return}
-    if(ev.pointerId===stokId)return;
+    if(ev.pointerId===stokId||ev.pointerId===camStokId)return;
     beweegKijk(ev);
   },{passive:false});
   function pointerLos(ev){
     merkWijzer(ev);
+    if(camStokAan&&(camStokId==null||ev.pointerId===camStokId)){
+      ev.preventDefault();stokTot=performance.now()+500;stopCamStok();
+      return;
+    }
     if(stokAan&&(stokId==null||ev.pointerId===stokId)){
       ev.preventDefault();stokTot=performance.now()+500;stokId=null;stopStok();
       if(!doel)lopen=false;
       return;
     }
-    if(ev.pointerId===stokId)return;
+    if(ev.pointerId===stokId||ev.pointerId===camStokId)return;
     losKijk(ev);
   }
   window.addEventListener('pointerup',pointerLos,{passive:false});
@@ -2400,6 +2448,7 @@
   window.addEventListener('lostpointercapture',pointerLos,{passive:false});
   function forceerLos(){
     if(stokAan){stokId=null;stopStok();if(!doel)lopen=false}
+    if(camStokAan)stopCamStok();
     if(kijkAan){kijkAan=false;kijkId=null;kijkSleep=false}
   }
   window.addEventListener('blur',forceerLos);
@@ -2443,11 +2492,36 @@
     },{passive:false});
   }
 
-  function zetCameraAchter(){
-    camYaw=wikkelYaw(held.rotation.y);
-    camPitch=0;
-    camCacheAan=false;camVast=false;
+  const camStokEl=$('camstok'),camKnopEl=$('camknop');
+  function zetCamStok(cx,cy){
+    if(!camStokEl||!camKnopEl)return;
+    const r=camStokEl.getBoundingClientRect();
+    const mx=r.left+r.width/2,my=r.top+r.height/2;
+    let dx=cx-mx,dy=cy-my;
+    const max=r.width*0.42,len=Math.hypot(dx,dy)||1,k=Math.min(1,len/max);
+    dx=dx/len*k*max;dy=dy/len*k*max;
+    camKnopEl.style.transform='translate('+dx+'px,'+dy+'px)';
+    camStokDx=dx/max;camStokDy=dy/max;camStokKracht=k;
   }
+  function stopCamStok(){
+    camStokAan=false;camStokKracht=0;camStokDx=0;camStokDy=0;camStokId=null;
+    if(camKnopEl)camKnopEl.style.transform='';
+    if(camStokEl)camStokEl.classList.remove('aan');
+  }
+  if(camStokEl){
+    camStokEl.addEventListener('pointerdown',function(ev){
+      if(naarBinnen)return;
+      ev.preventDefault();ev.stopPropagation();
+      try{camStokEl.setPointerCapture(ev.pointerId)}catch(e){}
+      camStokAan=true;camStokId=ev.pointerId;camStokEl.classList.add('aan');
+      merkWijzer(ev,'camstok');
+      camVast=false;
+      if(kijkAan&&kijkId===ev.pointerId){kijkAan=false;kijkId=null}
+      stokTot=performance.now()+800;
+      zetCamStok(ev.clientX,ev.clientY);
+    },{passive:false});
+  }
+
   const camResetBtn=$('camreset');
   if(camResetBtn){
     camResetBtn.addEventListener('pointerdown',function(ev){
@@ -2461,8 +2535,9 @@
   function tekenDebug(){
     if(!debugAan||!debugEl)return;
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
-    debugEl.textContent='v171  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
+    debugEl.textContent='v177  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
+      'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
       'kijk '+(kijkAan?'AAN':'uit')+(kijkSleep?' SLEEP':'')+'  id '+(kijkId==null?'-':kijkId)+'\n'+
       'pointers '+ptrs;
   }
@@ -2745,103 +2820,190 @@
   let fps=0,fpsMin=99,frames=0,tFps=performance.now(),laatste=performance.now();
   const klok=new THREE.Clock();
 
-  function cameraPlek(out){
-    const facing=camHoek();
-    const sx=Math.sin(facing), cz=Math.cos(facing);
-    const back=camOff.z*Math.cos(camPitch);
-    const hy=held.position.y+camOff.y+Math.sin(camPitch)*Math.abs(camOff.z)*0.65;
-    out.set(
-      held.position.x+sx*back+cz*camOff.x,
-      hy,
-      held.position.z+cz*back-sx*camOff.x
-    );
-    return out;
+  const CAM_RAILS=[
+    {x0:0,z0:1.0,x1:0,z1:30.9,hw:1.85},
+    {x0:-16.6,z0:14.0,x1:16.6,z1:14.0,hw:1.42},
+    {x0:-5.4,z0:9.7,x1:-1.8,z1:9.7,hw:1.65},
+    {x0:-5.0,z0:8.0,x1:-5.0,z1:11.6,hw:1.55}
+  ];
+  function railPunt(x,z,seg){
+    const dx=seg.x1-seg.x0,dz=seg.z1-seg.z0,len2=dx*dx+dz*dz||1;
+    let t=((x-seg.x0)*dx+(z-seg.z0)*dz)/len2;
+    t=Math.max(0,Math.min(1,t));
+    const px=seg.x0+dx*t,pz=seg.z0+dz*t;
+    const d=Math.hypot(x-px,z-pz);
+    if(d<=seg.hw)return {x:x,z:z,d:0,px:px,pz:pz,seg:seg};
+    const s=seg.hw/d;
+    return {x:px+(x-px)*s,z:pz+(z-pz)*s,d:d-seg.hw,px:px,pz:pz,seg:seg};
+  }
+  function inRail(x,z){
+    for(let i=0;i<CAM_RAILS.length;i++){
+      if(railPunt(x,z,CAM_RAILS[i]).d<=0.001)return true;
+    }
+    return false;
+  }
+  function railsBij(x,z){
+    const MARGE=0.45;
+    const lokaal=[];
+    let beste=null;
+    for(let i=0;i<CAM_RAILS.length;i++){
+      const p=railPunt(x,z,CAM_RAILS[i]);
+      if(p.d<=MARGE)lokaal.push(CAM_RAILS[i]);
+      if(!beste||p.d<beste.d)beste=p;
+    }
+    if(lokaal.length)return lokaal;
+    return beste&&beste.seg?[beste.seg]:CAM_RAILS;
+  }
+  function projectOpRails(x,z,rails){
+    let beste=null;
+    for(let i=0;i<rails.length;i++){
+      const p=railPunt(x,z,rails[i]);
+      if(!beste||p.d<beste.d)beste=p;
+    }
+    return beste||{x:x,z:z,d:0};
+  }
+  function projectRail(x,z){
+    return projectOpRails(x,z,railsBij(held.position.x,held.position.z));
+  }
+  function projectAlleRails(x,z){
+    return projectOpRails(x,z,CAM_RAILS);
   }
   function kijkPunt(out){
     const facing=camHoek();
     out.set(
       held.position.x+Math.sin(facing)*kijkVooruit,
-      held.position.y+1.15+camPitch*0.85,
+      held.position.y+CAM_LOOK_Y,
       held.position.z+Math.cos(facing)*kijkVooruit
     );
     return out;
   }
-  function camOffset(out,lat,h,back){
-    const facing=camHoek(), sx=Math.sin(facing), cz=Math.cos(facing);
-    out.set(
-      held.position.x+sx*back+cz*lat,
-      held.position.y+h+Math.sin(camPitch)*Math.abs(back)*0.3,
-      held.position.z+cz*back-sx*lat
-    );
+  function doelCamera(out,look){
+    kijkPunt(look);
+    const yaw=camHoek(), c=Math.cos(camPitch), s=Math.sin(camPitch);
+    let cx=look.x-Math.sin(yaw)*CAM_DIST*c;
+    let cy=look.y+CAM_DIST*s;
+    let cz=look.z-Math.cos(yaw)*CAM_DIST*c;
+    const p=projectRail(cx,cz);
+    cx=p.x;cz=p.z;
+    if(cy<CAM_MIN_Y)cy=CAM_MIN_Y;
+    if(camInSolid(cx,cy,cz)){
+      for(let i=1;i<=12;i++){
+        const k=i/12;
+        const nx=cx+(look.x-cx)*k, nz=cz+(look.z-cz)*k;
+        if(!camInSolid(nx,cy,nz)){cx=nx;cz=nz;break}
+      }
+    }
+    out.set(cx,cy,cz);
     return out;
   }
-  function camPadVrij(px,py,pz,kijk){
-    if(py<CAM_MIN_Y-0.05)return false;
-    if(pz<0.6||pz>31||px<-20||px>20)return false;
-    const hx=held.position.x, hy=held.position.y+1.45, hz=held.position.z;
-    const dist=Math.hypot(px-hx,py-hy,pz-hz);
-    if(dist<CAM_MIN-0.2)return false;
-    const stappen=12;
-    for(let i=0;i<=stappen;i++){
-      const t=0.22+i/stappen*0.78;
-      const x=hx+(px-hx)*t, y=hy+(py-hy)*t, z=hz+(pz-hz)*t;
-      if(botsCam(x,y,z))return false;
+  function zoekCamera(out){
+    return doelCamera(out,LOOK_CAM);
+  }
+  const lookPos=new THREE.Vector3(0,1.3,8.5);
+  let camAchterT=0,camAchterVan=0,camAchterNaar=0;
+  function zetCameraAchter(){
+    camAchterVan=camYaw;
+    camAchterNaar=wikkelYaw(held.rotation.y);
+    camAchterT=0.001;
+    camVast=false;
+  }
+  function fadeOcclusie(){
+    if(!haagFade.length)return;
+    const kop=LOOK;
+    kop.set(held.position.x,held.position.y+1.45,held.position.z);
+    const dir=CAM_ZOEK;
+    dir.subVectors(kop,camera.position);
+    const dist=dir.length();
+    if(dist<0.05)return;
+    dir.multiplyScalar(1/dist);
+    ray.set(camera.position,dir);
+    ray.far=dist-0.12;
+    const hits=ray.intersectObjects(haagFade,false);
+    const blok=new Set();
+    for(let i=0;i<hits.length;i++){
+      const o=hits[i].object;
+      if(o&&o.userData&&o.userData.fadeOc)blok.add(o);
     }
-    if(kijk){
-      for(let i=0;i<=10;i++){
-        const t=i/10*0.84;
-        const x=px+(kijk.x-px)*t, y=py+(kijk.y-py)*t, z=pz+(kijk.z-pz)*t;
-        if(botsCam(x,y,z))return false;
+    for(let i=0;i<haagFade.length;i++){
+      const m=haagFade[i], mat=m.userData.fadeMat||m.material;
+      const cur=m.userData.fadeOp==null?1:m.userData.fadeOp;
+      // occlusie meteen doorzichtig (Luna nooit een frame weg), terugkomen is zacht
+      const nxt=blok.has(m)?0.28:cur+(1-cur)*0.18;
+      m.userData.fadeOp=nxt;
+      if(mat){
+        const tr=nxt<0.95;
+        mat.transparent=tr;
+        mat.opacity=nxt;
+        mat.depthWrite=!tr;
+        mat.needsUpdate=true;
       }
+    }
+  }
+  function camInSolid(x,y,z){
+    const r=0.28;
+    for(let i=0;i<col.length;i++){
+      const c=col[i];
+      if(x>c.minx-r&&x<c.maxx+r&&z>c.minz-r&&z<c.maxz+r&&y<(c.h||3.4)-0.15)return true;
+    }
+    return false;
+  }
+  function lunaZichtbaar(){
+    const kop=new THREE.Vector3(held.position.x,held.position.y+1.45,held.position.z);
+    const dir=new THREE.Vector3().subVectors(kop,camera.position);
+    const dist=dir.length();
+    if(dist<0.05)return true;
+    dir.multiplyScalar(1/dist);
+    ray.set(camera.position,dir);
+    ray.far=dist-0.12;
+    const hits=ray.intersectObjects(haagFade,false);
+    for(let i=0;i<hits.length;i++){
+      const mat=hits[i].object&&(hits[i].object.userData.fadeMat||hits[i].object.material);
+      const op=hits[i].object&&hits[i].object.userData.fadeOp;
+      if(mat&&!mat.transparent&&(op==null||op>0.6))return false;
+      if(op!=null&&op>0.6)return false;
     }
     return true;
   }
-  let camCacheAan=false;
-  function zoekCamera(out){
-    const kijk=kijkPunt(LOOK_CAM);
-    cameraPlek(out);
-    if(camPadVrij(out.x,out.y,out.z,kijk))return out;
-    const cands=[
-      [camOff.x, camOff.y, camOff.z],
-      [camOff.x*0.4, camOff.y, camOff.z],
-      [0, camOff.y, camOff.z],
-      [-camOff.x, camOff.y, camOff.z],
-      [camOff.x, camOff.y+0.7, camOff.z*0.9],
-      [0, camOff.y+0.5, camOff.z],
-      [-0.3, 3.2, -5.6],
-      [0.3, 3.4, -5.2]
-    ];
-    for(let i=0;i<cands.length;i++){
-      const c=cands[i];
-      camOffset(out,c[0],c[1],c[2]);
-      if(camPadVrij(out.x,out.y,out.z,kijk))return out;
+  function volgCamera(dt){
+    if(camAchterT>0){
+      camAchterT+=dt;
+      const k=Math.min(1,camAchterT/0.65);
+      const e=k*k*(3-2*k);
+      let d=wikkelYaw(camAchterNaar-camAchterVan);
+      camYaw=wikkelYaw(camAchterVan+d*e);
+      if(k>=1)camAchterT=0;
     }
-    const hx=held.position.x, hz=held.position.z, facing=camHoek();
-    const dists=[6.4,5.4,4.4], hoogtes=[2.55,3.15,3.75];
-    const spreiding=[0,0.35,-0.35,0.7,-0.7,1.05,-1.05,1.4,-1.4,1.85,-1.85,2.4,-2.4];
-    for(let d=0;d<dists.length;d++){
-      for(let h=0;h<hoogtes.length;h++){
-        for(let s=0;s<spreiding.length;s++){
-          const a=facing+Math.PI+spreiding[s];
-          out.set(hx+Math.sin(a)*dists[d], held.position.y+hoogtes[h], hz+Math.cos(a)*dists[d]);
-          if(camPadVrij(out.x,out.y,out.z,kijk))return out;
-        }
+    if(camStokAan&&camStokKracht>0.18){
+      camAchterT=0;
+      camYaw=wikkelYaw(camYaw-camStokDx*CAM_YAW_SNEL*dt);
+      camPitch=Math.max(CAM_PITCH_MIN,Math.min(CAM_PITCH_MAX,camPitch-camStokDy*CAM_PITCH_SNEL*dt));
+    }
+    doelCamera(CAM_ZOEK,LOOK_CAM);
+    const k=1-Math.exp(-4.2*dt);
+    const yawAan=camStokAan&&camStokKracht>0.18;
+    const maxStap=(yawAan?CAM_DIST*CAM_YAW_SNEL*dt:0)+0.33;
+    const vanX=camPos.x,vanY=camPos.y,vanZ=camPos.z;
+    camPos.lerp(CAM_ZOEK,k);
+    lookPos.lerp(LOOK_CAM,k);
+    const opPad=projectAlleRails(camPos.x,camPos.z);
+    camPos.x=opPad.x;camPos.z=opPad.z;
+    if(camPos.y<CAM_MIN_Y)camPos.y=CAM_MIN_Y;
+    const stap=Math.hypot(camPos.x-vanX,camPos.y-vanY,camPos.z-vanZ);
+    if(stap>maxStap&&stap>0.0001){
+      const s=maxStap/stap;
+      camPos.set(vanX+(camPos.x-vanX)*s,vanY+(camPos.y-vanY)*s,vanZ+(camPos.z-vanZ)*s);
+    }
+    if(camInSolid(camPos.x,camPos.y,camPos.z)){
+      const naar=projectRail(camPos.x,camPos.z);
+      for(let i=1;i<=10;i++){
+        const k2=i/10;
+        const nx=camPos.x+(naar.x-camPos.x)*k2,nz=camPos.z+(naar.z-camPos.z)*k2;
+        if(!camInSolid(nx,camPos.y,nz)){camPos.x=nx;camPos.z=nz;break}
       }
     }
-    camOffset(out,0,4.2,-CAM_MIN);
-    if(out.y<CAM_MIN_Y)out.y=CAM_MIN_Y;
-    return out;
-  }
-  function volgCamera(dt){
-    zoekCamera(CAM_ZOEK);
-    const hx=held.position.x, hy=held.position.y+1.45, hz=held.position.z;
-    camPos.lerp(CAM_ZOEK,1-Math.exp(-6.8*dt));
-    if(Math.hypot(camPos.x-hx,camPos.y-hy,camPos.z-hz)<CAM_MIN-0.35 || botsCam(camPos.x,camPos.y,camPos.z)){
-      camPos.copy(CAM_ZOEK);
-    }
-    if(camPos.y<CAM_MIN_Y)camPos.y=CAM_MIN_Y;
     camera.position.copy(camPos);
-    camera.lookAt(kijkPunt(LOOK));
+    camera.lookAt(lookPos);
+    fadeOcclusie();
   }
 
   function tic(){
@@ -3086,7 +3248,7 @@
     if(held)held.traverse(o=>skip.add(o));
     const groepen=new Map();
     world.traverse(o=>{
-      if(!o.isMesh||o.isInstancedMesh||o.userData.dyn||skip.has(o))return;
+      if(!o.isMesh||o.isInstancedMesh||o.userData.dyn||o.userData.fadeOc||skip.has(o))return;
       if(!o.material||Array.isArray(o.material))return;
       if(o.material.transparent&&!o.material.alphaTest)return;
       const g=o.geometry.clone();
@@ -3217,9 +3379,10 @@
   }
   laadTuinAssets();
 
-  zoekCamera(camPos);
+  doelCamera(camPos,LOOK_CAM);
+  lookPos.copy(LOOK_CAM);
   camera.position.copy(camPos);
-  camera.lookAt(kijkPunt(LOOK));
+  camera.lookAt(lookPos);
   requestAnimationFrame(tic);
 
   function zetPlek(plek){
@@ -3236,14 +3399,14 @@
     const P=(plek&&typeof plek==='object'&&'x' in plek)?plek:(NAMED[plek]||{x:0,z:5.6,y:0});
     held.position.set(P.x,0,P.z);
     held.rotation.y=P.y;
-    camYaw=P.y;camPitch=0;
     zetHoogte();
-    lopen=false;doel=null;doelDeur=null;mark.visible=false;stopStok();
+    lopen=false;doel=null;doelDeur=null;mark.visible=false;stopStok();stopCamStok();
     mixBevries=false;
-    camVast=false;camCacheAan=false;
-    zoekCamera(camPos);
+    camVast=false;camAchterT=0;
+    doelCamera(camPos,LOOK_CAM);
+    lookPos.copy(LOOK_CAM);
     camera.position.copy(camPos);
-    camera.lookAt(kijkPunt(LOOK));
+    camera.lookAt(lookPos);
     zetDeurKaart();
     renderer.render(scene,camera);
   }
@@ -3262,10 +3425,36 @@
     pos:()=>({x:+held.position.x.toFixed(2),z:+held.position.z.toFixed(2),y:+held.position.y.toFixed(2)}),
     cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3),rot:+held.rotation.y.toFixed(3)}),
     stok:()=>({aan:stokAan,kracht:+stokKracht.toFixed(2),dx:+stokDx.toFixed(2),dz:+stokDz.toFixed(2)}),
+    camStok:()=>({aan:camStokAan,kracht:+camStokKracht.toFixed(2),dx:+camStokDx.toFixed(2),dy:+camStokDy.toFixed(2)}),
+    stokStand(d){
+      if(!d||d.aan===false){stopStok();return this.stok()}
+      stokAan=true;camVast=false;doel=null;doelDeur=null;mark.visible=false;
+      stokDx=+d.dx||0;stokDz=d.dz==null?1:+d.dz;stokKracht=d.kracht==null?1:+d.kracht;
+      return this.stok();
+    },
+    camStokStand(d){
+      if(!d||d.aan===false){stopCamStok();return this.camStok()}
+      camStokAan=true;camVast=false;camAchterT=0;
+      camStokDx=+d.dx||0;camStokDy=+d.dy||0;camStokKracht=d.kracht==null?1:+d.kracht;
+      return this.camStok();
+    },
     camReset:zetCameraAchter,
+    camTest(){
+      return {
+        pos:{x:held.position.x,y:held.position.y,z:held.position.z,rot:held.rotation.y},
+        cam:{x:camera.position.x,y:camera.position.y,z:camera.position.z,yaw:camYaw,pitch:camPitch},
+        zichtbaar:lunaZichtbaar(),
+        inSolid:camInSolid(camera.position.x,camera.position.y,camera.position.z),
+        inRail:inRail(camera.position.x,camera.position.z),
+        fade:haagFade.filter(m=> (m.userData.fadeOp||1)<0.95).length,
+        stok:{aan:stokAan,dx:stokDx,dz:stokDz,kracht:stokKracht},
+        camStok:{aan:camStokAan,dx:camStokDx,dy:camStokDy,kracht:camStokKracht}
+      };
+    },
     debug:()=>({
       camYaw:+camYaw.toFixed(4),heading:+held.rotation.y.toFixed(4),pitch:+camPitch.toFixed(4),
       stok:{aan:stokAan,dx:+stokDx.toFixed(3),dz:+stokDz.toFixed(3),kracht:+stokKracht.toFixed(3),id:stokId},
+      camStok:{aan:camStokAan,dx:+camStokDx.toFixed(3),dy:+camStokDy.toFixed(3),kracht:+camStokKracht.toFixed(3),id:camStokId},
       kijk:{aan:kijkAan,sleep:kijkSleep,id:kijkId},
       pointers:[...wijzers.values()]
     }),
