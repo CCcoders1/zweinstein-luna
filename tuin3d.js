@@ -1,4 +1,4 @@
-/* v172: 3D-testtuin, HP1-sfeer. Avondlicht, lucht, fakkels en zwevende deeltjes. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v173: 3D-testtuin, HP1-sfeer. Helder daglicht, blauwe lucht, fakkels als rekwisiet. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -171,67 +171,44 @@
       for(let y=8;y<n;y+=16){g.beginPath();g.moveTo(0,y);g.lineTo(n,y);g.stroke()}
     },64,[2,2],true),
     lucht: cvTex((g,w,h)=>{
-      // v=0 is zenit, v=0.5 de horizon (wat de camera vooral ziet).
+      // v=0 is zenit, v=0.5 de horizon. Helder HP1-daglicht: rijk blauw, zachte witte wolken.
       const lg=g.createLinearGradient(0,0,0,h);
-      lg.addColorStop(0,'#07061a');
-      lg.addColorStop(.18,'#16103a');
-      lg.addColorStop(.32,'#3a2468');
-      lg.addColorStop(.40,'#6a3a7a');
-      lg.addColorStop(.45,'#c46a58');
-      lg.addColorStop(.49,'#f0b068');
-      lg.addColorStop(.515,'#f7d8a0');
-      lg.addColorStop(.55,'#c88868');
-      lg.addColorStop(.62,'#5a3a48');
-      lg.addColorStop(.78,'#241828');
-      lg.addColorStop(1,'#100c16');
+      // bijna vlak, verzadigd HP1-blauw (lage R, hoge B)
+      lg.addColorStop(0,'#1a4ec4');
+      lg.addColorStop(.36,'#1e56cc');
+      lg.addColorStop(.46,'#2460d2');
+      lg.addColorStop(.50,'#3a78d8');
+      lg.addColorStop(.54,'#7a9888');
+      lg.addColorStop(.70,'#5a7a48');
+      lg.addColorStop(1,'#2a4a24');
       g.fillStyle=lg;g.fillRect(0,0,w,h);
-      function sluier(x,y,rx,ry,a,c0,c1){
+      function wolk(x,y,rx,ry,a){
         const grd=g.createRadialGradient(x,y,0,x,y,rx);
-        grd.addColorStop(0,c0.replace('A',''+a));
-        grd.addColorStop(.5,c1.replace('A',''+(a*0.4)));
-        grd.addColorStop(1,'rgba(200,140,100,0)');
+        grd.addColorStop(0,'rgba(210,228,255,'+a+')');
+        grd.addColorStop(.55,'rgba(170,200,240,'+(a*0.35)+')');
+        grd.addColorStop(1,'rgba(80,140,220,0)');
         g.fillStyle=grd;
         g.beginPath();g.ellipse(x,y,rx,ry,0,0,Math.PI*2);g.fill();
       }
-      // warme avondsluiers vlak boven de horizon
-      sluier(0.18*w,0.455*h,0.34*w,0.04*h,0.42,'rgba(255,200,140,A)','rgba(255,160,100,A)');
-      sluier(0.55*w,0.445*h,0.40*w,0.045*h,0.36,'rgba(255,186,150,A)','rgba(200,100,140,A)');
-      sluier(0.84*w,0.46*h,0.30*w,0.035*h,0.32,'rgba(255,210,160,A)','rgba(180,90,120,A)');
-      sluier(0.40*w,0.47*h,0.26*w,0.03*h,0.28,'rgba(255,220,180,A)','rgba(240,160,100,A)');
-      // eerste sterren in het zenit
-      for(let i=0;i<90;i++){
-        const u=rnd(i+3),v=rnd(i+11)*0.40,s=0.5+rnd(i+7)*1.3,a=0.25+rnd(i+19)*0.7;
-        g.fillStyle='rgba(255,245,230,'+a+')';
-        g.beginPath();g.arc(u*w,v*h,s,0,Math.PI*2);g.fill();
-      }
-      // zachte maan
-      const mx=0.72*w,my=0.22*h,mr=0.045*w;
-      const halo=g.createRadialGradient(mx,my,mr*0.4,mx,my,mr*3.2);
-      halo.addColorStop(0,'rgba(255,244,214,.28)');
-      halo.addColorStop(.4,'rgba(255,220,170,.08)');
-      halo.addColorStop(1,'rgba(255,200,140,0)');
-      g.fillStyle=halo;g.beginPath();g.arc(mx,my,mr*3.2,0,Math.PI*2);g.fill();
-      const maan=g.createRadialGradient(mx-mr*0.25,my-mr*0.2,0,mx,my,mr);
-      maan.addColorStop(0,'#fff6e0');
-      maan.addColorStop(.7,'#e8d0a0');
-      maan.addColorStop(1,'#c8a878');
-      g.fillStyle=maan;g.beginPath();g.arc(mx,my,mr,0,Math.PI*2);g.fill();
+      // één zachte veeg, onder het zenit, zoals de HP1-slierten
+      wolk(0.38*w,0.34*h,0.28*w,0.018*h,0.22);
+      wolk(0.72*w,0.38*h,0.20*w,0.014*h,0.16);
     },512,512,{scherp:true}),
     wolk: cvTex((g,w,h)=>{
       g.clearRect(0,0,w,h);
       function veeg(x,y,rx,ry,a,rot){
         g.save();g.translate(x,y);g.rotate(rot||0);
         const grd=g.createRadialGradient(0,0,0,0,0,Math.max(rx,ry));
-        grd.addColorStop(0,'rgba(255,220,190,'+a+')');
-        grd.addColorStop(.35,'rgba(230,150,160,'+(a*0.5)+')');
-        grd.addColorStop(1,'rgba(80,40,80,0)');
+        grd.addColorStop(0,'rgba(255,255,255,'+a+')');
+        grd.addColorStop(.4,'rgba(236,244,255,'+(a*0.55)+')');
+        grd.addColorStop(1,'rgba(180,210,240,0)');
         g.fillStyle=grd;
         g.beginPath();g.ellipse(0,0,rx,ry,0,0,Math.PI*2);g.fill();
         g.restore();
       }
-      veeg(w*.50,h*.50,w*.46,h*.12,.7,-0.08);
-      veeg(w*.42,h*.44,w*.32,h*.08,.48,-0.12);
-      veeg(w*.60,h*.56,w*.28,h*.07,.4,0.06);
+      veeg(w*.50,h*.50,w*.46,h*.14,.8,-0.06);
+      veeg(w*.38,h*.44,w*.30,h*.09,.55,-0.10);
+      veeg(w*.64,h*.56,w*.28,h*.08,.48,0.08);
     },256,96,{scherp:true}),
     rimpel: cvTex((g,w,h)=>{
       g.fillStyle='#1a8a8a';g.fillRect(0,0,w,h);
@@ -309,12 +286,23 @@
     },64,null,true),
     klimop: tex((g,n)=>{
       g.clearRect(0,0,n,n);
-      for(let i=0;i<70;i++){
-        const x=rnd(i+2)*n,y=rnd(i+9)*n;
-        g.fillStyle=rnd(i)>.5?'#2f7a22':'#145018';
-        g.beginPath();g.ellipse(x,y,3+rnd(i+3)*4,2+rnd(i+4)*3,rnd(i)*3,0,Math.PI*2);g.fill();
+      for(let k=0;k<7;k++){
+        const x0=n*(0.08+k*0.13+rnd(k)*0.04);
+        g.strokeStyle=rnd(k)>.5?'#1a4a12':'#0c3010';
+        g.lineWidth=1.2;
+        g.beginPath();g.moveTo(x0,0);
+        for(let y=0;y<=n;y+=4)g.lineTo(x0+Math.sin(y*0.09+k)*5+(rnd(k*17+y)-.5)*2,y);
+        g.stroke();
+        for(let i=0;i<36;i++){
+          const yy=rnd(k*13+i)*n,xx=x0+(rnd(k+i+3)-.5)*11,s=1.4+rnd(i)*2.8;
+          const c=rnd(i+5);
+          g.fillStyle=c>.75?'#6aaa32':c>.45?'#3d8a22':c>.2?'#1e5a14':'#0e3010';
+          g.save();g.translate(xx,yy);g.rotate(rnd(i+8)*6.28);
+          g.beginPath();g.ellipse(0,0,s,s*0.55,0,0,Math.PI*2);g.fill();
+          g.restore();
+        }
       }
-    },64,null,true),
+    },128,null,true),
     bloem: tex((g,n)=>{
       g.clearRect(0,0,n,n);
       const kleuren=['#d4a017','#d45a20','#f0e8c0','#c03020','#e8d060'];
@@ -450,8 +438,8 @@
   };
   T.lucht.wrapS=T.lucht.wrapT=THREE.ClampToEdgeWrapping;
   T.wolk.wrapS=T.wolk.wrapT=THREE.ClampToEdgeWrapping;
-  T.klimop.wrapS=T.klimop.wrapT=THREE.ClampToEdgeWrapping;
-  T.rank.wrapS=T.rank.wrapT=THREE.ClampToEdgeWrapping;
+  T.klimop.wrapS=T.klimop.wrapT=THREE.RepeatWrapping;T.klimop.repeat.set(2.4,2.4);
+  T.rank.wrapS=T.rank.wrapT=THREE.RepeatWrapping;T.rank.repeat.set(3.2,2.2);
   T.nevel.wrapS=T.nevel.wrapT=THREE.ClampToEdgeWrapping;
   T.bloem.wrapS=T.bloem.wrapT=THREE.ClampToEdgeWrapping;
   T.pollen.wrapS=T.pollen.wrapT=THREE.ClampToEdgeWrapping;
@@ -487,19 +475,19 @@
 
   const mat={
     gras: new THREE.MeshLambertMaterial({map:T.gras}),
-    haag: new THREE.MeshLambertMaterial({map:T.haag,color:0xe8f0d0}),
+    haag: new THREE.MeshLambertMaterial({map:T.haag,color:0xb8d848}),
     baksteen: new THREE.MeshLambertMaterial({map:T.baksteen}),
     zandsteen: new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xffffff,shininess:8,specular:0x332820}),
     pad: new THREE.MeshPhongMaterial({map:T.pad,color:0xffffff,shininess:10,specular:0x333333}),
     aarde: new THREE.MeshLambertMaterial({map:T.aarde}),
     hout: new THREE.MeshLambertMaterial({map:T.hout}),
     sokkel: new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xe8d8b0,shininess:8,specular:0x332820}),
-    ijzer: new THREE.MeshLambertMaterial({color:0x2a2626,emissive:0x151210,emissiveIntensity:0.25}),
+    ijzer: new THREE.MeshLambertMaterial({color:0x5a5a62,emissive:0x000000,emissiveIntensity:0}),
     grind: new THREE.MeshLambertMaterial({map:T.grind}),
-    water: new THREE.MeshPhongMaterial({map:T.water,color:0xc8fff8,transparent:true,opacity:0.94,depthWrite:false,shininess:160,specular:0xffffff,emissive:0x24b0b8,emissiveIntensity:0.88}),
+    water: new THREE.MeshPhongMaterial({map:T.water,color:0xb8fff0,transparent:true,opacity:0.92,depthWrite:false,shininess:120,specular:0xffffff,emissive:0x1a8890,emissiveIntensity:0.28}),
     rimpel: new THREE.MeshBasicMaterial({map:T.rimpel,transparent:true,opacity:0.35,depthWrite:false,side:THREE.DoubleSide}),
     glinster: new THREE.MeshBasicMaterial({map:T.glinster,transparent:true,opacity:0.7,depthWrite:false,side:THREE.DoubleSide}),
-    wolk: new THREE.MeshBasicMaterial({map:T.wolk,transparent:true,opacity:0.55,depthWrite:false,fog:false,side:THREE.DoubleSide,toneMapped:false}),
+    wolk: new THREE.MeshBasicMaterial({map:T.wolk,transparent:true,opacity:0.78,depthWrite:false,fog:false,side:THREE.DoubleSide,toneMapped:false}),
     rank: new THREE.MeshLambertMaterial({map:T.rank,transparent:true,depthWrite:false,side:THREE.DoubleSide}),
     nevel: new THREE.MeshBasicMaterial({map:T.nevel,transparent:true,opacity:0.65,depthWrite:false,fog:false,side:THREE.DoubleSide}),
     voering: new THREE.MeshLambertMaterial({color:0xd4a017,side:THREE.DoubleSide}),
@@ -531,10 +519,10 @@
   mat.bordKas=new THREE.MeshBasicMaterial({map:T.bordKas,side:THREE.DoubleSide});
   mat.bordHagrid=new THREE.MeshBasicMaterial({map:T.bordHagrid,side:THREE.DoubleSide});
   mat.bordHal=new THREE.MeshBasicMaterial({map:T.bordHal,side:THREE.DoubleSide});
-  const haagTinten=[0xfffff0,0xf6ffd8,0xe6ffa8,0xd8f890,0xf0ffc4];
+  const haagTinten=[0xb8d848,0xa4c840,0xc4d858,0x98b838,0xc8d868];
   const haagMats=haagTinten.map(c=>new THREE.MeshLambertMaterial({map:T.haag,color:c}));
-  const haagTopMat=new THREE.MeshLambertMaterial({map:T.haag,color:0xfffff0});
-  const haagOnderMat=new THREE.MeshLambertMaterial({map:T.haag,color:0x5a8a32});
+  const haagTopMat=new THREE.MeshLambertMaterial({map:T.haag,color:0xc8e870});
+  const haagOnderMat=new THREE.MeshLambertMaterial({map:T.haag,color:0x4a6a18});
   const haagToppen=[];
   mat.padSlijt=new THREE.MeshPhongMaterial({map:T.pad,vertexColors:true,shininess:10,specular:0x333333});
   mat.padRand=new THREE.MeshPhongMaterial({map:T.pad,transparent:true,depthWrite:false,shininess:6,specular:0x222222,vertexColors:true});
@@ -548,15 +536,15 @@
   mat.kopSteen=new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xd0c8bc,shininess:18,specular:0x555550});
 
   const scene=new THREE.Scene();
-  scene.background=new THREE.Color(0x2a1830);
-  scene.fog=new THREE.Fog(0x7a4858,40,118);
+  scene.background=new THREE.Color(0x2a62d4);
+  scene.fog=new THREE.Fog(0x6a9ae0,130,210);
 
-  const camera=new THREE.PerspectiveCamera(56,innerWidth/Math.max(1,innerHeight),0.28,160);
+  const camera=new THREE.PerspectiveCamera(56,innerWidth/Math.max(1,innerHeight),0.28,180);
   const renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'high-performance'});
-  renderer.setClearColor(0x2a1830,1);
+  renderer.setClearColor(0x2a62d4,1);
   if(THREE.ACESFilmicToneMapping!=null){
     renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure=1.05;
+    renderer.toneMappingExposure=1.08;
   }
   function pixelRatio(w,h){
     return Math.min(1,window.devicePixelRatio||1,Math.sqrt(320000/Math.max(1,w*h)));
@@ -570,12 +558,12 @@
   maat();
   addEventListener('resize',maat,{passive:true});
 
-  const hemel=new THREE.HemisphereLight(0x7a78b8,0x3a3220,0.88);
+  const hemel=new THREE.HemisphereLight(0x9ec8f4,0x6a7a40,1.00);
   scene.add(hemel);
-  const zon=new THREE.DirectionalLight(0xffb060,0.98);
-  zon.position.set(-20,6.2,8);
+  const zon=new THREE.DirectionalLight(0xfff4dc,1.08);
+  zon.position.set(-14,24,10);
   scene.add(zon);
-  scene.add(new THREE.AmbientLight(0x4a3a48,0.48));
+  scene.add(new THREE.AmbientLight(0xd8e4f0,0.40));
 
   const hemelkoepel=new THREE.Mesh(
     new THREE.SphereGeometry(110,16,12),
@@ -616,7 +604,7 @@
     for(let i=0;i<pos.count;i++){
       const y=pos.getY(i);
       const t=h?Math.max(0,Math.min(1,(y+h/2)/Math.max(0.001,h))):0.8;
-      const a=0.42+0.58*t;
+      const a=0.74+0.26*t;
       colr[i*3]=a;colr[i*3+1]=a;colr[i*3+2]=a;
     }
     geom.setAttribute('color',new THREE.BufferAttribute(colr,3));
@@ -662,11 +650,11 @@
 
   /* wolken: lange, wazige veegwolken zoals in HP1 */
   const wolken=[];
-  [[-16,8.6,37,2.0,0.48,-0.10],[10,8.9,38,2.2,0.45,0.08],
-   [-6,9.3,39,2.4,0.40,-0.06],[16,8.7,37.5,1.9,0.42,0.1],
-   [-22,8.8,38.5,2.0,0.38,-0.12]].forEach(([x,y,z,sx,sy,rot])=>{
+  [[-14,16.5,34,1.8,0.55,-0.08],[8,18.0,35,2.0,0.5,0.06],
+   [-4,20.2,36,1.7,0.45,-0.05],[18,17.2,34.5,1.6,0.48,0.1]].forEach(([x,y,z,sx,sy,rot])=>{
     const w=new THREE.Mesh(new THREE.PlaneGeometry(22,3.2),mat.wolk);
     w.position.set(x,y,z);w.scale.set(sx,sy,1);w.rotation.z=rot||0;
+    w.rotation.y=Math.PI;w.visible=false;
     wolken.push(w);voeg(w);
   });
 
@@ -864,17 +852,17 @@
   /* kasteelsilhouet in de verte: geschilderd, zelfgemaakt, zonder wapen */
   T.kasteel=cvTex((g,w,h)=>{
     g.clearRect(0,0,w,h);
-    const sil='#120c1c';
+    const sil='#2a4058';
     function toren(x,basis,bw,th,spits){
       g.fillStyle=sil;
       g.fillRect(x-bw/2,basis-th,bw,th);
+      g.fillStyle='#3a546c';
       g.beginPath();g.moveTo(x-bw/2-4,basis-th);g.lineTo(x,basis-th-spits);g.lineTo(x+bw/2+4,basis-th);g.closePath();g.fill();
+      g.fillStyle=sil;
     }
     function blok(x,y,bw,bh){g.fillStyle=sil;g.fillRect(x,y,bw,bh)}
     function raam(x,y,bw,bh){
-      g.fillStyle='rgba(255,200,90,.18)';
-      g.fillRect(x-2,y-2,bw+4,bh+4);
-      g.fillStyle=rnd(x*3+y)>.45?'#f0d070':'#e8a040';
+      g.fillStyle=rnd(x*3+y)>.55?'#d8e4f0':'#3a4a5a';
       g.fillRect(x,y,bw,bh);
     }
     blok(180,h-78,420,78);
@@ -900,7 +888,7 @@
     g.fillStyle=uit;g.fillRect(0,h-40,w,40);
     g.globalCompositeOperation='source-over';
   },1024,256,{scherp:true});
-  const kastMat=new THREE.MeshBasicMaterial({map:T.kasteel,transparent:true,opacity:1,depthWrite:false,fog:false,side:THREE.DoubleSide});
+  const kastMat=new THREE.MeshBasicMaterial({map:T.kasteel,transparent:true,opacity:1,depthWrite:false,fog:false,side:THREE.DoubleSide,toneMapped:false});
   const kastSil=new THREE.Mesh(new THREE.PlaneGeometry(13,5.2),kastMat);
   kastSil.position.set(3.2,6.35,35.5);
   kastSil.rotation.y=Math.PI;
@@ -908,21 +896,21 @@
   voeg(kastSil);
   const bergRij=cvTex((g,w,h)=>{
     g.clearRect(0,0,w,h);
-    g.fillStyle='#1a1228';
+    g.fillStyle='#4a6a86';
     g.beginPath();g.moveTo(0,h);
     g.lineTo(0,h*0.62);
     [[0.08,0.22],[0.18,0.45],[0.30,0.28],[0.42,0.58],[0.55,0.30],[0.68,0.50],[0.80,0.24],[0.92,0.40],[1,0.32]].forEach(([u,v])=>{
       g.lineTo(u*w,(1-v)*h);
     });
     g.lineTo(w,h);g.closePath();g.fill();
-    g.fillStyle='#241832';
+    g.fillStyle='#5a7a94';
     g.beginPath();g.moveTo(0,h);
     [[0.0,0.18],[0.15,0.32],[0.28,0.16],[0.48,0.36],[0.66,0.14],[0.84,0.28],[1,0.16]].forEach(([u,v],i)=>{
       if(i===0)g.lineTo(u*w,(1-v)*h);else g.lineTo(u*w,(1-v)*h);
     });
     g.lineTo(w,h);g.closePath();g.fill();
   },1024,256,{scherp:true});
-  const bergMat=new THREE.MeshBasicMaterial({map:bergRij,transparent:true,depthWrite:false,fog:false,side:THREE.DoubleSide,toneMapped:false});
+  const bergMat=new THREE.MeshBasicMaterial({map:bergRij,transparent:true,opacity:0.95,depthWrite:false,fog:false,side:THREE.DoubleSide,toneMapped:false});
   const bergen=new THREE.Mesh(new THREE.PlaneGeometry(36,7.2),bergMat);
   bergen.position.set(2.0,6.6,38.5);
   bergen.rotation.y=Math.PI;
@@ -932,7 +920,7 @@
     g.clearRect(0,0,w,h);
     for(let i=0;i<28;i++){
       const x=w*(i/27),H=h*(0.45+rnd(i)*0.55),R=18+rnd(i+3)*22;
-      g.fillStyle=rnd(i)>.5?'#121810':'#0a120e';
+      g.fillStyle=rnd(i)>.5?'#1e4a1c':'#143814';
       g.beginPath();g.moveTo(x-R,h);g.quadraticCurveTo(x,h-H,x+R,h);g.fill();
       g.fillRect(x-4,h-H*0.4,8,H*0.4);
     }
@@ -947,6 +935,7 @@
   nevelVlak.position.set(2.4,5.0,34.8);
   nevelVlak.rotation.y=Math.PI;
   nevelVlak.renderOrder=3;
+  nevelVlak.visible=false;
   voeg(nevelVlak);
 
   /* buxusbolletjes */
@@ -1493,7 +1482,7 @@
   /* ===== v172: fakkels, lichtstralen, vuurvliegjes, stof, bladeren ===== */
   const fakkels=[];
   const fakkelLichten=[];
-  const N_FAKKEL_LICHT=2;
+  const N_FAKKEL_LICHT=0;
   function wereldPlek(obj,out){
     out=out||new THREE.Vector3();
     obj.getWorldPosition(out);
@@ -1506,6 +1495,7 @@
     const vlam2=vlam.clone();vlam2.visible=false;vlam2.material=mat.vlam.clone();
     const halo=new THREE.Mesh(new THREE.PlaneGeometry(0.58*schaal,0.58*schaal),mat.halo.clone());
     halo.position.set(x,y+0.02,z);halo.renderOrder=7;halo.frustumCulled=false;
+    vlam.visible=false;vlam2.visible=false;halo.visible=false;
     g.add(vlam);g.add(vlam2);g.add(halo);
     return {vlam,vlam2,halo};
   }
@@ -1522,11 +1512,11 @@
     bak.position.set(0,0.02,0.08);g.add(bak);
     const binnen=new THREE.Mesh(new THREE.CylinderGeometry(0.095,0.07,0.1,8,1,true),
       new THREE.MeshBasicMaterial({color:0xff7a18,transparent:true,opacity:0.62,side:THREE.BackSide,toneMapped:false,depthWrite:false}));
-    binnen.position.set(0,0.04,0.08);g.add(binnen);
+    binnen.visible=false;binnen.position.set(0,0.04,0.08);g.add(binnen);
     const ring=new THREE.Mesh(new THREE.TorusGeometry(0.11,0.016,5,10),mat.ijzer);
     ring.position.set(0,0.08,0.08);ring.rotation.x=Math.PI/2;g.add(ring);
     const kool=new THREE.Mesh(new THREE.CircleGeometry(0.075,8),mat.halo.clone());
-    kool.rotation.x=-Math.PI/2;kool.position.set(0,0.09,0.08);kool.renderOrder=6;g.add(kool);
+    kool.visible=false;kool.rotation.x=-Math.PI/2;kool.position.set(0,0.09,0.08);kool.renderOrder=6;g.add(kool);
     const vl=maakVlam(g,0,0.36,0.08,1);
     vl.kool=kool;
     world.add(g);
@@ -1543,11 +1533,11 @@
     bak.position.y=1.14;g.add(bak);
     const binnen=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.11,0.12,8,1,true),
       new THREE.MeshBasicMaterial({color:0xff7a18,transparent:true,opacity:0.62,side:THREE.BackSide,toneMapped:false,depthWrite:false}));
-    binnen.position.y=1.15;g.add(binnen);
+    binnen.visible=false;binnen.position.y=1.15;g.add(binnen);
     const ring=new THREE.Mesh(new THREE.TorusGeometry(0.18,0.018,5,10),mat.ijzer);
     ring.position.y=1.22;ring.rotation.x=Math.PI/2;g.add(ring);
     const kool=new THREE.Mesh(new THREE.CircleGeometry(0.12,8),mat.halo.clone());
-    kool.rotation.x=-Math.PI/2;kool.position.y=1.23;kool.renderOrder=6;g.add(kool);
+    kool.visible=false;kool.rotation.x=-Math.PI/2;kool.position.y=1.23;kool.renderOrder=6;g.add(kool);
     const vl=maakVlam(g,0,1.46,0,0.9);
     vl.kool=kool;
     world.add(g);
@@ -1587,7 +1577,7 @@
   });
 
   // vuurvliegjes + stof + deurvonken in één points-set met typen
-  const VLIEG_N=20, STOF_N=10, VONKDEUR_N=8, EMBER_N=20, BLAD_N=0;
+  const VLIEG_N=0, STOF_N=0, VONKDEUR_N=0, EMBER_N=0, BLAD_N=0;
   function pointsSet(n,maak,map,size,kleur,opt){
     opt=opt||{};
     const geo=new THREE.BufferGeometry();
@@ -1685,10 +1675,10 @@
       L.intensity=1.85*k;
       L.distance=7.5;
     }
-    const nVlieg=RMP?0:(licht?12:VLIEG_N);
-    const nStof=RMP?0:(licht?6:STOF_N);
-    const nDeur=RMP?0:(licht?4:VONKDEUR_N);
-    const nEmber=RMP?0:(licht?12:EMBER_N);
+    const nVlieg=RMP?0:Math.min(vuurvlieg.nVol,licht?Math.min(12,VLIEG_N):VLIEG_N);
+    const nStof=RMP?0:Math.min(stof.nVol,licht?Math.min(6,STOF_N):STOF_N);
+    const nDeur=RMP?0:Math.min(deurVonken.nVol,licht?Math.min(4,VONKDEUR_N):VONKDEUR_N);
+    const nEmber=RMP?0:Math.min(embers.nVol,licht?Math.min(12,EMBER_N):EMBER_N);
     vuurvlieg.pts.visible=nVlieg>0;stof.pts.visible=nStof>0;deurVonken.pts.visible=nDeur>0;embers.pts.visible=nEmber>0;
     vuurvlieg.geo.setDrawRange(0,nVlieg);stof.geo.setDrawRange(0,nStof);deurVonken.geo.setDrawRange(0,nDeur);embers.geo.setDrawRange(0,nEmber);
     function drift(set,n,fn){
@@ -1732,12 +1722,7 @@
         m.rotation.set(t*d.spin,t*d.spin*0.6,d.fase+t*0.4);
         if(m.position.y<0.15){d.y0=2.4+rnd(i+t)*3;d.x0=(rnd(i+2+t)-.5)*16;d.z0=6+rnd(i+8+t)*18}
       });
-      straalKaarten.forEach((s,i)=>{
-        const aan=!licht;
-        s.visible=aan;
-        if(!aan)return;
-        s.material.opacity=0.10+0.05*Math.sin(t*0.5+i);
-      });
+      straalKaarten.forEach(s=>{s.visible=false});
     }else{
       straalKaarten.forEach(s=>s.visible=false);
       bladeren.forEach(m=>m.visible=false);
@@ -2616,7 +2601,7 @@
       });
       // haagzwaai uitgezet: te duur voor weinig winst
 
-      zon.intensity=0.90+Math.sin(t*0.35)*0.04;
+      zon.intensity=1.08;
       gloed.material.opacity=0.4+Math.sin(t*2.4)*0.18;
       ven.material.opacity=0.45+Math.sin(t*1.7)*0.15;
       if(typeof deurGloed!=='undefined'){
@@ -2677,21 +2662,10 @@
     }
     if(mark.visible)mark.material.opacity=0.45+Math.sin(t*4)*0.3;
     wolken.forEach((w,i)=>{
-      w.position.x+=Math.sin(t*0.04+i)*0.003;
-      w.lookAt(camera.position.x,w.position.y,camera.position.z);
+      w.position.x+=Math.sin(t*0.03+i)*0.004;
     });
     bloemen.forEach(f=>f.lookAt(camera.position));
-    if(!RMP && !licht){
-      const arr=pollen.geometry.attributes.position.array;
-      for(let i=0;i<pN;i++){
-        const o=p0[i];
-        arr[i*3]=o.x+Math.sin(t*o.s+i)*0.35;
-        arr[i*3+1]=o.y+Math.sin(t*o.f+i*0.7)*0.25;
-        arr[i*3+2]=o.z+Math.cos(t*o.s*0.7+i)*0.35;
-      }
-      pollen.geometry.attributes.position.needsUpdate=true;
-      pollen.visible=true;
-    }else if(pollen){pollen.visible=false}
+    if(pollen)pollen.visible=false;
     if(typeof sfeerTic==='function')sfeerTic(t,dt);
     if(!camVast)volgCamera(dt);
     zetDeurKaart();
@@ -2762,22 +2736,37 @@
           [mat.steenAO,mat.steenInst,mat.kopSteen,mat.sokkel].forEach(function(m){if(m){m.map=tex;m.needsUpdate=true}});
           if(mat.steenMuur){
             const tw=tex.clone();tw.repeat.set(1,1);tw.needsUpdate=true;
-            mat.steenMuur.map=tw;mat.steenMuur.needsUpdate=true;
+            mat.steenMuur.map=tw;mat.steenMuur.color.setHex(0xfff0d4);mat.steenMuur.needsUpdate=true;
           }
         }
       });
     }
-    zetMat('gras','gras.webp',[18,20],0xffffff);
+    zetMat('gras','gras.webp',[18,20],0xd0e070);
     zetMat('pad','kassei.webp',[7,16],0xffffff);
-    zetMat('zandsteen','zandsteen.webp',[2.6,2.6],0xffffff);
+    zetMat('zandsteen','zandsteen.webp',[2.6,2.6],0xfff0d4);
     zetMat('sokkel','zandsteen.webp',[2,2],0xf2e2c4);
     zetMat('leisteen','leisteen.webp',[2,2],0xffffff);
-    zetMat('haag','haag.webp',[3,3],0xffffff);
+    zetMat('haag','haag.webp',[3,3],0xb8d848);
     tl.load(basis+'tex/haag.webp',function(tex){
-      pbrMap(tex,[2.5,2.5]);
-      haagMats.forEach(function(m){m.map=tex;m.needsUpdate=true});
-      haagTopMat.map=tex;haagTopMat.needsUpdate=true;
-      haagOnderMat.map=tex;haagOnderMat.needsUpdate=true;
+      const img=tex.image,c=document.createElement('canvas');
+      c.width=img.width;c.height=img.height;
+      const cg=c.getContext('2d');cg.drawImage(img,0,0);
+      const id=cg.getImageData(0,0,c.width,c.height),d=id.data;
+      for(let i=0;i<d.length;i+=4){
+        let r=d[i],g0=d[i+1],b=d[i+2];
+        const ctr=1.45;
+        r=Math.max(0,Math.min(255,(r-128)*ctr+118));
+        g0=Math.max(0,Math.min(255,(g0-128)*ctr+128));
+        b=Math.max(0,Math.min(255,(b-128)*ctr+108));
+        d[i]=r;d[i+1]=g0;d[i+2]=b;
+      }
+      cg.putImageData(id,0,0);
+      const tx=new THREE.CanvasTexture(c);
+      pbrMap(tx,[3.4,3.4]);
+      haagMats.forEach(function(m){m.map=tx;m.needsUpdate=true});
+      haagTopMat.map=tx;haagTopMat.needsUpdate=true;
+      haagOnderMat.map=tx;haagOnderMat.needsUpdate=true;
+      if(mat.haag){mat.haag.map=tx;mat.haag.needsUpdate=true}
     });
     tl.load(basis+'tex/steen.webp',function(tex){
       pbrMap(tex,[1.8,1.8]);

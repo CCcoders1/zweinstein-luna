@@ -310,3 +310,11 @@ v172 — 3D-tuin
   (ijzeren geometrie, vlam- en gloedtexturen), vuurvliegjes en stof.
   Alle texturen zijn canvas/zelfgemaakt (geen HDRI, geen EA/Warner).
   Knistergeluid van de fakkels is procedureel Web Audio.
+
+v173 — 3D-tuin
+  Sfeer: helder HP1-daglicht in plaats van avond. Zelfgemaakte blauwe
+  luchtkoepel met zachte veegwolken, kasteel- en bergsilhouet overdag,
+  fakkels en vuurbakken als onverlichte ijzeren rekwisieten. Geen
+  vuurvliegjes of fakkellichten. Hagen: contrast van de bestaande
+  Moss003-kaart (ambientCG, CC0 1.0), verder zelfgemaakte canvas-
+  texturen. Geen HDRI, geen EA/Warner.
