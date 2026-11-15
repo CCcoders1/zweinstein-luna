@@ -1,6 +1,6 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:#1e56b8;overflow:hidden;font-family:Georgia,"Palatino Linotype","Book Antiqua",serif;color:#2b1a0b;-webkit-user-select:none;user-select:none;touch-action:none}
-#tuin{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;background:#2a62d4;filter:saturate(1.22) contrast(1.08)}
+#tuin{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;background:#2a62d4;filter:saturate(1.16) contrast(1.14)}
 #ui{position:fixed;inset:0;pointer-events:none;z-index:3;touch-action:none}
 .knop{
   pointer-events:auto;display:inline-block;text-decoration:none;border:0;cursor:pointer;

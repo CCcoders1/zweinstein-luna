@@ -1,4 +1,4 @@
-/* v174: 3D-testtuin, HP1-sfeer. Bladhagen, smeedijzer, stapelwolken, daglicht. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v175: 3D-testtuin, HP1-sfeer. Diepere schaduwen, blokfontein, dichter smeedijzer, samengevoegde geometrie. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -269,11 +269,11 @@
         g.lineWidth=dik;g.beginPath();g.moveTo(x1,y1);g.bezierCurveTo(cx1,cy1,cx2,cy2,x2,y2);g.stroke();
       }
       // verticale stijlen
-      const nBar=9;
+      const nBar=11;
       for(let i=0;i<nBar;i++){
-        const x=w*(0.10+i*0.10);
-        staaf(x,h*0.22,h*0.92,3.2);
-        spits(x,h*0.22,7);
+        const x=w*(0.08+i*0.084);
+        staaf(x,h*0.20,h*0.92,3.0);
+        spits(x,h*0.20,8);
       }
       // horizontale rails
       g.lineWidth=4;
@@ -310,16 +310,25 @@
       g.beginPath();g.arc(w/2,h*0.82,w*0.46,Math.PI,0);g.stroke();
       g.lineWidth=3.5;
       g.beginPath();g.arc(w/2,h*0.82,w*0.39,Math.PI+0.05,-0.05);g.stroke();
-      // hangende krullen aan de boog, niet tot de grond
-      for(let i=1;i<=7;i++){
-        const a=Math.PI+Math.PI*i/8;
-        const x=w/2+Math.cos(a)*w*0.42,y=h*0.82+Math.sin(a)*w*0.42;
-        krul(x,y+h*0.02,w*0.05,0.2,Math.PI*1.4,2.4);
-        if(i%2)spits(x,y-2,6);
+      // dichtere krullen aan de boog, onderkant vrij zodat het bord leesbaar blijft
+      for(let i=1;i<=11;i++){
+        const a=Math.PI+Math.PI*i/12;
+        const x=w/2+Math.cos(a)*w*0.425,y=h*0.82+Math.sin(a)*w*0.425;
+        krul(x,y+h*0.008,w*0.038,0.15,Math.PI*1.35,2.2);
+        if(i!==6){
+          krul(x+(i%2?0.02:-0.02)*w,y+h*0.035,w*0.022,0.2,Math.PI*1.2,1.7);
+          spits(x,y-1,5+i%3);
+        }
       }
-      krul(w*0.18,h*0.72,w*0.08,-0.2,Math.PI*1.3,3);
-      krul(w*0.82,h*0.72,w*0.08,0.2,Math.PI*1.5,3);
-      spits(w/2,h*0.34,12);
+      // schouderkrullen
+      krul(w*0.16,h*0.70,w*0.09,-0.2,Math.PI*1.4,3);
+      krul(w*0.22,h*0.66,w*0.05,0.4,Math.PI*1.6,2.2);
+      krul(w*0.84,h*0.70,w*0.09,0.2,Math.PI*1.5,3);
+      krul(w*0.78,h*0.66,w*0.05,-0.4,Math.PI*1.4,2.2);
+      // middenrozet + spits
+      g.lineWidth=3;
+      g.beginPath();g.arc(w/2,h*0.52,w*0.05,0,Math.PI*2);g.stroke();
+      spits(w/2,h*0.32,13);
     },256,256,{scherp:true}),
         rimpel: cvTex((g,w,h)=>{
       g.fillStyle='#1a8a8a';g.fillRect(0,0,w,h);
@@ -620,7 +629,8 @@
     gewaad: new THREE.MeshLambertMaterial({color:0x3a3e34}),
     zwart: new THREE.MeshLambertMaterial({color:0x1a140c}),
     oogwit: new THREE.MeshLambertMaterial({color:0xf4efe6}),
-    schaduw: new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.32,depthWrite:false}),
+    schaduw: new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.42,depthWrite:false}),
+    grondSchaduw: new THREE.MeshLambertMaterial({color:0x1a2210}),
     glow: new THREE.MeshBasicMaterial({color:0xffd070,transparent:true,opacity:0.55,depthWrite:false,side:THREE.DoubleSide}),
     gezicht: new THREE.MeshLambertMaterial({map:T.gezicht,transparent:true,depthWrite:false}),
     leisteen: new THREE.MeshLambertMaterial({color:0x2a2824}),
@@ -661,10 +671,13 @@
   renderer.setClearColor(0x2a62d4,1);
   if(THREE.ACESFilmicToneMapping!=null){
     renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure=1.08;
+    renderer.toneMappingExposure=0.94;
   }
+  let licht=false;
   function pixelRatio(w,h){
-    return Math.min(1,window.devicePixelRatio||1,Math.sqrt(320000/Math.max(1,w*h)));
+    const cap=licht?0.72:1;
+    const pix=licht?180000:320000;
+    return Math.min(cap,window.devicePixelRatio||1,Math.sqrt(pix/Math.max(1,w*h)));
   }
   function maat(){
     const w=innerWidth,h=Math.max(1,innerHeight);
@@ -675,12 +688,12 @@
   maat();
   addEventListener('resize',maat,{passive:true});
 
-  const hemel=new THREE.HemisphereLight(0x9ec8f4,0x3d5c28,1.00);
+  const hemel=new THREE.HemisphereLight(0x9ec8f4,0x2a3e18,0.92);
   scene.add(hemel);
-  const zon=new THREE.DirectionalLight(0xffffff,1.04);
+  const zon=new THREE.DirectionalLight(0xffffff,1.00);
   zon.position.set(-14,24,10);
   scene.add(zon);
-  scene.add(new THREE.AmbientLight(0xe4e6ea,0.42));
+  scene.add(new THREE.AmbientLight(0xdce0e6,0.30));
 
   const hemelkoepel=new THREE.Mesh(
     new THREE.SphereGeometry(110,16,12),
@@ -721,7 +734,7 @@
     for(let i=0;i<pos.count;i++){
       const y=pos.getY(i);
       const t=h?Math.max(0,Math.min(1,(y+h/2)/Math.max(0.001,h))):0.8;
-      const a=0.74+0.26*t;
+      const a=0.48+0.52*t;
       colr[i*3]=a;colr[i*3+1]=a;colr[i*3+2]=a;
     }
     geom.setAttribute('color',new THREE.BufferAttribute(colr,3));
@@ -735,7 +748,19 @@
     // blokvormig zoals HP1, scherpe randen; bladkaarten maken de silhouet oneffen
     box(tint,x,y0+h/2,z,w,h,d);
     box(haagOnderMat,x,y0+0.14,z,w*1.02,0.28,d*1.02);
+    box(mat.grondSchaduw,x,0.03,z,w+0.50,0.06,d+0.50);
     const langs=w>=d?w:d, dwars=w>=d?d:w, alongX=w>=d;
+    // bobbelige, klonterige kam zoals HP1
+    const nCl=Math.max(2,Math.round(langs/0.7));
+    for(let i=0;i<nCl;i++){
+      const tt=(i+0.3+rnd(x+i)*0.4)/nCl-0.5;
+      const hh=0.16+rnd(x*3+i)*0.26;
+      const ww=0.48+rnd(i+2)*0.50;
+      const dd=dwars*(0.86+rnd(i+4)*0.30);
+      const px=alongX?x+tt*langs:x+(rnd(i+6)-.5)*dwars*0.18;
+      const pz=alongX?z+(rnd(i+7)-.5)*dwars*0.18:z+tt*langs;
+      box(tint,px,y0+h+hh*0.32,pz,alongX?ww:dd,hh,alongX?dd:ww);
+    }
     if(langs>=2.4){
       const ns=Math.max(2,Math.round(langs/0.7));
       for(let i=0;i<=ns;i++){
@@ -753,7 +778,7 @@
       const px=alongX?x+tt*langs:x;
       const pz=alongX?z:z+tt*langs;
       // één rij op de kam (silhouet) en één zijkant, zuinig voor fps
-      haagBladPos.push(px+(rnd(i)-.5)*dwars*0.2, y0+h+0.16+rnd(x+i)*0.16, pz+(rnd(i+2)-.5)*dwars*0.2, alongX?0:Math.PI/2, 0.9+rnd(i)*0.5);
+      haagBladPos.push(px+(rnd(i)-.5)*dwars*0.2, y0+h+0.22+rnd(x+i)*0.20, pz+(rnd(i+2)-.5)*dwars*0.2, alongX?0:Math.PI/2, 1.05+rnd(i)*0.55);
       const side=(i%2?1:-1)*dwars*0.52;
       haagBladPos.push(alongX?px:x+side,y0+h-0.04,alongX?z+side:pz, alongX?0:Math.PI/2, 0.7+rnd(i+3)*0.45);
     }
@@ -878,7 +903,7 @@
     const nK=keiMeshes.length,nP=polMeshes.length;
     if(nK){
       const geo=new THREE.SphereGeometry(1,6,5);
-      const inst=new THREE.InstancedMesh(geo,new THREE.MeshLambertMaterial({map:T.pad,color:0xe8d4a8}),nK);
+      const inst=new THREE.InstancedMesh(geo,new THREE.MeshLambertMaterial({map:T.pad,color:0xc4a880}),nK);
       for(let i=0;i<nK;i++){
         const k=keiMeshes[i];
         keiDummy.position.set(k.x,k.y,k.z);
@@ -1071,12 +1096,19 @@
   function pilaar(x,z,steen){
     const m=steen||mat.zandsteen;
     const H=1.85;
-    box(m,x,H/2,z,0.58,H,0.58);
-    box(m,x,H+0.07,z,0.76,0.14,0.76);
-    box(m,x,H+0.16,z,0.62,0.08,0.62);
-    const sp=new THREE.Mesh(new THREE.ConeGeometry(0.05,0.22,5),mat.ijzer);
-    sp.position.set(x,H+0.30,z);voeg(sp);
-    schijf(mat.schaduw,x,z,0.45);
+    box(m,x,H/2,z,0.56,H,0.56);
+    // schuine hals onder de overhangende kap
+    const hals=new THREE.Mesh(new THREE.CylinderGeometry(0.40,0.30,0.10,8),m);
+    hals.position.set(x,H+0.05,z);voeg(hals);
+    const kap=new THREE.Mesh(new THREE.CylinderGeometry(0.42,0.42,0.10,8),m);
+    kap.position.set(x,H+0.13,z);voeg(kap);
+    const bov=new THREE.Mesh(new THREE.CylinderGeometry(0.30,0.38,0.07,8),m);
+    bov.position.set(x,H+0.20,z);voeg(bov);
+    const knop=new THREE.Mesh(new THREE.SphereGeometry(0.075,10,8),m);
+    knop.position.set(x,H+0.28,z);voeg(knop);
+    const sp=new THREE.Mesh(new THREE.ConeGeometry(0.04,0.16,5),mat.ijzer);
+    sp.position.set(x,H+0.40,z);voeg(sp);
+    box(mat.grondSchaduw,x,0.03,z,0.95,0.06,0.95);
     solid(x,z,0.72,0.72,2.15);
   }
   function hekstuk(x0,z0,x1,z1,n){
@@ -1215,6 +1247,7 @@
     geo.setIndex(idx);
     geo.computeVertexNormals();
     voeg(new THREE.Mesh(geo,mat.steenMuur));
+    box(mat.grondSchaduw,cx,0.03,cz, langsZ?dikte+0.7:lengte+0.7, 0.06, langsZ?lengte+0.7:dikte+0.7);
     // ronde eindstijlen met bolle dop
     const eindR=dikte*0.42;
     [-lengte/2, lengte/2].forEach((al,ei)=>{
@@ -1270,29 +1303,37 @@
   (function(){
     const x=fx,z=fz,r=1.78;
     if(!T.zandKorrel){
-      T.zandKorrel=cvTex((g,w,h)=>{
-        g.fillStyle='#c8ae80';g.fillRect(0,0,w,h);
-        for(let i=0;i<420;i++){
-          const k=130+((i*47)%90);
-          g.fillStyle='rgb('+(k+32)+','+(k+14)+','+(k-16)+')';
-          g.fillRect((i*19)%w,(i*37)%h,2+i%3,2+i%3);
+      T.blokSteen=cvTex((g,w,h)=>{
+        g.fillStyle='#5a4630';g.fillRect(0,0,w,h);
+        const kol=4, rij=3, bw=w/kol, bh=h/rij;
+        for(let r=0;r<rij;r++){
+          const off=(r%2)*(bw*0.5);
+          for(let c=-1;c<=kol;c++){
+            const v=((r*13+c*7)%7);
+            const R=170+v*8,G=140+v*5,B=96+v*3;
+            g.fillStyle='rgb('+R+','+G+','+B+')';
+            const x=c*bw+off+1,y=r*bh+1;
+            g.fillRect(x,y,bw-2,bh-2);
+            g.fillStyle='rgba(80,60,36,0.25)';
+            g.fillRect(x,y+bh*0.7,bw-2,bh*0.25);
+          }
         }
-        for(let i=0;i<70;i++){
-          g.fillStyle='rgba(80,58,32,0.4)';
-          g.fillRect((i*41)%w,(i*23)%h,3,3);
-        }
-      },128,128,{repeat:[8,0.7]});
+      },256,192,{repeat:[2,2]});
     }
-    const zandBak=new THREE.MeshLambertMaterial({color:0xc8ae80,emissive:0x2a2014,emissiveIntensity:0.08});
-    const voet=new THREE.Mesh(new THREE.CylinderGeometry(r+0.34,r+0.44,0.22,8),zandBak);
-    voet.position.set(x,0.11,z);voeg(voet);
-    const sok=new THREE.Mesh(new THREE.CylinderGeometry(r+0.2,r+0.3,0.28,8),zandBak);
-    sok.position.set(x,0.34,z);voeg(sok);
-    // open binnenkant: alleen wanden, geen deksel
-    const wand=new THREE.Mesh(new THREE.CylinderGeometry(r+0.16,r+0.2,0.52,8,1,true),zandBak);
-    wand.position.set(x,0.6,z);voeg(wand);
+    const zandBak=new THREE.MeshLambertMaterial({map:T.blokSteen,color:0xe0ccaa,emissive:0x2a2014,emissiveIntensity:0.06});
+    function ringBlok(rIn,rUit,y,h){
+      const n=8, r=(rIn+rUit)/2, dik=Math.max(0.08,rUit-rIn);
+      for(let i=0;i<n;i++){
+        const a=i*Math.PI*2/n+Math.PI/n;
+        const L=2*r*Math.tan(Math.PI/n)+0.03;
+        box(zandBak, x+Math.cos(a)*r, y, z+Math.sin(a)*r, dik, h, L, -a);
+      }
+    }
+    ringBlok(r+0.22,r+0.44,0.11,0.22);
+    ringBlok(r+0.10,r+0.30,0.34,0.28);
+    ringBlok(r+0.08,r+0.20,0.62,0.52);
     // bovenrand mag een korrel hebben (van boven gezien strekt de uv niet) 
-    mat.randSteen=new THREE.MeshLambertMaterial({map:T.zandKorrel,color:0xd6be96,emissive:0x2a2014,emissiveIntensity:0.08});
+    mat.randSteen=new THREE.MeshLambertMaterial({map:T.blokSteen,color:0xe0ccaa,emissive:0x2a2014,emissiveIntensity:0.06});
     const buiten=new THREE.Mesh(new THREE.CylinderGeometry(r+0.28,r+0.32,0.16,8,1,true),mat.randSteen);
     buiten.position.set(x,0.86,z);voeg(buiten);
     const rand=new THREE.Mesh(new THREE.RingGeometry(r-0.04,r+0.32,8),mat.randSteen);
@@ -2359,7 +2400,7 @@
     return 'gras';
   }
 
-  let audioCtx=null,masterGain=null,geluidAan=false,audioKlaar=false,audioBezig=false,stapKen=1,birdT=0,licht=false,laagFps=0,t0fps=0;
+  let audioCtx=null,masterGain=null,geluidAan=false,audioKlaar=false,audioBezig=false,stapKen=1,birdT=0,laagFps=0,t0fps=0;
   const panners={};
   const pakBuf={};
   const geluidBronnen={fontein:'proceduraal',beek:'proceduraal',wind:'proceduraal',vogel:'proceduraal',bed:null,pakket:false};
@@ -2840,13 +2881,22 @@
       if(!t0fps)t0fps=now;
       if(!licht && now-t0fps>3500){
         if(fps<32)laagFps++;else laagFps=0;
-        if(laagFps>=3)licht=true;
+        if(laagFps>=3){licht=true;maat();}
       }
     }
     requestAnimationFrame(tic);
   }
 
   function pbrMap(tex,herhaal){
+    const img=tex.image;
+    if(img && (img.width>512||img.height>512)){
+      const c=document.createElement('canvas');
+      const s=512/Math.max(img.width,img.height);
+      c.width=Math.max(1,Math.round(img.width*s));
+      c.height=Math.max(1,Math.round(img.height*s));
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      tex.image=c;
+    }
     if(THREE.SRGBColorSpace)tex.colorSpace=THREE.SRGBColorSpace;
     tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
     tex.magFilter=THREE.LinearFilter;
@@ -2862,7 +2912,85 @@
     if(vul)vul.style.width=Math.round(k*100)+'%';
     if(pct)pct.textContent=Math.round(k*100)+'%';
   }
+  function voegGeos(geos){
+    let vc=0,ic=0;
+    const hasN=geos.every(g=>g.attributes.normal);
+    const hasU=geos.every(g=>g.attributes.uv);
+    const hasC=geos.every(g=>g.attributes.color);
+    geos.forEach(g=>{
+      vc+=g.attributes.position.count;
+      ic+=g.index?g.index.count:g.attributes.position.count;
+    });
+    const pos=new Float32Array(vc*3);
+    const nrm=hasN?new Float32Array(vc*3):null;
+    const uv=hasU?new Float32Array(vc*2):null;
+    const col=hasC?new Float32Array(vc*3):null;
+    const idx=new Uint32Array(ic);
+    let vo=0,io=0;
+    geos.forEach(g=>{
+      const p=g.attributes.position,n=g.attributes.normal,u=g.attributes.uv,c=g.attributes.color;
+      for(let i=0;i<p.count;i++){
+        const o=(vo+i)*3;
+        pos[o]=p.getX(i);pos[o+1]=p.getY(i);pos[o+2]=p.getZ(i);
+        if(nrm&&n){nrm[o]=n.getX(i);nrm[o+1]=n.getY(i);nrm[o+2]=n.getZ(i)}
+        if(uv&&u){uv[(vo+i)*2]=u.getX(i);uv[(vo+i)*2+1]=u.getY(i)}
+        if(col&&c){col[o]=c.getX(i);col[o+1]=c.getY(i);col[o+2]=c.getZ(i)}
+      }
+      if(g.index){
+        const id=g.index;
+        for(let i=0;i<id.count;i++)idx[io++]=id.getX(i)+vo;
+      }else{
+        for(let i=0;i<p.count;i++)idx[io++]=vo+i;
+      }
+      vo+=p.count;
+    });
+    const out=new THREE.BufferGeometry();
+    out.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    if(nrm)out.setAttribute('normal',new THREE.BufferAttribute(nrm,3));
+    else out.computeVertexNormals();
+    if(uv)out.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+    if(col)out.setAttribute('color',new THREE.BufferAttribute(col,3));
+    out.setIndex(new THREE.BufferAttribute(idx,1));
+    return out;
+  }
+  let versmolten=false;
+  function versmeltStatisch(){
+    if(versmolten)return;versmolten=true;
+    function mark(o){if(!o)return;o.userData.dyn=1;if(o.traverse)o.traverse(c=>c.userData.dyn=1)}
+    if(typeof waterVlakken!=='undefined')waterVlakken.forEach(mark);
+    if(typeof druppels!=='undefined')druppels.forEach(mark);
+    if(typeof stralen!=='undefined')stralen.forEach(mark);
+    if(typeof spatten!=='undefined')spatten.forEach(mark);
+    if(typeof deurKas!=='undefined')mark(deurKas);
+    if(typeof deurHal!=='undefined')mark(deurHal);
+    if(typeof deurH!=='undefined')mark(deurH);
+    if(typeof held!=='undefined'&&held)mark(held);
+    world.updateMatrixWorld(true);
+    const skip=new Set();
+    if(held)held.traverse(o=>skip.add(o));
+    const groepen=new Map();
+    world.traverse(o=>{
+      if(!o.isMesh||o.isInstancedMesh||o.userData.dyn||skip.has(o))return;
+      if(!o.material||Array.isArray(o.material))return;
+      if(o.material.transparent&&!o.material.alphaTest)return;
+      const g=o.geometry.clone();
+      o.updateWorldMatrix(true,false);
+      g.applyMatrix4(o.matrixWorld);
+      const k=o.material.uuid;
+      if(!groepen.has(k))groepen.set(k,{mat:o.material,geos:[],meshes:[]});
+      groepen.get(k).geos.push(g);
+      groepen.get(k).meshes.push(o);
+    });
+    groepen.forEach(gr=>{
+      if(gr.geos.length<2)return;
+      const m=new THREE.Mesh(voegGeos(gr.geos),gr.mat);
+      m.matrixAutoUpdate=false;m.frustumCulled=true;
+      scene.add(m);
+      gr.meshes.forEach(o=>{if(o.parent)o.parent.remove(o)});
+    });
+  }
   function sluitLaden(){
+    versmeltStatisch();
     tuinKlaar=true;
     const el=$('laden');
     if(el){el.hidden=true;el.style.pointerEvents='none'}
@@ -2890,7 +3018,7 @@
           mat[naam].needsUpdate=true;
         }
         if(naam==='pad'){
-          [mat.padSlijt,mat.padRand].forEach(function(m){if(m){m.map=tex;m.needsUpdate=true}});
+          [mat.padSlijt,mat.padRand].forEach(function(m){if(m){m.map=tex;m.color.setHex(0xc0ae88);m.needsUpdate=true}});
         }
         if(naam==='zandsteen'){
           [mat.steenAO,mat.steenInst,mat.kopSteen,mat.sokkel].forEach(function(m){if(m){m.map=tex;m.needsUpdate=true}});
@@ -2902,7 +3030,7 @@
       });
     }
     zetMat('gras','gras.webp',[18,20],0x628e32);
-    zetMat('pad','kassei.webp',[7,16],0xf6e6c4);
+    zetMat('pad','kassei.webp',[7,16],0xd2c09a);
     zetMat('zandsteen','zandsteen.webp',[2.6,2.6],0xd6b07a);
     zetMat('sokkel','zandsteen.webp',[2,2],0xd8b888);
     zetMat('leisteen','leisteen.webp',[2,2],0xffffff);
@@ -3007,6 +3135,12 @@
     fps:()=>fps,
     fpsMin:()=>fpsMin,
     licht:()=>licht,
+    stats:()=>{
+      const r=renderer.info.render;
+      let meshes=0, inst=0;
+      scene.traverse(o=>{if(o.isInstancedMesh)inst++;else if(o.isMesh)meshes++;});
+      return {calls:r.calls, triangles:r.triangles, points:r.points, meshes, inst, licht:!!licht, fps};
+    },
     geladen:()=>!!(tuinKlaar&&lunaKlaar&&gargKlaar),
     pos:()=>({x:+held.position.x.toFixed(2),z:+held.position.z.toFixed(2),y:+held.position.y.toFixed(2)}),
     cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3),rot:+held.rotation.y.toFixed(3)}),

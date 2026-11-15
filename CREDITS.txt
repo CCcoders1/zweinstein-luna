@@ -330,3 +330,12 @@ v174 — 3D-tuin
   gestrekte steenkaart. Moss003 (haag.webp) wordt niet meer op
   de hagen gebruikt, blijft wel in de map voor eerdere credits.
   Geen EA/Warner-modellen of -audio in de repo.
+
+v175 — 3D-tuin
+  Diepere schaduwen en iets lagere belichting (wit zonlicht, blauwe
+  lucht). Bruin-grijze kasseipaden. Pilaren met afgeschuinde kap en
+  bolle bekroning. Fonteinbak van stenen blokken (zelfgemaakte
+  canvas, geen EA/Warner). Bobbelige haagkam, dichter smeedijzer.
+  Statische geometrie samengevoegd, texturen max. 512, lagere
+  pixelratio in de lichte modus. Blob-schaduwen, geen realtime
+  schaduwkaarten.
