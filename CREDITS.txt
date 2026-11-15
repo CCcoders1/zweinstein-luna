@@ -303,3 +303,10 @@ v169 — 3D-tuin
   v170: camerahoek los van looprichting; joystick beweegt t.o.v. een vaste camerahoek.
 
   v171: camerahoek verandert alleen nog bij slepen; dode zone en 12°-klem op de joystick.
+
+v172 — 3D-tuin
+  Sfeer: zelfgemaakte avondlucht (koepel, wolken, sterren, maan),
+  kasteel- en bergsilhouet met verlichte ramen, fakkels en vuurbakken
+  (ijzeren geometrie, vlam- en gloedtexturen), vuurvliegjes en stof.
+  Alle texturen zijn canvas/zelfgemaakt (geen HDRI, geen EA/Warner).
+  Knistergeluid van de fakkels is procedureel Web Audio.
