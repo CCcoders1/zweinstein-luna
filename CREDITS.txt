@@ -339,3 +339,12 @@ v175 — 3D-tuin
   Statische geometrie samengevoegd, texturen max. 512, lagere
   pixelratio in de lichte modus. Blob-schaduwen, geen realtime
   schaduwkaarten.
+
+v176 — 3D-tuin
+  Kasseipaden met zichtbare voegen: bestaande PavingStones070
+  (ambientCG, CC0 1.0) op juiste schaal met normaalkaart,
+  warm bruin-grijs. Lichtere haagclose-ups met tegenlicht.
+  Stapelwolken als gelaagde puf-kaarten (zelfgemaakt, geen
+  HDRI). 3D-smeedijzer van buizen, krullen en speerpunten
+  (zelfgemaakt). Toverstaf in Luna's rechterhand via een
+  vingerpose. Geen EA/Warner-assets.
