@@ -1,4 +1,4 @@
-/* v168: 3D-testtuin, HP1-sfeer. Loop+camera-fix, PS2-paden/muren, achtkantige fontein met koppen. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v169: 3D-testtuin, HP1-sfeer. Zachte stenen muren, staf in de palm. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -462,6 +462,8 @@
   };
   mat.steenAO=new THREE.MeshLambertMaterial({map:T.zandsteen,vertexColors:true});
   mat.steenInst=new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xffffff});
+  mat.steenMuur=new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xffffff,shininess:12,specular:0x3a3028,vertexColors:true,normalScale:new THREE.Vector2(0.75,0.75)});
+
   mat.kopSteen=new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xd0c8bc,shininess:18,specular:0x555550});
 
   const scene=new THREE.Scene();
@@ -849,10 +851,11 @@
   /* smeedijzeren poort zuid */
   function pilaar(x,z,steen){
     const m=steen||mat.zandsteen;
-    cyl(m,x,0.75,z,0.32,0.28,1.5,8);
-    box(m,x,1.55,z,0.7,0.14,0.7);
-    box(mat.leisteen,x,1.66,z,0.74,0.1,0.74);
-    box(mat.leisteen,x,1.76,z,0.52,0.12,0.52);
+    cyl(m,x,0.75,z,0.32,0.28,1.5,20);
+    cyl(m,x,1.54,z,0.36,0.33,0.12,20);
+    cyl(m,x,1.66,z,0.38,0.32,0.14,20);
+    const dop=new THREE.Mesh(new THREE.SphereGeometry(0.28,16,10),m);
+    dop.position.set(x,1.78,z);dop.scale.set(1,0.42,1);voeg(dop);
     schijf(mat.schaduw,x,z,0.4);
     solid(x,z,0.7,0.7,1.95);
   }
@@ -920,69 +923,83 @@
   const fx=-5.0,fz=9.7;
   const waterVlakken=[];
   function steenMuur(cx,cz,dikte,hoog,lengte,langsZ){
-    const bw=langsZ?dikte*0.88:lengte, bd=langsZ?lengte:dikte*0.88;
-    const achter=new THREE.Mesh(new THREE.BoxGeometry(bw,hoog,bd),mat.zandsteen);
-    achter.position.set(cx,hoog/2,cz);voeg(achter);
-    const rijen=5, rijH=hoog/rijen, stenen=[], kappen=[];
-    for(let r=0;r<rijen;r++){
-      let acc=0;
-      while(acc<lengte-0.05){
-        const tw=0.36+rnd(cx+cz+r*9+acc*4)*0.44;
-        const used=Math.min(tw,lengte-acc);
-        const th=rijH*(0.8+rnd(r*3+acc)*0.32);
-        const td=dikte*(0.92+rnd(r+acc*2)*0.22);
-        const along=acc+used/2-lengte/2;
-        const uit=dikte*0.12;
-        stenen.push({
-          x:langsZ?cx+uit+(rnd(acc*7+r)-0.5)*0.03:cx+along,
-          y:rijH*r+th/2+0.01,
-          z:langsZ?cz+along:cz+uit+(rnd(acc*5+r)-0.5)*0.03,
-          sx:langsZ?td:used*0.96, sy:th, sz:langsZ?used*0.96:td,
-          ry:(rnd(acc+r)-0.5)*0.02, row:r
-        });
-        acc+=used*0.7;
+    const N=18, P=9;
+    const pos=[],uv=[],col=[],idx=[];
+    const toppen=[];
+    for(let i=0;i<=N;i++){
+      const t=i/N, along=(t-0.5)*lengte;
+      const hVar=(rnd(cx*9+cz+i*7.1)-0.5)*0.26+Math.sin(t*Math.PI)*0.07;
+      const bulge=0.06+rnd(i*3.3+cx)*0.08;
+      const curve=Math.sin(t*Math.PI)*0.13;
+      const prof=[
+        [0.00, 0.00],
+        [dikte*0.22, 0.05],
+        [dikte*0.58, 0.18],
+        [dikte*0.64+bulge*0.3, hoog*0.22],
+        [dikte*0.80+bulge, hoog*0.50],
+        [dikte*0.70+bulge*0.4, hoog*0.86],
+        [dikte*0.42, hoog+0.02+hVar],
+        [dikte*0.16, hoog+0.13+hVar],
+        [0.02, hoog+0.05+hVar]
+      ];
+      const lean=0.025;
+      for(let p=0;p<P;p++){
+        const out=prof[p][0]+lean*prof[p][1], y=prof[p][1];
+        const x=langsZ?cx+out+curve:cx+along;
+        const z=langsZ?cz+along:cz+out+curve;
+        pos.push(x,y,z);
+        uv.push(t*(lengte/2.05), y/2.05);
+        const a=0.56+0.44*Math.min(1,y/(hoog+0.25));
+        col.push(a, a*0.98, a*0.93);
+        if(p===7)toppen.push({x,y,z,along,t,hVar});
       }
     }
-    let acc=0;
-    while(acc<lengte){
-      const tw=0.42+rnd(acc*2)*0.38;
-      const used=Math.min(tw,lengte-acc);
-      const along=acc+used/2-lengte/2;
-      kappen.push({
-        x:langsZ?cx:cx+along, y:hoog+0.06, z:langsZ?cz+along:cz,
-        sx:langsZ?dikte+0.24:used*0.98, sy:0.13, sz:langsZ?used*0.98:dikte+0.24,
-        ry:(rnd(acc)-0.5)*0.04
-      });
-      acc+=used;
+    for(let i=0;i<N;i++){
+      for(let p=0;p<P-1;p++){
+        const a=i*P+p,b=a+P,c=a+1,d=b+1;
+        idx.push(a,b,c, c,b,d);
+      }
+      const a=i*P,b=(i+1)*P,c=a+(P-1),d=b+(P-1);
+      idx.push(a,c,b, b,c,d);
     }
-    const dum=new THREE.Object3D(), col=new THREE.Color();
-    if(stenen.length){
-      const inst=new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,1),mat.steenInst,stenen.length);
-      stenen.forEach((d,i)=>{
-        dum.position.set(d.x,d.y,d.z);dum.rotation.set(0,d.ry,0);dum.scale.set(d.sx,d.sy,d.sz);dum.updateMatrix();
-        inst.setMatrixAt(i,dum.matrix);
-        const a=0.62+0.38*(d.row/Math.max(1,rijen-1));
-        inst.setColorAt(i,col.setRGB(a,a,a));
-      });
-      inst.instanceMatrix.needsUpdate=true;
-      if(inst.instanceColor)inst.instanceColor.needsUpdate=true;
-      voeg(inst);
+    function sluitEinde(ii){
+      const base=ii*P;
+      for(let p=1;p<P-1;p++)idx.push(base, base+p, base+p+1);
     }
-    if(kappen.length){
-      const inst=new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,1),mat.steenInst,kappen.length);
-      kappen.forEach((d,i)=>{
-        dum.position.set(d.x,d.y,d.z);dum.rotation.set(0,d.ry,0);dum.scale.set(d.sx,d.sy,d.sz);dum.updateMatrix();
-        inst.setMatrixAt(i,dum.matrix);
-        inst.setColorAt(i,col.setRGB(1,1,1));
-      });
-      inst.instanceMatrix.needsUpdate=true;
-      if(inst.instanceColor)inst.instanceColor.needsUpdate=true;
-      voeg(inst);
+    sluitEinde(0);sluitEinde(N);
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+    geo.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+    geo.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+    geo.setIndex(idx);
+    geo.computeVertexNormals();
+    voeg(new THREE.Mesh(geo,mat.steenMuur));
+    // ronde eindstijlen met bolle dop
+    const eindR=dikte*0.42;
+    [-lengte/2, lengte/2].forEach((al,ei)=>{
+      const x=langsZ?cx+dikte*0.35:cx+al;
+      const z=langsZ?cz+al:cz+dikte*0.35;
+      const hh=hoog+0.08+rnd(ei+cx)*0.1;
+      const stam=new THREE.Mesh(new THREE.CylinderGeometry(eindR,eindR*1.08,hh,12),mat.zandsteen);
+      stam.position.set(x,hh/2,z);voeg(stam);
+      const dop=new THREE.Mesh(new THREE.SphereGeometry(eindR*1.05,16,10),mat.zandsteen);
+      dop.position.set(x,hh+eindR*0.15,z);dop.scale.set(1,0.48,1);voeg(dop);
+    });
+    // vuil- en mosrand onderaan
+    const rok=new THREE.Mesh(new THREE.PlaneGeometry(langsZ?dikte+1.2:lengte+0.6,langsZ?lengte+0.6:dikte+1.2),
+      new THREE.MeshLambertMaterial({color:0x5a4a32,transparent:true,opacity:0.58,depthWrite:false}));
+    rok.rotation.x=-Math.PI/2;rok.position.set(cx+(langsZ?dikte*0.2:0),0.032,cz+(langsZ?0:dikte*0.2));voeg(rok);
+    const mosMat=new THREE.MeshLambertMaterial({map:T.haag,color:0x6a8a32,transparent:true,opacity:0.82,depthWrite:false,side:THREE.DoubleSide});
+    for(let i=0;i<5;i++){
+      const tt=(i+0.5)/5-0.5, along=tt*lengte*0.9;
+      const x=langsZ?cx+dikte*0.7:cx+along;
+      const z=langsZ?cz+along:cz+dikte*0.7;
+      const mos=new THREE.Mesh(new THREE.PlaneGeometry(0.7+rnd(i)*0.5,0.28+rnd(i+1)*0.16),mosMat);
+      mos.position.set(x,0.14,z);
+      if(langsZ)mos.rotation.y=Math.PI/2;
+      mos.rotation.x=-0.55;voeg(mos);
     }
-    const rok=new THREE.Mesh(new THREE.PlaneGeometry(langsZ?dikte+0.9:lengte+0.5,langsZ?lengte+0.5:dikte+0.9),
-      new THREE.MeshLambertMaterial({color:0x5a4a32,transparent:true,opacity:0.62,depthWrite:false}));
-    rok.rotation.x=-Math.PI/2;rok.position.set(cx,0.035,cz);voeg(rok);
-    solid(cx,cz,langsZ?dikte:lengte,langsZ?lengte:dikte,hoog+0.2);
+    solid(cx,cz,langsZ?dikte:lengte,langsZ?lengte:dikte,hoog+0.25);
   }
   // zandstenen muur achter de fontein, met hangende ranken
   steenMuur(-7.35,9.8,0.72,3.4,6.2,true);
@@ -993,6 +1010,8 @@
   hangRank(-7.0,2.9,9.8,5.8,2.2,Math.PI/2);
   hangRank(-7.05,2.6,8.4,2.4,1.8,Math.PI/2);
   hangRank(-7.05,2.7,11.2,2.2,1.6,Math.PI/2);
+  hangRank(-6.98,3.35,9.3,2.4,1.3,Math.PI/2);
+  hangRank(-6.98,3.3,10.4,2.2,1.2,Math.PI/2);
 
   // stenen goot met turquoise water (onderbroken onder de brug)
   function waterBak(x,z,w,d){
@@ -1379,7 +1398,7 @@
   const schaduw=new THREE.Mesh(new THREE.CircleGeometry(0.44,14),mat.schaduw);
   schaduw.rotation.x=-Math.PI/2;schaduw.position.y=0.03;held.add(schaduw);
 
-  let mixer=null,actIdle=null,actWalk=null,actRun=null,animNaam='idle',stafPunt=null,lunaKlaar=false,gargKlaar=false,tuinKlaar=false,steenTex=null,gargRoot=null;
+  let mixer=null,actIdle=null,actWalk=null,actRun=null,animNaam='idle',stafPunt=null,lunaKlaar=false,gargKlaar=false,tuinKlaar=false,steenTex=null,gargRoot=null,mixBevries=false;
 
   function zetAnim(naam){
     if(!mixer||animNaam===naam)return;
@@ -1394,6 +1413,17 @@
       prev.crossFadeTo(act,0.22,false);
     }
     animNaam=naam;
+  }
+  function snapAnim(naam,t){
+    if(!mixer)return;
+    const act=naam==='walk'?actWalk:naam==='run'?actRun:actIdle;
+    if(!act)return;
+    [actIdle,actWalk,actRun].forEach(a=>{if(a&&a!==act){a.setEffectiveWeight(0);a.stop()}});
+    act.enabled=true;act.setEffectiveWeight(1);act.reset().play();
+    if(t!=null)act.time=t;
+    animNaam=naam;lopen=naam==='walk'||naam==='run';
+    mixer.update(0);
+    held.updateMatrixWorld(true);
   }
 
   function maakMantel(chest){
@@ -1437,19 +1467,29 @@
 
   function maakStaf(wrist){
     const staf=new THREE.Group();
-    const hout=new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.013,0.42,6),mat.hout);
-    hout.position.y=0.16;
+    const hout=new THREE.Mesh(new THREE.CylinderGeometry(0.011,0.016,0.42,8),mat.hout);
+    hout.position.y=0.14;
     staf.add(hout);
-    const punt=new THREE.Mesh(new THREE.SphereGeometry(0.012,6,5),mat.voering);
-    punt.position.set(0,0.38,0);
+    const greep=new THREE.Mesh(new THREE.CylinderGeometry(0.015,0.015,0.06,8),mat.hout);
+    greep.position.y=0.05;staf.add(greep);
+    const puntMat=new THREE.MeshLambertMaterial({color:0xffe08a,emissive:0xc9a227,emissiveIntensity:0.85});
+    const punt=new THREE.Mesh(new THREE.SphereGeometry(0.015,8,6),puntMat);
+    punt.position.set(0,0.36,0);
     staf.add(punt);
     stafPunt=new THREE.Object3D();
-    stafPunt.position.set(0,0.38,0);
+    stafPunt.position.set(0,0.36,0);
     staf.add(stafPunt);
-    staf.position.set(-0.03,0.07,0.05);
-    staf.rotation.set(0,0.35,1.57);
     wrist.add(staf);held.userData.staf=staf;
     return staf;
+  }
+  function botNaam(o,n){
+    return o.name===n||o.name===n.replace(/\./g,'');
+  }
+  function pasStafInPalm(wrist,root){
+    const staf=held.userData.staf;if(!staf||!wrist)return;
+    // +Y van de polsstekker wijst langs de vingers; lokale rustpose blijft in de palm
+    staf.position.set(0,0.02,0);
+    staf.rotation.set(0,0,0);
   }
 
   function plaatsLuna(gltf){
@@ -1486,7 +1526,6 @@
       else if(o.name==='Wrist.R'||o.name==='WristR')wristR=o;
     });
     if(chest)maakMantel(chest);
-    if(wristR)maakStaf(wristR);
     mixer=new THREE.AnimationMixer(root);
     const clips=gltf.animations||[];
     function clip(n){return THREE.AnimationClip.findByName(clips,n)}
@@ -1496,6 +1535,9 @@
     if(idleC){actIdle=mixer.clipAction(idleC);actIdle.play();animNaam='idle'}
     if(walkC){actWalk=mixer.clipAction(walkC);actWalk.enabled=false;actWalk.setEffectiveWeight(0)}
     if(runC){actRun=mixer.clipAction(runC);actRun.enabled=false;actRun.setEffectiveWeight(0)}
+    if(mixer)mixer.update(0.35);
+    held.updateMatrixWorld(true);
+    if(wristR){maakStaf(wristR);pasStafInPalm(wristR,root)}
     lunaKlaar=true;
   }
 
@@ -1564,34 +1606,41 @@
   const muis=new THREE.Vector2();
   loopVlakken.push(brugVlak);
   const grondHits=loopVlakken;
-  function tikWalk(ev){
+  let doelDeur=null,stokTot=0,blokkeerNav=false;
+  function deurVanHit(obj){
+    let o=obj;
+    while(o){
+      if(o===gevelKas)return deuren.kas;
+      if(o===gevelH)return deuren.moestuin;
+      if(o===gevelHal)return deuren.home;
+      o=o.parent;
+    }
+    return null;
+  }
+  function inStokZone(x,y){
+    if(!loopStok)return false;
+    const r=loopStok.getBoundingClientRect(),p=48;
+    return x>=r.left-p&&x<=r.right+p&&y>=r.top-p&&y<=r.bottom+p;
+  }
+  function tikDeur(ev){
     const r=canvas.getBoundingClientRect();
     const cx=ev.clientX??(ev.touches&&ev.touches[0]&&ev.touches[0].clientX);
     const cy=ev.clientY??(ev.touches&&ev.touches[0]&&ev.touches[0].clientY);
     if(cx==null||cy==null)return;
+    if(inStokZone(cx,cy))return;
     muis.x=((cx-r.left)/r.width)*2-1;
     muis.y=-((cy-r.top)/r.height)*2+1;
     ray.setFromCamera(muis,camera);
-    const wie=dichtstDeur();
-    if(wie&&held.position.distanceTo(wie.punt)<3.4){
-      const hits=ray.intersectObjects([gevelKas,gevelH,gevelHal],true);
-      if(hits.length&&hits[0].distance<16){naarDeur(wie.open);return}
-    }
-    const hits=ray.intersectObjects(grondHits.concat([bed]),true);
-    if(!hits.length)return;
-    const p=hits[0].point;
-    let x=p.x,z=p.z;
-    if(bots(x,z,0.4)){
-      const ax=held.position.x,az=held.position.z;
-      for(let t=0.9;t>0.05;t-=0.08){
-        const sx=ax+(x-ax)*t,sz=az+(z-az)*t;
-        if(!bots(sx,sz,0.4)){x=sx;z=sz;break}
-      }
-      if(bots(x,z,0.4))return;
-    }
-    doel=new THREE.Vector3(x,0,z);
-    mark.position.set(x,0.08,z);mark.visible=true;
-    lopen=true;camVast=false;
+    const hits=ray.intersectObjects([gevelKas,gevelH,gevelHal],true);
+    if(!hits.length||hits[0].distance>28)return;
+    const deur=deurVanHit(hits[0].object);
+    if(!deur)return;
+    camVast=false;
+    if(held.position.distanceTo(deur.punt)<3.4){naarDeur(deur.open);return}
+    doelDeur=deur;
+    doel=deur.punt.clone();
+    mark.position.set(doel.x,0.08,doel.z);mark.visible=true;
+    lopen=true;
     if(hintEl)hintEl.style.opacity='0.35';
   }
   function pointerOpUi(ev){
@@ -1601,6 +1650,9 @@
     if(naarBinnen)return;
     if(pointerOpUi(ev))return;
     if(stokAan&&ev.pointerId===stokId)return;
+    if(ev.pointerId===stokId)return;
+    if(performance.now()<stokTot)return;
+    if(inStokZone(ev.clientX,ev.clientY))return;
     eersteTikGeluid();
     ev.preventDefault&&ev.preventDefault();
     kijkAan=true;kijkId=ev.pointerId;kijkSleep=false;
@@ -1625,15 +1677,22 @@
     ev.preventDefault&&ev.preventDefault();
     const wasSleep=kijkSleep;
     kijkAan=false;kijkId=null;kijkSleep=false;
-    if(!wasSleep)tikWalk(ev);
+    if(!wasSleep)tikDeur(ev);
   }
   canvas.addEventListener('pointerdown',startKijk,{passive:false});
+  canvas.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation()},{capture:true});
   window.addEventListener('pointermove',function(ev){
     if(stokAan&&(stokId==null||ev.pointerId===stokId)){ev.preventDefault();zetStok(ev.clientX,ev.clientY);return}
+    if(ev.pointerId===stokId)return;
     beweegKijk(ev);
   },{passive:false});
   function pointerLos(ev){
-    if(stokAan&&(stokId==null||ev.pointerId===stokId)){ev.preventDefault();stokId=null;stopStok();if(!doel)lopen=false;return}
+    if(stokAan&&(stokId==null||ev.pointerId===stokId)){
+      ev.preventDefault();stokTot=performance.now()+500;stokId=null;stopStok();
+      if(!doel)lopen=false;
+      return;
+    }
+    if(ev.pointerId===stokId||performance.now()<stokTot)return;
     losKijk(ev);
   }
   window.addEventListener('pointerup',pointerLos,{passive:false});
@@ -1664,7 +1723,9 @@
       ev.preventDefault();ev.stopPropagation();
       try{loopStok.setPointerCapture(ev.pointerId)}catch(e){}
       stokAan=true;stokId=ev.pointerId;loopStok.classList.add('aan');
-      doel=null;mark.visible=false;camVast=false;
+      doel=null;doelDeur=null;mark.visible=false;camVast=false;
+      if(kijkAan&&kijkId===ev.pointerId){kijkAan=false;kijkId=null}
+      stokTot=performance.now()+800;
       if(hintEl)hintEl.style.opacity='0.35';
       zetStok(ev.clientX,ev.clientY);
     },{passive:false});
@@ -1703,7 +1764,7 @@
       const e=1-Math.pow(1-k,2);
       d.groep.rotation.y=start+(doelR-start)*e;
       if(k<1)requestAnimationFrame(anim);
-      else if(!(opt&&opt.geenNav)){
+      else if(!(opt&&opt.geenNav)&&!blokkeerNav){
         setTimeout(()=>{location.href='index.html?open='+encodeURIComponent(d.open)},RMP?80:280);
       }else{
         naarBinnen=false;
@@ -2048,7 +2109,10 @@
     }else if(lopen&&doel&&!naarBinnen){
       const dx=doel.x-held.position.x,dz=doel.z-held.position.z;
       const len=Math.hypot(dx,dz);
-      if(len<0.12){lopen=false;mark.visible=false}
+      if(len<0.18){
+        lopen=false;mark.visible=false;
+        if(doelDeur){const d=doelDeur;doelDeur=null;naarDeur(d.open)}
+      }
       else{
         const stap=Math.min(snelheid*dt,len);
         const [nx,nz]=schuif(held.position.x,held.position.z,dx/len*stap,dz/len*stap);
@@ -2064,7 +2128,7 @@
       }
     }
     zetHoogte(dt);
-    if(mixer)mixer.update(dt);
+    if(mixer&&!mixBevries)mixer.update(dt);
     if(!RMP){
       if(lopen)zetAnim('walk');
       else zetAnim('idle');
@@ -2224,6 +2288,10 @@
         }
         if(naam==='zandsteen'){
           [mat.steenAO,mat.steenInst,mat.kopSteen,mat.sokkel].forEach(function(m){if(m){m.map=tex;m.needsUpdate=true}});
+          if(mat.steenMuur){
+            const tw=tex.clone();tw.repeat.set(1,1);tw.needsUpdate=true;
+            mat.steenMuur.map=tw;mat.steenMuur.needsUpdate=true;
+          }
         }
       });
     }
@@ -2261,6 +2329,19 @@
       });
     }
     zetNormaal('pad','kassei-n.webp',[7,16],0.55);
+    tl.load(basis+'tex/zandsteen-n.webp',function(tex){
+      tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+      tex.magFilter=THREE.LinearFilter;
+      tex.minFilter=THREE.LinearMipmapLinearFilter;
+      tex.generateMipmaps=true;
+      tex.repeat.set(1,1);
+      if(THREE.NoColorSpace)tex.colorSpace=THREE.NoColorSpace;
+      if(mat.steenMuur){
+        mat.steenMuur.normalMap=tex;
+        mat.steenMuur.normalScale=new THREE.Vector2(0.8,0.8);
+        mat.steenMuur.needsUpdate=true;
+      }
+    });
     gl.load(basis+'luna.glb',plaatsLuna);
     gargKlaar=true;
     setTimeout(function(){
@@ -2291,7 +2372,7 @@
     held.position.set(P.x,0,P.z);
     held.rotation.y=P.y;
     zetHoogte();
-    lopen=false;doel=null;mark.visible=false;stopStok();
+    lopen=false;doel=null;doelDeur=null;mark.visible=false;stopStok();
     camVast=false;camCacheAan=false;
     zoekCamera(camPos);
     camera.position.copy(camPos);
@@ -2308,6 +2389,42 @@
     pos:()=>({x:+held.position.x.toFixed(2),z:+held.position.z.toFixed(2),y:+held.position.y.toFixed(2)}),
     cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3)}),
     stok:()=>({aan:stokAan,kracht:+stokKracht.toFixed(2),dx:+stokDx.toFixed(2),dz:+stokDz.toFixed(2)}),
+    botten(){
+      const out={names:[],wrist:null,axes:null,staf:null,tip:null};
+      held.traverse(o=>{
+        const n=o.name||'';
+        if(/(Arm|Wrist|Hand|Index|Middle|Ring|Pinky|Thumb)/i.test(n)){
+          const w=new THREE.Vector3();o.getWorldPosition(w);
+          out.names.push({n,x:+w.x.toFixed(3),y:+w.y.toFixed(3),z:+w.z.toFixed(3)});
+        }
+      });
+      let wrist=null;
+      held.traverse(o=>{if(o.name==='WristR'||o.name==='Wrist.R')wrist=o});
+      if(wrist){
+        const w=new THREE.Vector3(),qx=new THREE.Vector3(),qy=new THREE.Vector3(),qz=new THREE.Vector3();
+        wrist.getWorldPosition(w);
+        wrist.matrixWorld.extractBasis(qx,qy,qz);
+        out.wrist={x:+w.x.toFixed(3),y:+w.y.toFixed(3),z:+w.z.toFixed(3)};
+        out.axes={x:[+qx.x.toFixed(3),+qx.y.toFixed(3),+qx.z.toFixed(3)],
+                  y:[+qy.x.toFixed(3),+qy.y.toFixed(3),+qy.z.toFixed(3)],
+                  z:[+qz.x.toFixed(3),+qz.y.toFixed(3),+qz.z.toFixed(3)]};
+      }
+      if(held.userData.staf){
+        const w=new THREE.Vector3();held.userData.staf.getWorldPosition(w);
+        out.staf={x:+w.x.toFixed(3),y:+w.y.toFixed(3),z:+w.z.toFixed(3),
+          loc:{x:+held.userData.staf.position.x.toFixed(3),y:+held.userData.staf.position.y.toFixed(3),z:+held.userData.staf.position.z.toFixed(3)},
+          rot:{x:+held.userData.staf.rotation.x.toFixed(3),y:+held.userData.staf.rotation.y.toFixed(3),z:+held.userData.staf.rotation.z.toFixed(3)}};
+      }
+      if(stafPunt){const t=new THREE.Vector3();stafPunt.getWorldPosition(t);out.tip={x:+t.x.toFixed(3),y:+t.y.toFixed(3),z:+t.z.toFixed(3)}}
+      return out;
+    },
+    zetStafLoc(px,py,pz,rx,ry,rz){
+      const st=held.userData.staf;if(!st)return false;
+      st.position.set(px,py,pz);
+      st.rotation.set(rx,ry,rz);
+      held.updateMatrixWorld(true);
+      return true;
+    },
     close(kind){
       const hx=0,hz=9.0;
       held.position.set(hx,0,hz);zetHoogte();
@@ -2318,30 +2435,65 @@
         held.rotation.y=Math.PI;
         camera.position.set(0.15,1.48,hz-1.95);
         camera.lookAt(0,1.38,hz);
-        zetAnim('idle');if(mixer)mixer.update(0.3);
+        snapAnim('idle',0.85);
       }else if(kind==='gargoyle'||kind==='fontein'){
         held.position.set(-2.15,0,6.35);zetHoogte();
         held.rotation.y=-0.35;
         camera.position.set(-3.55,1.72,6.85);
         camera.lookAt(-5.0,1.05,9.7);
+      }else if(kind==='staf'||kind==='hand'){
+        held.position.set(0,0,9);zetHoogte();
+        held.rotation.y=0.15;lopen=true;loopT=0.45;
+        snapAnim('walk',0.15);
+        const w=new THREE.Vector3(), tip=new THREE.Vector3();
+        const wrist= (function(){let f=null;held.traverse(o=>{if(o.name==='WristR'||o.name==='Wrist.R')f=o});return f})();
+        if(wrist)wrist.getWorldPosition(w);else w.set(-0.2,1.2,9);
+        if(stafPunt)stafPunt.getWorldPosition(tip);
+        else tip.copy(w).add(new THREE.Vector3(0,-0.15,0.04));
+        const mid=w.clone().lerp(tip,0.4);
+        camera.position.set(mid.x-0.15, mid.y+0.22, mid.z+0.62);
+        camera.lookAt(mid.x+0.04, mid.y-0.02, mid.z);
+      }else if(kind==='zij'){
+        held.position.set(0,0,9);zetHoogte();
+        held.rotation.y=0.2;lopen=true;loopT=0.4;
+        snapAnim('walk',0.15);
+        camera.position.set(-1.05,1.72,10.55);
+        camera.lookAt(0.08,1.18,9.05);
       }else if(kind==='loop'){
         held.rotation.y=0.62;lopen=true;loopT=0.28;
-        zetAnim('walk');if(mixer)mixer.update(0.34);
+        snapAnim('walk',0.15);
         camera.position.set(-1.95,1.52,hz-2.35);
         camera.lookAt(0.15,1.18,hz+0.25);
       }else{
         held.rotation.y=0;
         camera.position.set(0.35,1.62,hz-2.45);
         camera.lookAt(0,1.32,hz);
-        zetAnim('idle');if(mixer)mixer.update(0.3);
+        snapAnim('idle',0.85);
       }
       renderer.render(scene,camera);
     },
     zet:zetPlek,
-    loopNaar(x,z){doel=new THREE.Vector3(x,0,z);mark.position.set(x,0.08,z);mark.visible=true;lopen=true},
+    loopNaar(x,z){doel=new THREE.Vector3(x,0,z);doelDeur=null;mark.position.set(x,0.08,z);mark.visible=true;lopen=true},
+    schermPlek(x,y,z){
+      const v=new THREE.Vector3(x,y,z).project(camera);
+      const r=canvas.getBoundingClientRect();
+      return {x:(v.x*0.5+0.5)*r.width+r.left,y:(-v.y*0.5+0.5)*r.height+r.top,voor:Math.abs(v.z)<1};
+    },
+    doelInfo:()=>({lopen,naarBinnen,mark:!!mark.visible,
+      doel:doel?{x:+doel.x.toFixed(2),z:+doel.z.toFixed(2)}:null,
+      deur:doelDeur?doelDeur.open:null,
+      overgang:overgang?{hidden:!!overgang.hidden,cls:overgang.className}:null}),
+    bevries(t){
+      mixBevries=true;
+      if(t!=null)snapAnim('walk',t);
+      else held.updateMatrixWorld(true);
+      renderer.render(scene,camera);
+    },
+    dooi(){mixBevries=false},
     naarDeur,
     melding:(id)=>naarDeur(id||'kas',{geenNav:true}),
     sluitMelding:()=>{if(overgang){overgang.classList.remove('aan');overgang.hidden=true}naarBinnen=false},
+    blokkeerNav:(v)=>{blokkeerNav=!!v},
     geluidBronnen:()=>Object.assign({},geluidBronnen),
     kijkNaar(px,py,pz,lx,ly,lz){camVast=true;if(hintEl)hintEl.style.opacity='0';camera.position.set(px,py,pz);camera.lookAt(lx,ly,lz);renderer.render(scene,camera)}
   };

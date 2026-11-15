@@ -292,3 +292,10 @@ assets/tuin3d/tex/steen.webp
   Bron: Rock051, ambientCG, CC0 1.0
   https://ambientcg.com/a/Rock051
   Bewerking: 512 px, WebP, iets koeler/grauwer voor de waterspuwer.
+
+v169 — 3D-tuin
+  Muren: zelfgemaakte, licht gebogen stenen muur met oneffen boventand,
+  afgeronde eindstijlen, mos en klimop. Kleur- en normaalkaart:
+  bestaande zandsteen / zandsteen-n (Bricks083, ambientCG, CC0 1.0).
+  Staf: zelfgemaakt houten stokje met klein goudpunt, in de rechterpalm
+  van het Quaternius-model (zie luna.glb hierboven).
