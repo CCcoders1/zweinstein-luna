@@ -244,19 +244,34 @@ assets/tuin3d/gargoyle.glb
   Licentie: CC0 1.0
   Bron: https://pixor.art/library/dungeon/gargoyle/
   Bestand: https://pixor.art/library/files/gargoyle/pixor-library-gargoyle.glb
-  Bewerkingen: sokkel en oplichtende ogen verwijderd; in de tuin voorzien van
-    een verweerde steentextuur (ambientCG Rock051) en geplaatst op de bestaande
-    zandstenen zuil. De waterstraal vertrekt vanuit de bek.
+  Vanaf v168 niet meer in de scene gebruikt (vervangen door een zelfgemaakte
+    achtkantige fontein met stenen koppen). Het bestand blijft in de map voor
+    de service-worker-cache.
+
+Fonteinkoppen en -zuil (tuin3d.js)
+  Eigen geometrie, geen EA/Warner- of HP-modellen. Gladde stenen leeuwen-/
+  waterspuwerkoppen aan een achtkantige zuil in een achtkantig bassin,
+  met gebogen waterstralen. Geïnspireerd op sfeer, niet getraceerd.
 
 assets/tuin3d/tex/zandsteen.webp
   Bron: Bricks083, ambientCG, CC0 1.0
   https://ambientcg.com/a/Bricks083
   Bewerking: bijgesneden naar 512 px, WebP, warme oker-kleurtoon.
 
+assets/tuin3d/tex/zandsteen-n.webp
+  Bron: Bricks083 NormalGL, ambientCG, CC0 1.0
+  https://ambientcg.com/a/Bricks083
+  Bewerking: 512 px, WebP, lineaire normal map.
+
 assets/tuin3d/tex/kassei.webp
   Bron: PavingStones070, ambientCG, CC0 1.0
   https://ambientcg.com/a/PavingStones070
   Bewerking: 512 px, WebP.
+
+assets/tuin3d/tex/kassei-n.webp
+  Bron: PavingStones070 NormalGL, ambientCG, CC0 1.0
+  https://ambientcg.com/a/PavingStones070
+  Bewerking: 512 px, WebP, lineaire normal map.
 
 assets/tuin3d/tex/gras.webp
   Bron: Grass004, ambientCG, CC0 1.0
@@ -271,7 +286,7 @@ assets/tuin3d/tex/leisteen.webp
 assets/tuin3d/tex/haag.webp
   Bron: Moss003, ambientCG, CC0 1.0
   https://ambientcg.com/a/Moss003
-  Bewerking: 512 px, WebP, verzadigder groen (bladhaag).
+  Bewerking: 512 px, WebP, helderder en verzadigder bladgroen (v168).
 
 assets/tuin3d/tex/steen.webp
   Bron: Rock051, ambientCG, CC0 1.0

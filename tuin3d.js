@@ -1,4 +1,4 @@
-/* v167: 3D-testtuin, HP1-sfeer. CC0-figuur en -gargoyle, PBR-textures. Geen EA/Warner-assets. */
+/* v168: 3D-testtuin, HP1-sfeer. Loop+camera-fix, PS2-paden/muren, achtkantige fontein met koppen. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -412,14 +412,14 @@
     gras: new THREE.MeshLambertMaterial({map:T.gras}),
     haag: new THREE.MeshLambertMaterial({map:T.haag,color:0xe8f0d0}),
     baksteen: new THREE.MeshLambertMaterial({map:T.baksteen}),
-    zandsteen: new THREE.MeshLambertMaterial({map:T.zandsteen}),
-    pad: new THREE.MeshLambertMaterial({map:T.pad}),
+    zandsteen: new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xffffff,shininess:8,specular:0x332820}),
+    pad: new THREE.MeshPhongMaterial({map:T.pad,color:0xffffff,shininess:10,specular:0x333333}),
     aarde: new THREE.MeshLambertMaterial({map:T.aarde}),
     hout: new THREE.MeshLambertMaterial({map:T.hout}),
-    sokkel: new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xe8d8b0}),
+    sokkel: new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xe8d8b0,shininess:8,specular:0x332820}),
     ijzer: new THREE.MeshLambertMaterial({color:0x1a1a1c}),
     grind: new THREE.MeshLambertMaterial({map:T.grind}),
-    water: new THREE.MeshPhongMaterial({map:T.water,color:0xb8fff6,transparent:true,opacity:0.92,depthWrite:false,shininess:140,specular:0xffffff,emissive:0x1a98a0,emissiveIntensity:0.72}),
+    water: new THREE.MeshPhongMaterial({map:T.water,color:0xc8fff8,transparent:true,opacity:0.94,depthWrite:false,shininess:160,specular:0xffffff,emissive:0x24b0b8,emissiveIntensity:0.88}),
     rimpel: new THREE.MeshBasicMaterial({map:T.rimpel,transparent:true,opacity:0.35,depthWrite:false,side:THREE.DoubleSide}),
     glinster: new THREE.MeshBasicMaterial({map:T.glinster,transparent:true,opacity:0.7,depthWrite:false,side:THREE.DoubleSide}),
     wolk: new THREE.MeshBasicMaterial({map:T.wolk,transparent:true,opacity:0.9,depthWrite:false,fog:false,side:THREE.DoubleSide}),
@@ -450,11 +450,19 @@
   mat.bordKas=new THREE.MeshBasicMaterial({map:T.bordKas,side:THREE.DoubleSide});
   mat.bordHagrid=new THREE.MeshBasicMaterial({map:T.bordHagrid,side:THREE.DoubleSide});
   mat.bordHal=new THREE.MeshBasicMaterial({map:T.bordHal,side:THREE.DoubleSide});
-  const haagTinten=[0xf4ffe8,0xe8f6d0,0xd4e8b0,0xc8e090,0xdeefc0];
+  const haagTinten=[0xfffff0,0xf6ffd8,0xe6ffa8,0xd8f890,0xf0ffc4];
   const haagMats=haagTinten.map(c=>new THREE.MeshLambertMaterial({map:T.haag,color:c}));
-  const haagTopMat=new THREE.MeshLambertMaterial({map:T.haag,color:0xf8ffe8});
-  const haagOnderMat=new THREE.MeshLambertMaterial({map:T.haag,color:0x4a6a28});
+  const haagTopMat=new THREE.MeshLambertMaterial({map:T.haag,color:0xfffff0});
+  const haagOnderMat=new THREE.MeshLambertMaterial({map:T.haag,color:0x5a8a32});
   const haagToppen=[];
+  mat.padSlijt=new THREE.MeshPhongMaterial({map:T.pad,vertexColors:true,shininess:10,specular:0x333333});
+  mat.padRand=new THREE.MeshPhongMaterial({map:T.pad,transparent:true,depthWrite:false,shininess:6,specular:0x222222,vertexColors:true});
+  mat.padRand.onBeforeCompile=function(sh){
+    sh.fragmentShader=sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.a *= vColor.r;');
+  };
+  mat.steenAO=new THREE.MeshLambertMaterial({map:T.zandsteen,vertexColors:true});
+  mat.steenInst=new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xffffff});
+  mat.kopSteen=new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xd0c8bc,shininess:18,specular:0x555550});
 
   const scene=new THREE.Scene();
   scene.background=new THREE.Color(0x3a98e0);
@@ -518,11 +526,32 @@
   function solid(x,z,w,d,h){
     col.push({minx:x-w/2,maxx:x+w/2,minz:z-d/2,maxz:z+d/2,h:h||3.6});
   }
+  function zetAO(geom,h){
+    const pos=geom.attributes.position;
+    const colr=new Float32Array(pos.count*3);
+    for(let i=0;i<pos.count;i++){
+      const y=pos.getY(i);
+      const t=h?Math.max(0,Math.min(1,(y+h/2)/Math.max(0.001,h))):0.8;
+      const a=0.52+0.48*t;
+      colr[i*3]=a;colr[i*3+1]=a;colr[i*3+2]=a;
+    }
+    geom.setAttribute('color',new THREE.BufferAttribute(colr,3));
+    return geom;
+  }
   const speerPos=[];
   function muur(x,z,w,d,h,y0){
     h=h||3.2;y0=y0||0;
     const tint=haagMats[Math.floor(rnd(x*9+z*13)*haagMats.length)%haagMats.length];
-    box(tint,x,y0+h/2,z,w,h,d);
+    const r=Math.min(w,d)*0.18;
+    if(w>=d){
+      box(tint,x,y0+h/2,z,Math.max(0.06,w-2*r),h,d);
+      cyl(tint,x-w/2+r,y0+h/2,z,r,r,h,10);
+      cyl(tint,x+w/2-r,y0+h/2,z,r,r,h,10);
+    }else{
+      box(tint,x,y0+h/2,z,w,h,Math.max(0.06,d-2*r));
+      cyl(tint,x,y0+h/2,z-d/2+r,r,r,h,10);
+      cyl(tint,x,y0+h/2,z+d/2-r,r,r,h,10);
+    }
     box(haagOnderMat,x,y0+0.42,z,w*1.02,0.84,d*1.02);
     const langs=w>=d?w:d, dwars=w>=d?d:w, alongX=w>=d;
     const n=Math.max(2,Math.round(langs/0.75));
@@ -562,21 +591,140 @@
   grond.rotation.x=-Math.PI/2;grond.position.set(0,-0.01,14);
   voeg(grond);
 
-  /* paden: verweerde tegels, grindranden, grindaanloop voor de brug */
-  box(mat.pad,0,0.025,16,3.5,0.06,28);
-  box(mat.pad,0,0.025,26,3.5,0.06,14);
-  box(mat.pad,-8,0.025,14,16,0.06,3.4);
-  box(mat.pad,8,0.025,14,16,0.06,3.4);
-  const plein=new THREE.Mesh(new THREE.CylinderGeometry(4.4,4.4,0.05,16),mat.pad);
-  plein.position.set(0,0.03,14);voeg(plein);
-  // grindranden
-  box(mat.grind,0,0.02,7.2,4.3,0.04,12.5);
-  box(mat.grind,-8,0.02,14,16,0.04,4.2);
-  box(mat.grind,8,0.02,14,16,0.04,4.2);
-  box(mat.grind,0,0.02,24,4.3,0.04,14);
-  // grindaanloop zuid, zoals op de referentie
-  const aanloop=new THREE.Mesh(new THREE.PlaneGeometry(2.2,4.2),mat.grind);
-  aanloop.rotation.x=-Math.PI/2;aanloop.position.set(0,0.07,6.4);voeg(aanloop);
+  /* paden: kronkelende linten met zachte randen, slijtage, keitjes en graspollen */
+  const loopVlakken=[grond];
+  const keiDummy=new THREE.Object3D();
+  const keiMeshes=[], polMeshes=[];
+  function padLint(punten, breed0, opt){
+    opt=opt||{};
+    const y=opt.y==null?0.028:opt.y;
+    const pts=punten.map(p=>new THREE.Vector3(p[0],0,p[1]));
+    if(pts.length<2)return null;
+    const curve=new THREE.CatmullRomCurve3(pts,false,'catmullrom',0.22);
+    const lengte=curve.getLength();
+    const N=Math.max(16,Math.round(lengte*3.2));
+    const posI=[],idxI=[],uvI=[],colI=[],posR=[],idxR=[],uvR=[],colR=[];
+    const side=new THREE.Vector3(), prev=new THREE.Vector3();
+    let lenAcc=0;
+    for(let i=0;i<=N;i++){
+      const t=i/N;
+      const p=curve.getPointAt(t);
+      const tan=curve.getTangentAt(t);
+      side.set(-tan.z,0,tan.x);
+      if(side.lengthSq()<1e-8)side.set(1,0,0);else side.normalize();
+      const w=breed0*(0.86+rnd(punten[0][0]*8+i*3.17)*0.28);
+      const jagged=(rnd(i*7.3+punten[0][1])-0.5)*0.16;
+      const inner=w*0.34, mid=w*0.5+jagged;
+      if(i)lenAcc+=p.distanceTo(prev);
+      prev.copy(p);
+      const u=lenAcc*0.55;
+      const iL=p.x+side.x*inner, iR=p.x-side.x*inner;
+      const iLz=p.z+side.z*inner, iRz=p.z-side.z*inner;
+      posI.push(iL,y,iLz, p.x,y+0.004,p.z, iR,y,iRz);
+      uvI.push(0.18,u, 0.5,u, 0.82,u);
+      const slijt=0.78+rnd(i*2.2)*0.1;
+      colI.push(slijt,slijt*0.97,slijt*0.9, 1.12,1.08,1.0, slijt,slijt*0.97,slijt*0.9);
+      const oL=p.x+side.x*mid, oR=p.x-side.x*mid;
+      const oLz=p.z+side.z*mid, oRz=p.z-side.z*mid;
+      posR.push(oL,y-0.004,oLz, iL,y,iLz, iR,y,iRz, oR,y-0.004,oRz);
+      uvR.push(0,u, 0.3,u, 0.7,u, 1,u);
+      colR.push(0.0,0.35,0.15, 0.85,0.8,0.65, 0.85,0.8,0.65, 0.0,0.35,0.15);
+    }
+    for(let i=0;i<N;i++){
+      const a=i*3;
+      idxI.push(a,a+3,a+1, a+1,a+3,a+4, a+1,a+4,a+2, a+2,a+4,a+5);
+      const e=i*4;
+      idxR.push(e,e+4,e+1, e+1,e+4,e+5, e+1,e+5,e+2, e+2,e+5,e+6, e+2,e+6,e+3, e+3,e+6,e+7);
+    }
+    const gI=new THREE.BufferGeometry();
+    gI.setAttribute('position',new THREE.Float32BufferAttribute(posI,3));
+    gI.setAttribute('uv',new THREE.Float32BufferAttribute(uvI,2));
+    gI.setAttribute('color',new THREE.Float32BufferAttribute(colI,3));
+    gI.setIndex(idxI);gI.computeVertexNormals();
+    const meshI=new THREE.Mesh(gI,mat.padSlijt);
+    voeg(meshI);loopVlakken.push(meshI);
+    const gR=new THREE.BufferGeometry();
+    gR.setAttribute('position',new THREE.Float32BufferAttribute(posR,3));
+    gR.setAttribute('uv',new THREE.Float32BufferAttribute(uvR,2));
+    gR.setAttribute('color',new THREE.Float32BufferAttribute(colR,3));
+    gR.setIndex(idxR);gR.computeVertexNormals();
+    const meshR=new THREE.Mesh(gR,mat.padRand);
+    meshR.renderOrder=1;voeg(meshR);
+    const nKei=Math.max(4,Math.round(lengte*1.3));
+    for(let i=0;i<nKei;i++){
+      const t=0.04+rnd(i*11+breed0)*0.92;
+      const p=curve.getPointAt(t), tan=curve.getTangentAt(t);
+      const sd=new THREE.Vector3(-tan.z,0,tan.x).normalize();
+      const kant=rnd(i+3)>0.5?1:-1;
+      const off=breed0*(0.42+rnd(i*4)*0.22)*kant;
+      keiMeshes.push({x:p.x+sd.x*off,z:p.z+sd.z*off,s:0.05+rnd(i*8)*0.07,y:0.03,ry:rnd(i)*6});
+    }
+    const nPol=Math.max(5,Math.round(lengte*1.1));
+    for(let i=0;i<nPol;i++){
+      const t=0.03+rnd(i*13+2)*0.94;
+      const p=curve.getPointAt(t), tan=curve.getTangentAt(t);
+      const sd=new THREE.Vector3(-tan.z,0,tan.x).normalize();
+      const kant=rnd(i+9)>0.5?1:-1;
+      const off=breed0*(0.48+rnd(i*6)*0.28)*kant;
+      polMeshes.push({x:p.x+sd.x*off,z:p.z+sd.z*off,s:0.7+rnd(i)*0.7,ry:rnd(i+1)*6});
+    }
+    return meshI;
+  }
+  function zachtPlein(x,z,r){
+    const seg=28, pos=[], uv=[], col=[], idx=[];
+    pos.push(x,0.032,z);uv.push(0.5,0.5);col.push(1.1,1.06,0.98);
+    for(let i=0;i<=seg;i++){
+      const a=i/seg*Math.PI*2;
+      const rr=r*(0.86+rnd(i*3.1)*0.2);
+      pos.push(x+Math.sin(a)*rr,0.03,z+Math.cos(a)*rr);
+      uv.push(0.5+Math.sin(a)*0.5,0.5+Math.cos(a)*0.5);
+      col.push(0.8,0.78,0.7);
+      if(i<seg)idx.push(0,i+1,i+2);
+    }
+    const g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+    g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+    g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+    g.setIndex(idx);g.computeVertexNormals();
+    const mesh=new THREE.Mesh(g,mat.padSlijt);
+    voeg(mesh);loopVlakken.push(mesh);
+    const rand=new THREE.Mesh(new THREE.RingGeometry(r*0.82,r*1.18,28),mat.padRand);
+    rand.rotation.x=-Math.PI/2;rand.position.set(x,0.026,z);voeg(rand);
+    return mesh;
+  }
+  const aanloop=padLint([[0.05,3.15],[0.22,4.4],[-0.16,5.7],[0.08,7.0],[0.0,8.45]],2.7);
+  padLint([[0.0,11.05],[0.18,12.3],[-0.12,13.5],[0.0,14.0],[0.24,16.0],[-0.18,18.6],[0.14,21.4],[-0.1,24.2],[0.16,26.8],[0.0,29.0],[0.0,31.35]],2.75);
+  padLint([[-16.1,14.2],[-13.6,13.82],[-11.0,14.28],[-8.2,13.88],[-5.6,14.22],[-3.5,13.95],[-1.8,14.05]],2.55);
+  padLint([[16.1,14.18],[13.5,13.85],[11.0,14.25],[8.3,13.9],[5.6,14.2],[3.5,13.96],[1.8,14.06]],2.55);
+  const plein=zachtPlein(0,14,3.7);
+  (function strooiPad(){
+    const nK=keiMeshes.length,nP=polMeshes.length;
+    if(nK){
+      const geo=new THREE.SphereGeometry(1,6,5);
+      const inst=new THREE.InstancedMesh(geo,new THREE.MeshLambertMaterial({map:T.pad,color:0xc2b8a6}),nK);
+      for(let i=0;i<nK;i++){
+        const k=keiMeshes[i];
+        keiDummy.position.set(k.x,k.y,k.z);
+        keiDummy.rotation.set(rnd(i)*0.8,k.ry,rnd(i+2)*0.8);
+        keiDummy.scale.set(k.s*1.2,k.s*0.55,k.s);
+        keiDummy.updateMatrix();inst.setMatrixAt(i,keiDummy.matrix);
+      }
+      inst.instanceMatrix.needsUpdate=true;voeg(inst);
+    }
+    if(nP){
+      const geo=new THREE.PlaneGeometry(0.28,0.2);
+      const inst=new THREE.InstancedMesh(geo,new THREE.MeshLambertMaterial({map:T.haag,color:0xc8f070,transparent:true,depthWrite:false,side:THREE.DoubleSide}),nP);
+      inst.renderOrder=2;
+      for(let i=0;i<nP;i++){
+        const k=polMeshes[i];
+        keiDummy.position.set(k.x,0.08,k.z);
+        keiDummy.rotation.set(-0.15,k.ry,0);
+        keiDummy.scale.set(k.s,k.s,1);
+        keiDummy.updateMatrix();inst.setMatrixAt(i,keiDummy.matrix);
+      }
+      inst.instanceMatrix.needsUpdate=true;voeg(inst);
+    }
+  })();
 
   /* hagen */
   // zuidelijke gang, verkort zodat de fontein links in beeld komt
@@ -768,13 +916,76 @@
   boog(0,13.4,2.2);
   pilaar(-2.2,13.4);pilaar(2.2,13.4);
 
-  /* beek, sproeiende fontein met stenen figuur, houten brug */
-  const fx=-5.6,fz=9.7;
+  /* beek, sproeiende achtkantige fontein met stenen koppen, houten brug */
+  const fx=-5.0,fz=9.7;
   const waterVlakken=[];
+  function steenMuur(cx,cz,dikte,hoog,lengte,langsZ){
+    const bw=langsZ?dikte*0.88:lengte, bd=langsZ?lengte:dikte*0.88;
+    const achter=new THREE.Mesh(new THREE.BoxGeometry(bw,hoog,bd),mat.zandsteen);
+    achter.position.set(cx,hoog/2,cz);voeg(achter);
+    const rijen=5, rijH=hoog/rijen, stenen=[], kappen=[];
+    for(let r=0;r<rijen;r++){
+      let acc=0;
+      while(acc<lengte-0.05){
+        const tw=0.36+rnd(cx+cz+r*9+acc*4)*0.44;
+        const used=Math.min(tw,lengte-acc);
+        const th=rijH*(0.8+rnd(r*3+acc)*0.32);
+        const td=dikte*(0.92+rnd(r+acc*2)*0.22);
+        const along=acc+used/2-lengte/2;
+        const uit=dikte*0.12;
+        stenen.push({
+          x:langsZ?cx+uit+(rnd(acc*7+r)-0.5)*0.03:cx+along,
+          y:rijH*r+th/2+0.01,
+          z:langsZ?cz+along:cz+uit+(rnd(acc*5+r)-0.5)*0.03,
+          sx:langsZ?td:used*0.96, sy:th, sz:langsZ?used*0.96:td,
+          ry:(rnd(acc+r)-0.5)*0.02, row:r
+        });
+        acc+=used*0.7;
+      }
+    }
+    let acc=0;
+    while(acc<lengte){
+      const tw=0.42+rnd(acc*2)*0.38;
+      const used=Math.min(tw,lengte-acc);
+      const along=acc+used/2-lengte/2;
+      kappen.push({
+        x:langsZ?cx:cx+along, y:hoog+0.06, z:langsZ?cz+along:cz,
+        sx:langsZ?dikte+0.24:used*0.98, sy:0.13, sz:langsZ?used*0.98:dikte+0.24,
+        ry:(rnd(acc)-0.5)*0.04
+      });
+      acc+=used;
+    }
+    const dum=new THREE.Object3D(), col=new THREE.Color();
+    if(stenen.length){
+      const inst=new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,1),mat.steenInst,stenen.length);
+      stenen.forEach((d,i)=>{
+        dum.position.set(d.x,d.y,d.z);dum.rotation.set(0,d.ry,0);dum.scale.set(d.sx,d.sy,d.sz);dum.updateMatrix();
+        inst.setMatrixAt(i,dum.matrix);
+        const a=0.62+0.38*(d.row/Math.max(1,rijen-1));
+        inst.setColorAt(i,col.setRGB(a,a,a));
+      });
+      inst.instanceMatrix.needsUpdate=true;
+      if(inst.instanceColor)inst.instanceColor.needsUpdate=true;
+      voeg(inst);
+    }
+    if(kappen.length){
+      const inst=new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,1),mat.steenInst,kappen.length);
+      kappen.forEach((d,i)=>{
+        dum.position.set(d.x,d.y,d.z);dum.rotation.set(0,d.ry,0);dum.scale.set(d.sx,d.sy,d.sz);dum.updateMatrix();
+        inst.setMatrixAt(i,dum.matrix);
+        inst.setColorAt(i,col.setRGB(1,1,1));
+      });
+      inst.instanceMatrix.needsUpdate=true;
+      if(inst.instanceColor)inst.instanceColor.needsUpdate=true;
+      voeg(inst);
+    }
+    const rok=new THREE.Mesh(new THREE.PlaneGeometry(langsZ?dikte+0.9:lengte+0.5,langsZ?lengte+0.5:dikte+0.9),
+      new THREE.MeshLambertMaterial({color:0x5a4a32,transparent:true,opacity:0.62,depthWrite:false}));
+    rok.rotation.x=-Math.PI/2;rok.position.set(cx,0.035,cz);voeg(rok);
+    solid(cx,cz,langsZ?dikte:lengte,langsZ?lengte:dikte,hoog+0.2);
+  }
   // zandstenen muur achter de fontein, met hangende ranken
-  box(mat.zandsteen,-7.35,1.7,9.8,0.7,3.4,6.2);
-  solid(-7.35,9.8,0.7,6.2,3.4);
-  box(mat.zandsteen,-7.35,3.45,9.8,0.85,0.2,6.4);
+  steenMuur(-7.35,9.8,0.72,3.4,6.2,true);
   function hangRank(x,y,z,w,h,rotY){
     const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mat.rank);
     p.position.set(x,y,z);if(rotY)p.rotation.y=rotY;voeg(p);
@@ -795,19 +1006,28 @@
     const gl=new THREE.Mesh(new THREE.PlaneGeometry(w-0.1,d-0.1),mat.glinster);
     gl.rotation.x=-Math.PI/2;gl.position.set(x,0.28,z);voeg(gl);waterVlakken.push(gl);
   }
-  // achthoekig bassin bij de fontein, goot naar het oosten
+  // achthoekig bassin: verhoogde, afgeschuinde stenen rand en gloeiend turkoois water
   (function(){
-    const x=-5.0,z=9.7,r=1.72;
-    const sok=new THREE.Mesh(new THREE.CylinderGeometry(r+0.18,r+0.22,0.3,8),mat.zandsteen);
-    sok.position.set(x,0.15,z);voeg(sok);
-    const wand=new THREE.Mesh(new THREE.CylinderGeometry(r+0.16,r+0.16,0.28,8,1,true),mat.zandsteen);
-    wand.position.set(x,0.32,z);voeg(wand);
-    const rand=new THREE.Mesh(new THREE.CylinderGeometry(r+0.2,r+0.14,0.08,8),mat.zandsteen);
-    rand.position.set(x,0.44,z);voeg(rand);
-    const wv=new THREE.Mesh(new THREE.CircleGeometry(r-0.08,8),mat.water);
-    wv.rotation.x=-Math.PI/2;wv.position.set(x,0.28,z);voeg(wv);waterVlakken.push(wv);
-    const gl=new THREE.Mesh(new THREE.CircleGeometry(r-0.1,8),mat.glinster);
-    gl.rotation.x=-Math.PI/2;gl.position.set(x,0.30,z);voeg(gl);waterVlakken.push(gl);
+    const x=fx,z=fz,r=1.78;
+    const voet=new THREE.Mesh(zetAO(new THREE.CylinderGeometry(r+0.34,r+0.44,0.22,8),0.22),mat.steenAO);
+    voet.position.set(x,0.11,z);voeg(voet);
+    const sok=new THREE.Mesh(zetAO(new THREE.CylinderGeometry(r+0.2,r+0.3,0.28,8),0.28),mat.steenAO);
+    sok.position.set(x,0.34,z);voeg(sok);
+    // open binnenkant: alleen wanden, geen deksel
+    const wand=new THREE.Mesh(new THREE.CylinderGeometry(r+0.16,r+0.2,0.52,8,1,true),mat.zandsteen);
+    wand.position.set(x,0.6,z);voeg(wand);
+    const buiten=new THREE.Mesh(new THREE.CylinderGeometry(r+0.28,r+0.32,0.16,8,1,true),mat.zandsteen);
+    buiten.position.set(x,0.86,z);voeg(buiten);
+    const rand=new THREE.Mesh(new THREE.RingGeometry(r-0.04,r+0.32,8),mat.zandsteen);
+    rand.rotation.x=-Math.PI/2;rand.position.set(x,0.94,z);voeg(rand);
+    const lip=new THREE.Mesh(new THREE.CylinderGeometry(r-0.02,r-0.08,0.1,8,1,true),mat.zandsteen);
+    lip.position.set(x,0.88,z);voeg(lip);
+    const bodem=new THREE.Mesh(new THREE.CircleGeometry(r-0.02,8),mat.zandsteen);
+    bodem.rotation.x=-Math.PI/2;bodem.position.set(x,0.48,z);voeg(bodem);
+    const wv=new THREE.Mesh(new THREE.CircleGeometry(r-0.06,24),mat.water);
+    wv.rotation.x=-Math.PI/2;wv.position.set(x,0.78,z);voeg(wv);waterVlakken.push(wv);
+    const gl=new THREE.Mesh(new THREE.CircleGeometry(r-0.08,24),mat.glinster);
+    gl.rotation.x=-Math.PI/2;gl.position.set(x,0.80,z);voeg(gl);waterVlakken.push(gl);
   })();
   waterBak(-3.15,9.7,2.0,1.35);
   waterBak(3.15,9.7,2.0,1.35);
@@ -818,67 +1038,73 @@
     wv.rotation.x=-Math.PI/2;wv.position.set(0,0.12,9.7);voeg(wv);waterVlakken.push(wv);
   })();
   // collision voor het water, uitgezonderd de brug (x -1.7..1.7)
-  solid(-5.0,9.7,3.6,3.6,0.6);
+  solid(-5.0,9.7,3.8,3.8,0.9);
   solid(-3.2,9.7,1.8,1.5,0.5);
   solid(3.2,9.7,1.8,1.5,0.5);
   solid(4.7,9.7,1.4,1.8,0.5);
 
-  // sokkel; CC0-gargoyle wordt later op de zuil gezet
-  cyl(mat.sokkel,fx,0.28,fz,0.85,0.9,0.56,8);
-  box(mat.sokkel,fx,0.7,fz,1.15,0.28,1.15);
-  box(mat.sokkel,fx,0.95,fz,0.85,0.22,0.85);
-  const fig=new THREE.Group();fig.position.set(fx,1.08,fz);fig.rotation.y=Math.PI/2;world.add(fig);
-  let mondX=fx+0.78,mondY=1.55,mondZ=fz;
-  const mos=new THREE.MeshLambertMaterial({map:T.haag,color:0x5a7a38});
-  const mosSok=new THREE.Mesh(new THREE.SphereGeometry(0.09,6,5),mos);
-  mosSok.position.set(fx-0.32,0.88,fz+0.28);mosSok.scale.set(1.5,0.28,0.9);world.add(mosSok);
-  schijf(mat.schaduw,fx,fz,1.1);
-  solid(fx,fz,1.5,1.5,2.0);
+  // middenzuil in het water, met vier gladde stenen koppen (geen beeld erbovenop)
+  function steenKop(){
+    const g=new THREE.Group();
+    const kop=new THREE.Mesh(new THREE.SphereGeometry(0.155,14,12),mat.kopSteen);
+    kop.scale.set(1.08,1.02,0.96);g.add(kop);
+    const snuit=new THREE.Mesh(new THREE.SphereGeometry(0.09,12,10),mat.kopSteen);
+    snuit.position.set(0,-0.02,0.145);snuit.scale.set(0.88,0.7,1.18);g.add(snuit);
+    const kaak=new THREE.Mesh(new THREE.SphereGeometry(0.07,10,8),mat.kopSteen);
+    kaak.position.set(0,-0.08,0.12);kaak.scale.set(0.92,0.48,1.02);g.add(kaak);
+    const wenk=new THREE.Mesh(new THREE.TorusGeometry(0.088,0.022,8,14,Math.PI),mat.kopSteen);
+    wenk.position.set(0,0.07,0.1);wenk.rotation.x=1.15;g.add(wenk);
+    [-1,1].forEach(s=>{
+      const oor=new THREE.Mesh(new THREE.SphereGeometry(0.048,8,8),mat.kopSteen);
+      oor.position.set(s*0.13,0.09,-0.01);oor.scale.set(0.58,1.15,0.5);oor.rotation.z=s*-0.38;g.add(oor);
+      const oog=new THREE.Mesh(new THREE.SphereGeometry(0.024,8,6),new THREE.MeshLambertMaterial({color:0x1a1814}));
+      oog.position.set(s*0.055,0.035,0.132);g.add(oog);
+    });
+    const mond=new THREE.Mesh(new THREE.CircleGeometry(0.026,10),new THREE.MeshBasicMaterial({color:0x0a0c10}));
+    mond.position.set(0,-0.04,0.225);g.add(mond);
+    const kraag=new THREE.Mesh(new THREE.TorusGeometry(0.14,0.038,8,14),mat.kopSteen);
+    kraag.position.set(0,-0.02,-0.02);kraag.rotation.x=Math.PI/2;kraag.scale.set(1,0.82,1);g.add(kraag);
+    return g;
+  }
+  const zuilVoet=new THREE.Mesh(zetAO(new THREE.CylinderGeometry(0.46,0.54,0.2,8),0.2),mat.steenAO);
+  zuilVoet.position.set(fx,0.72,fz);voeg(zuilVoet);
+  const zuil=new THREE.Mesh(zetAO(new THREE.CylinderGeometry(0.26,0.34,0.95,8),0.95),mat.steenAO);
+  zuil.position.set(fx,1.28,fz);voeg(zuil);
+  const kapiteel=new THREE.Mesh(zetAO(new THREE.CylinderGeometry(0.38,0.28,0.12,8),0.12),mat.steenAO);
+  kapiteel.position.set(fx,1.78,fz);voeg(kapiteel);
+  const dop=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,8),mat.zandsteen);
+  dop.position.set(fx,1.92,fz);dop.scale.set(1,0.68,1);voeg(dop);
+  const pin=new THREE.Mesh(new THREE.SphereGeometry(0.055,10,8),mat.leisteen);
+  pin.position.set(fx,2.04,fz);voeg(pin);
+  const mos=new THREE.MeshLambertMaterial({map:T.haag,color:0x6a9a38});
+  [[-0.22,0.18],[0.2,-0.16],[0.08,0.26]].forEach(([dx,dz],i)=>{
+    const m=new THREE.Mesh(new THREE.SphereGeometry(0.09,7,5),mos);
+    m.position.set(fx+dx,0.82,fz+dz);m.scale.set(1.3,0.28,0.9);voeg(m);
+  });
+  schijf(mat.schaduw,fx,fz,1.15);
+  solid(fx,fz,1.15,1.15,2.15);
 
-
-  // sproeibogen: meerdere banen druppels van de snuit naar het bassin
-  const NBOOG=2, NDRUP=6;
-  const druppels=[];
-  for(let a=0;a<NBOOG;a++){
-    for(let i=0;i<NDRUP;i++){
-      const d=new THREE.Mesh(new THREE.SphereGeometry(0.035,6,5),mat.druppel.clone());
-      d.userData={boog:a,fase:(i/NDRUP)+a*0.12};
+  const NKOP=4, NDRUP=5;
+  const monden=[], stralen=[], druppels=[], spatten=[];
+  for(let i=0;i<NKOP;i++){
+    const a=i*Math.PI/2, rad=0.34, y=1.32;
+    const kop=steenKop();
+    kop.position.set(fx+Math.sin(a)*rad,y,fz+Math.cos(a)*rad);
+    kop.rotation.y=a;voeg(kop);
+    const mond=new THREE.Vector3(fx+Math.sin(a)*(rad+0.23),y-0.04,fz+Math.cos(a)*(rad+0.23));
+    const mid=new THREE.Vector3(fx+Math.sin(a)*0.78,y+0.4,fz+Math.cos(a)*0.78);
+    const land=new THREE.Vector3(fx+Math.sin(a)*1.18,0.80,fz+Math.cos(a)*1.18);
+    monden.push({mond,mid,land});
+    const straal=new THREE.Mesh(new THREE.TubeGeometry(new THREE.QuadraticBezierCurve3(mond,mid,land),16,0.02,6,false),mat.druppel.clone());
+    straal.material.opacity=0.68;voeg(straal);stralen.push(straal);
+    for(let k=0;k<NDRUP;k++){
+      const d=new THREE.Mesh(new THREE.SphereGeometry(0.028,6,5),mat.druppel.clone());
+      d.userData={kop:i,fase:(k/NDRUP)+i*0.08};
       voeg(d);druppels.push(d);
     }
-  }
-  const spatten=[];
-  for(let i=0;i<8;i++){
-    const s=new THREE.Mesh(new THREE.TorusGeometry(0.07,0.012,5,10),mat.druppel.clone());
+    const s=new THREE.Mesh(new THREE.TorusGeometry(0.08,0.012,5,12),mat.druppel.clone());
     s.rotation.x=Math.PI/2;s.visible=false;voeg(s);spatten.push(s);
   }
-  const straalKromme=new THREE.QuadraticBezierCurve3(
-    new THREE.Vector3(mondX,mondY,mondZ),
-    new THREE.Vector3(mondX+0.45,mondY+0.55,mondZ),
-    new THREE.Vector3(mondX+1.15,0.3,mondZ)
-  );
-  const straal=new THREE.Mesh(new THREE.TubeGeometry(straalKromme,14,0.028,6,false),mat.druppel.clone());
-  straal.material.opacity=0.7;
-  voeg(straal);
-  function zetStraal(){
-    const kromme=new THREE.QuadraticBezierCurve3(
-      new THREE.Vector3(mondX,mondY,mondZ),
-      new THREE.Vector3(mondX+0.45,mondY+0.55,mondZ),
-      new THREE.Vector3(mondX+1.15,0.3,mondZ)
-    );
-    if(straal.geometry)straal.geometry.dispose();
-    straal.geometry=new THREE.TubeGeometry(kromme,14,0.028,6,false);
-  }
-
-  const zuilDrup=[];
-  [[0.42,0.18],[0.28,-0.22],[0.50,0.0],[0.20,0.32]].forEach(([dx,dz],i)=>{
-    const d=new THREE.Mesh(new THREE.SphereGeometry(0.042,5,4),mat.druppel.clone());
-    d.userData={fase:i*0.22,ox:fx+dx,oz:fz+dz};
-    voeg(d);zuilDrup.push(d);
-  });
-  [[0.46,0.12],[0.38,-0.16]].forEach(([dx,dz])=>{
-    const tr=new THREE.Mesh(new THREE.CylinderGeometry(0.012,0.02,0.62,5),mat.druppel.clone());
-    tr.position.set(fx+dx,0.64,fz+dz);tr.material.opacity=0.5;voeg(tr);
-  });
 
   // houten brug met stenen dek en treden, over de beek
   const brug=new THREE.Group();brug.position.set(0,0,9.7);world.add(brug);
@@ -1273,59 +1499,15 @@
     lunaKlaar=true;
   }
 
-  function plaatsGargoyle(gltf){
-    const root=gltf.scene;
-    function kleurGargoyle(obj,tex){
-      obj.traverse(o=>{
-        if(!o.isMesh)return;
-        o.frustumCulled=false;
-        o.material=new THREE.MeshLambertMaterial({
-          map:tex||null,
-          color:0xffffff,
-          emissive:0x8a9098,
-          emissiveIntensity:0.32,
-          side:THREE.FrontSide
-        });
-        if(o.material.vertexColors)o.material.vertexColors=false;
-      });
-    }
-    kleurGargoyle(root,steenTex);
-    gargRoot=root;
-    root.updateMatrixWorld(true);
-    const box=new THREE.Box3().setFromObject(root);
-    const h=Math.max(0.2,box.max.y-box.min.y);
-    root.scale.setScalar(0.95/h);
-    root.updateMatrixWorld(true);
-    const box2=new THREE.Box3().setFromObject(root);
-    root.position.y-=box2.min.y;
-    // zet de zitplek (niet de snuit) op het midden van de zuil
-    const voeten=new THREE.Vector3((box2.min.x+box2.max.x)*0.5,0,box2.min.z+0.22);
-    root.position.x-=voeten.x;
-    root.position.z-=voeten.z;
-    fig.add(root);
-    root.updateMatrixWorld(true);
-    let maxZ=-1e9;
-    const mout=new THREE.Vector3(),tmpV=new THREE.Vector3(),loc=new THREE.Vector3();
-    root.traverse(o=>{
-      if(!o.isMesh||!o.geometry||!o.geometry.attributes||!o.geometry.attributes.position)return;
-      const pos=o.geometry.attributes.position;
-      for(let i=0;i<pos.count;i++){
-        tmpV.fromBufferAttribute(pos,i);
-        o.localToWorld(tmpV);
-        loc.copy(tmpV);fig.worldToLocal(loc);
-        if(loc.z>maxZ){maxZ=loc.z;mout.copy(tmpV)}
-      }
-    });
-    if(maxZ>-1e8){mondX=mout.x;mondY=mout.y;mondZ=mout.z;if(typeof zetStraal==='function')zetStraal()}
-    gargKlaar=true;
-  }
-
   const mark=new THREE.Mesh(new THREE.RingGeometry(0.22,0.34,16),new THREE.MeshBasicMaterial({color:0xe6c25a,transparent:true,opacity:0.85,side:THREE.DoubleSide,depthWrite:false}));
   mark.rotation.x=-Math.PI/2;mark.visible=false;scene.add(mark);
 
-  const camOff=new THREE.Vector3(0.52,1.85,-5.15);
+  const camOff=new THREE.Vector3(0.52,1.85,-5.2);
   const kijkVooruit=1.7;
-  const CAM_MIN=3.2,CAM_MIN_Y=1.5;
+  const CAM_MIN=4.0,CAM_MIN_Y=1.5;
+  let camYaw=0,camPitch=0;
+  const CAM_PITCH_MIN=-0.22,CAM_PITCH_MAX=0.5;
+  function camHoek(){return held.rotation.y+camYaw}
   const camPos=new THREE.Vector3(0,2.6,2.0);
   const CAM_ZOEK=new THREE.Vector3();
   const LOOK_CAM=new THREE.Vector3();
@@ -1380,15 +1562,13 @@
 
   const ray=new THREE.Raycaster();
   const muis=new THREE.Vector2();
-  const grondHits=[grond,plein,brugVlak,aanloop];
-  function tik(ev){
-    if(naarBinnen)return;
-    if(ev.target&&ev.target.closest&&ev.target.closest('a,button,#nowebgl,#overgang,#loopstok,#laden'))return;
-    eersteTikGeluid();
-    ev.preventDefault&&ev.preventDefault();
+  loopVlakken.push(brugVlak);
+  const grondHits=loopVlakken;
+  function tikWalk(ev){
     const r=canvas.getBoundingClientRect();
-    const cx=ev.clientX??(ev.touches&&ev.touches[0].clientX);
-    const cy=ev.clientY??(ev.touches&&ev.touches[0].clientY);
+    const cx=ev.clientX??(ev.touches&&ev.touches[0]&&ev.touches[0].clientX);
+    const cy=ev.clientY??(ev.touches&&ev.touches[0]&&ev.touches[0].clientY);
+    if(cx==null||cy==null)return;
     muis.x=((cx-r.left)/r.width)*2-1;
     muis.y=-((cy-r.top)/r.height)*2+1;
     ray.setFromCamera(muis,camera);
@@ -1398,10 +1578,7 @@
       if(hits.length&&hits[0].distance<16){naarDeur(wie.open);return}
     }
     const hits=ray.intersectObjects(grondHits.concat([bed]),true);
-    if(!hits.length){
-      // also try any mesh in world via a hidden walk-plane already = grond
-      return;
-    }
+    if(!hits.length)return;
     const p=hits[0].point;
     let x=p.x,z=p.z;
     if(bots(x,z,0.4)){
@@ -1414,10 +1591,53 @@
     }
     doel=new THREE.Vector3(x,0,z);
     mark.position.set(x,0.08,z);mark.visible=true;
-    lopen=true;
+    lopen=true;camVast=false;
     if(hintEl)hintEl.style.opacity='0.35';
   }
-  canvas.addEventListener('pointerdown',tik,{passive:false});
+  function pointerOpUi(ev){
+    return ev.target&&ev.target.closest&&ev.target.closest('a,button,#nowebgl,#overgang,#loopstok,#laden,#deurkaart');
+  }
+  function startKijk(ev){
+    if(naarBinnen)return;
+    if(pointerOpUi(ev))return;
+    if(stokAan&&ev.pointerId===stokId)return;
+    eersteTikGeluid();
+    ev.preventDefault&&ev.preventDefault();
+    kijkAan=true;kijkId=ev.pointerId;kijkSleep=false;
+    kijkX=ev.clientX;kijkY=ev.clientY;kijkStartX=ev.clientX;kijkStartY=ev.clientY;
+  }
+  function beweegKijk(ev){
+    if(!kijkAan||(kijkId!=null&&ev.pointerId!==kijkId))return;
+    ev.preventDefault&&ev.preventDefault();
+    const dx=ev.clientX-kijkX, dy=ev.clientY-kijkY;
+    kijkX=ev.clientX;kijkY=ev.clientY;
+    if(!kijkSleep && Math.hypot(ev.clientX-kijkStartX,ev.clientY-kijkStartY)>14){
+      kijkSleep=true;doel=null;mark.visible=false;
+    }
+    if(kijkSleep){
+      camYaw-=dx*0.0075;
+      camPitch=Math.max(CAM_PITCH_MIN,Math.min(CAM_PITCH_MAX,camPitch+dy*0.0055));
+      camCacheAan=false;camVast=false;
+    }
+  }
+  function losKijk(ev){
+    if(!kijkAan||(kijkId!=null&&ev.pointerId!==kijkId))return;
+    ev.preventDefault&&ev.preventDefault();
+    const wasSleep=kijkSleep;
+    kijkAan=false;kijkId=null;kijkSleep=false;
+    if(!wasSleep)tikWalk(ev);
+  }
+  canvas.addEventListener('pointerdown',startKijk,{passive:false});
+  window.addEventListener('pointermove',function(ev){
+    if(stokAan&&(stokId==null||ev.pointerId===stokId)){ev.preventDefault();zetStok(ev.clientX,ev.clientY);return}
+    beweegKijk(ev);
+  },{passive:false});
+  function pointerLos(ev){
+    if(stokAan&&(stokId==null||ev.pointerId===stokId)){ev.preventDefault();stokId=null;stopStok();if(!doel)lopen=false;return}
+    losKijk(ev);
+  }
+  window.addEventListener('pointerup',pointerLos,{passive:false});
+  window.addEventListener('pointercancel',pointerLos,{passive:false});
 
   function zetStok(cx,cy){
     if(!loopStok||!loopKnop)return;
@@ -1428,31 +1648,26 @@
     dx=dx/len*k*max;dy=dy/len*k*max;
     loopKnop.style.transform='translate('+dx+'px,'+dy+'px)';
     stokDx=dx/max;stokDz=-(dy/max);stokKracht=k;
+    // midden van de knop ingedrukt = vooruit lopen (camera-richting)
+    if(k<0.18){stokDx=0;stokDz=1;stokKracht=0.92}
   }
   function stopStok(){
     stokAan=false;stokKracht=0;stokDx=0;stokDz=0;
     if(loopKnop)loopKnop.style.transform='';
     if(loopStok)loopStok.classList.remove('aan');
   }
+  let stokId=null,kijkAan=false,kijkId=null,kijkSleep=false,kijkX=0,kijkY=0,kijkStartX=0,kijkStartY=0;
   if(loopStok){
     loopStok.addEventListener('pointerdown',function(ev){
       if(naarBinnen)return;
       eersteTikGeluid();
       ev.preventDefault();ev.stopPropagation();
       try{loopStok.setPointerCapture(ev.pointerId)}catch(e){}
-      stokAan=true;loopStok.classList.add('aan');
-      doel=null;mark.visible=false;
+      stokAan=true;stokId=ev.pointerId;loopStok.classList.add('aan');
+      doel=null;mark.visible=false;camVast=false;
       if(hintEl)hintEl.style.opacity='0.35';
       zetStok(ev.clientX,ev.clientY);
-    });
-    loopStok.addEventListener('pointermove',function(ev){
-      if(!stokAan)return;
-      ev.preventDefault();
-      zetStok(ev.clientX,ev.clientY);
-    });
-    function stokLos(ev){if(!stokAan)return;ev.preventDefault();stopStok();if(!doel)lopen=false}
-    loopStok.addEventListener('pointerup',stokLos);
-    loopStok.addEventListener('pointercancel',stokLos);
+    },{passive:false});
   }
 
   function dichtstDeur(){
@@ -1715,30 +1930,31 @@
   const klok=new THREE.Clock();
 
   function cameraPlek(out){
-    const facing=held.rotation.y;
+    const facing=camHoek();
     const sx=Math.sin(facing), cz=Math.cos(facing);
-    // camOff.z is negatief (achter), camOff.x is naar rechts over de schouder
+    const back=camOff.z*Math.cos(camPitch);
+    const hy=held.position.y+camOff.y+Math.sin(camPitch)*Math.abs(camOff.z)*0.65;
     out.set(
-      held.position.x+sx*camOff.z+cz*camOff.x,
-      held.position.y+camOff.y,
-      held.position.z+cz*camOff.z-sx*camOff.x
+      held.position.x+sx*back+cz*camOff.x,
+      hy,
+      held.position.z+cz*back-sx*camOff.x
     );
     return out;
   }
   function kijkPunt(out){
-    const facing=held.rotation.y;
+    const facing=camHoek();
     out.set(
       held.position.x+Math.sin(facing)*kijkVooruit,
-      held.position.y+1.15,
+      held.position.y+1.15+camPitch*0.85,
       held.position.z+Math.cos(facing)*kijkVooruit
     );
     return out;
   }
   function camOffset(out,lat,h,back){
-    const facing=held.rotation.y, sx=Math.sin(facing), cz=Math.cos(facing);
+    const facing=camHoek(), sx=Math.sin(facing), cz=Math.cos(facing);
     out.set(
       held.position.x+sx*back+cz*lat,
-      held.position.y+h,
+      held.position.y+h+Math.sin(camPitch)*Math.abs(back)*0.3,
       held.position.z+cz*back-sx*lat
     );
     return out;
@@ -1764,16 +1980,11 @@
     }
     return true;
   }
-  let camCacheAan=false,camHeldX=0,camHeldZ=0,camFacingWas=0;
-  function hoekVerschil(a,b){let d=a-b;while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;return d}
+  let camCacheAan=false;
   function zoekCamera(out){
     const kijk=kijkPunt(LOOK_CAM);
-    if(camCacheAan
-      && Math.abs(hoekVerschil(held.rotation.y,camFacingWas))<0.16
-      && Math.hypot(held.position.x-camHeldX,held.position.z-camHeldZ)<1.0
-      && camPadVrij(CAM_ZOEK.x,CAM_ZOEK.y,CAM_ZOEK.z,kijk)){
-      return out.copy(CAM_ZOEK);
-    }
+    cameraPlek(out);
+    if(camPadVrij(out.x,out.y,out.z,kijk))return out;
     const cands=[
       [camOff.x, camOff.y, camOff.z],
       [camOff.x*0.4, camOff.y, camOff.z],
@@ -1787,32 +1998,28 @@
     for(let i=0;i<cands.length;i++){
       const c=cands[i];
       camOffset(out,c[0],c[1],c[2]);
-      if(camPadVrij(out.x,out.y,out.z,kijk)){camCacheAan=true;camHeldX=held.position.x;camHeldZ=held.position.z;camFacingWas=held.rotation.y;return out;}
+      if(camPadVrij(out.x,out.y,out.z,kijk))return out;
     }
-    // ring: eerst bijna recht achter, dan opzij, op twee hoogtes en afstanden
-    const hx=held.position.x, hz=held.position.z, facing=held.rotation.y;
-    const dists=[6.4,5.4,4.5], hoogtes=[2.55,3.15,3.75];
+    const hx=held.position.x, hz=held.position.z, facing=camHoek();
+    const dists=[6.4,5.4,4.4], hoogtes=[2.55,3.15,3.75];
     const spreiding=[0,0.35,-0.35,0.7,-0.7,1.05,-1.05,1.4,-1.4,1.85,-1.85,2.4,-2.4];
     for(let d=0;d<dists.length;d++){
       for(let h=0;h<hoogtes.length;h++){
         for(let s=0;s<spreiding.length;s++){
           const a=facing+Math.PI+spreiding[s];
           out.set(hx+Math.sin(a)*dists[d], held.position.y+hoogtes[h], hz+Math.cos(a)*dists[d]);
-          if(camPadVrij(out.x,out.y,out.z,kijk)){camCacheAan=true;camHeldX=held.position.x;camHeldZ=held.position.z;camFacingWas=held.rotation.y;return out;}
+          if(camPadVrij(out.x,out.y,out.z,kijk))return out;
         }
       }
     }
-    // laatste redmiddel: hoger, op min. afstand, achter
     camOffset(out,0,4.2,-CAM_MIN);
     if(out.y<CAM_MIN_Y)out.y=CAM_MIN_Y;
-    camCacheAan=true;camHeldX=held.position.x;camHeldZ=held.position.z;camFacingWas=held.rotation.y;
     return out;
   }
   function volgCamera(dt){
     zoekCamera(CAM_ZOEK);
     const hx=held.position.x, hy=held.position.y+1.45, hz=held.position.z;
-    camPos.lerp(CAM_ZOEK,1-Math.exp(-4.2*dt));
-    // niet door het figuur of een muur heen interpoleren
+    camPos.lerp(CAM_ZOEK,1-Math.exp(-6.8*dt));
     if(Math.hypot(camPos.x-hx,camPos.y-hy,camPos.z-hz)<CAM_MIN-0.35 || botsCam(camPos.x,camPos.y,camPos.z)){
       camPos.copy(CAM_ZOEK);
     }
@@ -1825,12 +2032,10 @@
     const now=performance.now();
     let dt=Math.min(0.05,(now-laatste)/1000);laatste=now;
     const t=klok.getElapsedTime();
-    if(!naarBinnen && stokAan && stokKracht>0.18){
+    if(!naarBinnen && stokAan && stokKracht>0.08){
       lopen=true;doel=null;mark.visible=false;
-      camera.getWorldDirection(TMP);TMP.y=0;
-      if(TMP.lengthSq()<1e-6)TMP.set(Math.sin(held.rotation.y),0,Math.cos(held.rotation.y));
-      else TMP.normalize();
-      const fx=TMP.x,fz=TMP.z,wx=fz*stokDx+fx*stokDz,wz=(-fx)*stokDx+fz*stokDz;
+      const fx=Math.sin(held.rotation.y),fz=Math.cos(held.rotation.y);
+      const wx=fz*stokDx+fx*stokDz,wz=(-fx)*stokDx+fz*stokDz;
       const wl=Math.hypot(wx,wz)||1;
       const stap=snelheid*dt*stokKracht;
       const [nx,nz]=schuif(held.position.x,held.position.z,wx/wl*stap,wz/wl*stap);
@@ -1868,30 +2073,31 @@
       if(T.water){T.water.offset.x=t*0.09;T.water.offset.y=t*0.035}
       if(T.glinster){T.glinster.offset.x=-t*0.06;T.glinster.offset.y=t*0.08}
       if(T.rimpel){T.rimpel.offset.x=t*0.05;T.rimpel.offset.y=Math.sin(t*0.7)*0.03}
-      straal.scale.y=1+Math.sin(t*5)*0.12;straal.material.opacity=0.55+Math.sin(t*6)*0.15;
+      stralen.forEach((s,i)=>{
+        s.scale.set(1,1+Math.sin(t*5+i)*0.1,1);
+        s.material.opacity=0.5+Math.sin(t*6+i)*0.16;
+        if(licht)s.material.opacity*=0.7;
+      });
       const nDrup=licht?8:druppels.length;
       druppels.forEach((d,i)=>{
         if(i>=nDrup){d.visible=false;return}
         d.visible=true;
-        const u=(t*0.65+d.userData.fase)%1;
-        const spreid=(d.userData.boog-1)*0.32;
-        d.position.set(mondX+u*1.15, mondY+3.32*u-4.82*u*u, mondZ+spreid*u);
-        d.scale.setScalar(1.2-u*0.5);
+        const k=monden[d.userData.kop];
+        const u=(t*0.7+d.userData.fase)%1, iu=1-u;
+        d.position.set(
+          iu*iu*k.mond.x+2*iu*u*k.mid.x+u*u*k.land.x,
+          iu*iu*k.mond.y+2*iu*u*k.mid.y+u*u*k.land.y,
+          iu*iu*k.mond.z+2*iu*u*k.mid.z+u*u*k.land.z
+        );
+        d.scale.setScalar(1.15-u*0.45);
         d.material.opacity=0.9-u*0.55;
-        if(u>0.88 && spatten[d.userData.boog]){
-          const s=spatten[d.userData.boog];
+        if(u>0.88){
+          const s=spatten[d.userData.kop];
           s.visible=true;
-          s.position.set(d.position.x,0.3,d.position.z);
+          s.position.copy(k.land);s.position.y=0.82;
           s.scale.setScalar(0.7+(u-0.88)*9);
           s.material.opacity=0.55-(u-0.88)*4;
         }
-      });
-      zuilDrup.forEach(d=>{
-        const u=(t*0.55+d.userData.fase)%1;
-        d.visible=true;
-        d.position.set(d.userData.ox,0.95-u*0.68,d.userData.oz);
-        d.scale.setScalar(1.1-u*0.4);
-        d.material.opacity=0.85-u*0.5;
       });
       // haagzwaai uitgezet: te duur voor weinig winst
 
@@ -1989,7 +2195,7 @@
   function sluitLaden(){
     tuinKlaar=true;
     const el=$('laden');
-    if(el)el.hidden=true;
+    if(el){el.hidden=true;el.style.pointerEvents='none'}
     document.body.classList.remove('laden-bezig');
   }
   function laadTuinAssets(){
@@ -2013,6 +2219,12 @@
           if(kleur!=null)mat[naam].color.setHex(kleur);
           mat[naam].needsUpdate=true;
         }
+        if(naam==='pad'){
+          [mat.padSlijt,mat.padRand].forEach(function(m){if(m){m.map=tex;m.needsUpdate=true}});
+        }
+        if(naam==='zandsteen'){
+          [mat.steenAO,mat.steenInst,mat.kopSteen,mat.sokkel].forEach(function(m){if(m){m.map=tex;m.needsUpdate=true}});
+        }
       });
     }
     zetMat('gras','gras.webp',[18,20],0xffffff);
@@ -2020,7 +2232,7 @@
     zetMat('zandsteen','zandsteen.webp',[2.6,2.6],0xffffff);
     zetMat('sokkel','zandsteen.webp',[2,2],0xf2e2c4);
     zetMat('leisteen','leisteen.webp',[2,2],0xffffff);
-    zetMat('haag','haag.webp',[3,3],0xe8f6d0);
+    zetMat('haag','haag.webp',[3,3],0xffffff);
     tl.load(basis+'tex/haag.webp',function(tex){
       pbrMap(tex,[2.5,2.5]);
       haagMats.forEach(function(m){m.map=tex;m.needsUpdate=true});
@@ -2030,15 +2242,27 @@
     tl.load(basis+'tex/steen.webp',function(tex){
       pbrMap(tex,[1.8,1.8]);
       steenTex=tex;
-      if(gargRoot){
-        gargRoot.traverse(o=>{
-          if(!o.isMesh||!o.material)return;
-          o.material.map=tex;o.material.needsUpdate=true;
-        });
-      }
+      if(mat.kopSteen){mat.kopSteen.map=tex;mat.kopSteen.needsUpdate=true}
     });
+    function zetNormaal(naam,bestand,herhaal,schaal){
+      tl.load(basis+'tex/'+bestand,function(tex){
+        tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+        tex.magFilter=THREE.LinearFilter;
+        tex.minFilter=THREE.LinearMipmapLinearFilter;
+        tex.generateMipmaps=true;
+        if(herhaal)tex.repeat.set(herhaal[0],herhaal[1]);
+        if(THREE.NoColorSpace)tex.colorSpace=THREE.NoColorSpace;
+        const scl=new THREE.Vector2(schaal||0.7,schaal||0.7);
+        const lijst=naam==='pad'?[mat.pad,mat.padSlijt,mat.padRand]:[mat.zandsteen,mat.steenAO,mat.sokkel,mat.kopSteen];
+        lijst.forEach(function(m){
+          if(!m)return;
+          m.normalMap=tex;m.normalScale=scl;m.needsUpdate=true;
+        });
+      });
+    }
+    zetNormaal('pad','kassei-n.webp',[7,16],0.55);
     gl.load(basis+'luna.glb',plaatsLuna);
-    gl.load(basis+'gargoyle.glb',plaatsGargoyle);
+    gargKlaar=true;
     setTimeout(function(){
       if(!lunaKlaar)lunaKlaar=true;
       if(!gargKlaar)gargKlaar=true;
@@ -2056,7 +2280,7 @@
     const NAMED={
       poort:{x:0,z:6.8,y:0},
       pad:{x:0,z:8.2,y:0},
-      fontein:{x:-4.0,z:6.6,y:Math.atan2(-5.6-(-4.0),9.7-6.6)},
+      fontein:{x:-3.6,z:6.8,y:Math.atan2(-5.0-(-3.6),9.7-6.8)},
       brug:{x:0,z:9.7,y:0},
       deur:{x:0,z:26.4,y:0},
       kas:{x:0,z:26.4,y:0},
@@ -2082,6 +2306,8 @@
     licht:()=>licht,
     geladen:()=>!!(tuinKlaar&&lunaKlaar&&gargKlaar),
     pos:()=>({x:+held.position.x.toFixed(2),z:+held.position.z.toFixed(2),y:+held.position.y.toFixed(2)}),
+    cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3)}),
+    stok:()=>({aan:stokAan,kracht:+stokKracht.toFixed(2),dx:+stokDx.toFixed(2),dz:+stokDz.toFixed(2)}),
     close(kind){
       const hx=0,hz=9.0;
       held.position.set(hx,0,hz);zetHoogte();
@@ -2093,11 +2319,11 @@
         camera.position.set(0.15,1.48,hz-1.95);
         camera.lookAt(0,1.38,hz);
         zetAnim('idle');if(mixer)mixer.update(0.3);
-      }else if(kind==='gargoyle'){
-        held.position.set(0,0,6.8);zetHoogte();
-        held.rotation.y=0.4;
-        camera.position.set(-3.35,1.45,7.45);
-        camera.lookAt(-5.2,1.45,9.7);
+      }else if(kind==='gargoyle'||kind==='fontein'){
+        held.position.set(-2.15,0,6.35);zetHoogte();
+        held.rotation.y=-0.35;
+        camera.position.set(-3.55,1.72,6.85);
+        camera.lookAt(-5.0,1.05,9.7);
       }else if(kind==='loop'){
         held.rotation.y=0.62;lopen=true;loopT=0.28;
         zetAnim('walk');if(mixer)mixer.update(0.34);
@@ -2116,6 +2342,7 @@
     naarDeur,
     melding:(id)=>naarDeur(id||'kas',{geenNav:true}),
     sluitMelding:()=>{if(overgang){overgang.classList.remove('aan');overgang.hidden=true}naarBinnen=false},
-    geluidBronnen:()=>Object.assign({},geluidBronnen)
+    geluidBronnen:()=>Object.assign({},geluidBronnen),
+    kijkNaar(px,py,pz,lx,ly,lz){camVast=true;if(hintEl)hintEl.style.opacity='0';camera.position.set(px,py,pz);camera.lookAt(lx,ly,lz);renderer.render(scene,camera)}
   };
 })();
