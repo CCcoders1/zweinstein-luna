@@ -1,4 +1,4 @@
-/* v169: 3D-testtuin, HP1-sfeer. Zachte stenen muren, staf in de palm. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v170: 3D-testtuin, HP1-sfeer. Camera-yaw los van lopen; joystick t.o.v. vaste camerahoek. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -1549,7 +1549,15 @@
   const CAM_MIN=4.0,CAM_MIN_Y=1.5;
   let camYaw=0,camPitch=0;
   const CAM_PITCH_MIN=-0.22,CAM_PITCH_MAX=0.5;
-  function camHoek(){return held.rotation.y+camYaw}
+  function camHoek(){return camYaw}
+  function wikkelYaw(a){
+    while(a>Math.PI)a-=Math.PI*2;while(a<-Math.PI)a+=Math.PI*2;
+    return a;
+  }
+  function trekYaw(naar,k){
+    let d=wikkelYaw(naar-camYaw);
+    camYaw=wikkelYaw(camYaw+d*k);
+  }
   const camPos=new THREE.Vector3(0,2.6,2.0);
   const CAM_ZOEK=new THREE.Vector3();
   const LOOK_CAM=new THREE.Vector3();
@@ -1627,7 +1635,7 @@
     const cx=ev.clientX??(ev.touches&&ev.touches[0]&&ev.touches[0].clientX);
     const cy=ev.clientY??(ev.touches&&ev.touches[0]&&ev.touches[0].clientY);
     if(cx==null||cy==null)return;
-    if(inStokZone(cx,cy))return;
+    if(inStokZone(cx,cy)||performance.now()<stokTot)return;
     muis.x=((cx-r.left)/r.width)*2-1;
     muis.y=-((cy-r.top)/r.height)*2+1;
     ray.setFromCamera(muis,camera);
@@ -1651,7 +1659,6 @@
     if(pointerOpUi(ev))return;
     if(stokAan&&ev.pointerId===stokId)return;
     if(ev.pointerId===stokId)return;
-    if(performance.now()<stokTot)return;
     if(inStokZone(ev.clientX,ev.clientY))return;
     eersteTikGeluid();
     ev.preventDefault&&ev.preventDefault();
@@ -1661,13 +1668,14 @@
   function beweegKijk(ev){
     if(!kijkAan||(kijkId!=null&&ev.pointerId!==kijkId))return;
     ev.preventDefault&&ev.preventDefault();
-    const dx=ev.clientX-kijkX, dy=ev.clientY-kijkY;
+    const dx=Math.max(-80,Math.min(80,ev.clientX-kijkX));
+    const dy=Math.max(-80,Math.min(80,ev.clientY-kijkY));
     kijkX=ev.clientX;kijkY=ev.clientY;
     if(!kijkSleep && Math.hypot(ev.clientX-kijkStartX,ev.clientY-kijkStartY)>14){
       kijkSleep=true;doel=null;mark.visible=false;
     }
     if(kijkSleep){
-      camYaw-=dx*0.0075;
+      camYaw=wikkelYaw(camYaw-dx*0.0075);
       camPitch=Math.max(CAM_PITCH_MIN,Math.min(CAM_PITCH_MAX,camPitch+dy*0.0055));
       camCacheAan=false;camVast=false;
     }
@@ -1692,11 +1700,18 @@
       if(!doel)lopen=false;
       return;
     }
-    if(ev.pointerId===stokId||performance.now()<stokTot)return;
+    if(ev.pointerId===stokId)return;
     losKijk(ev);
   }
   window.addEventListener('pointerup',pointerLos,{passive:false});
   window.addEventListener('pointercancel',pointerLos,{passive:false});
+  window.addEventListener('lostpointercapture',pointerLos,{passive:false});
+  function forceerLos(){
+    if(stokAan){stokId=null;stopStok();if(!doel)lopen=false}
+    if(kijkAan){kijkAan=false;kijkId=null;kijkSleep=false}
+  }
+  window.addEventListener('blur',forceerLos);
+  document.addEventListener('visibilitychange',function(){if(document.hidden)forceerLos()});
 
   function zetStok(cx,cy){
     if(!loopStok||!loopKnop)return;
@@ -1707,7 +1722,7 @@
     dx=dx/len*k*max;dy=dy/len*k*max;
     loopKnop.style.transform='translate('+dx+'px,'+dy+'px)';
     stokDx=dx/max;stokDz=-(dy/max);stokKracht=k;
-    // midden van de knop ingedrukt = vooruit lopen (camera-richting)
+    // midden van de knop ingedrukt = vooruit lopen (vaste camera-richting)
     if(k<0.18){stokDx=0;stokDz=1;stokKracht=0.92}
   }
   function stopStok(){
@@ -2095,16 +2110,20 @@
     const t=klok.getElapsedTime();
     if(!naarBinnen && stokAan && stokKracht>0.08){
       lopen=true;doel=null;mark.visible=false;
-      const fx=Math.sin(held.rotation.y),fz=Math.cos(held.rotation.y);
+      // richting t.o.v. de camerahoek (niet t.o.v. Luna), zodat de camera niet meedraait
+      const fx=Math.sin(camYaw),fz=Math.cos(camYaw);
       const wx=fz*stokDx+fx*stokDz,wz=(-fx)*stokDx+fz*stokDz;
       const wl=Math.hypot(wx,wz)||1;
       const stap=snelheid*dt*stokKracht;
       const [nx,nz]=schuif(held.position.x,held.position.z,wx/wl*stap,wz/wl*stap);
       held.position.x=nx;held.position.z=nz;
       const gewenst=Math.atan2(wx,wz);
-      let d=gewenst-held.rotation.y;
-      while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;
-      held.rotation.y+=d*Math.min(1,10*dt);
+      let d=wikkelYaw(gewenst-held.rotation.y);
+      held.rotation.y=wikkelYaw(held.rotation.y+d*Math.min(1,10*dt));
+      // alleen bij bijna recht vooruit: camera langzaam weer achter haar
+      if(!kijkSleep && stokDz>0.62 && Math.abs(stokDx)<0.28){
+        trekYaw(held.rotation.y,1-Math.exp(-1.1*dt));
+      }
       loopT+=dt;
     }else if(lopen&&doel&&!naarBinnen){
       const dx=doel.x-held.position.x,dz=doel.z-held.position.z;
@@ -2120,9 +2139,9 @@
         else{
           held.position.x=nx;held.position.z=nz;
           const gewenst=Math.atan2(dx,dz);
-          let d=gewenst-held.rotation.y;
-          while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;
-          held.rotation.y+=d*Math.min(1,10*dt);
+          let d=wikkelYaw(gewenst-held.rotation.y);
+          held.rotation.y=wikkelYaw(held.rotation.y+d*Math.min(1,10*dt));
+          if(!kijkSleep)trekYaw(held.rotation.y,1-Math.exp(-2.2*dt));
           loopT+=dt;
         }
       }
@@ -2371,6 +2390,7 @@
     const P=(plek&&typeof plek==='object'&&'x' in plek)?plek:(NAMED[plek]||{x:0,z:5.6,y:0});
     held.position.set(P.x,0,P.z);
     held.rotation.y=P.y;
+    camYaw=P.y;camPitch=0;
     zetHoogte();
     lopen=false;doel=null;doelDeur=null;mark.visible=false;stopStok();
     camVast=false;camCacheAan=false;
@@ -2387,7 +2407,7 @@
     licht:()=>licht,
     geladen:()=>!!(tuinKlaar&&lunaKlaar&&gargKlaar),
     pos:()=>({x:+held.position.x.toFixed(2),z:+held.position.z.toFixed(2),y:+held.position.y.toFixed(2)}),
-    cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3)}),
+    cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3),rot:+held.rotation.y.toFixed(3)}),
     stok:()=>({aan:stokAan,kracht:+stokKracht.toFixed(2),dx:+stokDx.toFixed(2),dz:+stokDz.toFixed(2)}),
     botten(){
       const out={names:[],wrist:null,axes:null,staf:null,tip:null};

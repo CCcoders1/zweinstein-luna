@@ -299,3 +299,5 @@ v169 — 3D-tuin
   bestaande zandsteen / zandsteen-n (Bricks083, ambientCG, CC0 1.0).
   Staf: zelfgemaakt houten stokje met klein goudpunt, in de rechterpalm
   van het Quaternius-model (zie luna.glb hierboven).
+
+  v170: camerahoek los van looprichting; joystick beweegt t.o.v. een vaste camerahoek.
