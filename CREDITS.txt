@@ -318,3 +318,15 @@ v173 — 3D-tuin
   vuurvliegjes of fakkellichten. Hagen: contrast van de bestaande
   Moss003-kaart (ambientCG, CC0 1.0), verder zelfgemaakte canvas-
   texturen. Geen HDRI, geen EA/Warner.
+
+v174 — 3D-tuin
+  Bladrijke zelfgemaakte haagtextuur met donkere gaten en lichte
+  bladclusters, plus instanced alpha-bladkaarten. Vierkante
+  zandstenen pilaren met kap. Zelfgetekend smeedijzeren hek en
+  open boog (canvas, geen EA/Warner). Stapelwolken op de blauwe
+  luchtkoepel (geen HDRI). Dieper gazon met maaistrepen, bewerking
+  van Grass004 (ambientCG, CC0 1.0). Warm bruin zandsteen voor
+  muren en pilaren. Wit/neutraal zonlicht. Fonteinrand zonder
+  gestrekte steenkaart. Moss003 (haag.webp) wordt niet meer op
+  de hagen gebruikt, blijft wel in de map voor eerdere credits.
+  Geen EA/Warner-modellen of -audio in de repo.
