@@ -1,4 +1,4 @@
-/* v170: 3D-testtuin, HP1-sfeer. Camera-yaw los van lopen; joystick t.o.v. vaste camerahoek. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v171: 3D-testtuin, HP1-sfeer. Camerahoek alleen via slepen; joystick t.o.v. vaste camerahoek. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -6,6 +6,10 @@
   const hintEl = $('hint');
   const fpsEl = $('fps');
   const deurKaart = $('deurkaart');
+  const debugAan=/\bdebug=1\b/.test(location.search||'');
+  const debugEl=$('tuindebug');
+  if(debugAan){document.body.classList.add('debug');if(debugEl)debugEl.hidden=false}
+
   const deurBtn = $('deurbtn');
   const overgang = $('overgang');
   const noGl = $('nowebgl');
@@ -1554,10 +1558,6 @@
     while(a>Math.PI)a-=Math.PI*2;while(a<-Math.PI)a+=Math.PI*2;
     return a;
   }
-  function trekYaw(naar,k){
-    let d=wikkelYaw(naar-camYaw);
-    camYaw=wikkelYaw(camYaw+d*k);
-  }
   const camPos=new THREE.Vector3(0,2.6,2.0);
   const CAM_ZOEK=new THREE.Vector3();
   const LOOK_CAM=new THREE.Vector3();
@@ -1652,22 +1652,49 @@
     if(hintEl)hintEl.style.opacity='0.35';
   }
   function pointerOpUi(ev){
-    return ev.target&&ev.target.closest&&ev.target.closest('a,button,#nowebgl,#overgang,#loopstok,#laden,#deurkaart');
+    return ev.target&&ev.target.closest&&ev.target.closest('a,button,#nowebgl,#overgang,#loopstok,#laden,#deurkaart,#camreset,#tuindebug');
+  }
+  const wijzers=new Map();
+  let laatTouch=0;
+  function merkWijzer(ev,rol){
+    if(!ev)return;
+    if(ev.pointerType&&ev.pointerType!=='mouse')laatTouch=performance.now();
+    if(ev.type==='pointerup'||ev.type==='pointercancel'||ev.type==='lostpointercapture'){
+      wijzers.delete(ev.pointerId);return;
+    }
+    wijzers.set(ev.pointerId,{
+      id:ev.pointerId,typ:ev.pointerType||'?',
+      rol:rol||(ev.pointerId===stokId?'stok':(ev.pointerId===kijkId?(kijkSleep?'kijk-sleep':'kijk'):'los')),
+      x:Math.round(ev.clientX||0),y:Math.round(ev.clientY||0)
+    });
+  }
+  function negeerMuis(ev){
+    if(!ev||ev.pointerType!=='mouse')return false;
+    if(performance.now()<laatTouch+800)return true;
+    if(stokAan&&stokId!=null&&ev.pointerId!==stokId)return true;
+    if(kijkAan&&kijkId!=null&&ev.pointerId!==kijkId)return true;
+    return false;
   }
   function startKijk(ev){
     if(naarBinnen)return;
+    if(negeerMuis(ev))return;
     if(pointerOpUi(ev))return;
     if(stokAan&&ev.pointerId===stokId)return;
     if(ev.pointerId===stokId)return;
     if(inStokZone(ev.clientX,ev.clientY))return;
+    if(ev.target&&ev.target.closest&&ev.target.closest('#loopstok'))return;
     eersteTikGeluid();
     ev.preventDefault&&ev.preventDefault();
     kijkAan=true;kijkId=ev.pointerId;kijkSleep=false;
     kijkX=ev.clientX;kijkY=ev.clientY;kijkStartX=ev.clientX;kijkStartY=ev.clientY;
+    merkWijzer(ev,'kijk');
+    try{canvas.setPointerCapture(ev.pointerId)}catch(e){}
   }
   function beweegKijk(ev){
+    if(negeerMuis(ev)&&ev.pointerId!==kijkId)return;
     if(!kijkAan||(kijkId!=null&&ev.pointerId!==kijkId))return;
     ev.preventDefault&&ev.preventDefault();
+    merkWijzer(ev,kijkSleep?'kijk-sleep':'kijk');
     const dx=Math.max(-80,Math.min(80,ev.clientX-kijkX));
     const dy=Math.max(-80,Math.min(80,ev.clientY-kijkY));
     kijkX=ev.clientX;kijkY=ev.clientY;
@@ -1690,11 +1717,13 @@
   canvas.addEventListener('pointerdown',startKijk,{passive:false});
   canvas.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation()},{capture:true});
   window.addEventListener('pointermove',function(ev){
-    if(stokAan&&(stokId==null||ev.pointerId===stokId)){ev.preventDefault();zetStok(ev.clientX,ev.clientY);return}
+    if(negeerMuis(ev)&&ev.pointerId!==stokId&&ev.pointerId!==kijkId)return;
+    if(stokAan&&(stokId==null||ev.pointerId===stokId)){ev.preventDefault();merkWijzer(ev,'stok');zetStok(ev.clientX,ev.clientY);return}
     if(ev.pointerId===stokId)return;
     beweegKijk(ev);
   },{passive:false});
   function pointerLos(ev){
+    merkWijzer(ev);
     if(stokAan&&(stokId==null||ev.pointerId===stokId)){
       ev.preventDefault();stokTot=performance.now()+500;stokId=null;stopStok();
       if(!doel)lopen=false;
@@ -1722,8 +1751,12 @@
     dx=dx/len*k*max;dy=dy/len*k*max;
     loopKnop.style.transform='translate('+dx+'px,'+dy+'px)';
     stokDx=dx/max;stokDz=-(dy/max);stokKracht=k;
-    // midden van de knop ingedrukt = vooruit lopen (vaste camera-richting)
-    if(k<0.18){stokDx=0;stokDz=1;stokKracht=0.92}
+    // midden van de knop (dode zone) = vooruit lopen, zonder zijwaartse drift
+    if(k<0.20){stokDx=0;stokDz=1;stokKracht=0.92;return}
+    // bijna recht omhoog/omlaag (±12°) klemt op recht vooruit of achteruit
+    const ang=Math.atan2(stokDx,stokDz),snap=Math.PI*12/180;
+    if(Math.abs(ang)<snap){stokDx=0;stokDz=k}
+    else if(Math.abs(Math.abs(ang)-Math.PI)<snap){stokDx=0;stokDz=-k}
   }
   function stopStok(){
     stokAan=false;stokKracht=0;stokDx=0;stokDz=0;
@@ -1738,12 +1771,37 @@
       ev.preventDefault();ev.stopPropagation();
       try{loopStok.setPointerCapture(ev.pointerId)}catch(e){}
       stokAan=true;stokId=ev.pointerId;loopStok.classList.add('aan');
+      merkWijzer(ev,'stok');
       doel=null;doelDeur=null;mark.visible=false;camVast=false;
       if(kijkAan&&kijkId===ev.pointerId){kijkAan=false;kijkId=null}
       stokTot=performance.now()+800;
       if(hintEl)hintEl.style.opacity='0.35';
       zetStok(ev.clientX,ev.clientY);
     },{passive:false});
+  }
+
+  function zetCameraAchter(){
+    camYaw=wikkelYaw(held.rotation.y);
+    camPitch=0;
+    camCacheAan=false;camVast=false;
+  }
+  const camResetBtn=$('camreset');
+  if(camResetBtn){
+    camResetBtn.addEventListener('pointerdown',function(ev){
+      ev.preventDefault();ev.stopPropagation();
+    },{passive:false});
+    camResetBtn.addEventListener('click',function(ev){
+      ev.preventDefault();ev.stopPropagation();
+      zetCameraAchter();
+    });
+  }
+  function tekenDebug(){
+    if(!debugAan||!debugEl)return;
+    const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
+    debugEl.textContent='v171  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
+      'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
+      'kijk '+(kijkAan?'AAN':'uit')+(kijkSleep?' SLEEP':'')+'  id '+(kijkId==null?'-':kijkId)+'\n'+
+      'pointers '+ptrs;
   }
 
   function dichtstDeur(){
@@ -2120,10 +2178,6 @@
       const gewenst=Math.atan2(wx,wz);
       let d=wikkelYaw(gewenst-held.rotation.y);
       held.rotation.y=wikkelYaw(held.rotation.y+d*Math.min(1,10*dt));
-      // alleen bij bijna recht vooruit: camera langzaam weer achter haar
-      if(!kijkSleep && stokDz>0.62 && Math.abs(stokDx)<0.28){
-        trekYaw(held.rotation.y,1-Math.exp(-1.1*dt));
-      }
       loopT+=dt;
     }else if(lopen&&doel&&!naarBinnen){
       const dx=doel.x-held.position.x,dz=doel.z-held.position.z;
@@ -2141,7 +2195,6 @@
           const gewenst=Math.atan2(dx,dz);
           let d=wikkelYaw(gewenst-held.rotation.y);
           held.rotation.y=wikkelYaw(held.rotation.y+d*Math.min(1,10*dt));
-          if(!kijkSleep)trekYaw(held.rotation.y,1-Math.exp(-2.2*dt));
           loopT+=dt;
         }
       }
@@ -2244,6 +2297,7 @@
     if(!camVast)volgCamera(dt);
     zetDeurKaart();
     renderer.render(scene,camera);
+    tekenDebug();
     frames++;
     if(now-tFps>=1000){
       fps=Math.round(frames*1000/(now-tFps));
@@ -2409,6 +2463,13 @@
     pos:()=>({x:+held.position.x.toFixed(2),z:+held.position.z.toFixed(2),y:+held.position.y.toFixed(2)}),
     cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3),rot:+held.rotation.y.toFixed(3)}),
     stok:()=>({aan:stokAan,kracht:+stokKracht.toFixed(2),dx:+stokDx.toFixed(2),dz:+stokDz.toFixed(2)}),
+    camReset:zetCameraAchter,
+    debug:()=>({
+      camYaw:+camYaw.toFixed(4),heading:+held.rotation.y.toFixed(4),pitch:+camPitch.toFixed(4),
+      stok:{aan:stokAan,dx:+stokDx.toFixed(3),dz:+stokDz.toFixed(3),kracht:+stokKracht.toFixed(3),id:stokId},
+      kijk:{aan:kijkAan,sleep:kijkSleep,id:kijkId},
+      pointers:[...wijzers.values()]
+    }),
     botten(){
       const out={names:[],wrist:null,axes:null,staf:null,tip:null};
       held.traverse(o=>{

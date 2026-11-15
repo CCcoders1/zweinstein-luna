@@ -301,3 +301,5 @@ v169 — 3D-tuin
   van het Quaternius-model (zie luna.glb hierboven).
 
   v170: camerahoek los van looprichting; joystick beweegt t.o.v. een vaste camerahoek.
+
+  v171: camerahoek verandert alleen nog bij slepen; dode zone en 12°-klem op de joystick.
