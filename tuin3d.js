@@ -1,4 +1,4 @@
-/* v185: gebakken vertexlicht, Lambert i.p.v. Phong, normalen alleen in volle kwaliteit, afstandsculling, stapstof, vondsthint, tik op uil/kabouter. CC0/zelfgemaakt. */
+/* v186: soepelere camera, beter water (geanimeerde normalen, schuim, spiegeling). CC0/zelfgemaakt. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -355,6 +355,49 @@
         g.beginPath();g.moveTo(0,y);g.quadraticCurveTo(w*.5,y+(rnd(i+8)-.5)*8,w,y+(rnd(i+2)-.5)*6);g.stroke();
       }
     },64,64,{repeat:[4,2]}),
+    waterN: (function(){
+      const tx=cvTex((g,w,h)=>{
+        const img=g.createImageData(w,h),d=img.data;
+        function hgt(x,y){
+          const n1=Math.sin(x*0.19+y*0.07)*Math.cos(y*0.16+x*0.04);
+          const n2=Math.sin(x*0.41+1.3)*Math.cos(y*0.33+0.8);
+          const n3=Math.sin((x*0.71-y*0.29)+2.1)*0.45;
+          const n4=Math.sin(x*1.07+y*0.83)*0.18;
+          return n1*0.42+n2*0.28+n3*0.22+n4*0.12;
+        }
+        for(let y=0;y<h;y++){
+          for(let x=0;x<w;x++){
+            const dx=hgt(x+1,y)-hgt(x-1,y), dy=hgt(x,y+1)-hgt(x,y-1);
+            let nx=-dx,ny=-dy,nz=1,len=Math.hypot(nx,ny,nz)||1;
+            nx/=len;ny/=len;nz/=len;
+            const i=(y*w+x)*4;
+            d[i]=(nx*0.5+0.5)*255;
+            d[i+1]=(ny*0.5+0.5)*255;
+            d[i+2]=(nz*0.5+0.5)*255;
+            d[i+3]=255;
+          }
+        }
+        g.putImageData(img,0,0);
+      },128,128,{repeat:[3,2]});
+      if(THREE.NoColorSpace)tx.colorSpace=THREE.NoColorSpace;
+      return tx;
+    })(),
+    schuim: cvTex((g,w,h)=>{
+      g.clearRect(0,0,w,h);
+      for(let i=0;i<28;i++){
+        const y=rnd(i+2)*h, x=rnd(i+9)*w;
+        const grd=g.createRadialGradient(x,y,0,x,y,6+rnd(i)*10);
+        grd.addColorStop(0,'rgba(255,255,255,'+(0.55+rnd(i+3)*0.4)+')');
+        grd.addColorStop(1,'rgba(200,240,255,0)');
+        g.fillStyle=grd;g.beginPath();g.arc(x,y,8+rnd(i)*10,0,Math.PI*2);g.fill();
+      }
+      for(let i=0;i<14;i++){
+        g.strokeStyle='rgba(255,255,255,'+(0.18+rnd(i)*0.22)+')';
+        g.lineWidth=1+rnd(i+4)*1.4;
+        const y=rnd(i+11)*h;
+        g.beginPath();g.moveTo(0,y);g.quadraticCurveTo(w*.5,y+(rnd(i)-.5)*8,w,y+(rnd(i+2)-.5)*6);g.stroke();
+      }
+    },64,64,{repeat:[3,1]}),
     glinster: cvTex((g,w,h)=>{
       g.clearRect(0,0,w,h);
       for(let i=0;i<40;i++){
@@ -608,9 +651,10 @@
     sokkel: new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xe8d8b0}),
     ijzer: new THREE.MeshLambertMaterial({color:0x3c3c44,emissive:0x101018,emissiveIntensity:0.16}),
     grind: new THREE.MeshLambertMaterial({map:T.grind}),
-    water: new THREE.MeshLambertMaterial({map:T.water,color:0xb8fff0,transparent:true,opacity:0.92,depthWrite:false,emissive:0x1a8890,emissiveIntensity:0.32}),
+    water: new THREE.MeshPhongMaterial({map:T.water,normalMap:T.waterN,normalScale:new THREE.Vector2(0.45,0.45),color:0x8ed8d4,transparent:true,opacity:0.88,depthWrite:false,emissive:0x0e4e58,emissiveIntensity:0.14,specular:0x8ec8c8,shininess:36,fog:true}),
+    schuim: new THREE.MeshBasicMaterial({map:T.schuim,color:0xe8f4f8,transparent:true,opacity:0.34,depthWrite:false,side:THREE.DoubleSide,fog:true}),
     rimpel: new THREE.MeshBasicMaterial({map:T.rimpel,transparent:true,opacity:0.35,depthWrite:false,side:THREE.DoubleSide}),
-    glinster: new THREE.MeshBasicMaterial({map:T.glinster,transparent:true,opacity:0.7,depthWrite:false,side:THREE.DoubleSide}),
+    glinster: new THREE.MeshBasicMaterial({map:T.glinster,transparent:true,opacity:0.32,depthWrite:false,side:THREE.DoubleSide}),
     wolk: new THREE.MeshBasicMaterial({map:T.wolk,transparent:true,opacity:0.88,depthWrite:false,fog:false,side:THREE.DoubleSide,toneMapped:false}),
     rank: new THREE.MeshLambertMaterial({map:T.rank,alphaTest:0.32,side:THREE.DoubleSide}),
     nevel: new THREE.MeshBasicMaterial({map:T.nevel,transparent:true,opacity:0.65,depthWrite:false,fog:false,side:THREE.DoubleSide}),
@@ -668,7 +712,7 @@
   scene.background=new THREE.Color(0x2a62d4);
   scene.fog=new THREE.Fog(0x6a9ae0,90,170);
 
-  const camera=new THREE.PerspectiveCamera(56,innerWidth/Math.max(1,innerHeight),0.28,180);
+  const camera=new THREE.PerspectiveCamera(52,innerWidth/Math.max(1,innerHeight),0.28,180);
   const renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'high-performance'});
   renderer.setClearColor(0x2a62d4,1);
   if(THREE.ACESFilmicToneMapping!=null){
@@ -689,7 +733,7 @@
     return Math.min(k.cap,window.devicePixelRatio||1,Math.sqrt(k.pix/Math.max(1,w*h)));
   }
   function zetNormalen(aan){
-    const lijst=[mat.pad,mat.padSlijt,mat.padRand,mat.zandsteen,mat.steenAO,mat.sokkel,mat.kopSteen,mat.steenMuur];
+    const lijst=[mat.pad,mat.padSlijt,mat.padRand,mat.zandsteen,mat.steenAO,mat.sokkel,mat.kopSteen,mat.steenMuur,mat.water];
     lijst.forEach(function(m){
       if(!m)return;
       if(aan){
@@ -707,6 +751,11 @@
     if(renderer.toneMappingExposure!=null)renderer.toneMappingExposure=0.94+kwalTrap*0.03;
     if(typeof wolkInstO!=='undefined'&&wolkInstO)wolkInstO.visible=kwalTrap<2;
     zetNormalen(kwalTrap===0);
+    if(typeof waterVlakken!=='undefined'){
+      waterVlakken.forEach(function(m){
+        if(m&&m.material&&m.material.map===T.schuim)m.visible=kwalTrap<2;
+      });
+    }
   }
   function maat(){
     const w=innerWidth,h=Math.max(1,innerHeight);
@@ -1569,6 +1618,10 @@
     wv.rotation.x=-Math.PI/2;wv.position.set(x,0.78,z);voeg(wv);waterVlakken.push(wv);
     const gl=new THREE.Mesh(new THREE.CircleGeometry(r-0.08,24),mat.glinster);
     gl.rotation.x=-Math.PI/2;gl.position.set(x,0.80,z);voeg(gl);waterVlakken.push(gl);
+    const randSchuim=new THREE.Mesh(new THREE.RingGeometry(r-0.42,r-0.04,24),mat.schuim);
+    randSchuim.rotation.x=-Math.PI/2;randSchuim.position.set(x,0.815,z);voeg(randSchuim);waterVlakken.push(randSchuim);
+    const zuilSchuim=new THREE.Mesh(new THREE.RingGeometry(0.42,0.86,16),mat.schuim.clone());
+    zuilSchuim.rotation.x=-Math.PI/2;zuilSchuim.position.set(x,0.818,z);voeg(zuilSchuim);waterVlakken.push(zuilSchuim);
   })();
   waterBak(-3.15,9.7,2.0,1.35);
   waterBak(3.15,9.7,2.0,1.35);
@@ -2692,14 +2745,15 @@
   mark.rotation.x=-Math.PI/2;mark.visible=false;scene.add(mark);
 
   const camOff=new THREE.Vector3(0,0,-6.0);
-  const kijkVooruit=0.85;
+  const kijkVooruit=1.0;
   const CAM_MIN=3.2,CAM_MIN_Y=1.5;
-  const CAM_DIST=6.0;
-  const CAM_LOOK_Y=1.25;
+  const CAM_DIST=6.55;
+  const CAM_LOOK_Y=1.18;
+  const CAM_PITCH0=30*Math.PI/180;
   const CAM_PITCH_MIN=20*Math.PI/180,CAM_PITCH_MAX=40*Math.PI/180;
   const CAM_YAW_SNEL=Math.PI/2;
   const CAM_PITCH_SNEL=0.55;
-  let camYaw=0,camPitch=28*Math.PI/180;
+  let camYaw=0,camPitch=CAM_PITCH0;
   function camHoek(){return camYaw}
   function wikkelYaw(a){
     while(a>Math.PI)a-=Math.PI*2;while(a<-Math.PI)a+=Math.PI*2;
@@ -3010,7 +3064,7 @@
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
     const r=(renderer.info&&renderer.info.render)||{};
     const kwalNaam=['vol','midden','licht'][kwalTrap]||('k'+kwalTrap);
-    debugEl.textContent=fps+' fps  ·  '+kwalNaam+'  ·  '+(r.calls||0)+' calls  ·  '+Math.round((r.triangles||0)/1000)+'k tri   v185\n'+
+    debugEl.textContent=fps+' fps  ·  '+kwalNaam+'  ·  '+(r.calls||0)+' calls  ·  '+Math.round((r.triangles||0)/1000)+'k tri   v186\n'+
       'camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
@@ -3159,7 +3213,7 @@
     held.rotation.y=uit.yaw;
     // camera staat in de tuin, kijkt naar de open deur, zodat we Luna naar buiten zien komen
     camYaw=wikkelYaw(uit.yaw+Math.PI);
-    camPitch=28*Math.PI/180;
+    camPitch=CAM_PITCH0;
     camVast=false;camAchterT=0;
     zetHoogte();
     doelCamera(camPos,LOOK_CAM);
@@ -3617,20 +3671,15 @@
       camPitch=Math.max(CAM_PITCH_MIN,Math.min(CAM_PITCH_MAX,camPitch-camStokDy*CAM_PITCH_SNEL*dt));
     }
     doelCamera(CAM_ZOEK,LOOK_CAM);
-    const k=1-Math.exp(-4.2*dt);
+    const k=1-Math.exp(-5.1*dt);
     const yawAan=camStokAan&&camStokKracht>0.18;
-    const maxStap=(yawAan?CAM_DIST*CAM_YAW_SNEL*dt:0)+0.33;
+    const maxStap=(yawAan?CAM_DIST*CAM_YAW_SNEL*dt:0)+0.35;
     const vanX=camPos.x,vanY=camPos.y,vanZ=camPos.z;
     camPos.lerp(CAM_ZOEK,k);
     lookPos.lerp(LOOK_CAM,k);
     const opPad=projectAlleRails(camPos.x,camPos.z);
     camPos.x=opPad.x;camPos.z=opPad.z;
     if(camPos.y<CAM_MIN_Y)camPos.y=CAM_MIN_Y;
-    const stap=Math.hypot(camPos.x-vanX,camPos.y-vanY,camPos.z-vanZ);
-    if(stap>maxStap&&stap>0.0001){
-      const s=maxStap/stap;
-      camPos.set(vanX+(camPos.x-vanX)*s,vanY+(camPos.y-vanY)*s,vanZ+(camPos.z-vanZ)*s);
-    }
     if(camInSolid(camPos.x,camPos.y,camPos.z)){
       const naar=projectRail(camPos.x,camPos.z);
       for(let i=1;i<=10;i++){
@@ -3638,6 +3687,11 @@
         const nx=camPos.x+(naar.x-camPos.x)*k2,nz=camPos.z+(naar.z-camPos.z)*k2;
         if(!camInSolid(nx,camPos.y,nz)){camPos.x=nx;camPos.z=nz;break}
       }
+    }
+    const stap=Math.hypot(camPos.x-vanX,camPos.y-vanY,camPos.z-vanZ);
+    if(stap>maxStap&&stap>0.0001){
+      const s=maxStap/stap;
+      camPos.set(vanX+(camPos.x-vanX)*s,vanY+(camPos.y-vanY)*s,vanZ+(camPos.z-vanZ)*s);
     }
     camera.position.copy(camPos);
     camera.lookAt(lookPos);
@@ -3690,8 +3744,10 @@
     }else zetAnim('idle');
     if(!RMP){
       if(T.water){T.water.offset.x=t*0.09;T.water.offset.y=t*0.035}
+      if(T.waterN){T.waterN.offset.x=-t*0.07;T.waterN.offset.y=t*0.055}
       if(T.glinster){T.glinster.offset.x=-t*0.06;T.glinster.offset.y=t*0.08}
       if(T.rimpel){T.rimpel.offset.x=t*0.05;T.rimpel.offset.y=Math.sin(t*0.7)*0.03}
+      if(T.schuim){T.schuim.offset.x=t*0.04;T.schuim.offset.y=Math.sin(t*0.9)*0.04}
       stralen.forEach((s,i)=>{
         s.scale.set(1,1+Math.sin(t*5+i)*0.1,1);
         s.material.opacity=0.5+Math.sin(t*6+i)*0.16;
@@ -3714,9 +3770,9 @@
         if(u>0.88){
           const s=spatten[d.userData.kop];
           s.visible=true;
-          s.position.copy(k.land);s.position.y=0.82;
-          s.scale.setScalar(0.7+(u-0.88)*9);
-          s.material.opacity=0.55-(u-0.88)*4;
+          s.position.copy(k.land);s.position.y=0.822;
+          s.scale.setScalar(0.85+(u-0.88)*12);
+          s.material.opacity=0.62-(u-0.88)*4.2;
         }
       });
       // haagzwaai uitgezet: te duur voor weinig winst
@@ -4087,7 +4143,7 @@
     camVast=false;camAchterT=0;
     if(P.kijkMee){
       camYaw=wikkelYaw(P.y||0);
-      camPitch=28*Math.PI/180;
+      camPitch=CAM_PITCH0;
     }
     doelCamera(camPos,LOOK_CAM);
     lookPos.copy(LOOK_CAM);
@@ -4098,6 +4154,7 @@
   }
 
   window.ZW_TUIN={
+    camDist:()=>CAM_DIST,
     fps:()=>fps,
     fpsMin:()=>fpsMin,
     licht:()=>licht,

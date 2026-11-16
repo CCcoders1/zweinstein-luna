@@ -429,3 +429,12 @@ v185 — 3D-tuin
   afstand. Stapstof bij het lopen. Open tuin3d.html?debug=1
   voor een leesbare fps-teller linksboven. Zelfgemaakt,
   geen EA/Warner-assets.
+
+v186 — 3D-tuin
+  Rustigere camera: iets verder en hoger, smaller veld,
+  kijkt iets vóór Luna, en volgt soepeler zonder sprongen.
+  Water met bewegende normaalkaarten, een zachte zonspiegeling,
+  schuim op de fonteinrand en duidelijkere spatten bij de
+  steenkoppen. Goedkoop op de telefoon: de extra schuimlagen
+  en normalen vallen weg in lichte kwaliteit. Zelfgemaakt,
+  geen EA/Warner-assets.
