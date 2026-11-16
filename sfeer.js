@@ -194,7 +194,7 @@ function halOrde(){
       }
     }
 
-    const volgorde=['.groet','#halharten','#ookvandaag','#volgendestap','.lokaal','#wmkaart','#hwkaart','#halvr','#morgenkaart','.dagdoelen','.halspel'];
+    const volgorde=['.groet','#tuinknop','#halharten','#ookvandaag','#volgendestap','.lokaal','#wmkaart','#hwkaart','#halvr','#morgenkaart','.dagdoelen','.halspel'];
     let anker=null;
     volgorde.forEach(sel=>{
       const el=app.querySelector(sel);

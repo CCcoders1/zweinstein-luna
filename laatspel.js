@@ -1696,42 +1696,106 @@ window.winHaakZin=function(n){
 })();
 
 
-/* v160: knop naar de 3D-testtuin, alleen in het makersmenu */
+/* v178: 3D-tuin als echte binnenplaats, met heen-en-weer naar kas, moestuin en Hal */
 (function(){
+  const OPEN={'kas':'kas','moestuin':'moestuin','home':'home','poort':'home'};
+  function tuinSleutel(k,v){
+    try{if(v===undefined)return sessionStorage.getItem(k);if(v===null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,v);}catch(e){return null}
+  }
+  function tuinHeeftWebGL(){
+    try{
+      const c=document.createElement('canvas');
+      return !!(c.getContext('webgl')||c.getContext('experimental-webgl'));
+    }catch(e){return false}
+  }
+  let tuinTik=0;
+  function openTuin(deur){
+    const nu=Date.now();
+    if(nu<tuinTik)return;
+    tuinTik=nu+900;
+    const d=deur&&OPEN[deur]?deur:'poort';
+    if(!tuinHeeftWebGL()){
+      try{if(typeof toast==='function')toast('Deze telefoon kan de 3D-tuin niet tonen. Je blijft in het gewone spel.');}catch(e){}
+      const v=OPEN[d]||'home';
+      if(typeof ga==='function')ga(v);
+      return;
+    }
+    try{if(typeof fx!=='undefined'&&fx.speel)fx.speel('whoosh')}catch(e){}
+    tuinSleutel('zw_tuin_van', (document.body&&document.body.dataset.view)||'home');
+    tuinSleutel('zw_tuin_deur', d);
+    let ov=document.getElementById('tuinovergang');
+    if(!ov){
+      ov=document.createElement('div');
+      ov.id='tuinovergang';
+      ov.setAttribute('aria-hidden','true');
+      ov.innerHTML='<p>De tuin wordt geopend…</p>';
+      document.body.appendChild(ov);
+    }
+    ov.classList.add('aan');
+    const rmp=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(function(){location.href='tuin3d.html?deur='+encodeURIComponent(d)},rmp?40:280);
+  }
+  window.openTuin=openTuin;
+  V.tuin=function(deur){openTuin(deur)};
+
+  function zetTuinKnop(view){
+    const app=document.getElementById('app');
+    if(!app)return;
+    const oud=app.querySelector('#tuinknop');
+    if(oud)oud.remove();
+    const uit=tuinSleutel('zw_tuin_uit');
+    const deur=view==='kas'?'kas':view==='moestuin'?'moestuin':(uit==='home'?'home':'poort');
+    const terug=(view==='kas'&&uit==='kas')||(view==='moestuin'&&uit==='moestuin')||(view==='home'&&(uit==='home'||uit==='poort'));
+    const label=terug?'← Terug naar de tuin':'Naar de tuin';
+    const b=document.createElement('button');
+    b.type='button';
+    b.id='tuinknop';
+    b.className='knop tuinknop';
+    b.textContent=label;
+    b.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();openTuin(deur)});
+    const groet=app.querySelector('.groet');
+    const rij=app.querySelector('.kleinrij');
+    const kop=app.querySelector('.pp-tuin h2, h2.pagkop, .lokaal h2, h2');
+    if(view==='home'&&groet)groet.insertAdjacentElement('afterend',b);
+    else if(view==='home'&&rij)rij.parentNode.insertBefore(b,rij);
+    else if(kop)kop.insertAdjacentElement('afterend',b);
+    else app.insertAdjacentElement('afterbegin',b);
+  }
+
+  const _home=V.home;
+  if(_home)V.home=function(){const r=_home.apply(this,arguments);try{zetTuinKnop('home');[80,200,400].forEach(function(t){setTimeout(function(){if((document.body.dataset.view||'')==='home')zetTuinKnop('home')},t)})}catch(e){}return r};
+  const _kas=V.kas;
+  if(_kas)V.kas=function(){const r=_kas.apply(this,arguments);try{const a=document.getElementById('app');if(a&&(a.querySelector('.kweekbalk')||a.querySelector('.kassen')))zetTuinKnop('kas')}catch(e){}return r};
+  const _mo=V.moestuin;
+  if(_mo)V.moestuin=function(){const r=_mo.apply(this,arguments);try{zetTuinKnop('moestuin')}catch(e){}return r};
+
   const _mk=V.maker;
-  if(!_mk)return;
-  V.maker=function(){
+  if(_mk)V.maker=function(){
     const r=_mk.apply(this,arguments);
     try{
       const app=document.getElementById('app');
       if(!app||app.querySelector('#mk-tuin3d'))return r;
       app.insertAdjacentHTML('beforeend',
-        '<section class="kaart sierlijst" id="mk-tuin3d"><h3>Test: 3D-tuin met drie deuren</h3><p class="klein">Een proefomgeving in de stijl van het oude pc-spel, met deuren naar de Kassen, Hagrids moestuin en de Grote Hal. Het gewone spel verandert hier niet door.</p><a class="knop" href="tuin3d.html">Open de 3D-tuin</a></section>');
+        '<section class="kaart sierlijst" id="mk-tuin3d"><h3>De 3D-tuin</h3><p class="klein">De binnenplaats met deuren naar de Kassen, Hagrids moestuin en de Grote Hal. Je vindt hem ook vanaf de Hal, de Kassen, de moestuin en de Sluipwegwijzer.</p><button type="button" class="knop" id="mk-tuin3d-open">Open de tuin</button></section>');
+      const bn=document.getElementById('mk-tuin3d-open');
+      if(bn)bn.onclick=function(){openTuin('poort')};
     }catch(e){}
     return r;
   };
-})();
 
-/* v161: vanuit de 3D-testtuin eenmalig het gekozen 2D-scherm openen */
-(function(){
   try{
-    const q=new URLSearchParams(location.search);
-    const waar=q.get('open');
-    if(!(waar==='kas'||waar==='moestuin'||waar==='home'))return;
     const _s=window.startApp;
-    if(!_s)return;
-    window.startApp=function(){
-      const r=_s.apply(this,arguments);
-      try{
-        if(!window.S||!S.naam)return r;
-        setTimeout(function(){
-          try{
-            history.replaceState({},'',location.pathname+(location.hash||''));
-            if(typeof ga==='function')ga(waar);
-          }catch(e){}
-        },280);
-      }catch(e){}
-      return r;
-    };
+    if(_s){
+      window.startApp=function(){
+        const q=new URLSearchParams(location.search);
+        const waar=q.get('open');
+        const ok=!!OPEN[waar];
+        if(!ok||!window.S||!S.naam)return _s.apply(this,arguments);
+        try{tuinSleutel('zw_tuin_uit',waar)}catch(e){}
+        try{history.replaceState({},'',location.pathname+(location.hash||''))}catch(e){}
+        if(typeof stats==='function')stats();
+        ga(OPEN[waar]);
+      };
+    }
   }catch(e){}
 })();

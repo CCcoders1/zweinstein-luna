@@ -526,3 +526,21 @@ body.halstrak #halvr{margin-top:4px}
 @media (prefers-reduced-motion:reduce){
   .verhaalm .vh-p .pportret,.verhaalm .vh-p .tportret,.verhaalm .vh-p img,.verhaalm .vh-p::after{animation:none!important}
 }
+
+/* v178: knop naar de 3D-binnenplaats */
+.tuinknop,#tuinknop{
+  display:block;margin:.7em auto .35em;max-width:16em;
+}
+#tuinovergang{
+  position:fixed;inset:0;z-index:80;background:#1a2e12;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .28s ease;
+}
+#tuinovergang.aan{opacity:1;pointer-events:auto}
+#tuinovergang p{
+  margin:0;color:#f6e6c2;font:600 1.05rem/1.3 Georgia,"Palatino Linotype",serif;
+  letter-spacing:.04em;text-shadow:0 1px 3px #000;
+}
+@media (prefers-reduced-motion:reduce){
+  #tuinovergang{transition:none}
+}

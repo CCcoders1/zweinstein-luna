@@ -1,4 +1,4 @@
-/* v177: 3D-testtuin. Vaste volgcamera, camerajoystick, hogere hagen, fade bij occlusie. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v178: 3D-tuin als binnenplaats, deuren gekoppeld aan het spel. Vaste volgcamera, camerajoystick. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -1315,6 +1315,23 @@
       ijzerBuis(g,0.12,0.9,0,0.12+5*0.22,0.9,0,0.018);
     });
   })();
+  const gevelPoort=new THREE.Group();
+  gevelPoort.position.set(0,0,1.52);
+  world.add(gevelPoort);
+  (function(){
+    const n=6,breed=2.15,h0=1.42;
+    for(let i=0;i<n;i++){
+      const x=(i-(n-1)/2)*(breed/(n-1));
+      const h=h0+(i%2?0.1:0);
+      ijzerBuis(gevelPoort,x,0.02,0,x,h,0,0.026);
+      const sp=new THREE.Mesh(new THREE.ConeGeometry(0.04,0.16,5),mat.ijzer);
+      sp.position.set(x,h+0.08,0);gevelPoort.add(sp);
+    }
+    ijzerBuis(gevelPoort,-breed/2,0.46,0,breed/2,0.46,0,0.02);
+    ijzerBuis(gevelPoort,-breed/2,0.92,0,breed/2,0.92,0,0.02);
+    ijzerBuis(gevelPoort,-breed/2,1.28,0,breed/2,1.28,0,0.02);
+  })();
+  solid(0,1.52,2.4,0.45,1.7);
   boog(0,13.4,2.2);
   pilaar(-2.2,13.4);pilaar(2.2,13.4);
   // vierkante zandstenen pijlers tussen de hagen, zoals in HP1
@@ -1772,6 +1789,7 @@
   })();
   solid(17.4,14,1.2,7.2,4.5);
   deuren.home={groep:deurHal, punt:new THREE.Vector3(15.4,0,14), naam:'De Grote Hal', open:'home', scharnier:+1};
+  deuren.poort={groep:gevelPoort, punt:new THREE.Vector3(0,0,4.2), naam:'De Grote Hal', open:'poort', scharnier:+1};
 
   const deurGloed=[];
   function voegDeurGloed(ouder,y,z){
@@ -2326,6 +2344,7 @@
       if(o===gevelKas)return deuren.kas;
       if(o===gevelH)return deuren.moestuin;
       if(o===gevelHal)return deuren.home;
+      if(o===gevelPoort)return deuren.poort;
       o=o.parent;
     }
     return null;
@@ -2347,7 +2366,7 @@
     muis.x=((cx-r.left)/r.width)*2-1;
     muis.y=-((cy-r.top)/r.height)*2+1;
     ray.setFromCamera(muis,camera);
-    const hits=ray.intersectObjects([gevelKas,gevelH,gevelHal],true);
+    const hits=ray.intersectObjects([gevelKas,gevelH,gevelHal,gevelPoort],true);
     if(!hits.length||hits[0].distance>28)return;
     const deur=deurVanHit(hits[0].object);
     if(!deur)return;
@@ -2522,6 +2541,18 @@
     },{passive:false});
   }
 
+
+  const terugBtn=$('terug');
+  if(terugBtn){
+    terugBtn.addEventListener('click',function(ev){
+      ev.preventDefault();
+      let waar='home';
+      try{waar=sessionStorage.getItem('zw_tuin_van')||'home'}catch(e){}
+      if(!(waar==='kas'||waar==='moestuin'||waar==='home'))waar='home';
+      location.href='index.html?open='+(waar==='kas'||waar==='moestuin'?waar:'home');
+    });
+  }
+
   const camResetBtn=$('camreset');
   if(camResetBtn){
     camResetBtn.addEventListener('pointerdown',function(ev){
@@ -2535,7 +2566,7 @@
   function tekenDebug(){
     if(!debugAan||!debugEl)return;
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
-    debugEl.textContent='v177  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
+    debugEl.textContent='v178  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
       'kijk '+(kijkAan?'AAN':'uit')+(kijkSleep?' SLEEP':'')+'  id '+(kijkId==null?'-':kijkId)+'\n'+
@@ -2559,12 +2590,29 @@
     deurBtn.textContent=w.naam+' – tik om naar binnen te gaan';
   }
 
+  function deurGeluid(){
+    if(!geluidAan||!audioCtx||!masterGain)return;
+    const t0=audioCtx.currentTime;
+    const o=audioCtx.createOscillator();
+    const g=audioCtx.createGain();
+    const f=audioCtx.createBiquadFilter();
+    o.type='sawtooth';
+    o.frequency.setValueAtTime(160,t0);
+    o.frequency.exponentialRampToValueAtTime(68,t0+0.48);
+    f.type='lowpass';f.frequency.value=620;
+    g.gain.setValueAtTime(0.0001,t0);
+    g.gain.exponentialRampToValueAtTime(0.11,t0+0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+0.55);
+    o.connect(f);f.connect(g);g.connect(masterGain);
+    o.start(t0);o.stop(t0+0.56);
+  }
   function naarDeur(id,opt){
     const d=deuren[id];if(!d||naarBinnen)return;
     naarBinnen=true;
-    lopen=false;mark.visible=false;stopStok();
+    lopen=false;mark.visible=false;stopStok();stopCamStok();
+    try{deurGeluid()}catch(e){}
     if(overgang){
-      overgang.className=id==='moestuin'?'moestuin':id==='home'?'home':'kas';
+      overgang.className=(id==='moestuin')?'moestuin':(id==='home'||id==='poort')?'home':'kas';
       overgang.hidden=false;
       requestAnimationFrame(()=>requestAnimationFrame(()=>overgang.classList.add('aan')));
     }
@@ -3383,26 +3431,39 @@
   lookPos.copy(LOOK_CAM);
   camera.position.copy(camPos);
   camera.lookAt(lookPos);
+  (function spawnVanVraag(){
+    try{
+      const q=new URLSearchParams(location.search);
+      const d=q.get('deur');
+      if(d&&(d==='kas'||d==='moestuin'||d==='hagrid'||d==='home'||d==='hal'||d==='poort'))zetPlek(d);
+    }catch(e){}
+  })();
   requestAnimationFrame(tic);
 
   function zetPlek(plek){
     const NAMED={
-      poort:{x:0,z:6.8,y:0},
+      poort:{x:0,z:6.8,y:0,kijkMee:1},
       pad:{x:0,z:8.2,y:0},
       fontein:{x:-3.6,z:6.8,y:Math.atan2(-5.0-(-3.6),9.7-6.8)},
       brug:{x:0,z:9.7,y:0},
       deur:{x:0,z:26.4,y:0},
-      kas:{x:0,z:26.4,y:0},
-      hagrid:{x:-13.0,z:14.0,y:-Math.PI/2},
-      hal:{x:13.0,z:14.0,y:Math.PI/2}
+      kas:{x:0,z:26.4,y:Math.PI,kijkMee:1},
+      moestuin:{x:-13.0,z:14.0,y:Math.PI/2,kijkMee:1},
+      hagrid:{x:-13.0,z:14.0,y:Math.PI/2,kijkMee:1},
+      home:{x:13.0,z:14.0,y:-Math.PI/2,kijkMee:1},
+      hal:{x:13.0,z:14.0,y:-Math.PI/2,kijkMee:1}
     };
     const P=(plek&&typeof plek==='object'&&'x' in plek)?plek:(NAMED[plek]||{x:0,z:5.6,y:0});
     held.position.set(P.x,0,P.z);
-    held.rotation.y=P.y;
+    held.rotation.y=P.y||0;
     zetHoogte();
     lopen=false;doel=null;doelDeur=null;mark.visible=false;stopStok();stopCamStok();
     mixBevries=false;
     camVast=false;camAchterT=0;
+    if(P.kijkMee){
+      camYaw=wikkelYaw(P.y||0);
+      camPitch=28*Math.PI/180;
+    }
     doelCamera(camPos,LOOK_CAM);
     lookPos.copy(LOOK_CAM);
     camera.position.copy(camPos);
@@ -3542,6 +3603,8 @@
       renderer.render(scene,camera);
     },
     zet:zetPlek,
+    naarDeur:(id,opt)=>naarDeur(id,opt),
+    deuren:()=>Object.keys(deuren).map(k=>({id:k,open:deuren[k].open,naam:deuren[k].naam,x:deuren[k].punt.x,z:deuren[k].punt.z})),
     loopNaar(x,z){doel=new THREE.Vector3(x,0,z);doelDeur=null;mark.position.set(x,0.08,z);mark.visible=true;lopen=true},
     schermPlek(x,y,z){
       const v=new THREE.Vector3(x,y,z).project(camera);

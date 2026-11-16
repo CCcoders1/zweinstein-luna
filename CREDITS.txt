@@ -357,3 +357,11 @@ v177 — 3D-tuin
   Hagen hoger zodat de camera tussen de paden blijft. Hagen en
   muren die het zicht op Luna blokkeren worden tijdelijk
   doorzichtig. Zelfgemaakt, geen EA/Warner-assets.
+
+v178 — 3D-tuin
+  De tuin is gekoppeld aan het spel. Deuren naar de Kassen,
+  Hagrids moestuin en de Grote Hal (oostelijke deur en zuidelijke
+  poort) leiden naar die schermen; vanaf daar kom je terug op de
+  binnenplaats, voor de deur waar je uitkwam. Bereikbaar vanaf de
+  Hal, de Kassen, de moestuin en de Sluipwegwijzer. Zonder WebGL
+  blijf je in het 2D-spel. Zelfgemaakt, geen EA/Warner-assets.
