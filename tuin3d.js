@@ -1,4 +1,4 @@
-/* v179: snellere 3D-tuin en leven (vlinders, uil, kabouter, gras, rimpel). Vaste camera, deuren gekoppeld. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v179-v180: snellere 3D-tuin en leven (vlinders, uil, kabouter, gras, rimpel). Vaste camera, deuren gekoppeld. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -1949,6 +1949,173 @@
   const rimpelVlak=new THREE.Mesh(new THREE.CircleGeometry(1.62,16),mat.rimpel);
   rimpelVlak.rotation.x=-Math.PI/2;rimpelVlak.position.set(-5.0,0.815,9.7);voeg(rimpelVlak);
 
+  /* ===== v180: dagelijkse vondsten (additief, geen reset) ===== */
+  const SAVE_KEY='zweinstein_v1';
+  const VONDST_DEF=[
+    {id:'kikker',naam:'Chocokikker',smek:5,x:-0.72,z:22.15,y:0},
+    {id:'pompoen',naam:'Glimmende pompoen',smek:5,x:3.85,z:15.2,y:0},
+    {id:'smekkie',naam:'Smekkie',smek:8,x:-1.85,z:6.35,y:0}
+  ];
+  let vondstDagHook=null,vondstToastT=0;
+  const vondstEl=$('vondst'),vondstToastEl=$('vondsttoast');
+  const vondsten=[];
+  function tuinDag(){
+    if(vondstDagHook)return String(vondstDagHook);
+    const d=new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  function leesTuinSave(){
+    try{
+      const raw=localStorage.getItem(SAVE_KEY);
+      if(!raw)return null;
+      const S=JSON.parse(raw);
+      return (S&&typeof S==='object')?S:null;
+    }catch(e){return null}
+  }
+  function vondstIdsVandaag(){
+    const S=leesTuinSave(),dag=tuinDag();
+    if(!S||!S.tuinvondst||S.tuinvondst.dag!==dag||!Array.isArray(S.tuinvondst.ids))return [];
+    return S.tuinvondst.ids.slice();
+  }
+  function schrijfVondst(id,smek){
+    const S=leesTuinSave();
+    if(!S)return {ok:false,reden:'geen-save'};
+    const dag=tuinDag();
+    if(!S.tuinvondst||typeof S.tuinvondst!=='object'||S.tuinvondst.dag!==dag||!Array.isArray(S.tuinvondst.ids)){
+      S.tuinvondst={dag:dag,ids:[]};
+    }
+    if(S.tuinvondst.ids.indexOf(id)>=0)return {ok:false,reden:'al',galjoenen:S.galjoenen|0,ids:S.tuinvondst.ids.slice()};
+    S.tuinvondst.ids.push(id);
+    S.galjoenen=(S.galjoenen|0)+(+smek||0);
+    try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}
+    catch(e){return {ok:false,reden:'schrijf'}}
+    return {ok:true,galjoenen:S.galjoenen|0,ids:S.tuinvondst.ids.slice(),smek:+smek||0};
+  }
+  function vondstTeller(){
+    const n=vondstIdsVandaag().length;
+    if(vondstEl)vondstEl.textContent='Vondsten '+n+'/3';
+    return n;
+  }
+  function toonVondstToast(txt){
+    if(!vondstToastEl)return;
+    vondstToastEl.hidden=false;
+    vondstToastEl.textContent=txt;
+    vondstToastEl.classList.add('aan');
+    vondstToastT=performance.now()+2600;
+  }
+  function vondstKlink(){
+    if(!audioCtx||!geluidAan||!masterGain)return;
+    try{
+      const t0=audioCtx.currentTime;
+      const o=audioCtx.createOscillator(),o2=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type='sine';o2.type='sine';
+      o.frequency.setValueAtTime(880,t0);o2.frequency.setValueAtTime(1320,t0);
+      g.gain.setValueAtTime(0.0001,t0);
+      g.gain.exponentialRampToValueAtTime(0.07,t0+0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001,t0+0.28);
+      o.connect(g);o2.connect(g);g.connect(masterGain);
+      o.start(t0);o2.start(t0);o.stop(t0+0.3);o2.stop(t0+0.3);
+    }catch(e){}
+  }
+  function maakVondstKikker(){
+    const g=new THREE.Group();
+    const huid=new THREE.MeshLambertMaterial({color:0x7a3e14,emissive:0x4a2008,emissiveIntensity:0.4});
+    const goud=new THREE.MeshLambertMaterial({color:0xf0d060,emissive:0x8a5a00,emissiveIntensity:0.55});
+    const lijf=new THREE.Mesh(new THREE.SphereGeometry(0.11,8,6),huid);
+    lijf.scale.set(1.05,0.72,1.35);lijf.position.y=0.1;g.add(lijf);
+    const kop=new THREE.Mesh(new THREE.SphereGeometry(0.08,8,6),huid);
+    kop.scale.set(1.1,0.85,1);kop.position.set(0,0.16,0.12);g.add(kop);
+    [[-0.04,0.2,0.16],[0.04,0.2,0.16]].forEach(([x,y,z])=>{
+      const o=new THREE.Mesh(new THREE.SphereGeometry(0.022,6,5),goud);
+      o.position.set(x,y,z);g.add(o);
+    });
+    [[-0.08,0.04,0.06],[0.08,0.04,0.06],[-0.07,0.03,-0.08],[0.07,0.03,-0.08]].forEach(([x,y,z])=>{
+      const p=new THREE.Mesh(new THREE.SphereGeometry(0.035,5,4),huid);
+      p.scale.set(1,0.5,1.2);p.position.set(x,y,z);g.add(p);
+    });
+    return g;
+  }
+  function maakVondstPompoen(){
+    const g=new THREE.Group();
+    const oranje=new THREE.MeshLambertMaterial({color:0xe07018,emissive:0x5a2000,emissiveIntensity:0.45});
+    const steel=new THREE.MeshLambertMaterial({color:0x3a6a1c});
+    const bol=new THREE.Mesh(new THREE.SphereGeometry(0.2,10,8),oranje);
+    bol.scale.set(1.15,0.9,1.05);bol.position.y=0.18;g.add(bol);
+    const st=new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.035,0.1,5),steel);
+    st.position.y=0.38;g.add(st);
+    const blad=new THREE.Mesh(new THREE.SphereGeometry(0.05,5,4),steel);
+    blad.scale.set(1.6,0.3,0.8);blad.position.set(0.06,0.36,0);g.add(blad);
+    return g;
+  }
+  function maakVondstSmekkie(){
+    const g=new THREE.Group();
+    const goud=new THREE.MeshLambertMaterial({color:0xf0d060,emissive:0x8a6a10,emissiveIntensity:0.55});
+    const munt=new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.13,0.04,14),goud);
+    munt.rotation.x=0.35;munt.position.y=0.2;g.add(munt);
+    const kern=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.05,0.045,8),new THREE.MeshLambertMaterial({color:0xffe08a,emissive:0x8a6a10,emissiveIntensity:0.65}));
+    kern.rotation.x=0.35;kern.position.y=0.2;g.add(kern);
+    return g;
+  }
+  const sparkMat=new THREE.MeshBasicMaterial({color:0xfff3c0,transparent:true,opacity:0.75,depthWrite:false,side:THREE.DoubleSide,toneMapped:false,blending:THREE.AdditiveBlending});
+  (function bouwVondsten(){
+    const makers={kikker:maakVondstKikker,pompoen:maakVondstPompoen,smekkie:maakVondstSmekkie};
+    const al=vondstIdsVandaag();
+    VONDST_DEF.forEach(def=>{
+      const g=makers[def.id]();
+      g.position.set(def.x,def.y,def.z);
+      g.userData={id:def.id,naam:def.naam,smek:def.smek,x:def.x,y:def.y||0,z:def.z};
+      g.scale.setScalar(2.15);
+      const sp=new THREE.Mesh(new THREE.CircleGeometry(0.34,10),sparkMat.clone());
+      sp.position.y=0.72;g.add(sp);
+      g.userData.spark=sp;
+      const genomen=al.indexOf(def.id)>=0;
+      g.visible=!genomen;
+      world.add(g);
+      vondsten.push(g);
+    });
+    vondstTeller();
+  })();
+  function pakVondst(id,opt){
+    const v=vondsten.find(o=>o.userData.id===id);
+    if(!v||!v.visible)return {ok:false,reden:'weg'};
+    const uit=schrijfVondst(id,v.userData.smek);
+    if(!uit.ok&&uit.reden==='al'){v.visible=false;vondstTeller();return uit}
+    if(!uit.ok&&uit.reden==='geen-save'){
+      v.visible=false;vondstTeller();
+      if(!(opt&&opt.stil))toonVondstToast(v.userData.naam+' gevonden!');
+      return {ok:true,sessie:true,id:id};
+    }
+    if(!uit.ok)return uit;
+    v.visible=false;
+    vondstTeller();
+    if(!(opt&&opt.stil)){
+      vondstKlink();
+      toonVondstToast(v.userData.naam+' gevonden! +'+v.userData.smek+' Smekkies');
+    }
+    return Object.assign({id:id},uit);
+  }
+  function vondstTic(t,dt){
+    if(vondstToastEl&&vondstToastT&&performance.now()>vondstToastT){
+      vondstToastEl.classList.remove('aan');
+      vondstToastEl.hidden=true;vondstToastT=0;
+    }
+    const hx=held.position.x,hz=held.position.z;
+    for(let i=0;i<vondsten.length;i++){
+      const v=vondsten[i];if(!v.visible)continue;
+      v.rotation.y=t*0.7;
+      v.position.y=v.userData.y+Math.sin(t*2.2+i)*0.03;
+      const sp=v.userData.spark;
+      if(sp){
+        const s=0.85+0.35*Math.sin(t*5+i);
+        sp.scale.set(s,s,1);
+        sp.material.opacity=0.45+0.4*Math.sin(t*6+i*1.3);
+        sp.lookAt(camera.position);
+      }
+      const dx=hx-v.userData.x,dz=hz-v.userData.z;
+      if(dx*dx+dz*dz<1.7)pakVondst(v.userData.id);
+    }
+  }
+
   function kabouterRitsel(){
     if(!audioCtx||!geluidAan||!masterGain)return;
     try{
@@ -1960,6 +2127,7 @@
     }catch(e){}
   }
   function levenTic(t,dt){
+    vondstTic(t,dt);
     const nVl=RMP?0:(licht?2:vlinders.length);
     for(let i=0;i<vlinders.length;i++){
       const v=vlinders[i],aan=i<nVl;
@@ -2545,6 +2713,21 @@
     muis.x=((cx-r.left)/r.width)*2-1;
     muis.y=-((cy-r.top)/r.height)*2+1;
     ray.setFromCamera(muis,camera);
+    const vHits=ray.intersectObjects(vondsten.filter(v=>v.visible),true);
+    if(vHits.length&&vHits[0].distance<22){
+      let o=vHits[0].object,id=null;
+      while(o){if(o.userData&&o.userData.id){id=o.userData.id;break}o=o.parent}
+      if(id){
+        const v=vondsten.find(x=>x.userData.id===id);
+        if(v){
+          const dx=held.position.x-v.userData.x,dz=held.position.z-v.userData.z;
+          if(dx*dx+dz*dz<6.25){pakVondst(id);return}
+          doel=new THREE.Vector3(v.userData.x,0,v.userData.z);
+          doelDeur=null;mark.position.set(doel.x,0.08,doel.z);mark.visible=true;lopen=true;
+          return;
+        }
+      }
+    }
     const hits=ray.intersectObjects([gevelKas,gevelH,gevelHal,gevelPoort],true);
     if(!hits.length||hits[0].distance>28)return;
     const deur=deurVanHit(hits[0].object);
@@ -2745,7 +2928,7 @@
   function tekenDebug(){
     if(!debugAan||!debugEl)return;
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
-    debugEl.textContent='v179  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
+    debugEl.textContent='v180  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
       'kijk '+(kijkAan?'AAN':'uit')+(kijkSleep?' SLEEP':'')+'  id '+(kijkId==null?'-':kijkId)+'\n'+
@@ -3458,6 +3641,7 @@
     if(typeof vlinders!=='undefined')vlinders.forEach(mark);
     if(typeof rimpelVlak!=='undefined')mark(rimpelVlak);
     if(typeof grasTuft!=='undefined')mark(grasTuft);
+    if(typeof vondsten!=='undefined')vondsten.forEach(mark);
     if(typeof druppels!=='undefined')druppels.forEach(mark);
     if(typeof stralen!=='undefined')stralen.forEach(mark);
     if(typeof spatten!=='undefined')spatten.forEach(mark);
@@ -3674,6 +3858,9 @@
       return this.camStok();
     },
     camReset:zetCameraAchter,
+    vondstStand(){return {dag:tuinDag(),ids:vondstIdsVandaag(),items:vondsten.map(v=>({id:v.userData.id,naam:v.userData.naam,smek:v.userData.smek,x:v.userData.x,z:v.userData.z,zichtbaar:!!v.visible})),teller:vondstEl?vondstEl.textContent:'',galjoenen:(leesTuinSave()||{}).galjoenen|0}},
+    pakVondst:(id,opt)=>pakVondst(id,opt),
+    zetVondstDag(d){vondstDagHook=d==null?null:String(d);const al=vondstIdsVandaag();vondsten.forEach(v=>{v.visible=al.indexOf(v.userData.id)<0});vondstTeller();return this.vondstStand()},
     toonLeven(){if(kabouter){kabouter.visible=true;kabouter.position.set(-2.85,0,7.35);kabouter.rotation.y=0.85;kabouter.userData.fase='wacht';kabouter.userData.t=30}if(uil&&uil.userData.kop)uil.userData.kop.rotation.y=0.45;},
     camTest(){
       return {

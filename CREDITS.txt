@@ -374,3 +374,12 @@ v179 — 3D-tuin
   rimpelend fonteinwater en een kabouter die soms wegrent
   (kleine procedurele geluidjes). Zelfgemaakt, geen EA/Warner-
   assets.
+
+v180 — 3D-tuin
+  Drie dagelijkse vondsten in de tuin: een Chocokikker, een
+  glimmende pompoen en een Smekkie, elk met een gouden
+  glinstering. Loop ernaartoe of tik erop. Kleine Smekkies-
+  beloning (+5, +5 en +8) alleen additief via de bestaande
+  save, teller Vondsten n/3, geen dubbele uitbetaling, de
+  volgende dag liggen ze weer. Zelfgemaakt, geen EA/Warner-
+  assets. Moeders saldo wordt niet gereset.
