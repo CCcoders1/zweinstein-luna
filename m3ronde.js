@@ -1,9 +1,63 @@
 'use strict';
-/* v191–v192: 3/4 kleuren, vormborden, doelen, kaders en introkaart */
+/* v191–v193: 4/5 kleuren, klas-tegelsets, opdrachten, vormborden, kaders */
 (()=>{
-  const HEX={herinnerbal:'#ff2d3a',drankje:'#19d35a',hedwig:'#3d8cff',pompoen:'#ffb008',
-    chocokikker:'#c47a32',drakenei:'#8b6ad4',boterbier:'#f0b43a',feniksveer:'#ff5a24',
-    toverstaf:'#d4a05a',ketelcake:'#2a9ad4'};
+  const HEX={herinnerbal:'#ff2d3a',drankje:'#19d35a',hedwig:'#e8eefc',pompoen:'#ffb008',
+    chocokikker:'#c47a32',drakenei:'#e04aff',boterbier:'#f0b43a',feniksveer:'#ff5a24',
+    toverstaf:'#d4a05a',ketelcake:'#2470e8',
+    'h-oorwarmers':'#e02070','h-mandragora':'#3cb820','h-zaadzak':'#f0c220','h-gieter':'#2aa8b8','h-takje':'#a060d0','h-boek':'#2f6a3a',
+    'b-veer':'#2aa8c8','b-staf':'#e0b030','b-boek':'#1e3a6e',
+    't-lila':'#6a20d0','t-hart':'#ff5a8a',
+    'g-kopje':'#cfe0f0','g-knoop':'#5a1020','g-lucifer':'#e8a020','g-vogel':'#6a92c0','g-naald':'#f02830',
+    'a-ster':'#ffd24a','a-kijk':'#b07830','a-kaart':'#1a2a58','a-bol':'#6a90c0','a-maan':'#f0e8d0',
+    'v-schild':'#1e4a9a','v-slang':'#3a9a3a','v-vonk':'#ffe680','v-wolf':'#9a38c8'};
+
+  /* Per vak een vaste set van 5 themategels. Wisselt niet binnen het vak. */
+  const KLAS_SET={
+    herbologie:['h-oorwarmers','h-mandragora','h-zaadzak','h-gieter','h-takje'],
+    bezweringen:['herinnerbal','b-veer','b-staf','hedwig','b-boek'],
+    toverdranken:['drankje','ketelcake','boterbier','t-lila','t-hart'],
+    gedaante:['g-kopje','g-knoop','g-lucifer','g-vogel','g-naald'],
+    astronomie:['a-ster','a-kijk','a-kaart','a-bol','a-maan'],
+    verweer:['v-schild','feniksveer','v-slang','v-vonk','v-wolf'],
+    fabeldieren:['feniksveer','hedwig','chocokikker','pompoen','drankje']
+  };
+  window.m3KlasSet=th=> (KLAS_SET[th]||KLAS_SET.herbologie).slice();
+
+  const PROF_PORT={herbologie:'stronk',bezweringen:'banning',toverdranken:'sneep',
+    gedaante:'anderling',astronomie:'sinistra',verweer:'lupos'};
+
+  const OPDRACHT_ZIN={
+    'h-oorwarmers':(n,w)=>`Vang ${n} oorwarmers voor ${w}`,
+    'h-mandragora':(n,w)=>`Oogst ${n} mandragora\u2019s voor ${w}`,
+    'h-zaadzak':(n,w)=>`Verzamel ${n} zakken zaad voor ${w}`,
+    'h-gieter':(n,w)=>`Zoek ${n} gieters voor ${w}`,
+    'h-takje':(n,w)=>`Pluk ${n} duivelsstrik-takjes voor ${w}`,
+    herinnerbal:(n,w)=>`Vang ${n} herinnerballen voor ${w}`,
+    'b-veer':(n,w)=>`Verzamel ${n} veren voor ${w}`,
+    'b-staf':(n,w)=>`Zoek ${n} toverstokken voor ${w}`,
+    hedwig:(n,w)=>`Vang ${n} uilen voor ${w}`,
+    'b-boek':(n,w)=>`Verzamel ${n} toverspreukboeken voor ${w}`,
+    drankje:(n,w)=>`Brouw ${n} drankjes voor ${w}`,
+    ketelcake:(n,w)=>`Verzamel ${n} ketelcakes voor ${w}`,
+    boterbier:(n,w)=>`Zet ${n} bekers boterbier voor ${w}`,
+    't-lila':(n,w)=>`Brouw ${n} lila drankjes voor ${w}`,
+    't-hart':(n,w)=>`Verzamel ${n} hartflesjes voor ${w}`,
+    'g-kopje':(n,w)=>`Verzamel ${n} theekopjes voor ${w}`,
+    'g-knoop':(n,w)=>`Zoek ${n} knopen voor ${w}`,
+    'g-lucifer':(n,w)=>`Verzamel ${n} luciferdoosjes voor ${w}`,
+    'g-vogel':(n,w)=>`Vang ${n} vogeltjes voor ${w}`,
+    'g-naald':(n,w)=>`Verzamel ${n} speldenkussens voor ${w}`,
+    'a-ster':(n,w)=>`Vang ${n} sterren voor ${w}`,
+    'a-kijk':(n,w)=>`Zoek ${n} telescopen voor ${w}`,
+    'a-kaart':(n,w)=>`Verzamel ${n} sterrenkaarten voor ${w}`,
+    'a-bol':(n,w)=>`Verzamel ${n} kristallen bollen voor ${w}`,
+    'a-maan':(n,w)=>`Vang ${n} manen voor ${w}`,
+    'v-schild':(n,w)=>`Verzamel ${n} schilden voor ${w}`,
+    feniksveer:(n,w)=>`Verzamel ${n} feniksveren voor ${w}`,
+    'v-slang':(n,w)=>`Vang ${n} slangen voor ${w}`,
+    'v-vonk':(n,w)=>`Vang ${n} vonken voor ${w}`,
+    'v-wolf':(n,w)=>`Brouw ${n} wolfsworteldrankjes voor ${w}`
+  };
 
   function stukVan(alle,id){
     const r=alle[id];if(!r)return null;
@@ -13,24 +67,21 @@
     if(typeof KU==='undefined'||!KU.RECEPT)return;
     const alle={};
     Object.values(KU.RECEPT).forEach(l=>l.forEach(r=>{if(r&&r[3])alle[r[3]]=r.slice()}));
-    const kern=['herinnerbal','drankje','pompoen','hedwig'].map(id=>stukVan(alle,id)).filter(Boolean);
-    if(kern.length<4)return;
-    const staart={
-      herbologie:['h-takje','h-mandragora','h-boek'],
-      bezweringen:['toverstaf','chocokikker','drakenei'],
-      fabeldieren:['feniksveer','chocokikker','boterbier'],
-      toverdranken:['ketelcake','boterbier','feniksveer'],
-      astronomie:['ketelcake','toverstaf','drakenei'],
-      gedaante:['ketelcake','toverstaf','feniksveer'],
-      verweer:['feniksveer','toverstaf','drakenei']
-    };
-    Object.keys(KU.RECEPT).forEach(th=>{
-      const extra=(staart[th]||[]).map(id=>stukVan(alle,id)||alle[id]).filter(Boolean);
-      const l=kern.map(x=>x.slice()).concat(extra.map(x=>x.slice()));
-      while(l.length<7){
-        const rest=Object.keys(alle).map(id=>alle[id]).filter(r=>!l.some(x=>x[3]===r[3]));
-        if(!rest.length)break;l.push(rest[0].slice());
+    /* nieuwe klas-stukken uit m3kunst (KU.stuk) als ze nog niet in een recept zitten */
+    const ids=new Set(Object.keys(HEX).concat(Object.values(KLAS_SET).flat()));
+    ids.forEach(id=>{
+      if(alle[id])return;
+      if(typeof KU.stuk==='function'){
+        try{const r=KU.stuk(id);if(r&&r[3])alle[id]=r}catch(e){}
       }
+    });
+    Object.keys(KLAS_SET).concat(Object.keys(KU.RECEPT)).filter((th,i,a)=>a.indexOf(th)===i).forEach(th=>{
+      const ids=KLAS_SET[th]||KLAS_SET.herbologie;
+      const l=ids.map(id=>stukVan(alle,id)||alle[id]).filter(Boolean);
+      if(l.length<5)return;
+      /* staart: extra stukken voor oude 6/7-kleuren-paden, niet zichtbaar bij 5 kleuren */
+      const rest=Object.keys(alle).map(id=>alle[id]).filter(r=>!l.some(x=>x[3]===r[3]));
+      while(l.length<7&&rest.length)l.push(rest.shift().slice());
       KU.RECEPT[th]=l.slice(0,7);
       if(typeof M3THEMA!=='undefined'&&M3THEMA[th])M3THEMA[th].t=KU.RECEPT[th].map(r=>[r[0],r[1],'M12 4v16']);
     });
@@ -38,7 +89,7 @@
   }
   zetPalet();
   try{if(typeof zorgPomp==='function')Object.keys(KU.RECEPT).forEach(zorgPomp)}catch(e){}
-  zetPalet(); /* pompoen blijft index 2, zorgPomp mag hem niet naar 0 halen */
+  zetPalet(); /* klas-set blijft leidend; pompoen wordt niet meer in de eerste vijf gezet */
 
   /* ---- bordvormen: 1 in de tekening = speelbaar, . = gat ---- */
   const TEKEN={
@@ -127,6 +178,7 @@
   function herkalibreer(){
     if(typeof S==='undefined')return;
     if(!S.kalV191){S.kalV191=1;S.m3kal={};try{bewaar()}catch(e){}}
+    if(!S.kalV193){S.kalV193=1;S.m3kal={};try{bewaar()}catch(e){}}
   }
   try{herkalibreer()}catch(e){}
 
@@ -136,17 +188,41 @@
     const oudK=L.kleuren|0;
     const kal=((S.m3kal||{})[n]||0)|0;
     const basis=Math.max(8,(L.zetten|0)-kal);
-    L.kleuren=n<=10?3:4;
+    L.kleuren=n<=10?4:5;
     (L.doelen||[]).forEach(d=>{if(typeof d[0]==='number')d[0]=((d[0]%L.kleuren)+L.kleuren)%L.kleuren});
     let z=basis;
-    if(oudK>=7&&z>=18)z=Math.max(12,Math.round(z*0.80));
-    else if(oudK>=6&&n>15&&z>=22)z=Math.max(14,Math.round(z*0.88));
+    if(n>10){
+      if(oudK>=7&&z>=18)z=Math.max(12,Math.round(z*0.90));
+      else if(oudK>=6&&n>15&&z>=22)z=Math.max(14,Math.round(z*0.94));
+    }
     L.zetten=z+kal;
     const v=m3VormVan(n);
     L.vorm=v.naam;L.rijen=v.R;L.kol=v.K;
     voegDoelen(L,n);
     return L;
   };
+
+  function isOpdracht(n){
+    n=n|0;
+    if(n<12)return false;
+    if(n%9!==3)return false;
+    if(n>=23&&n%24===23)return false;
+    if(n>=18&&n%20===18)return false;
+    return true;
+  }
+  window.m3IsOpdracht=isOpdracht;
+  function opdrachtVan(n){
+    if(!isOpdracht(n))return null;
+    const vak=typeof m3VakVoor==='function'?m3VakVoor(n):{thema:'herbologie',prof:'Professor Stronk',id:'herbologie'};
+    const thema=vak.thema||'herbologie';
+    const ids=KLAS_SET[thema]||KLAS_SET.herbologie;
+    const idx=((Math.floor((n-12)/9))%ids.length+ids.length)%ids.length;
+    const id=ids[idx];
+    const wie=vak.prof||'de professor';
+    const port=PROF_PORT[vak.id]||PROF_PORT[thema]||'stronk';
+    return {wie:port,naam:wie,tegel:idx,id};
+  }
+  window.m3OpdrachtVan=opdrachtVan;
 
   function voegDoelen(L,n){
     const heeft=t=>(L.doelen||[]).some(d=>d[0]===t);
@@ -165,6 +241,19 @@
         const i=L.doelen.findIndex(d=>typeof d[0]==='number');
         if(i>=0)L.doelen.splice(i,1);else L.doelen=L.doelen.slice(0,3);
       }
+    }
+    /* speciale opdracht: ongeveer 1 op 9 levels, met een klas-tegel en de professor */
+    const op=opdrachtVan(n);
+    if(op){
+      const aantal=Math.max(14,Math.min(50,Math.round(Z*(n<40?0.65:n<80?0.85:1.05))));
+      L.doelen=L.doelen||[];
+      L.doelen=L.doelen.filter(d=>typeof d[0]!=='number');
+      L.doelen.unshift([op.tegel,aantal]);
+      if(L.doelen.length>3)L.doelen=L.doelen.slice(0,3);
+      const zin=(OPDRACHT_ZIN[op.id]||((k,w)=>`Verzamel ${k} voor ${w}`))(aantal,op.naam);
+      L.opdracht={wie:op.wie,naam:op.naam,titel:'Opdracht van '+op.naam,zin,tegel:op.tegel,id:op.id,aantal};
+    }else{
+      L.opdracht=null;
     }
   }
 
@@ -342,10 +431,26 @@
     setTimeout(weg,2400);
   }
   function m3Na(fn){try{fn()}catch(e){}[80,200,450].forEach(t=>setTimeout(()=>{try{fn()}catch(e){}},t))}
+  window.m3OpdrachtVoorKaart=function(n){
+    const L=typeof m3Level==='function'?m3Level(n):null;
+    const voor=document.querySelector('.m3voor');if(!voor)return;
+    if(voor.tagName==='P'||/klaargezet/.test(voor.textContent||''))return;
+    const oude=voor.querySelector('.m3opdrachtkaart');
+    if(!L||!L.opdracht){if(oude)oude.remove();return}
+    const o=L.opdracht;
+    const port=window.portret?portret(o.wie,'m3op-port'):'';
+    const html=port+'<div><b>'+o.titel+'</b><p>'+o.zin+'</p></div>';
+    if(oude){oude.innerHTML=html;return}
+    const el=document.createElement('div');el.className='m3opdrachtkaart';
+    el.innerHTML=html;
+    const kop=voor.querySelector('.m3vak')||voor.querySelector('h2');
+    if(kop&&kop.parentNode)kop.after(el);else voor.insertBefore(el,voor.firstChild);
+  };
   const _vm=V.match3;
   if(_vm)V.match3=async function(n,...a){
     const r=await _vm.apply(this,arguments);
-    m3Na(()=>m3VormVoorKaart(n||((typeof S!=='undefined'&&S.m3lvl)|0)||1));
+    const nr=n||((typeof S!=='undefined'&&S.m3lvl)|0)||1;
+    m3Na(()=>{m3OpdrachtVoorKaart(nr);m3VormVoorKaart(nr)});
     return r;
   };
   const _sp=m3Speel;

@@ -75,3 +75,13 @@
 @media (prefers-reduced-motion:reduce){
   .m3vormintro, .m3vormkaart{animation:none}
 }
+
+/* v193: opdrachtkaart met professor */
+.m3opdrachtkaart{display:flex;align-items:center;gap:.75rem;margin:.75rem 0 0;padding:.75rem .9rem;border-radius:16px;background:linear-gradient(135deg,#fff8e8,#f3e0b8);box-shadow:0 4px 14px rgba(60,40,10,.14);text-align:left;color:#3a2408}
+.m3opdrachtkaart b{display:block;font-size:1.05rem}
+.m3opdrachtkaart p{margin:.2rem 0 0;font-size:.95rem;opacity:.95}
+.m3opdrachtkaart .pportret,.m3opdrachtkaart .m3op-port{width:72px;height:72px;border-radius:50%;object-fit:cover;flex:0 0 72px;border:3px solid #c9a227;box-shadow:0 2px 8px rgba(60,40,10,.2);background:#efe0b8}
+.m3voor .m3opdrachtkaart + .m3doelen-voor{margin-top:.7rem}
+@media (prefers-reduced-motion: reduce){
+  .m3opdrachtkaart{animation:none}
+}

@@ -19,7 +19,7 @@ const LES_KOSTEN=false;
  Object.entries(TH).forEach(([id,[n,o,k,p]])=>{if(!M3THEMA[id])M3THEMA[id]={...basis,t:basis.t.slice()};const T=M3THEMA[id];T.n=n;T.id=id;if(o){T.onkruid=o;T.kist=k;T.pot=p}});
  Object.entries(MV).forEach(([id,[k,p]])=>{if(M3THEMA[id]){M3THEMA[id].kistMv=k;M3THEMA[id].potMv=p}});
  const alle={};Object.values(KU.RECEPT).forEach(l=>l.forEach(r=>{if(r[3])alle[r[3]]=r}));
- const SET={gedaante:['herinnerbal','hedwig','chocokikker','ketelcake','toverstaf','pompoen','feniksveer'],verweer:['herinnerbal','feniksveer','toverstaf','drakenei','drankje','hedwig','boterbier']};
+ const SET={gedaante:['g-kopje','g-knoop','g-lucifer','g-vogel','g-naald'],verweer:['v-schild','feniksveer','v-slang','v-vonk','v-wolf']};
  Object.entries(SET).forEach(([th,l])=>{if(l.every(x=>alle[x])){KU.RECEPT[th]=l.map(x=>alle[x]);M3THEMA[th].t=KU.RECEPT[th].map(r=>[r[0],r[1],'M12 4v16'])}});
  /* --- vak per level --- */
  window.vakVan=n=>M3VAKKEN[Math.min(M3VAKKEN.length-1,Math.floor((Math.max(1,n)-1)/VAK_LEVELS))];

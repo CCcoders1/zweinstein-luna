@@ -509,3 +509,5 @@ v191 — Match-3
   (geen EA/Warner-assets).
 
 v192 (16 november 2026): de Grote Hal, de kaart en het menu Meer kregen per onderdeel een eigen kleur, geïllustreerde koppen en kaarten, meer diepte en een zachte beweging, met grotere knoppen. Vormborden hebben nu een themakader en achtergrond, kaarsen- en puntendoelen een beloning als ze klaar zijn, en een speciale vorm krijgt een korte introkaart. Mama’s voortgang is alleen aangevuld, niet gereset.
+
+v193 (16 november 2026): de match-3-borden hebben 4 kleuren in de eerste tien levels en 5 daarna. Elk vak heeft een eigen, vaste set van 5 themategels (Herbologie houdt kruiden en gereedschap, in duidelijkere kleuren). Ongeveer 1 op de 9 levels is een speciale opdracht van de professor, zoals oorwarmers vangen of mandragora’s oogsten, met naam en portret op de introkaart. Het aantal zetten is afgestemd op 5 kleuren. De nieuwe tegels zijn eigen ontwerpen of bewerkingen van bestaande eigen ontwerpen (img/stukken/ en img/doel/). Mama’s voortgang is alleen aangevuld, niet gereset.

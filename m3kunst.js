@@ -320,10 +320,16 @@ m3DoelIco=function(d,T,L){if(window.doelIco&&(d[0]=="i"||d[0]=="d"||(d[0]=="p"&&
 
 /* ====== Speelstukken ontworpen door de maker (uitgeknipte sprites in img/stukken/) ====== */
 (()=>{window.STUK_FOTO=true;
- const NAMEN={herinnerbal:['Herinnerbal','#ff3a40'],drankje:['Drankje','#36d05a'],hedwig:['Hedwig','#9ab4ff'],chocokikker:['Chocokikker','#b0703a'],drakenei:['Drakenei','#8a7aa8'],pompoen:['Pompoen','#ff8a1a'],boterbier:['Boterbier','#e0a050'],feniksveer:['Feniksveer','#ff5a2a'],toverstaf:['Toverstaf','#c08a50'],ketelcake:['Ketelcake','#3a8ab8']};
+ const NAMEN={herinnerbal:['Herinnerbal','#ff2d3a'],drankje:['Drankje','#19d35a'],hedwig:['Hedwig','#e8eefc'],chocokikker:['Chocokikker','#b0703a'],drakenei:['Drakenei','#8a7aa8'],pompoen:['Pompoen','#ffb008'],boterbier:['Boterbier','#f0b43a'],feniksveer:['Feniksveer','#ff5a24'],toverstaf:['Toverstaf','#d4a05a'],ketelcake:['Ketelcake','#2470e8'],
+  'h-oorwarmers':['Oorwarmers','#e02070'],'h-mandragora':['Mandragora','#3cb820'],'h-zaadzak':['Zaadzakje','#f0c220'],'h-gieter':['Gieter','#2aa8b8'],'h-takje':['Duivelsstrik-takje','#a060d0'],'h-boek':['Herbologieboek','#2f6a3a'],
+  'b-veer':['Veer','#2aa8c8'],'b-staf':['Toverstok','#e0b030'],'b-boek':['Toverspreukboek','#1e3a6e'],
+  't-lila':['Lila drankje','#6a20d0'],'t-hart':['Hartflesje','#ff5a8a'],
+  'g-kopje':['Theekopje','#cfe0f0'],'g-knoop':['Knoop','#5a1020'],'g-lucifer':['Luciferdoosje','#e8a020'],'g-vogel':['Vogeltje','#6a92c0'],'g-naald':['Speldenkussen','#f02830'],
+  'a-ster':['Ster','#ffd24a'],'a-kijk':['Telescoop','#b07830'],'a-kaart':['Sterrenkaart','#1a2a58'],'a-bol':['Kristallen bol','#6a90c0'],'a-maan':['Maan','#f0e8d0'],
+  'v-schild':['Schild','#1e4a9a'],'v-slang':['Slang','#3a9a3a'],'v-vonk':['Vonk','#ffe680'],'v-wolf':['Wolfsworteldrank','#9a38c8']};
  const IMG={};const laad=n=>{if(IMG[n])return IMG[n];const i=new Image();i.src=`img/stukken/${n}-256.webp`;IMG[n]=i;return i};
  const teken=n=>(c)=>{const i=laad(n);if(i.complete&&i.naturalWidth){c.drawImage(i,-50,-50,100,100)}};
- const st=n=>[NAMEN[n][0],NAMEN[n][1],teken(n),n];
+ const st=n=>[NAMEN[n][0],NAMEN[n][1],teken(n),n];KU.stuk=st;KU.STUKNAMEN=NAMEN;
  const STD=['herinnerbal','drankje','hedwig','chocokikker','drakenei','pompoen','boterbier'].map(st);
  const SETS={herbologie:STD,bezweringen:['herinnerbal','drankje','hedwig','chocokikker','drakenei','pompoen','toverstaf'].map(st),fabeldieren:['herinnerbal','feniksveer','hedwig','chocokikker','drakenei','pompoen','boterbier'].map(st),
   toverdranken:['drankje','ketelcake','boterbier','herinnerbal','pompoen','drakenei','feniksveer'].map(st),astronomie:['herinnerbal','drankje','hedwig','toverstaf','drakenei','pompoen','ketelcake'].map(st)};

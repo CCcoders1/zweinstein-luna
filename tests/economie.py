@@ -256,7 +256,7 @@ def scenarios(app):
     pg = app.open(s17)
     ok('save onveranderd na laden', E(pg, "[S.schilden,S.galjoenen,S.m3lvl]") == [5, 1026, s17['m3lvl']])
     L20 = E(pg, "(()=>{const L=m3Level(20);return [L.zetten,JSON.stringify(L.doelen),L.pot]})()")
-    ok('level 20: 2 potten, 40 zetten', L20 == [40, '[["o"],["p",2]]', 2], L20)
+    ok('level 20: 2 potten, 43 zetten', L20 == [43, '[["o"],["p",2]]', 2], L20)
     ok('stergrens = zetten x 70 / 150', all(E(pg, f"(()=>{{const L=m3Level({n}),Z=L.zetten+(L.extra|0),f=lvZwaar({n})?.85:1,r=x=>Math.round(x/10)*10;return JSON.stringify(m3SterGrens({n}))==JSON.stringify([r(Z*70*f),r(Z*150*f)])}})()") for n in (20, 21, 23, 24, 25, 26, 30)))
     V129 = [5,12,15,16,33,40,41,42,45,46,47,50,53,54,56,59,60,67,80,81,87,90,93,95,103,110,115,122,125,135,136,140,141,145,150]
     ok('v129: aangepaste levels nooit 7 kleuren met 3+ potten', E(pg, f"{V129}.every(n=>{{const L=m3Level(n);return !(L.kleuren>=7&&(L.pot|0)>=3)}})"))
@@ -292,12 +292,25 @@ def scenarios(app):
     ok('labels bij iconen bovenin', E(pg, "['#stats .vuur-t','#sterbadge','#smekbadge'].every(q=>{const e=document.querySelector(q);return e&&e.dataset.lbl})"))
     app.inv(pg, 'v131'); ok('geen JS-fouten', not pg.errs, pg.errs); pg.context.close()
 
-    print('[19] v191: 4 kleuren na level 10, doelen haalbaar, 74/88/100 volgen de regel')
+    print('[19] v193: 5 kleuren na level 10, doelen haalbaar, 74/88/100 volgen de regel')
     pg = app.open(basis(schilden=5, galjoenen=1026, wisselTot=1))
     kl = E(pg, "[51,56,66,71,76,81,96,111,116,121,131,62,83,89,98,102,108,112,127,139].map(n=>{const L=m3Level(n);return [L.kleuren,L.doelen.every(d=>typeof d[0]!='number'||d[0]<L.kleuren)]})")
-    ok('20 levels hebben 4 kleuren, doelen haalbaar', all(k == [4, True] for k in kl), kl)
-    ok('74/88/100 hebben 4 kleuren', E(pg, "[74,88,100].map(n=>m3Level(n).kleuren)") == [4, 4, 4])
-    ok('zetten volgens v191 (51: 34, 83: 28, 121: 16)', E(pg, "[51,83,121].map(n=>m3Level(n).zetten+(m3Level(n).extra|0))") == [34, 28, 16])
+    ok('20 levels hebben 5 kleuren, doelen haalbaar', all(k == [5, True] for k in kl), kl)
+    ok('74/88/100 hebben 5 kleuren', E(pg, "[74,88,100].map(n=>m3Level(n).kleuren)") == [5, 5, 5])
+    ok('zetten volgens v193 (51: 37, 83: 30, 121: 16)', E(pg, "[51,83,121].map(n=>m3Level(n).zetten+(m3Level(n).extra|0))") == [37, 30, 16])
+    ok('eerste tien levels hebben 4 kleuren', E(pg, "[1,5,10].map(n=>m3Level(n).kleuren)") == [4, 4, 4])
+    sets = E(pg, "['herbologie','bezweringen','toverdranken','gedaante','astronomie','verweer'].map(th=>(KU.RECEPT[th]||[]).slice(0,5).map(r=>r[3]))")
+    verwacht = [
+        ['h-oorwarmers','h-mandragora','h-zaadzak','h-gieter','h-takje'],
+        ['herinnerbal','b-veer','b-staf','hedwig','b-boek'],
+        ['drankje','ketelcake','boterbier','t-lila','t-hart'],
+        ['g-kopje','g-knoop','g-lucifer','g-vogel','g-naald'],
+        ['a-ster','a-kijk','a-kaart','a-bol','a-maan'],
+        ['v-schild','feniksveer','v-slang','v-vonk','v-wolf'],
+    ]
+    ok('elk vak heeft zijn eigen 5 themategels', sets == verwacht, sets)
+    op12 = E(pg, "(()=>{const L=m3Level(12);return [!!L.opdracht,L.opdracht&&L.opdracht.wie,L.opdracht&&L.opdracht.id, (L.opdracht&&L.opdracht.aantal>=14&&L.opdracht.aantal<=50)]})()")
+    ok('level 12 is een opdracht van Professor Stronk (oorwarmers)', op12 == [True, 'stronk', 'h-oorwarmers', True], op12)
     ok('save onveranderd', E(pg, "[S.schilden,S.galjoenen]") == [5, 1026])
     app.inv(pg, 'v132'); ok('geen JS-fouten', not pg.errs, pg.errs); pg.context.close()
 

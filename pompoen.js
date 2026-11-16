@@ -2,9 +2,8 @@
 /* Pompoenmeter: pompoen-combi's laten 5 pompoenen groeien. Vol = naar Hagrids moestuin. */
 (function(){
 S.pomp=S.pomp||{g:[0,0,0,0,0]};if(S.pomp.g.every(x=>x<=4)&&S.pomp.g.some(x=>x>0)&&!S.pomp.v2)S.pomp.g=S.pomp.g.map(x=>x*5);S.pomp.v2=1;const MAX=20;
-/* pompoen als 5e stuk, zodat hij ook in vroege levels (5 kleuren) meedoet */
+/* v193: pompoen blijft uit de klas-sets. De meter groeit nog wel (zie telDoel). */
 function pompIdx(th){const l=KU.RECEPT[th];return l?l.findIndex(r=>r[3]=='pompoen'):-1}
-Object.keys(KU.RECEPT).forEach(th=>{const l=KU.RECEPT[th],p=pompIdx(th);if(p>4){[l[4],l[p]]=[l[p],l[4]];if(M3THEMA[th])M3THEMA[th].t=l.map(r=>[r[0],r[1],'M12 4v16'])}});try{KU.wis()}catch(e){}
 const vol=()=>S.pomp.g.every(x=>x>=MAX);
 function pompSvg(c){if(c<=0)return `<svg viewBox="0 0 60 60" class="pp-knop"><path d="M30 44c-6 0-9-6-6-11 2-3 4-4 6-4s4 1 6 4c3 5 0 11-6 11z" fill="#9ccf5a" stroke="#4e7a22" stroke-width="2"/><path d="M30 29v-6" stroke="#4e7a22" stroke-width="3" stroke-linecap="round"/></svg>`;
  const f=Math.min(1,c/MAX),s=.3+.7*f,mix=(a,b)=>Math.round(a+(b-a)*f),kl=`rgb(${mix(168,255)},${mix(207,127)},${mix(74,20)})`,sk=`rgb(${mix(95,168)},${mix(138,70)},${mix(32,10)})`;
@@ -14,15 +13,14 @@ function teken(groei){const m=document.getElementById('pompmeter');if(!m)return;
 function groei(){const i=S.pomp.g.findIndex(x=>x<MAX);if(i<0)return;S.pomp.g[i]++;teken(i)}
 window.pompGroei=groei;
 function thVan(b){return Object.keys(M3THEMA).find(k=>M3THEMA[k]===b.T)}
-const _td=Bord.prototype.telDoel;Bord.prototype.telDoel=function(t){try{if(!this.sim&&typeof M3!="undefined"&&this===M3.b&&typeof t=='number'){if(this._pi==null)this._pi=pompIdx(thVan(this));if(t===this._pi)groei()}}catch(e){}return _td.apply(this,arguments)};
+const _td=Bord.prototype.telDoel;Bord.prototype.telDoel=function(t){try{if(!this.sim&&typeof M3!="undefined"&&this===M3.b&&typeof t=='number'){if(this._pi==null)this._pi=pompIdx(thVan(this));if(this._pi>=0&&t===this._pi)groei();else if(this._pi<0){this._pc=(this._pc||0)+1;if(this._pc%5===0)groei()}}}catch(e){}return _td.apply(this,arguments)};
 const _opl=Bord.prototype.oplossen;Bord.prototype.oplossen=async function(){const r=await _opl.apply(this,arguments);if(!this.sim)bewaar();return r};
 /* pompoenplaatje vooraf laden; zodra het binnen is de sprite-cache legen, anders blijft een lege tegel bewaard (iPhone) */
 const ppI=window._ppImg||(window._ppImg=new Image());if(!ppI.getAttribute('src'))ppI.src='img/stukken/pompoen-256.webp';
 const ppKlaar=()=>{try{KU.wis()}catch(e){}};if(ppI.complete&&ppI.naturalWidth)ppKlaar();else{ppI.addEventListener('load',ppKlaar);if(ppI.decode)ppI.decode().then(ppKlaar,()=>0)}
 const POMP=['Pompoen','#ff8a1a',c=>{if(ppI.complete&&ppI.naturalWidth){c.drawImage(ppI,-50,-50,100,100);return}
  c.fillStyle='#ff8a1a';c.strokeStyle='#a84a0a';c.lineWidth=3;[-18,18,0].forEach((x,i)=>{c.beginPath();c.ellipse(x,8,i==2?24:20,30,0,0,7);c.fill();c.stroke()});c.fillStyle='#4e7a22';c.fillRect(-4,-30,8,12);ppI.addEventListener('load',ppKlaar,{once:true})},'pompoen'];
-function zorgPomp(th){const l=KU.RECEPT[th];if(!l)return;let p=pompIdx(th);if(p<0){l[0]=POMP;p=0}else if(p>4){[l[4],l[p]]=[l[p],l[4]]}else return;if(M3THEMA[th])M3THEMA[th].t=l.map(r=>[r[0],r[1],'M12 4v16']);try{KU.wis()}catch(e){}}
-/* meteen in alle sets, zodat het levelscherm vooraf hetzelfde doel toont als het bord */
+function zorgPomp(th){/* v193: klas-tegelsets niet overschrijven */}
 try{Object.keys(KU.RECEPT).forEach(zorgPomp)}catch(e){}
 const _sp=m3Speel;m3Speel=function(n,thema){try{zorgPomp(thema)}catch(e){}const r=_sp.apply(this,arguments);let t=0;const zet=()=>{const h=document.querySelector('.m3hud');if(h){if(!document.getElementById('pompmeter'))h.insertAdjacentHTML('afterend',meterHTML())}else if(t++<40)setTimeout(zet,150)};zet();return r};
 const _w=m3Winst;m3Winst=function(n,b){const r=_w.apply(this,arguments);if(vol()&&!S.pomp.melding){S.pomp.melding=1;bewaar();setTimeout(()=>hagridRijp(),2600)}return r};
