@@ -497,3 +497,13 @@ v190 — Lessen
   Extra dieren uit de Quaternius Ultimate Animated Animal
   Pack (CC0): vos (Red Fox), arend (Eagle) en kuiken (Chick).
   https://quaternius.com — geen aanpassing van de licentie.
+
+v191 — Match-3
+  Minder kleuren per level (3 in de eerste tien, daarna 4) en
+  een helder palet per vak: rood, groen, oranje en blauw als
+  vaste kern, zodat de stukken makkelijker te onderscheiden
+  zijn. Nieuwe bordvormen (hart, bliksem, kasteel, ketel) en
+  af en toe een groter bord, plus twee nieuwe doelen: een
+  puntenaantal halen en kaarsen aansteken. Toverstaf- en
+  match-effecten zijn rijker. Zelfgemaakt, bestaande stukken
+  (geen EA/Warner-assets).
