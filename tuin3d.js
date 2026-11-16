@@ -1,4 +1,4 @@
-/* v179-v180: snellere 3D-tuin en leven (vlinders, uil, kabouter, gras, rimpel). Vaste camera, deuren gekoppeld. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v185: gebakken vertexlicht, Lambert i.p.v. Phong, normalen alleen in volle kwaliteit, afstandsculling, stapstof, vondsthint, tik op uil/kabouter. CC0/zelfgemaakt. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -601,14 +601,14 @@
     gras: new THREE.MeshLambertMaterial({map:T.gras}),
     haag: new THREE.MeshLambertMaterial({map:T.haag,color:0xf4ffe0}),
     baksteen: new THREE.MeshLambertMaterial({map:T.baksteen}),
-    zandsteen: new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xffffff,shininess:8,specular:0x332820}),
+    zandsteen: new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xffffff}),
     pad: new THREE.MeshLambertMaterial({map:T.pad,color:0xffffff}),
     aarde: new THREE.MeshLambertMaterial({map:T.aarde}),
     hout: new THREE.MeshLambertMaterial({map:T.hout}),
-    sokkel: new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xe8d8b0,shininess:8,specular:0x332820}),
+    sokkel: new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xe8d8b0}),
     ijzer: new THREE.MeshLambertMaterial({color:0x3c3c44,emissive:0x101018,emissiveIntensity:0.16}),
     grind: new THREE.MeshLambertMaterial({map:T.grind}),
-    water: new THREE.MeshPhongMaterial({map:T.water,color:0xb8fff0,transparent:true,opacity:0.92,depthWrite:false,shininess:120,specular:0xffffff,emissive:0x1a8890,emissiveIntensity:0.28}),
+    water: new THREE.MeshLambertMaterial({map:T.water,color:0xb8fff0,transparent:true,opacity:0.92,depthWrite:false,emissive:0x1a8890,emissiveIntensity:0.32}),
     rimpel: new THREE.MeshBasicMaterial({map:T.rimpel,transparent:true,opacity:0.35,depthWrite:false,side:THREE.DoubleSide}),
     glinster: new THREE.MeshBasicMaterial({map:T.glinster,transparent:true,opacity:0.7,depthWrite:false,side:THREE.DoubleSide}),
     wolk: new THREE.MeshBasicMaterial({map:T.wolk,transparent:true,opacity:0.88,depthWrite:false,fog:false,side:THREE.DoubleSide,toneMapped:false}),
@@ -660,9 +660,9 @@
   };
   mat.steenAO=new THREE.MeshLambertMaterial({map:T.zandsteen,vertexColors:true});
   mat.steenInst=new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xffffff});
-  mat.steenMuur=new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xffffff,shininess:12,specular:0x3a3028,vertexColors:true,normalScale:new THREE.Vector2(0.75,0.75)});
+  mat.steenMuur=new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xffffff,vertexColors:true});
 
-  mat.kopSteen=new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xd0c8bc,shininess:18,specular:0x555550});
+  mat.kopSteen=new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xd0c8bc});
 
   const scene=new THREE.Scene();
   scene.background=new THREE.Color(0x2a62d4);
@@ -688,11 +688,25 @@
     const k=KWAL[kwalTrap]||KWAL[0];
     return Math.min(k.cap,window.devicePixelRatio||1,Math.sqrt(k.pix/Math.max(1,w*h)));
   }
+  function zetNormalen(aan){
+    const lijst=[mat.pad,mat.padSlijt,mat.padRand,mat.zandsteen,mat.steenAO,mat.sokkel,mat.kopSteen,mat.steenMuur];
+    lijst.forEach(function(m){
+      if(!m)return;
+      if(aan){
+        if(m.userData.nml){m.normalMap=m.userData.nml;if(m.userData.nmlScl)m.normalScale=m.userData.nmlScl}
+      }else if(m.normalMap){
+        m.userData.nml=m.normalMap;m.userData.nmlScl=m.normalScale&&m.normalScale.clone?m.normalScale.clone():m.normalScale;
+        m.normalMap=null;
+      }
+      m.needsUpdate=true;
+    });
+  }
   function zetKwal(trap){
     kwalTrap=Math.max(0,Math.min(KWAL.length-1,trap|0));
     licht=kwalTrap>=2;
     if(renderer.toneMappingExposure!=null)renderer.toneMappingExposure=0.94+kwalTrap*0.03;
     if(typeof wolkInstO!=='undefined'&&wolkInstO)wolkInstO.visible=kwalTrap<2;
+    zetNormalen(kwalTrap===0);
   }
   function maat(){
     const w=innerWidth,h=Math.max(1,innerHeight);
@@ -2171,9 +2185,13 @@
   }
   function levenTic(t,dt){
     vondstTic(t,dt);
+    const hx=held.position.x,hz=held.position.z;
     const nVl=RMP?0:(licht?1:2);
     for(let i=0;i<vlinders.length;i++){
-      const v=vlinders[i],aan=i<nVl;
+      const v=vlinders[i];
+      const p0=v.userData&&v.userData.pad;
+      const d2=p0?((p0.cx-hx)*(p0.cx-hx)+(p0.cz-hz)*(p0.cz-hz)):0;
+      const aan=i<nVl && d2<220;
       v.visible=aan;if(!aan)continue;
       const p=v.userData.pad;
       const a=t*p.s+p.fase;
@@ -2183,7 +2201,11 @@
       v.userData.vL.rotation.y=-0.35+flap;
       v.userData.vR.rotation.y=0.35-flap;
     }
-    if(uil&&uil.userData.kop){
+    if(uil){
+      const dUil=(uil.position.x-held.position.x)*(uil.position.x-held.position.x)+(uil.position.z-held.position.z)*(uil.position.z-held.position.z);
+      uil.visible=dUil<420;
+    }
+    if(uil&&uil.visible&&uil.userData.kop){
       const kop=uil.userData.kop;
       let doel=Math.sin(t*0.45)*0.55+Math.sin(t*0.17)*0.25;
       if(typeof held!=='undefined'&&held){
@@ -2200,7 +2222,7 @@
       rimpelVlak.rotation.z=t*0.22;
       rimpelVlak.material.opacity=0.28+Math.sin(t*1.6)*0.1;
     }
-    if(grasTuft&&grasDummy&&grasPlek&&!RMP&&(Math.floor(t*8)%2===0)){
+    if(grasTuft&&grasDummy&&grasPlek&&!RMP&&kwalTrap<2&&(Math.floor(t*8)%2===0)){
       const d=grasDummy,i=Math.floor(t*8)%grasPlek.length;
       const k=grasPlek[i];
       d.position.set(k.x,0,k.z);
@@ -2986,7 +3008,10 @@
   function tekenDebug(){
     if(!debugAan||!debugEl)return;
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
-    debugEl.textContent='v184  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
+    const r=(renderer.info&&renderer.info.render)||{};
+    const kwalNaam=['vol','midden','licht'][kwalTrap]||('k'+kwalTrap);
+    debugEl.textContent=fps+' fps  ·  '+kwalNaam+'  ·  '+(r.calls||0)+' calls  ·  '+Math.round((r.triangles||0)/1000)+'k tri   v185\n'+
+      'camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
       'kijk '+(kijkAan?'AAN':'uit')+(kijkSleep?' SLEEP':'')+'  id '+(kijkId==null?'-':kijkId)+'\n'+
@@ -3407,6 +3432,31 @@
   }
 
   let fps=0,fpsMin=99,frames=0,tFps=performance.now(),laatste=performance.now();
+  const stofMat=new THREE.MeshBasicMaterial({color:0xc8b890,transparent:true,opacity:0,depthWrite:false,toneMapped:false});
+  const stofPool=[];
+  for(let i=0;i<8;i++){
+    const s=new THREE.Mesh(new THREE.CircleGeometry(0.11,8),stofMat.clone());
+    s.rotation.x=-Math.PI/2;s.visible=false;s.frustumCulled=true;scene.add(s);stofPool.push(s);
+  }
+  let stofI=0;
+  function stapStof(){
+    if(RMP||kwalTrap>=2)return;
+    const s=stofPool[stofI++%stofPool.length];
+    s.position.set(held.position.x+(Math.random()-0.5)*0.18,0.03,held.position.z+(Math.random()-0.5)*0.18);
+    s.scale.setScalar(0.4+Math.random()*0.5);
+    s.material.opacity=0.42;
+    s.userData.leeft=0.45;s.visible=true;
+  }
+  function stofTic(dt){
+    for(let i=0;i<stofPool.length;i++){
+      const s=stofPool[i];if(!s.visible)continue;
+      s.userData.leeft-=dt;
+      s.position.y+=dt*0.25;
+      s.scale.multiplyScalar(1+dt*1.8);
+      s.material.opacity=Math.max(0,s.userData.leeft/0.45)*0.4;
+      if(s.userData.leeft<=0)s.visible=false;
+    }
+  }
   const klok=new THREE.Clock();
 
   const CAM_RAILS=[
@@ -3647,7 +3697,8 @@
         s.material.opacity=0.5+Math.sin(t*6+i)*0.16;
         if(licht)s.material.opacity*=0.7;
       });
-      const nDrup=licht?3:Math.min(5,druppels.length);
+      const dFont=(held.position.x+5)*(held.position.x+5)+(held.position.z-9.7)*(held.position.z-9.7);
+      const nDrup=(dFont>160||licht)?0:Math.min(5,druppels.length);
       druppels.forEach((d,i)=>{
         if(i>=nDrup){d.visible=false;return}
         d.visible=true;
@@ -3697,6 +3748,7 @@
       if(stapKen*s<0){
         stapKen=s<0?-1:1;
         stapGeluid(ondergrond(held.position.x,held.position.z));
+        stapStof();
       }
     }
     if(audioKlaar && geluidAan){
@@ -3724,6 +3776,7 @@
     if(mark.visible)mark.material.opacity=0.45+Math.sin(t*4)*0.3;
     // stapelwolken staan vast (geen lookAt per frame, te duur en gaf eerder kruisen)
     if(typeof levenTic==='function')levenTic(t,dt);
+    if(typeof stofTic==='function')stofTic(dt);
     if(typeof sfeerTic==='function')sfeerTic(t,dt);
     if(!camVast)volgCamera(dt);
     zetDeurKaart();
@@ -3812,6 +3865,28 @@
     return out;
   }
   let versmolten=false;
+  function bakVertexLicht(geo){
+    if(!geo||!geo.attributes||!geo.attributes.position)return;
+    if(!geo.attributes.normal)geo.computeVertexNormals();
+    const nrm=geo.attributes.normal,pos=geo.attributes.position,n=pos.count;
+    if(!nrm)return;
+    let col=geo.attributes.color;
+    if(!col){
+      const a=new Float32Array(n*3);a.fill(1);
+      geo.setAttribute('color',new THREE.BufferAttribute(a,3));
+      col=geo.attributes.color;
+    }
+    const c=col.array,nr=nrm.array;
+    let sx=-14,sy=24,sz=10,sl=Math.hypot(sx,sy,sz)||1;sx/=sl;sy/=sl;sz/=sl;
+    for(let i=0;i<n;i++){
+      const nx=nr[i*3],ny=nr[i*3+1],nz=nr[i*3+2];
+      const nl=Math.max(0,nx*sx+ny*sy+nz*sz);
+      const hemi=0.42+0.36*(ny*0.5+0.5);
+      const lit=Math.min(1.16,0.40+hemi*0.50+nl*0.38);
+      c[i*3]*=lit;c[i*3+1]*=lit;c[i*3+2]*=lit;
+    }
+    col.needsUpdate=true;
+  }
   function versmeltStatisch(){
     if(versmolten)return;versmolten=true;
     function mark(o){if(!o)return;o.userData.dyn=1;if(o.traverse)o.traverse(c=>c.userData.dyn=1)}
@@ -3849,7 +3924,11 @@
     });
     groepen.forEach(gr=>{
       if(gr.geos.length<2)return;
-      const m=new THREE.Mesh(voegGeos(gr.geos),gr.mat);
+      const geo=voegGeos(gr.geos);
+      bakVertexLicht(geo);
+      const matB=gr.mat.clone();
+      matB.vertexColors=true;
+      const m=new THREE.Mesh(geo,matB);
       m.matrixAutoUpdate=false;m.frustumCulled=true;
       scene.add(m);
       gr.meshes.forEach(o=>{if(o.parent)o.parent.remove(o)});
@@ -4032,6 +4111,8 @@
     overgangKlaar:()=>!!overgangKlaar,
     deurCinema:()=>deurCinema,
     startUitgang:(id)=>startUitgang(id),
+    zetKwal:(n)=>{zetKwal(n|0);maat();return kwalTrap},
+    kwal:()=>kwalTrap,
     pos:()=>({x:+held.position.x.toFixed(2),z:+held.position.z.toFixed(2),y:+held.position.y.toFixed(2)}),
     cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3),rot:+held.rotation.y.toFixed(3)}),
     stok:()=>({aan:stokAan,kracht:+stokKracht.toFixed(2),dx:+stokDx.toFixed(2),dz:+stokDz.toFixed(2)}),

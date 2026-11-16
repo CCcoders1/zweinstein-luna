@@ -419,3 +419,13 @@ v184 — 3D-tuin
   Iets eerder beginnende nevel in de kleur van de HP1-lucht.
   Wolken-halo blijft in hoge kwaliteit staan. Zelfgemaakt,
   geen EA/Warner-assets.
+
+v185 — 3D-tuin
+  Loopjoystick rechtsonder, camerajoystick linksonder, met
+  de knop Achter erboven. Phong-steen en water zijn Lambert,
+  normaalkaarten alleen in volle kwaliteit, gebakken
+  vertexlicht op samengevoegde stilstaande meshes, en leven
+  (vlinders, uil, fonteindruppels, gras) verdwijnt op
+  afstand. Stapstof bij het lopen. Open tuin3d.html?debug=1
+  voor een leesbare fps-teller linksboven. Zelfgemaakt,
+  geen EA/Warner-assets.
