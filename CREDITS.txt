@@ -383,3 +383,10 @@ v180 — 3D-tuin
   save, teller Vondsten n/3, geen dubbele uitbetaling, de
   volgende dag liggen ze weer. Zelfgemaakt, geen EA/Warner-
   assets. Moeders saldo wordt niet gereset.
+
+v181 — 3D-tuin
+  Lichtere, groene haagvoeten in twee tinten zodat de voet
+  niet meer als een donkere streep valt. Bollere stapelwolken
+  met een zachte halo-laag. Duim sluit zichtbaar om de staf.
+  Zachte blob-schaduw onder Luna (zelfgemaakte radiale
+  canvas-textuur). Zelfgemaakt, geen EA/Warner-assets.
