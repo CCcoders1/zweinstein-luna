@@ -1,4 +1,4 @@
-/* v186: soepelere camera, beter water (geanimeerde normalen, schuim, spiegeling). CC0/zelfgemaakt. */
+/* v187: grotere tuin, kasteelplaats, Hagrids hut, meer, betere dieren. CC0/zelfgemaakt. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -1092,6 +1092,12 @@
   padLint([[0.0,11.05],[0.18,12.3],[-0.12,13.5],[0.0,14.0],[0.24,16.0],[-0.18,18.6],[0.14,21.4],[-0.1,24.2],[0.16,26.8],[0.0,29.0],[0.0,31.35]],2.75);
   padLint([[-16.1,14.2],[-13.6,13.82],[-11.0,14.28],[-8.2,13.88],[-5.6,14.22],[-3.5,13.95],[-1.8,14.05]],2.55);
   padLint([[16.1,14.18],[13.5,13.85],[11.0,14.25],[8.3,13.9],[5.6,14.2],[3.5,13.96],[1.8,14.06]],2.55);
+  // v187: pad naar Hagrids hut en het meer, en naar de kasteelplaats
+  padLint([[-11.6,14.05],[-11.8,11.6],[-11.9,8.5],[-13.4,5.8],[-16.4,4.0],[-18.2,3.4]],2.4);
+  padLint([[-16.6,3.6],[-15.2,2.4],[-14.0,1.6]],2.15);
+  padLint([[2.2,23.6],[4.6,25.2],[7.4,25.5],[10.6,25.3],[13.2,25.6]],2.5);
+  zachtPlein(-18.0,3.5,3.1);
+  zachtPlein(10.4,25.4,4.2);
   const plein=zachtPlein(0,14,3.7);
   (function strooiPad(){
     const nK=keiMeshes.length,nP=polMeshes.length;
@@ -1127,18 +1133,23 @@
   muur(-2.9,3.05,1.35,4.1,3.25);
   muur(2.9,4.6,1.35,7.2,3.3);
   // binnenplaats: westzijde open voor fontein en zandstenen muur
-  muur(-12.8,8.4,6.5,1.35,3.2);
+  muur(-15.05,8.4,2.1,1.35,3.2);
+  muur(-9.65,8.4,2.4,1.35,3.2);
   muur(8.6,8.4,12,1.35,3.15);
   muur(-8.6,19.6,12,1.35,3.25);
   muur(8.6,19.6,12,1.35,3.2);
-  // noordelijke gang naar de kassen
+  // noordelijke gang naar de kassen, opening oost naar de kasteelplaats
   muur(-2.9,25.5,1.35,9,3.3);
-  muur(2.9,25.5,1.35,9,3.35);
+  muur(2.9,22.5,1.35,3.0,3.35);
+  muur(2.9,28.8,1.35,2.4,3.35);
   muur(0,33.4,9,1.4,3.4);
   muur(-5.4,31.4,1.4,5,3.3);
   muur(5.4,31.4,1.4,5,3.3);
-  // westelijke gang (Hagrid)
-  muur(-16,11.55,14,1.3,3.15);
+  // wanden van de kasteelplaats
+  muur(16.6,24.8,1.4,9.2,3.3);
+  // westelijke gang (Hagrid), opening zuid naar hut en meer
+  muur(-16.85,11.55,7.1,1.3,3.15);
+  muur(-8.55,11.55,2.7,1.3,3.15);
   muur(-16,16.45,14,1.3,3.2);
   // oostelijke gang (Hal)
   muur(16,11.55,14,1.3,3.2);
@@ -1937,6 +1948,164 @@
   voegDeurGloed(deurH,1.3,0.22);
   voegDeurGloed(deurHal,1.3,0.22);
 
+  /* v187: gotische doorgangen, kasteelplaats, Hagrids hut, meer */
+  function gotischeBoog(x,z,rotY,span,hoog,dik){
+    dik=dik||0.55;span=span||3.4;hoog=hoog||4.2;
+    const sh=new THREE.Shape();
+    const W=span/2+0.55, H=hoog+0.85;
+    sh.moveTo(-W,0);sh.lineTo(W,0);sh.lineTo(W,H);sh.lineTo(-W,H);sh.lineTo(-W,0);
+    const hole=new THREE.Path();
+    const w=span/2, h=hoog*0.68, tip=hoog;
+    hole.moveTo(-w,0.02);hole.lineTo(w,0.02);hole.lineTo(w,h);
+    hole.quadraticCurveTo(w,hoog*0.88,0,tip);
+    hole.quadraticCurveTo(-w,hoog*0.88,-w,h);
+    hole.lineTo(-w,0.02);
+    sh.holes.push(hole);
+    const geo=new THREE.ExtrudeGeometry(sh,{depth:dik,bevelEnabled:false,steps:1,curveSegments:10});
+    geo.translate(0,0,-dik/2);
+    const m=new THREE.Mesh(geo,mat.zandsteen);
+    m.position.set(x,0,z);m.rotation.y=rotY||0;voeg(m);
+    // kapitelen
+    const c=Math.cos(rotY||0), si=Math.sin(rotY||0);
+    [[-span/2,0],[span/2,0]].forEach(([lx])=>{
+      const px=x+lx*c, pz=z-lx*si;
+      const kap=new THREE.Mesh(new THREE.BoxGeometry(0.62,0.16,dik+0.12),mat.zandsteen);
+      kap.position.set(px,hoog*0.62,pz);kap.rotation.y=rotY||0;voeg(kap);
+    });
+    // alleen de pijlers zijn vast, de opening blijft beloopbaar
+    const pw=0.38, pd=0.42;
+    solid(x-c*(span/2), z+si*(span/2), pw+Math.abs(si)*pd, pw+Math.abs(c)*pd, hoog);
+    solid(x+c*(span/2), z-si*(span/2), pw+Math.abs(si)*pd, pw+Math.abs(c)*pd, hoog);
+  }
+  function steunbeer(x,z,rotY,h){
+    h=h||5.2;
+    const g=new THREE.Group();
+    const a=new THREE.Mesh(new THREE.BoxGeometry(0.7,h,1.35),mat.zandsteen);
+    a.position.set(0,h/2,0.15);g.add(a);
+    const b=new THREE.Mesh(new THREE.BoxGeometry(0.5,h*0.55,0.7),mat.zandsteen);
+    b.position.set(0,h*0.28,0.75);g.add(b);
+    const k=new THREE.Mesh(new THREE.BoxGeometry(0.82,0.22,1.6),mat.zandsteen);
+    k.position.set(0,h*0.72,0.2);g.add(k);
+    g.position.set(x,0,z);g.rotation.y=rotY||0;voeg(g);
+    solid(x,z,1.1,1.6,h*0.7);
+  }
+  function kasteelToren(x,z,h,r){
+    h=h||9.5;r=r||1.35;
+    const stam=new THREE.Mesh(new THREE.CylinderGeometry(r,r*1.08,h,10),mat.zandsteen);
+    stam.position.set(x,h/2,z);voeg(stam);
+    const ring=new THREE.Mesh(new THREE.CylinderGeometry(r+0.18,r+0.1,0.28,10),mat.zandsteen);
+    ring.position.set(x,h-0.4,z);voeg(ring);
+    const dak=new THREE.Mesh(new THREE.ConeGeometry(r+0.22,h*0.38,10),new THREE.MeshLambertMaterial({color:0x3a2a22}));
+    dak.position.set(x,h+h*0.16,z);voeg(dak);
+    const knop=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,6),mat.ijzer);
+    knop.position.set(x,h+h*0.35,z);voeg(knop);
+    // ramen
+    const glow=new THREE.MeshLambertMaterial({color:0xffe08a,emissive:0xffc45a,emissiveIntensity:0.55});
+    [0.4,-0.9,1.8].forEach((a,i)=>{
+      const rm=new THREE.Mesh(new THREE.PlaneGeometry(0.38,0.7),glow);
+      rm.position.set(x+Math.sin(a)*(r+0.02), 2.2+i*1.6, z+Math.cos(a)*(r+0.02));
+      rm.rotation.y=a;voeg(rm);
+    });
+    solid(x,z,r*2.1,r*2.1,h+1);
+  }
+  function kasteelMuur(x,z,len,h,rotY){
+    h=h||7.2;
+    const g=new THREE.Group();
+    const muurM=new THREE.Mesh(new THREE.BoxGeometry(len,h,0.85),mat.zandsteen);
+    muurM.position.set(0,h/2,0);g.add(muurM);
+    const nKant=Math.max(4,Math.round(len/1.4));
+    for(let i=0;i<nKant;i++){
+      const lx=(i+0.5)/nKant*len-len/2;
+      if(i%2===0){
+        const mer=new THREE.Mesh(new THREE.BoxGeometry(0.7,0.55,0.95),mat.zandsteen);
+        mer.position.set(lx,h+0.25,0);g.add(mer);
+      }
+    }
+    const glow=new THREE.MeshLambertMaterial({color:0xffe08a,emissive:0xcc9940,emissiveIntensity:0.45});
+    const nR=Math.max(3,Math.round(len/3.2));
+    for(let i=0;i<nR;i++){
+      const lx=(i+0.5)/nR*len-len/2;
+      const nis=new THREE.Mesh(new THREE.BoxGeometry(0.55,1.15,0.12),new THREE.MeshLambertMaterial({color:0x1a1410}));
+      nis.position.set(lx,3.1,0.44);g.add(nis);
+      const rm=new THREE.Mesh(new THREE.PlaneGeometry(0.36,0.7),glow);
+      rm.position.set(lx,3.15,0.52);g.add(rm);
+    }
+    g.position.set(x,0,z);g.rotation.y=rotY||0;voeg(g);
+    const c=Math.cos(rotY||0), si=Math.sin(rotY||0);
+    solid(x,z, Math.abs(c)*len+Math.abs(si)*0.9, Math.abs(si)*len+Math.abs(c)*0.9, h+0.5);
+  }
+
+  // opening naar de kasteelplaats
+  gotischeBoog(2.92,25.6,Math.PI/2,2.6,3.9,0.62);
+  kasteelMuur(10.6,29.15,14.5,7.4,0);
+  steunbeer(5.4,28.15,0,6.4);
+  steunbeer(10.6,28.15,0,6.6);
+  steunbeer(15.6,28.15,0,6.3);
+  kasteelToren(3.6,29.3,10.2,1.25);
+  kasteelToren(17.6,29.3,11.4,1.4);
+
+  // opening naar hut en meer
+  gotischeBoog(-11.7,11.05,0,2.8,3.6,0.5);
+  gotischeBoog(-11.8,8.4,0,2.7,3.5,0.5);
+
+  // Hagrids hut
+  (function(){
+    const hx=-18.1,hz=3.45;
+    box(mat.hout,hx,1.15,hz,4.2,2.3,3.4);
+    const dak=new THREE.Mesh(new THREE.ConeGeometry(3.15,1.7,4),new THREE.MeshLambertMaterial({color:0x3e2614}));
+    dak.position.set(hx,2.85,hz);dak.rotation.y=Math.PI/4;voeg(dak);
+    box(mat.baksteen,hx+1.55,2.85,hz-0.7,0.5,1.2,0.5);
+    const rook=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.16,0.3,6),mat.baksteen);
+    rook.position.set(hx+1.55,3.55,hz-0.7);voeg(rook);
+    const deur=new THREE.Mesh(new THREE.BoxGeometry(0.85,1.55,0.08),new THREE.MeshLambertMaterial({color:0x2a1a10}));
+    deur.position.set(hx+0.15,0.85,hz+1.72);voeg(deur);
+    const knop=new THREE.Mesh(new THREE.SphereGeometry(0.05,6,5),mat.ijzer);
+    knop.position.set(hx+0.4,0.8,hz+1.78);voeg(knop);
+    const glow=new THREE.MeshLambertMaterial({color:0xffd078,emissive:0xcc8840,emissiveIntensity:0.5});
+    const raamL=new THREE.Mesh(new THREE.PlaneGeometry(0.55,0.5),glow);
+    raamL.position.set(hx-1.2,1.25,hz+1.72);voeg(raamL);
+    // omheining
+    for(let i=0;i<7;i++){
+      const a=i/6*2.4-1.2;
+      box(mat.hout,hx+1.7,0.45,hz+1.5+a*0.15,0.1,0.9,0.1);
+    }
+    box(mat.hout,hx+1.7,0.85,hz+1.6,0.08,0.08,2.4);
+    solid(hx,hz,4.4,3.6,3.4);
+    // pompoenen rond de hut (pompoen() bestaat al)
+    [[-16.4,4.8,1.0],[-16.9,2.4,0.85],[-19.6,5.1,1.15],[-17.2,5.4,0.7]].forEach(([x,z,s])=>{
+      if(typeof pompoen==='function')pompoen(x,z,s);
+    });
+  })();
+
+  // meer met riet en schuim
+  const meerX=-13.7, meerZ=1.15, meerR=2.45;
+  (function(){
+    const oever=new THREE.Mesh(new THREE.CircleGeometry(meerR+0.45,20),new THREE.MeshLambertMaterial({color:0x6a5a38,map:T.pad||null}));
+    oever.rotation.x=-Math.PI/2;oever.position.set(meerX,0.02,meerZ);voeg(oever);
+    const wv=new THREE.Mesh(new THREE.CircleGeometry(meerR,24),mat.water);
+    wv.rotation.x=-Math.PI/2;wv.position.set(meerX,0.16,meerZ);voeg(wv);waterVlakken.push(wv);
+    const gl=new THREE.Mesh(new THREE.CircleGeometry(meerR-0.08,24),mat.glinster);
+    gl.rotation.x=-Math.PI/2;gl.position.set(meerX,0.175,meerZ);voeg(gl);waterVlakken.push(gl);
+    const sch=new THREE.Mesh(new THREE.RingGeometry(meerR-0.42,meerR-0.02,20),mat.schuim.clone());
+    sch.rotation.x=-Math.PI/2;sch.position.set(meerX,0.185,meerZ);voeg(sch);waterVlakken.push(sch);
+    // keien
+    for(let i=0;i<9;i++){
+      const a=i/9*Math.PI*2+0.2, rr=meerR+0.15+rnd(i)*0.2;
+      const k=new THREE.Mesh(new THREE.SphereGeometry(0.16+rnd(i+2)*0.1,6,5),mat.zandsteen);
+      k.position.set(meerX+Math.sin(a)*rr,0.08,meerZ+Math.cos(a)*rr);
+      k.scale.set(1,0.55,0.85);voeg(k);
+    }
+    // riet
+    const rietM=new THREE.MeshLambertMaterial({map:T.haag,color:0x6a8a28,side:THREE.DoubleSide,alphaTest:0.28,depthWrite:false});
+    for(let i=0;i<10;i++){
+      const a=i/10*Math.PI*1.6+0.8, rr=meerR+0.2;
+      const r=new THREE.Mesh(new THREE.PlaneGeometry(0.18,0.7+rnd(i)*0.35),rietM);
+      r.position.set(meerX+Math.sin(a)*rr,0.4,meerZ+Math.cos(a)*rr);
+      r.rotation.y=a;voeg(r);
+    }
+    solid(meerX,meerZ,meerR*1.7,meerR*1.7,0.5);
+  })();
+
   /* pollen */
   const pN=12;
   const pGeo=new THREE.BufferGeometry();
@@ -2002,9 +2171,16 @@
       const oor=new THREE.Mesh(new THREE.ConeGeometry(0.04,0.08,5),veer);
       oor.position.set(x,y,z);oor.rotation.z=x<0?0.4:-0.4;kop.add(oor);
     });
+    const vleugels=[];
+    [-1,1].forEach(si=>{
+      const w=new THREE.Mesh(new THREE.SphereGeometry(0.11,7,5),veer);
+      w.position.set(si*0.15,0.16,-0.02);
+      w.scale.set(0.42,0.9,0.72);
+      w.rotation.z=si*-0.42;uil.add(w);vleugels.push(w);
+    });
     uil.position.set(-6.85,2.55,9.7);
     uil.rotation.y=Math.PI/2;
-    uil.userData={kop};
+    uil.userData={kop,vleugels};
     world.add(uil);
   })();
 
@@ -2024,11 +2200,44 @@
     const ba=new THREE.Mesh(new THREE.SphereGeometry(0.06,5,4),baard);
     ba.scale.set(1,0.8,0.7);ba.position.set(0,0.26,0.05);kabouter.add(ba);
     const h=new THREE.Mesh(new THREE.ConeGeometry(0.1,0.22,6),hoed);
-    h.position.y=0.48;kabouter.add(h);
+    h.position.y=0.48;h.rotation.z=0.12;kabouter.add(h);
+    const laars=new THREE.MeshLambertMaterial({color:0x2a1a10});
+    [-1,1].forEach(si=>{
+      const b=new THREE.Mesh(new THREE.SphereGeometry(0.04,6,5),laars);
+      b.position.set(si*0.05,0.03,0.03);b.scale.set(0.9,0.55,1.3);kabouter.add(b);
+      const arm=new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.022,0.14,5),jas);
+      arm.position.set(si*0.12,0.2,0);arm.rotation.z=si*-0.45;kabouter.add(arm);
+    });
     const p0=kabouterPlekken[0];
     kabouter.position.set(p0[0],0,p0[1]);
     kabouter.userData={fase:'wacht',t:2+Math.random()*4,van:0,naar:1,u:0};
     world.add(kabouter);
+  })();
+
+  const eenden=[];
+  (function maakEenden(){
+    const lijfM=new THREE.MeshLambertMaterial({color:0x6a4a1c});
+    const buikM=new THREE.MeshLambertMaterial({color:0xc8b070});
+    const kopM=new THREE.MeshLambertMaterial({color:0x1c1a16});
+    const snavelM=new THREE.MeshLambertMaterial({color:0xd07818});
+    for(let i=0;i<2;i++){
+      const e=new THREE.Group();
+      const lijf=new THREE.Mesh(new THREE.SphereGeometry(0.13,8,6),lijfM);
+      lijf.scale.set(1.15,0.72,0.85);lijf.position.y=0.12;e.add(lijf);
+      const buik=new THREE.Mesh(new THREE.SphereGeometry(0.1,7,5),buikM);
+      buik.position.set(0,0.08,0.02);buik.scale.set(0.95,0.55,0.7);e.add(buik);
+      const kop=new THREE.Mesh(new THREE.SphereGeometry(0.07,7,6),kopM);
+      kop.position.set(0.11,0.22,0);e.add(kop);
+      const sn=new THREE.Mesh(new THREE.ConeGeometry(0.03,0.08,5),snavelM);
+      sn.rotation.z=-Math.PI/2;sn.position.set(0.18,0.20,0);e.add(sn);
+      const staart=new THREE.Mesh(new THREE.ConeGeometry(0.05,0.1,5),lijfM);
+      staart.position.set(-0.14,0.14,0);staart.rotation.z=Math.PI/2.4;e.add(staart);
+      const a=i*2.1+0.3, rr=1.15+i*0.35;
+      e.position.set(-13.7+Math.sin(a)*rr,0.16,1.15+Math.cos(a)*rr);
+      e.rotation.y=a+Math.PI/2;
+      e.userData={a,rr,snel:0.25+i*0.08,fase:i*1.7};
+      world.add(e);eenden.push(e);
+    }
   })();
 
   let grasTuft=null,grasDummy=null,grasPlek=null;
@@ -2283,6 +2492,24 @@
       d.scale.set(k.s,k.s*1.05,1);
       d.updateMatrix();grasTuft.setMatrixAt(i,d.matrix);
       grasTuft.instanceMatrix.needsUpdate=true;
+    }
+        if(uil&&uil.userData.vleugels){
+      const ww=uil.userData.vleugels;
+      const fl=Math.sin(t*2.4)*0.12;
+      if(ww[0])ww[0].rotation.z=-0.42-fl;
+      if(ww[1])ww[1].rotation.z=0.42+fl;
+    }
+    if(typeof eenden!=='undefined'){
+      const dMeer=(held.position.x+13.7)*(held.position.x+13.7)+(held.position.z-1.15)*(held.position.z-1.15);
+      const toon=!(dMeer>260||licht);
+      for(let i=0;i<eenden.length;i++){
+        const e=eenden[i], u=e.userData;
+        e.visible=toon;
+        if(!toon)continue;
+        u.a+=u.snel*dt;
+        e.position.set(-13.7+Math.sin(u.a)*u.rr, 0.16+Math.sin(t*2.2+u.fase)*0.03, 1.15+Math.cos(u.a)*u.rr);
+        e.rotation.y=u.a+Math.PI/2;
+      }
     }
     if(kabouter){
       const u=kabouter.userData;
@@ -2772,7 +2999,7 @@
 
   function bots(x,z,r){
     r=r||0.32;
-    if(x<-22||x>22||z<-0.2||z>31.2)return true;
+    if(x<-22||x>22||z<-1.6||z>31.2)return true;
     for(let i=0;i<col.length;i++){
       const c=col[i];
       if(x>c.minx-r&&x<c.maxx+r&&z>c.minz-r&&z<c.maxz+r)return true;
@@ -3064,7 +3291,7 @@
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
     const r=(renderer.info&&renderer.info.render)||{};
     const kwalNaam=['vol','midden','licht'][kwalTrap]||('k'+kwalTrap);
-    debugEl.textContent=fps+' fps  ·  '+kwalNaam+'  ·  '+(r.calls||0)+' calls  ·  '+Math.round((r.triangles||0)/1000)+'k tri   v186\n'+
+    debugEl.textContent=fps+' fps  ·  '+kwalNaam+'  ·  '+(r.calls||0)+' calls  ·  '+Math.round((r.triangles||0)/1000)+'k tri   v187\n'+
       'camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
@@ -3256,6 +3483,9 @@
   function ondergrond(x,z){
     if(Math.abs(x)<1.65 && Math.abs(z-9.7)<1.4)return 'brug';
     if(Math.abs(x)<1.25 && ((z>1&&z<32)||(Math.abs(z-14)<1.8&&Math.abs(x)<16)))return 'steen';
+    if(Math.abs(x+11.7)<1.35 && z>8.0 && z<14.6)return 'steen';
+    if(x>-20.2 && x<-12.5 && z>1.8 && z<6.4)return 'steen';
+    if(x>3.2 && x<16.2 && z>23.2 && z<28.2)return 'steen';
     if(Math.abs(x)<2.15 && ((z>1&&z<32)||(Math.abs(z-14)<2.2&&Math.abs(x)<16)))return 'grind';
     return 'gras';
   }
@@ -3517,7 +3747,12 @@
     {x0:0,z0:1.0,x1:0,z1:30.9,hw:1.85},
     {x0:-16.6,z0:14.0,x1:16.6,z1:14.0,hw:1.42},
     {x0:-5.4,z0:9.7,x1:-1.8,z1:9.7,hw:1.65},
-    {x0:-5.0,z0:8.0,x1:-5.0,z1:11.6,hw:1.55}
+    {x0:-5.0,z0:8.0,x1:-5.0,z1:11.6,hw:1.55},
+    {x0:-11.7,z0:11.6,x1:-11.8,z1:8.2,hw:1.35},
+    {x0:-11.8,z0:8.2,x1:-18.0,z1:3.4,hw:1.55},
+    {x0:-18.0,z0:3.4,x1:-14.2,z1:1.5,hw:1.45},
+    {x0:3.4,z0:25.5,x1:14.2,z1:25.5,hw:3.2},
+    {x0:10.4,z0:21.8,x1:10.4,z1:28.0,hw:1.8}
   ];
   function railPunt(x,z,seg){
     const dx=seg.x1-seg.x0,dz=seg.z1-seg.z0,len2=dx*dx+dz*dz||1;
@@ -3677,7 +3912,7 @@
     const vanX=camPos.x,vanY=camPos.y,vanZ=camPos.z;
     camPos.lerp(CAM_ZOEK,k);
     lookPos.lerp(LOOK_CAM,k);
-    const opPad=projectAlleRails(camPos.x,camPos.z);
+    const opPad=projectOpRails(camPos.x,camPos.z,railsBij(held.position.x,held.position.z));
     camPos.x=opPad.x;camPos.z=opPad.z;
     if(camPos.y<CAM_MIN_Y)camPos.y=CAM_MIN_Y;
     if(camInSolid(camPos.x,camPos.y,camPos.z)){
@@ -3956,6 +4191,7 @@
     if(typeof druppels!=='undefined')druppels.forEach(mark);
     if(typeof stralen!=='undefined')stralen.forEach(mark);
     if(typeof spatten!=='undefined')spatten.forEach(mark);
+    if(typeof eenden!=='undefined')eenden.forEach(mark);
     if(typeof deurKas!=='undefined')mark(deurKas);
     if(typeof deurHal!=='undefined')mark(deurHal);
     if(typeof deurH!=='undefined')mark(deurH);
@@ -4130,6 +4366,9 @@
       kas:{x:0,z:26.4,y:Math.PI,kijkMee:1},
       moestuin:{x:-13.0,z:14.0,y:Math.PI/2,kijkMee:1},
       hagrid:{x:-13.0,z:14.0,y:Math.PI/2,kijkMee:1},
+      hut:{x:-16.2,z:5.35,y:-2.2,kijkMee:1},
+      meer:{x:-15.6,z:3.0,y:-0.6,kijkMee:1},
+      kasteel:{x:10.2,z:24.2,y:0,kijkMee:1},
       home:{x:13.0,z:14.0,y:-Math.PI/2,kijkMee:1},
       hal:{x:13.0,z:14.0,y:-Math.PI/2,kijkMee:1}
     };
