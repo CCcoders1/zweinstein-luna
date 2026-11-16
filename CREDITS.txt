@@ -457,3 +457,22 @@ v188 — 3D-tuin
   het kasteel, pompoen bij de hut, Smekkie bij het meer).
   Wegwijzers en zachte lantaarns markeren de paden.
   Zelfgemaakt, geen EA/Warner-assets.
+
+v189 — 3D-tuin
+  CC0-dieren (GLB, Idle-animatie waar aanwezig):
+  - Hond (Fang) bij Hagrids hut: Quaternius, Ultimate
+    Animated Animal Pack, CC0 1.0.
+    https://quaternius.com/packs/ultimateanimatedanimals.html
+    (via https://github.com/QuirkyCort/gears )
+  - Kat bij de hut: eveneens Quaternius, CC0 1.0, zelfde pack.
+  Geen geschikt CC0-eendenmodel gevonden dat als watervogel
+  overkomt (KayKit Mini-Game is een staand chibi-figuur);
+  de eenden op het meer blijven zelfgemaakt. Geen CC0-uil
+  gevonden (bekende Poly Pizza-uil is CC-BY); de tuinuil
+  blijft zelfgemaakt. De kabouter blijft zelfgemaakt.
+  Gotische bogen met lichte afschuining, steenblokken en mos.
+  Hagrids hut: deurkozijn, vensterlijst, stoep, hoekstammen
+  en mos op de dakrand.
+  Middenkwaliteit houdt normaalkaarten, fonteinschuim en de
+  wolkenhalo; alleen de lichte modus laat die weg.
+  Zelfgemaakt of CC0, geen EA/Warner-assets.

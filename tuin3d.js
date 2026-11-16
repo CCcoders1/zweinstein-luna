@@ -1,4 +1,4 @@
-/* v188: ruimere kasteelplaats, camera per zone, vondsten verspreid, wegwijzers. */
+/* v189: CC0-dieren, rijkere bogen en hut, middenkwaliteit bijna als vol. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -750,7 +750,7 @@
     licht=kwalTrap>=2;
     if(renderer.toneMappingExposure!=null)renderer.toneMappingExposure=0.94+kwalTrap*0.03;
     if(typeof wolkInstO!=='undefined'&&wolkInstO)wolkInstO.visible=kwalTrap<2;
-    zetNormalen(kwalTrap===0);
+    zetNormalen(kwalTrap<2);
     if(typeof waterVlakken!=='undefined'){
       waterVlakken.forEach(function(m){
         if(m&&m.material&&m.material.map===T.schuim)m.visible=kwalTrap<2;
@@ -1963,16 +1963,26 @@
     hole.quadraticCurveTo(-w,hoog*0.88,-w,h);
     hole.lineTo(-w,0.02);
     sh.holes.push(hole);
-    const geo=new THREE.ExtrudeGeometry(sh,{depth:dik,bevelEnabled:false,steps:1,curveSegments:10});
+    const geo=new THREE.ExtrudeGeometry(sh,{depth:dik,bevelEnabled:true,bevelThickness:0.04,bevelSize:0.045,bevelSegments:2,steps:1,curveSegments:12});
     geo.translate(0,0,-dik/2);
     const m=new THREE.Mesh(geo,mat.zandsteen);
     m.position.set(x,0,z);m.rotation.y=rotY||0;voeg(m);
-    // kapitelen
     const c=Math.cos(rotY||0), si=Math.sin(rotY||0);
-    [[-span/2,0],[span/2,0]].forEach(([lx])=>{
+    const mosM=new THREE.MeshLambertMaterial({color:0x4a6a28});
+    [[-span/2,0],[span/2,0]].forEach(([lx],pi)=>{
       const px=x+lx*c, pz=z-lx*si;
-      const kap=new THREE.Mesh(new THREE.BoxGeometry(0.62,0.16,dik+0.12),mat.zandsteen);
+      const kap=new THREE.Mesh(new THREE.BoxGeometry(0.66,0.18,dik+0.16),mat.zandsteen);
       kap.position.set(px,hoog*0.62,pz);kap.rotation.y=rotY||0;voeg(kap);
+      for(let k=0;k<3;k++){
+        const bl=new THREE.Mesh(new THREE.BoxGeometry(0.72,0.2,dik+0.18),mat.zandsteen);
+        bl.position.set(px,0.28+k*0.72,pz);bl.rotation.y=rotY||0;voeg(bl);
+      }
+      const mos=new THREE.Mesh(new THREE.BoxGeometry(0.58,0.1,dik+0.2),mosM);
+      mos.position.set(px,0.14,pz);mos.rotation.y=rotY||0;voeg(mos);
+      if(pi===0){
+        const mos2=new THREE.Mesh(new THREE.BoxGeometry(0.35,0.08,0.28),mosM);
+        mos2.position.set(px+si*0.12,hoog*0.55,pz+c*0.12);voeg(mos2);
+      }
     });
     // alleen de pijlers zijn vast, de opening blijft beloopbaar
     const pw=0.38, pd=0.42;
@@ -2058,13 +2068,26 @@
     box(mat.baksteen,hx+1.55,2.85,hz-0.7,0.5,1.2,0.5);
     const rook=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.16,0.3,6),mat.baksteen);
     rook.position.set(hx+1.55,3.55,hz-0.7);voeg(rook);
-    const deur=new THREE.Mesh(new THREE.BoxGeometry(0.85,1.55,0.08),new THREE.MeshLambertMaterial({color:0x2a1a10}));
-    deur.position.set(hx+0.15,0.85,hz+1.72);voeg(deur);
+    box(mat.hout,hx+0.15,0.88,hz+1.68,1.12,1.78,0.12);
+    const deur=new THREE.Mesh(new THREE.BoxGeometry(0.82,1.5,0.08),new THREE.MeshLambertMaterial({color:0x2a1a10}));
+    deur.position.set(hx+0.15,0.85,hz+1.76);voeg(deur);
     const knop=new THREE.Mesh(new THREE.SphereGeometry(0.05,6,5),mat.ijzer);
-    knop.position.set(hx+0.4,0.8,hz+1.78);voeg(knop);
+    knop.position.set(hx+0.4,0.8,hz+1.82);voeg(knop);
+    box(mat.hout,hx+0.15,0.08,hz+1.95,1.35,0.16,0.55);
     const glow=new THREE.MeshLambertMaterial({color:0xffd078,emissive:0xcc8840,emissiveIntensity:0.5});
-    const raamL=new THREE.Mesh(new THREE.PlaneGeometry(0.55,0.5),glow);
-    raamL.position.set(hx-1.2,1.25,hz+1.72);voeg(raamL);
+    box(mat.hout,hx-1.2,1.25,hz+1.71,0.72,0.66,0.08);
+    const raamL=new THREE.Mesh(new THREE.PlaneGeometry(0.5,0.44),glow);
+    raamL.position.set(hx-1.2,1.25,hz+1.76);voeg(raamL);
+    [-2.0,2.0].forEach(lx=>{
+      const lg=new THREE.Mesh(new THREE.CylinderGeometry(0.13,0.14,2.35,6),mat.hout);
+      lg.position.set(hx+lx,1.15,hz+1.68);voeg(lg);
+    });
+    const mosDak=new THREE.MeshLambertMaterial({color:0x3e5a24});
+    [[0.6,0.15],[ -0.9,-0.2],[0.2,0.4]].forEach(([dx,dz],i)=>{
+      const ms=new THREE.Mesh(new THREE.BoxGeometry(0.55+i*0.1,0.06,0.35),mosDak);
+      ms.position.set(hx+dx,2.15,hz+1.2+dz);ms.rotation.y=0.2;voeg(ms);
+    });
+    box(mat.hout,hx+1.15,0.22,hz+1.9,0.55,0.44,0.4);
     // omheining
     for(let i=0;i<7;i++){
       const a=i/6*2.4-1.2;
@@ -2832,7 +2855,7 @@
   const schaduw=new THREE.Mesh(new THREE.CircleGeometry(0.62,16),mat.schaduw);
   schaduw.rotation.x=-Math.PI/2;schaduw.position.y=0.025;held.add(schaduw);
 
-  let mixer=null,actIdle=null,actWalk=null,actRun=null,animNaam='idle',stafPunt=null,lunaKlaar=false,gargKlaar=false,tuinKlaar=false,steenTex=null,gargRoot=null,mixBevries=false;
+  let mixer=null,dierMixers=[],dierenWacht=2,actIdle=null,actWalk=null,actRun=null,animNaam='idle',stafPunt=null,lunaKlaar=false,gargKlaar=false,tuinKlaar=false,steenTex=null,gargRoot=null,mixBevries=false;
 
   function zetAnim(naam){
     if(!mixer||animNaam===naam)return;
@@ -3357,7 +3380,7 @@
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
     const r=(renderer.info&&renderer.info.render)||{};
     const kwalNaam=['vol','midden','licht'][kwalTrap]||('k'+kwalTrap);
-    debugEl.textContent=fps+' fps  ·  '+kwalNaam+'  ·  '+(r.calls||0)+' calls  ·  '+Math.round((r.triangles||0)/1000)+'k tri   v188\n'+
+    debugEl.textContent=fps+' fps  ·  '+kwalNaam+'  ·  '+(r.calls||0)+' calls  ·  '+Math.round((r.triangles||0)/1000)+'k tri   v189\n'+
       'camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
@@ -3556,7 +3579,7 @@
     return 'gras';
   }
 
-  let audioCtx=null,masterGain=null,geluidAan=false,audioKlaar=false,audioBezig=false,stapKen=1,birdT=0,laagFps=0,hoogFps=0,t0fps=0,kwalWacht=0;
+  let audioCtx=null,masterGain=null,geluidAan=false,audioKlaar=false,audioBezig=false,stapKen=1,birdT=0,laagFps=0,hoogFps=0,t0fps=0,kwalWacht=0,kwalVast=false;
   const panners={};
   const pakBuf={};
   const geluidBronnen={fontein:'proceduraal',beek:'proceduraal',wind:'proceduraal',vogel:'proceduraal',bed:null,pakket:false};
@@ -3977,7 +4000,7 @@
     if(camStokAan&&camStokKracht>0.18){
       camAchterT=0;
       camYaw=wikkelYaw(camYaw-camStokDx*CAM_YAW_SNEL*dt);
-      if(Math.abs(camStokDy)>0.18)pitchVrij=true;
+      if(Math.abs(camStokDy)>0.08)pitchVrij=true;
       camPitch=Math.max(CAM_PITCH_MIN,Math.min(CAM_PITCH_MAX,camPitch-camStokDy*CAM_PITCH_SNEL*dt));
     }
     const dDist=mengCameraZone(dt);
@@ -4048,6 +4071,7 @@
     }
     zetHoogte(dt);
     if(mixer&&!mixBevries)mixer.update(dt);
+    for(let i=0;i<dierMixers.length;i++)dierMixers[i].update(dt);
     if(!mixBevries)knijpStaf();
     if(!RMP){
       if(lopen)zetAnim('walk');
@@ -4156,7 +4180,7 @@
       frames=0;tFps=now;
       if(fpsEl)fpsEl.textContent=fps+' fps'+(kwalTrap?['',' · midden',' · licht'][kwalTrap]:'');
       if(!t0fps)t0fps=now;
-      if(now-t0fps>3500 && now>=kwalWacht){
+      if(!kwalVast && now-t0fps>3500 && now>=kwalWacht){
         if(fps<26){hoogFps=0;laagFps++;if(laagFps>=3&&kwalTrap<KWAL.length-1){zetKwal(kwalTrap+1);maat();laagFps=0;hoogFps=0;kwalWacht=now+2500}}
         else if(fps>=30){laagFps=0;hoogFps++;if(hoogFps>=5&&kwalTrap>0){zetKwal(kwalTrap-1);maat();hoogFps=0;laagFps=0;kwalWacht=now+2500}}
         else{laagFps=0;hoogFps=0}
@@ -4405,10 +4429,72 @@
       }
     });
     gl.load(basis+'luna.glb',plaatsLuna);
+    function dierNaarLambert(root){
+      root.traverse(function(o){
+        if(!o.isMesh)return;
+        o.frustumCulled=false;
+        const src=o.material;
+        if(src&&src.isMeshStandardMaterial){
+          o.material=new THREE.MeshLambertMaterial({
+            color:src.color?src.color.clone():new THREE.Color(0xffffff),
+            map:src.map||null,
+            emissive:src.emissive?src.emissive.clone():new THREE.Color(0x000000),
+            emissiveIntensity:src.emissiveIntensity||0,
+            side:src.side||THREE.FrontSide
+          });
+          if(src.dispose)src.dispose();
+        }
+      });
+    }
+    function plaatsDier(gltf,opt,doelGroep){
+      const root=opt.kloon?gltf.scene.clone(true):gltf.scene;
+      dierNaarLambert(root);
+      if(opt.kleur!=null){
+        root.traverse(function(o){
+          if(o.isMesh&&o.material&&o.material.color)o.material.color.setHex(opt.kleur);
+        });
+      }
+      root.updateMatrixWorld(true);
+      const box=new THREE.Box3().setFromObject(root);
+      const h=Math.max(0.05,box.max.y-box.min.y);
+      const sc=(opt.h||0.8)/h;
+      const g=doelGroep||new THREE.Group();
+      root.position.set(-(box.min.x+box.max.x)*0.5*sc, -box.min.y*sc, -(box.min.z+box.max.z)*0.5*sc);
+      // scale on the group so bbox centering stays in model space... actually scale root
+      root.scale.setScalar(sc);
+      root.position.set(-(box.min.x+box.max.x)*0.5*sc, -box.min.y*sc, -(box.min.z+box.max.z)*0.5*sc);
+      g.add(root);
+      if(!doelGroep){
+        g.position.set(opt.x,opt.y||0,opt.z);
+        g.rotation.y=opt.rot||0;
+        world.add(g);
+      }
+      const clips=gltf.animations||[];
+      if(clips.length){
+        const mx=new THREE.AnimationMixer(root);
+        const c=THREE.AnimationClip.findByName(clips,opt.clip||'Idle')||clips[0];
+        if(c){const a=mx.clipAction(c);a.play()}
+        dierMixers.push(mx);
+        mx.update(0.2);
+      }
+      return g;
+    }
+    gl.load(basis+'dieren/hond.glb',function(g){
+      // west van de deur, op het stoepje, kijkt naar het pad
+      plaatsDier(g,{x:-18.95,z:5.60,y:0,rot:0.85,h:0.82,clip:'Idle'});
+      dierenWacht--;
+    },function(){dierenWacht--});
+    gl.load(basis+'dieren/kat.glb',function(g){
+      // op de kist rechts van de deur
+      plaatsDier(g,{x:-16.50,z:5.58,y:0.45,rot:0.75,h:0.32,clip:'Idle'});
+      dierenWacht--;
+    },function(){dierenWacht--});
+
     gargKlaar=true;
     setTimeout(function(){
       if(!lunaKlaar)lunaKlaar=true;
       if(!gargKlaar)gargKlaar=true;
+      if(dierenWacht>0)dierenWacht=0;
       if(!tuinKlaar)sluitLaden();
     },9000);
   }
@@ -4481,11 +4567,11 @@
       scene.traverse(o=>{if(o.isInstancedMesh)inst++;else if(o.isMesh)meshes++;});
       return {calls:r.calls, triangles:r.triangles, points:r.points, meshes, inst, licht:!!licht, kwal:kwalTrap, fps};
     },
-    geladen:()=>!!(tuinKlaar&&lunaKlaar&&gargKlaar),
+    geladen:()=>!!(tuinKlaar&&lunaKlaar&&gargKlaar&&dierenWacht<=0),
     overgangKlaar:()=>!!overgangKlaar,
     deurCinema:()=>deurCinema,
     startUitgang:(id)=>startUitgang(id),
-    zetKwal:(n)=>{zetKwal(n|0);maat();return kwalTrap},
+    zetKwal:(n)=>{kwalVast=true;zetKwal(n|0);maat();return kwalTrap},
     kwal:()=>kwalTrap,
     pos:()=>({x:+held.position.x.toFixed(2),z:+held.position.z.toFixed(2),y:+held.position.y.toFixed(2)}),
     cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3),rot:+held.rotation.y.toFixed(3)}),
