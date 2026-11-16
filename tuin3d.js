@@ -606,7 +606,7 @@
     aarde: new THREE.MeshLambertMaterial({map:T.aarde}),
     hout: new THREE.MeshLambertMaterial({map:T.hout}),
     sokkel: new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xe8d8b0,shininess:8,specular:0x332820}),
-    ijzer: new THREE.MeshPhongMaterial({color:0x3c3c44,shininess:48,specular:0x9aa8b8,emissive:0x08080c,emissiveIntensity:0.15}),
+    ijzer: new THREE.MeshLambertMaterial({color:0x3c3c44,emissive:0x101018,emissiveIntensity:0.16}),
     grind: new THREE.MeshLambertMaterial({map:T.grind}),
     water: new THREE.MeshPhongMaterial({map:T.water,color:0xb8fff0,transparent:true,opacity:0.92,depthWrite:false,shininess:120,specular:0xffffff,emissive:0x1a8890,emissiveIntensity:0.28}),
     rimpel: new THREE.MeshBasicMaterial({map:T.rimpel,transparent:true,opacity:0.35,depthWrite:false,side:THREE.DoubleSide}),
@@ -619,7 +619,8 @@
     kasteel: new THREE.MeshLambertMaterial({color:0x24344c}),
     daksteen: new THREE.MeshLambertMaterial({color:0x1a2436}),
     druppel: new THREE.MeshBasicMaterial({color:0xc8eef6,transparent:true,opacity:0.38,depthWrite:false}),
-    glas: new THREE.MeshLambertMaterial({map:T.glas,transparent:true,opacity:0.62,depthWrite:false,side:THREE.DoubleSide}),
+    glas: new THREE.MeshLambertMaterial({map:T.glas,color:0xd4ead8,transparent:true,opacity:0.7,depthWrite:false,side:THREE.FrontSide}),
+    glasDak: new THREE.MeshLambertMaterial({map:T.glas,color:0x96b878,transparent:false,side:THREE.FrontSide,emissive:0x152410,emissiveIntensity:0.1}),
     klimop: new THREE.MeshLambertMaterial({map:T.klimop,alphaTest:0.32,side:THREE.DoubleSide}),
     bloem: new THREE.MeshLambertMaterial({map:T.bloem,alphaTest:0.32,side:THREE.DoubleSide}),
     sjaal: new THREE.MeshLambertMaterial({map:T.sjaal}),
@@ -665,7 +666,7 @@
 
   const scene=new THREE.Scene();
   scene.background=new THREE.Color(0x2a62d4);
-  scene.fog=new THREE.Fog(0x6a9ae0,130,210);
+  scene.fog=new THREE.Fog(0x6a9ae0,90,170);
 
   const camera=new THREE.PerspectiveCamera(56,innerWidth/Math.max(1,innerHeight),0.28,180);
   const renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'high-performance'});
@@ -677,10 +678,21 @@
   // v179: ACES blijft, maar we verlagen de interne resolutie iets (zie pixelRatio)
 
   let licht=false;
+  let kwalTrap=0;
+  const KWAL=[
+    {cap:0.84,pix:230000},
+    {cap:0.78,pix:200000},
+    {cap:0.72,pix:180000}
+  ];
   function pixelRatio(w,h){
-    const cap=licht?0.72:0.84;
-    const pix=licht?180000:230000;
-    return Math.min(cap,window.devicePixelRatio||1,Math.sqrt(pix/Math.max(1,w*h)));
+    const k=KWAL[kwalTrap]||KWAL[0];
+    return Math.min(k.cap,window.devicePixelRatio||1,Math.sqrt(k.pix/Math.max(1,w*h)));
+  }
+  function zetKwal(trap){
+    kwalTrap=Math.max(0,Math.min(KWAL.length-1,trap|0));
+    licht=kwalTrap>=2;
+    if(renderer.toneMappingExposure!=null)renderer.toneMappingExposure=0.94+kwalTrap*0.03;
+    if(typeof wolkInstO!=='undefined'&&wolkInstO)wolkInstO.visible=kwalTrap<2;
   }
   function maat(){
     const w=innerWidth,h=Math.max(1,innerHeight);
@@ -1713,7 +1725,7 @@
   const glasL=new THREE.Mesh(new THREE.PlaneGeometry(2.25,3.5),mat.glas);
   glasL.position.set(-1.95,2.2,0.08);gevelKas.add(glasL);
   const glasR=glasL.clone();glasR.position.x=1.95;gevelKas.add(glasR);
-  const dak=new THREE.Mesh(new THREE.ConeGeometry(3.55,1.35,4),mat.glas);
+  const dak=new THREE.Mesh(new THREE.ConeGeometry(3.55,1.35,4),mat.glasDak);
   dak.position.set(0,4.85,0);dak.rotation.y=Math.PI/4;gevelKas.add(dak);
   const deurKas=new THREE.Group();
   deurKas.position.set(0.55,0,0.1);
@@ -2974,7 +2986,7 @@
   function tekenDebug(){
     if(!debugAan||!debugEl)return;
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
-    debugEl.textContent='v183  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
+    debugEl.textContent='v184  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
       'kijk '+(kijkAan?'AAN':'uit')+(kijkSleep?' SLEEP':'')+'  id '+(kijkId==null?'-':kijkId)+'\n'+
@@ -3169,7 +3181,7 @@
     return 'gras';
   }
 
-  let audioCtx=null,masterGain=null,geluidAan=false,audioKlaar=false,audioBezig=false,stapKen=1,birdT=0,laagFps=0,t0fps=0;
+  let audioCtx=null,masterGain=null,geluidAan=false,audioKlaar=false,audioBezig=false,stapKen=1,birdT=0,laagFps=0,hoogFps=0,t0fps=0,kwalWacht=0;
   const panners={};
   const pakBuf={};
   const geluidBronnen={fontein:'proceduraal',beek:'proceduraal',wind:'proceduraal',vogel:'proceduraal',bed:null,pakket:false};
@@ -3722,11 +3734,12 @@
       fps=Math.round(frames*1000/(now-tFps));
       fpsMin=Math.min(fpsMin,fps);
       frames=0;tFps=now;
-      if(fpsEl)fpsEl.textContent=fps+' fps'+(licht?' · licht':'');
+      if(fpsEl)fpsEl.textContent=fps+' fps'+(kwalTrap?['',' · midden',' · licht'][kwalTrap]:'');
       if(!t0fps)t0fps=now;
-      if(!licht && now-t0fps>3500){
-        if(fps<32)laagFps++;else laagFps=0;
-        if(laagFps>=3){licht=true;maat();}
+      if(now-t0fps>3500 && now>=kwalWacht){
+        if(fps<26){hoogFps=0;laagFps++;if(laagFps>=3&&kwalTrap<KWAL.length-1){zetKwal(kwalTrap+1);maat();laagFps=0;hoogFps=0;kwalWacht=now+2500}}
+        else if(fps>=30){laagFps=0;hoogFps++;if(hoogFps>=5&&kwalTrap>0){zetKwal(kwalTrap-1);maat();hoogFps=0;laagFps=0;kwalWacht=now+2500}}
+        else{laagFps=0;hoogFps=0}
       }
     }
     requestAnimationFrame(tic);
@@ -4013,7 +4026,7 @@
       const r=renderer.info.render;
       let meshes=0, inst=0;
       scene.traverse(o=>{if(o.isInstancedMesh)inst++;else if(o.isMesh)meshes++;});
-      return {calls:r.calls, triangles:r.triangles, points:r.points, meshes, inst, licht:!!licht, fps};
+      return {calls:r.calls, triangles:r.triangles, points:r.points, meshes, inst, licht:!!licht, kwal:kwalTrap, fps};
     },
     geladen:()=>!!(tuinKlaar&&lunaKlaar&&gargKlaar),
     overgangKlaar:()=>!!overgangKlaar,

@@ -409,3 +409,13 @@ v183 — 3D-tuin en navigatie
   tikken af). Ambient deeltjes zijn stiller: minder en kleinere
   vlinders, zachtere fonteindruppels en fijner stof in de
   2D-kas. Zelfgemaakt, geen EA/Warner-assets.
+
+v184 — 3D-tuin
+  Soepeler lopen: de interne resolutie zakt in kleine stappen
+  als het zwaar wordt, en mag ook weer omhoog als het meezit,
+  in plaats van in één keer naar een vaste lichte modus.
+  Minder overtekenen: kasdak is niet meer doorzichtig, ruiten
+  zijn enkelzijdig, smeedijzer is Lambert in plaats van Phong.
+  Iets eerder beginnende nevel in de kleur van de HP1-lucht.
+  Wolken-halo blijft in hoge kwaliteit staan. Zelfgemaakt,
+  geen EA/Warner-assets.
