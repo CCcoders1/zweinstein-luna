@@ -390,3 +390,11 @@ v181 — 3D-tuin
   met een zachte halo-laag. Duim sluit zichtbaar om de staf.
   Zachte blob-schaduw onder Luna (zelfgemaakte radiale
   canvas-textuur). Zelfgemaakt, geen EA/Warner-assets.
+
+v182 — 3D-tuin
+  Deuren zwaaien open, Luna loopt er zichtbaar doorheen en
+  pas daarna fadet het scherm naar de bestemming. Bij terugkomst
+  in de tuin staat de deur open, Luna loopt naar buiten en de
+  deur valt achter haar dicht. Geldt voor De Kassen, Hagrids
+  moestuin, de Grote Hal en de zuidelijke poort. Zelfgemaakt,
+  geen EA/Warner-assets.

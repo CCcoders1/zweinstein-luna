@@ -1363,18 +1363,25 @@
   const gevelPoort=new THREE.Group();
   gevelPoort.position.set(0,0,1.52);
   world.add(gevelPoort);
+  const deurPoortL=new THREE.Group(),deurPoortR=new THREE.Group();
   (function(){
-    const n=6,breed=2.15,h0=1.42;
+    const n=6,breed=2.15,h0=1.42,hx=breed/2;
+    deurPoortL.position.set(-hx,0,0);
+    deurPoortR.position.set(hx,0,0);
+    gevelPoort.add(deurPoortL,deurPoortR);
     for(let i=0;i<n;i++){
       const x=(i-(n-1)/2)*(breed/(n-1));
       const h=h0+(i%2?0.1:0);
-      ijzerBuis(gevelPoort,x,0.02,0,x,h,0,0.026);
+      const blad=x<0?deurPoortL:deurPoortR, ox=x<0?-hx:hx;
+      ijzerBuis(blad,x-ox,0.02,0,x-ox,h,0,0.026);
       const sp=new THREE.Mesh(new THREE.ConeGeometry(0.04,0.16,5),mat.ijzer);
-      sp.position.set(x,h+0.08,0);gevelPoort.add(sp);
+      sp.position.set(x-ox,h+0.08,0);blad.add(sp);
     }
-    ijzerBuis(gevelPoort,-breed/2,0.46,0,breed/2,0.46,0,0.02);
-    ijzerBuis(gevelPoort,-breed/2,0.92,0,breed/2,0.92,0,0.02);
-    ijzerBuis(gevelPoort,-breed/2,1.28,0,breed/2,1.28,0,0.02);
+    [[deurPoortL,0,hx],[deurPoortR,-hx,0]].forEach(([blad,a,b])=>{
+      ijzerBuis(blad,a,0.46,0,b,0.46,0,0.02);
+      ijzerBuis(blad,a,0.92,0,b,0.92,0,0.02);
+      ijzerBuis(blad,a,1.28,0,b,1.28,0,0.02);
+    });
   })();
   solid(0,1.52,2.4,0.45,1.7);
   boog(0,13.4,2.2);
@@ -1730,7 +1737,8 @@
     k.position.set(-2.6,1.5,0.38);gevelKas.add(k);
   })();
   solid(0,30.8,6.5,1.0,5);
-  deuren.kas={groep:deurKas, punt:new THREE.Vector3(0,0,28.6), naam:'De Kassen', open:'kas', scharnier:+1};
+  deuren.kas={groep:deurKas, punt:new THREE.Vector3(0,0,28.6), naam:'De Kassen', open:'kas', scharnier:+1,
+    in:{x:0,z:30.05,yaw:0}, uit:{x:0,z:26.4,yaw:Math.PI}};
 
   /* 2. Hagrids moestuin, west */
   const gevelH=new THREE.Group();
@@ -1790,7 +1798,8 @@
   box(mat.hout,0,0.7,1.22,0.7,1.3,0.08,0,hut);
   solid(-17.4,14,2.2,6.5,2.2);
   solid(-22.5,14,4,4,3.2);
-  deuren.moestuin={groep:deurH, punt:new THREE.Vector3(-15.4,0,14), naam:'Hagrids moestuin', open:'moestuin', scharnier:-1};
+  deuren.moestuin={groep:deurH, punt:new THREE.Vector3(-15.4,0,14), naam:'Hagrids moestuin', open:'moestuin', scharnier:-1,
+    in:{x:-16.85,z:14,yaw:-Math.PI/2}, uit:{x:-13.0,z:14,yaw:Math.PI/2}};
 
   /* 3. Grote Hal, oost */
   const gevelHal=new THREE.Group();
@@ -1833,8 +1842,10 @@
     const k2=k.clone();k2.position.set(2.6,1.7,0.5);gevelHal.add(k2);
   })();
   solid(17.4,14,1.2,7.2,4.5);
-  deuren.home={groep:deurHal, punt:new THREE.Vector3(15.4,0,14), naam:'De Grote Hal', open:'home', scharnier:+1};
-  deuren.poort={groep:gevelPoort, punt:new THREE.Vector3(0,0,4.2), naam:'De Grote Hal', open:'poort', scharnier:+1};
+  deuren.home={groep:deurHal, punt:new THREE.Vector3(15.4,0,14), naam:'De Grote Hal', open:'home', scharnier:+1,
+    in:{x:16.85,z:14,yaw:Math.PI/2}, uit:{x:13.0,z:14,yaw:-Math.PI/2}};
+  deuren.poort={groep:deurPoortL, groep2:deurPoortR, punt:new THREE.Vector3(0,0,4.2), naam:'De Grote Hal', open:'poort', scharnier:-1, scharnier2:+1,
+    in:{x:0,z:2.05,yaw:Math.PI}, uit:{x:0,z:6.8,yaw:0}};
 
   const deurGloed=[];
   function voegDeurGloed(ouder,y,z){
@@ -2961,7 +2972,7 @@
   function tekenDebug(){
     if(!debugAan||!debugEl)return;
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
-    debugEl.textContent='v181  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
+    debugEl.textContent='v182  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
       'kijk '+(kijkAan?'AAN':'uit')+(kijkSleep?' SLEEP':'')+'  id '+(kijkId==null?'-':kijkId)+'\n'+
@@ -3001,29 +3012,150 @@
     o.connect(f);f.connect(g);g.connect(masterGain);
     o.start(t0);o.stop(t0+0.56);
   }
-  function naarDeur(id,opt){
-    const d=deuren[id];if(!d||naarBinnen)return;
-    naarBinnen=true;
-    lopen=false;mark.visible=false;stopStok();stopCamStok();
-    try{deurGeluid()}catch(e){}
-    if(overgang){
-      overgang.className=(id==='moestuin')?'moestuin':(id==='home'||id==='poort')?'home':'kas';
+  let deurCinema=null,overgangKlaar=true,cinemaGen=0;
+  function stopCinema(){
+    cinemaGen++;
+    deurCinema=null;
+    naarBinnen=false;
+    lopen=false;
+    overgangKlaar=true;
+    if(overgang){overgang.classList.remove('aan');overgang.hidden=true}
+  }
+  function deurKleur(id){
+    return (id==='moestuin')?'moestuin':(id==='home'||id==='poort')?'home':'kas';
+  }
+  function zetDeurOpen(d,aan,meteen){
+    if(!d||!d.groep)return;
+    const rust=d._rustY!=null?d._rustY:(d._rustY=d.groep.rotation.y);
+    const open=rust+(d.scharnier||1)*1.15;
+    let rust2,open2;
+    if(d.groep2){
+      rust2=d._rustY2!=null?d._rustY2:(d._rustY2=d.groep2.rotation.y);
+      open2=rust2+(d.scharnier2!=null?d.scharnier2:-(d.scharnier||1))*1.15;
+    }
+    if(meteen){
+      d.groep.rotation.y=aan?open:rust;
+      if(d.groep2)d.groep2.rotation.y=aan?open2:rust2;
+      return;
+    }
+    const out={start:d.groep.rotation.y,doel:aan?open:rust};
+    if(d.groep2){out.start2=d.groep2.rotation.y;out.doel2=aan?open2:rust2}
+    return out;
+  }
+  function zetDeurLerp(d,swing,k){
+    if(!swing)return;
+    d.groep.rotation.y=lerpEase(swing.start,swing.doel,k);
+    if(d.groep2&&swing.doel2!=null)d.groep2.rotation.y=lerpEase(swing.start2,swing.doel2,k);
+  }
+  function toonOvergang(id,aan){
+    if(!overgang)return;
+    if(aan){
+      overgang.className=deurKleur(id);
       overgang.hidden=false;
       requestAnimationFrame(()=>requestAnimationFrame(()=>overgang.classList.add('aan')));
+    }else{
+      overgang.classList.remove('aan');
+      setTimeout(()=>{if(overgang&&!overgang.classList.contains('aan'))overgang.hidden=true},RMP?200:800);
     }
-    const t0=performance.now(), dur=RMP?280:700;
-    const start=d.groep.rotation.y, doelR=start+(d.scharnier||1)*1.15;
-    (function anim(nu){
-      const k=Math.min(1,(nu-t0)/dur);
-      const e=1-Math.pow(1-k,2);
-      d.groep.rotation.y=start+(doelR-start)*e;
-      if(k<1)requestAnimationFrame(anim);
-      else if(!(opt&&opt.geenNav)&&!blokkeerNav){
-        setTimeout(()=>{location.href='index.html?open='+encodeURIComponent(d.open)},RMP?80:280);
-      }else{
-        naarBinnen=false;
-      }
+  }
+  function lerpEase(a,b,k){const e=k*k*(3-2*k);return a+(b-a)*e}
+  function loopNaarPunt(van,naar,dur,gen,klaar){
+    const t0=performance.now();
+    lopen=true;
+    held.rotation.y=naar.yaw;
+    (function stap(nu){
+      if(gen!==cinemaGen)return;
+      const k=Math.min(1,(nu-t0)/Math.max(16,dur));
+      held.position.x=lerpEase(van.x,naar.x,k);
+      held.position.z=lerpEase(van.z,naar.z,k);
+      held.rotation.y=naar.yaw;
+      zetHoogte();
+      if(k<1)requestAnimationFrame(stap);
+      else{lopen=false;if(klaar)klaar()}
     })(t0);
+  }
+  function naarDeur(id,opt){
+    const d=deuren[id]||deuren[id==='hagrid'?'moestuin':id==='hal'?'home':id];
+    if(!d||naarBinnen)return;
+    cinemaGen++;
+    const gen=cinemaGen;
+    naarBinnen=true;overgangKlaar=false;deurCinema='in';
+    mark.visible=false;stopStok();stopCamStok();doel=null;doelDeur=null;
+    if(deurKaart)deurKaart.hidden=true;
+    try{deurGeluid()}catch(e){}
+    const pad=d.in||{x:d.punt.x,z:d.punt.z,yaw:held.rotation.y};
+    const rust=d._rustY!=null?d._rustY:(d._rustY=d.groep.rotation.y);
+    const swing=zetDeurOpen(d,true,false);
+    const tOpen=RMP?220:700, tLoop=RMP?160:950, tFade=RMP?80:520;
+    const t0=performance.now();
+    held.rotation.y=pad.yaw;
+    (function anim(nu){
+      if(gen!==cinemaGen)return;
+      const k=Math.min(1,(nu-t0)/tOpen);
+      zetDeurLerp(d,swing,k);
+      if(k<1){requestAnimationFrame(anim);return}
+      const van={x:held.position.x,z:held.position.z};
+      loopNaarPunt(van,pad,tLoop,gen,function(){
+        if(gen!==cinemaGen)return;
+        if(!(opt&&opt.geenNav)&&!blokkeerNav){
+          toonOvergang(id,true);
+          setTimeout(()=>{if(gen===cinemaGen)location.href='index.html?open='+encodeURIComponent(d.open)},tFade);
+        }else{
+          naarBinnen=false;overgangKlaar=true;deurCinema=null;
+        }
+      });
+    })(t0);
+  }
+  function startUitgang(id){
+    const d=deuren[id]||deuren[id==='hagrid'?'moestuin':id==='hal'?'home':id];
+    if(!d||!d.uit||RMP){overgangKlaar=true;return}
+    cinemaGen++;
+    const gen=cinemaGen;
+    naarBinnen=true;overgangKlaar=false;deurCinema='uit';
+    mark.visible=false;stopStok();stopCamStok();
+    if(deurKaart)deurKaart.hidden=true;
+    const inn=d.in, uit=d.uit;
+    zetDeurOpen(d,true,true);
+    held.position.set(inn.x,0,inn.z);
+    held.rotation.y=uit.yaw;
+    // camera staat in de tuin, kijkt naar de open deur, zodat we Luna naar buiten zien komen
+    camYaw=wikkelYaw(uit.yaw+Math.PI);
+    camPitch=28*Math.PI/180;
+    camVast=false;camAchterT=0;
+    zetHoogte();
+    doelCamera(camPos,LOOK_CAM);
+    lookPos.copy(LOOK_CAM);
+    camera.position.copy(camPos);
+    camera.lookAt(lookPos);
+    if(overgang){
+      overgang.className=deurKleur(id);
+      overgang.hidden=false;
+      overgang.classList.add('aan');
+    }
+    const tFade=420, tLoop=1000, tSluit=620;
+    setTimeout(function(){
+      if(gen!==cinemaGen)return;
+      toonOvergang(id,false);
+      loopNaarPunt({x:inn.x,z:inn.z},uit,tLoop,gen,function(){
+        if(gen!==cinemaGen)return;
+        const swing=zetDeurOpen(d,false,false);
+        const yawVan=camYaw,yawNaar=wikkelYaw(uit.yaw),yawPad=wikkelYaw(yawNaar-yawVan);
+        const t0=performance.now();
+        (function sluit(nu){
+          if(gen!==cinemaGen)return;
+          const k=Math.min(1,(nu-t0)/tSluit);
+          const e=k*k*(3-2*k);
+          zetDeurLerp(d,swing,k);
+          camYaw=wikkelYaw(yawVan+yawPad*e);
+          if(k<1)requestAnimationFrame(sluit);
+          else{
+            camYaw=yawNaar;
+            naarBinnen=false;overgangKlaar=true;deurCinema=null;
+            zetDeurKaart();
+          }
+        })(t0);
+      });
+    },tFade);
   }
   if(deurBtn)deurBtn.onclick=()=>{const w=dichtstDeur();if(w)naarDeur(w.open)};
 
@@ -3681,6 +3813,8 @@
     if(typeof deurKas!=='undefined')mark(deurKas);
     if(typeof deurHal!=='undefined')mark(deurHal);
     if(typeof deurH!=='undefined')mark(deurH);
+    if(typeof deurPoortL!=='undefined')mark(deurPoortL);
+    if(typeof deurPoortR!=='undefined')mark(deurPoortR);
     if(typeof held!=='undefined'&&held)mark(held);
     world.updateMatrixWorld(true);
     const skip=new Set();
@@ -3826,7 +3960,12 @@
     try{
       const q=new URLSearchParams(location.search);
       const d=q.get('deur');
-      if(d&&(d==='kas'||d==='moestuin'||d==='hagrid'||d==='home'||d==='hal'||d==='poort'))zetPlek(d);
+      if(d&&(d==='kas'||d==='moestuin'||d==='hagrid'||d==='home'||d==='hal'||d==='poort')){
+        const id=d==='hagrid'?'moestuin':d==='hal'?'home':d;
+        if(overgang){overgang.className=deurKleur(id);overgang.hidden=false;overgang.classList.add('aan')}
+        zetPlek(id);
+        startUitgang(id);
+      }
     }catch(e){}
   })();
   requestAnimationFrame(tic);
@@ -3849,6 +3988,7 @@
     held.rotation.y=P.y||0;
     zetHoogte();
     lopen=false;doel=null;doelDeur=null;mark.visible=false;stopStok();stopCamStok();
+    if(deurCinema||!overgangKlaar)stopCinema();
     mixBevries=false;
     camVast=false;camAchterT=0;
     if(P.kijkMee){
@@ -3874,6 +4014,9 @@
       return {calls:r.calls, triangles:r.triangles, points:r.points, meshes, inst, licht:!!licht, fps};
     },
     geladen:()=>!!(tuinKlaar&&lunaKlaar&&gargKlaar),
+    overgangKlaar:()=>!!overgangKlaar,
+    deurCinema:()=>deurCinema,
+    startUitgang:(id)=>startUitgang(id),
     pos:()=>({x:+held.position.x.toFixed(2),z:+held.position.z.toFixed(2),y:+held.position.y.toFixed(2)}),
     cam:()=>({x:+camera.position.x.toFixed(2),y:+camera.position.y.toFixed(2),z:+camera.position.z.toFixed(2),yaw:+camYaw.toFixed(3),pitch:+camPitch.toFixed(3),rot:+held.rotation.y.toFixed(3)}),
     stok:()=>({aan:stokAan,kracht:+stokKracht.toFixed(2),dx:+stokDx.toFixed(2),dz:+stokDz.toFixed(2)}),
