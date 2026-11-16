@@ -1,4 +1,4 @@
-/* v187: grotere tuin, kasteelplaats, Hagrids hut, meer, betere dieren. CC0/zelfgemaakt. */
+/* v188: ruimere kasteelplaats, camera per zone, vondsten verspreid, wegwijzers. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -1095,9 +1095,10 @@
   // v187: pad naar Hagrids hut en het meer, en naar de kasteelplaats
   padLint([[-11.6,14.05],[-11.8,11.6],[-11.9,8.5],[-13.4,5.8],[-16.4,4.0],[-18.2,3.4]],2.4);
   padLint([[-16.6,3.6],[-15.2,2.4],[-14.0,1.6]],2.15);
-  padLint([[2.2,23.6],[4.6,25.2],[7.4,25.5],[10.6,25.3],[13.2,25.6]],2.5);
+  padLint([[2.2,23.6],[4.8,25.4],[8.4,26.0],[12.6,26.2],[16.4,25.9],[19.6,26.4]],2.7);
+  padLint([[14.2,26.2],[14.3,29.4],[14.1,31.6]],2.55);
   zachtPlein(-18.0,3.5,3.1);
-  zachtPlein(10.4,25.4,4.2);
+  zachtPlein(14.0,26.4,6.6);
   const plein=zachtPlein(0,14,3.7);
   (function strooiPad(){
     const nK=keiMeshes.length,nP=polMeshes.length;
@@ -1137,7 +1138,7 @@
   muur(-9.65,8.4,2.4,1.35,3.2);
   muur(8.6,8.4,12,1.35,3.15);
   muur(-8.6,19.6,12,1.35,3.25);
-  muur(8.6,19.6,12,1.35,3.2);
+  muur(6.2,19.6,5.6,1.35,3.2);
   // noordelijke gang naar de kassen, opening oost naar de kasteelplaats
   muur(-2.9,25.5,1.35,9,3.3);
   muur(2.9,22.5,1.35,3.0,3.35);
@@ -1145,8 +1146,8 @@
   muur(0,33.4,9,1.4,3.4);
   muur(-5.4,31.4,1.4,5,3.3);
   muur(5.4,31.4,1.4,5,3.3);
-  // wanden van de kasteelplaats
-  muur(16.6,24.8,1.4,9.2,3.3);
+  // wanden van de ruimere kasteelplaats
+  muur(22.3,26.4,1.45,15.2,3.3);
   // westelijke gang (Hagrid), opening zuid naar hut en meer
   muur(-16.85,11.55,7.1,1.3,3.15);
   muur(-8.55,11.55,2.7,1.3,3.15);
@@ -1156,7 +1157,8 @@
   muur(16,16.45,14,1.3,3.15);
   // verre randen
   muur(-24,14,1.5,28,3.5);
-  muur(24,14,1.5,28,3.45);
+  muur(24,7.0,1.5,14.0,3.45);
+  muur(27.6,22.0,1.5,30.0,3.5);
   muur(0,-2.2,20,1.5,3.3);
   bouwHaagMerged();
   (function plaatsSperen(){
@@ -1199,7 +1201,7 @@
       bl.position.set(x+dx*s,dy*s,z+dz*s);voeg(bl);
     });
   }
-  [[-10,33.2,1.15],[10,33.4,1.2],[-6,34.2,0.95],[6,34.0,1.0],[-16,22,1.05],[16,22.2,1.1],[-14,32.4,0.9],[14,32.6,0.95]].forEach(([x,z,s])=>boom(x,z,s));
+  [[-16,22,1.05],[21.2,28.6,1.1],[-14,20.8,0.9],[5.2,28.4,0.95]].forEach(([x,z,s])=>boom(x,z,s));
 
   /* kasteelsilhouet in de verte: geschilderd, zelfgemaakt, zonder wapen */
   T.kasteel=cvTex((g,w,h)=>{
@@ -2026,23 +2028,22 @@
     for(let i=0;i<nR;i++){
       const lx=(i+0.5)/nR*len-len/2;
       const nis=new THREE.Mesh(new THREE.BoxGeometry(0.55,1.15,0.12),new THREE.MeshLambertMaterial({color:0x1a1410}));
-      nis.position.set(lx,3.1,0.44);g.add(nis);
+      nis.position.set(lx,3.1,-0.44);g.add(nis);
       const rm=new THREE.Mesh(new THREE.PlaneGeometry(0.36,0.7),glow);
-      rm.position.set(lx,3.15,0.52);g.add(rm);
+      rm.position.set(lx,3.15,-0.52);rm.rotation.y=Math.PI;g.add(rm);
     }
     g.position.set(x,0,z);g.rotation.y=rotY||0;voeg(g);
     const c=Math.cos(rotY||0), si=Math.sin(rotY||0);
     solid(x,z, Math.abs(c)*len+Math.abs(si)*0.9, Math.abs(si)*len+Math.abs(c)*0.9, h+0.5);
   }
 
-  // opening naar de kasteelplaats
-  gotischeBoog(2.92,25.6,Math.PI/2,2.6,3.9,0.62);
-  kasteelMuur(10.6,29.15,14.5,7.4,0);
-  steunbeer(5.4,28.15,0,6.4);
-  steunbeer(10.6,28.15,0,6.6);
-  steunbeer(15.6,28.15,0,6.3);
-  kasteelToren(3.6,29.3,10.2,1.25);
-  kasteelToren(17.6,29.3,11.4,1.4);
+  // opening naar de ruimere kasteelplaats
+  gotischeBoog(2.92,25.6,Math.PI/2,2.8,4.1,0.62);
+  kasteelMuur(14.4,33.35,16.8,8.2,0);
+  steunbeer(10.15,32.25,0,7.0);
+  steunbeer(18.65,32.25,0,6.9);
+  kasteelToren(6.6,33.5,11.2,1.35);
+  kasteelToren(22.0,33.55,12.4,1.5);
 
   // opening naar hut en meer
   gotischeBoog(-11.7,11.05,0,2.8,3.6,0.5);
@@ -2105,6 +2106,38 @@
     }
     solid(meerX,meerZ,meerR*1.7,meerR*1.7,0.5);
   })();
+
+  function wegWijzer(x,z,rotY,titel,sub){
+    const paal=new THREE.Mesh(new THREE.BoxGeometry(0.12,1.35,0.12),mat.hout);
+    paal.position.set(x,0.68,z);voeg(paal);
+    const tx=cvTex((g,w,h)=>{
+      g.fillStyle='#3a2714';g.fillRect(0,0,w,h);
+      g.fillStyle='#5a3a1c';g.fillRect(3,3,w-6,h-6);
+      g.strokeStyle='#d4b46a';g.lineWidth=4;g.strokeRect(8,8,w-16,h-16);
+      g.fillStyle='#f0e0b0';
+      g.font='bold 44px Georgia,serif';g.textAlign='center';g.textBaseline='middle';
+      g.fillText(titel,w/2,sub?h*0.42:h*0.52);
+      if(sub){g.font='32px Georgia,serif';g.fillStyle='#e6d4a0';g.fillText(sub,w/2,h*0.68)}
+    },256,160);
+    const plank=new THREE.Mesh(new THREE.BoxGeometry(1.15,0.7,0.08),new THREE.MeshLambertMaterial({map:tx,color:0xffffff}));
+    plank.position.set(x,1.45,z);plank.rotation.y=rotY||0;voeg(plank);
+    solid(x,z,0.28,0.28,1.5);
+  }
+  function lantaarn(x,z){
+    const stam=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.06,1.15,6),mat.hout);
+    stam.position.set(x,0.58,z);voeg(stam);
+    const kop=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.28,0.22),mat.ijzer);
+    kop.position.set(x,1.22,z);voeg(kop);
+    const gloed=new THREE.Mesh(new THREE.BoxGeometry(0.16,0.18,0.16),new THREE.MeshBasicMaterial({color:0xffe08a,transparent:true,opacity:0.72,toneMapped:false}));
+    gloed.position.set(x,1.22,z);voeg(gloed);
+    const schijf=new THREE.Mesh(new THREE.CircleGeometry(0.55,10),new THREE.MeshBasicMaterial({color:0xffd090,transparent:true,opacity:0.16,depthWrite:false,toneMapped:false}));
+    schijf.rotation.x=-Math.PI/2;schijf.position.set(x,0.03,z);voeg(schijf);
+    solid(x,z,0.2,0.2,1.3);
+  }
+  wegWijzer(-10.25,13.55,Math.PI/2,'Hagrids hut','en het meer');
+  wegWijzer(2.45,23.85,Math.PI/2,'Kasteelplaats','');
+  wegWijzer(-10.55,6.85,-0.55,'Het meer','');
+  [[-10.85,12.35],[-13.25,9.15],[-14.35,5.55],[-16.55,5.55],[4.15,24.45],[8.55,27.25],[15.55,25.05],[15.45,29.55],[19.15,24.85]].forEach(([x,z])=>lantaarn(x,z));
 
   /* pollen */
   const pN=12;
@@ -2271,9 +2304,9 @@
   /* ===== v180: dagelijkse vondsten (additief, geen reset) ===== */
   const SAVE_KEY='zweinstein_v1';
   const VONDST_DEF=[
-    {id:'kikker',naam:'Chocokikker',smek:5,x:-0.72,z:22.15,y:0},
-    {id:'pompoen',naam:'Glimmende pompoen',smek:5,x:3.85,z:15.2,y:0},
-    {id:'smekkie',naam:'Smekkie',smek:8,x:-1.85,z:6.35,y:0}
+    {id:'kikker',naam:'Chocokikker',smek:5,x:16.2,z:27.4,y:0},
+    {id:'pompoen',naam:'Glimmende pompoen',smek:5,x:-16.35,z:5.15,y:0},
+    {id:'smekkie',naam:'Smekkie',smek:8,x:-15.15,z:4.05,y:0}
   ];
   let vondstDagHook=null,vondstToastT=0;
   const vondstEl=$('vondst'),vondstToastEl=$('vondsttoast');
@@ -2972,12 +3005,45 @@
   mark.rotation.x=-Math.PI/2;mark.visible=false;scene.add(mark);
 
   const camOff=new THREE.Vector3(0,0,-6.0);
-  const kijkVooruit=1.0;
+  const kijkVooruit0=1.0;
   const CAM_MIN=3.2,CAM_MIN_Y=1.5;
   const CAM_DIST=6.55;
   const CAM_LOOK_Y=1.18;
+  const CAM_FOV0=52;
   const CAM_PITCH0=30*Math.PI/180;
-  const CAM_PITCH_MIN=20*Math.PI/180,CAM_PITCH_MAX=40*Math.PI/180;
+  let liveDist=CAM_DIST, liveLookY=CAM_LOOK_Y, liveKijk=kijkVooruit0, liveFov=CAM_FOV0;
+  let pitchVrij=false;
+  const CAM_ZONES=[
+    {id:'kasteel',in:(x,z)=>x>3.4&&x<26&&z>19.6&&z<36, dist:10.8, lookY:4.2, kijk:3.4, fov:60, pitch:12*Math.PI/180},
+    {id:'hutmeer',in:(x,z)=>x<-9.6&&z<9.2, dist:6.6, lookY:1.26, kijk:1.05, fov:54, pitch:24*Math.PI/180},
+    {id:'tuin',in:()=>true, dist:CAM_DIST, lookY:CAM_LOOK_Y, kijk:kijkVooruit0, fov:CAM_FOV0, pitch:CAM_PITCH0}
+  ];
+  function zoneDoel(x,z){
+    for(let i=0;i<CAM_ZONES.length;i++){if(CAM_ZONES[i].in(x,z))return CAM_ZONES[i]}
+    return CAM_ZONES[CAM_ZONES.length-1];
+  }
+  function pasCameraZone(zn,meteen){
+    if(meteen){
+      liveDist=zn.dist;liveLookY=zn.lookY;liveKijk=zn.kijk;liveFov=zn.fov;
+      if(!pitchVrij)camPitch=zn.pitch;
+    }
+    if(Math.abs(camera.fov-liveFov)>0.08){camera.fov=liveFov;camera.updateProjectionMatrix()}
+  }
+  function mengCameraZone(dt){
+    const zn=zoneDoel(held.position.x,held.position.z);
+    const k=1-Math.exp(-2.15*dt);
+    const d0=liveDist, p0=camPitch;
+    liveDist+= (zn.dist-liveDist)*k;
+    liveLookY+=(zn.lookY-liveLookY)*k;
+    liveKijk+=(zn.kijk-liveKijk)*k;
+    liveFov+=(zn.fov-liveFov)*k;
+    if(!pitchVrij && !camStokAan){
+      camPitch+=(zn.pitch-camPitch)*k;
+    }
+    pasCameraZone(zn,false);
+    return Math.abs(liveDist-d0)+liveDist*Math.abs(camPitch-p0);
+  }
+  const CAM_PITCH_MIN=8*Math.PI/180,CAM_PITCH_MAX=42*Math.PI/180;
   const CAM_YAW_SNEL=Math.PI/2;
   const CAM_PITCH_SNEL=0.55;
   let camYaw=0,camPitch=CAM_PITCH0;
@@ -2999,7 +3065,7 @@
 
   function bots(x,z,r){
     r=r||0.32;
-    if(x<-22||x>22||z<-1.6||z>31.2)return true;
+    if(x<-22||x>26||z<-1.6||z>36.0)return true;
     for(let i=0;i<col.length;i++){
       const c=col[i];
       if(x>c.minx-r&&x<c.maxx+r&&z>c.minz-r&&z<c.maxz+r)return true;
@@ -3291,7 +3357,7 @@
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
     const r=(renderer.info&&renderer.info.render)||{};
     const kwalNaam=['vol','midden','licht'][kwalTrap]||('k'+kwalTrap);
-    debugEl.textContent=fps+' fps  ·  '+kwalNaam+'  ·  '+(r.calls||0)+' calls  ·  '+Math.round((r.triangles||0)/1000)+'k tri   v187\n'+
+    debugEl.textContent=fps+' fps  ·  '+kwalNaam+'  ·  '+(r.calls||0)+' calls  ·  '+Math.round((r.triangles||0)/1000)+'k tri   v188\n'+
       'camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
@@ -3485,7 +3551,7 @@
     if(Math.abs(x)<1.25 && ((z>1&&z<32)||(Math.abs(z-14)<1.8&&Math.abs(x)<16)))return 'steen';
     if(Math.abs(x+11.7)<1.35 && z>8.0 && z<14.6)return 'steen';
     if(x>-20.2 && x<-12.5 && z>1.8 && z<6.4)return 'steen';
-    if(x>3.2 && x<16.2 && z>23.2 && z<28.2)return 'steen';
+    if(x>3.2 && x<22.5 && z>20.5 && z<32.6)return 'steen';
     if(Math.abs(x)<2.15 && ((z>1&&z<32)||(Math.abs(z-14)<2.2&&Math.abs(x)<16)))return 'grind';
     return 'gras';
   }
@@ -3751,8 +3817,8 @@
     {x0:-11.7,z0:11.6,x1:-11.8,z1:8.2,hw:1.35},
     {x0:-11.8,z0:8.2,x1:-18.0,z1:3.4,hw:1.55},
     {x0:-18.0,z0:3.4,x1:-14.2,z1:1.5,hw:1.45},
-    {x0:3.4,z0:25.5,x1:14.2,z1:25.5,hw:3.2},
-    {x0:10.4,z0:21.8,x1:10.4,z1:28.0,hw:1.8}
+    {x0:3.6,z0:25.8,x1:20.8,z1:26.0,hw:5.2,zone:'kasteel'},
+    {x0:14.2,z0:15.6,x1:14.2,z1:32.4,hw:5.0,zone:'kasteel'}
   ];
   function railPunt(x,z,seg){
     const dx=seg.x1-seg.x0,dz=seg.z1-seg.z0,len2=dx*dx+dz*dz||1;
@@ -3770,17 +3836,23 @@
     }
     return false;
   }
+  function railInZone(seg,x,z){
+    if(!seg.zone)return true;
+    return zoneDoel(x,z).id===seg.zone;
+  }
   function railsBij(x,z){
     const MARGE=0.45;
     const lokaal=[];
     let beste=null;
     for(let i=0;i<CAM_RAILS.length;i++){
-      const p=railPunt(x,z,CAM_RAILS[i]);
-      if(p.d<=MARGE)lokaal.push(CAM_RAILS[i]);
+      const seg=CAM_RAILS[i];
+      if(!railInZone(seg,x,z))continue;
+      const p=railPunt(x,z,seg);
+      if(p.d<=MARGE)lokaal.push(seg);
       if(!beste||p.d<beste.d)beste=p;
     }
     if(lokaal.length)return lokaal;
-    return beste&&beste.seg?[beste.seg]:CAM_RAILS;
+    return beste&&beste.seg?[beste.seg]:CAM_RAILS.filter(r=>railInZone(r,x,z));
   }
   function projectOpRails(x,z,rails){
     let beste=null;
@@ -3799,18 +3871,18 @@
   function kijkPunt(out){
     const facing=camHoek();
     out.set(
-      held.position.x+Math.sin(facing)*kijkVooruit,
-      held.position.y+CAM_LOOK_Y,
-      held.position.z+Math.cos(facing)*kijkVooruit
+      held.position.x+Math.sin(facing)*liveKijk,
+      held.position.y+liveLookY,
+      held.position.z+Math.cos(facing)*liveKijk
     );
     return out;
   }
   function doelCamera(out,look){
     kijkPunt(look);
     const yaw=camHoek(), c=Math.cos(camPitch), s=Math.sin(camPitch);
-    let cx=look.x-Math.sin(yaw)*CAM_DIST*c;
-    let cy=look.y+CAM_DIST*s;
-    let cz=look.z-Math.cos(yaw)*CAM_DIST*c;
+    let cx=look.x-Math.sin(yaw)*liveDist*c;
+    let cy=look.y+liveDist*s;
+    let cz=look.z-Math.cos(yaw)*liveDist*c;
     const p=projectRail(cx,cz);
     cx=p.x;cz=p.z;
     if(cy<CAM_MIN_Y)cy=CAM_MIN_Y;
@@ -3834,6 +3906,8 @@
     camAchterNaar=wikkelYaw(held.rotation.y);
     camAchterT=0.001;
     camVast=false;
+    pitchVrij=false;
+    camPitch=zoneDoel(held.position.x,held.position.z).pitch;
   }
   function rayRaaktDoos(ox,oy,oz,dx,dy,dz,len,b){
     let tmin=0,tmax=len;
@@ -3903,12 +3977,14 @@
     if(camStokAan&&camStokKracht>0.18){
       camAchterT=0;
       camYaw=wikkelYaw(camYaw-camStokDx*CAM_YAW_SNEL*dt);
+      if(Math.abs(camStokDy)>0.18)pitchVrij=true;
       camPitch=Math.max(CAM_PITCH_MIN,Math.min(CAM_PITCH_MAX,camPitch-camStokDy*CAM_PITCH_SNEL*dt));
     }
+    const dDist=mengCameraZone(dt);
     doelCamera(CAM_ZOEK,LOOK_CAM);
     const k=1-Math.exp(-5.1*dt);
     const yawAan=camStokAan&&camStokKracht>0.18;
-    const maxStap=(yawAan?CAM_DIST*CAM_YAW_SNEL*dt:0)+0.35;
+    const maxStap=(yawAan?liveDist*CAM_YAW_SNEL*dt:0)+0.35+dDist*1.4;
     const vanX=camPos.x,vanY=camPos.y,vanZ=camPos.z;
     camPos.lerp(CAM_ZOEK,k);
     lookPos.lerp(LOOK_CAM,k);
@@ -4367,8 +4443,8 @@
       moestuin:{x:-13.0,z:14.0,y:Math.PI/2,kijkMee:1},
       hagrid:{x:-13.0,z:14.0,y:Math.PI/2,kijkMee:1},
       hut:{x:-16.2,z:5.35,y:-2.2,kijkMee:1},
-      meer:{x:-15.6,z:3.0,y:-0.6,kijkMee:1},
-      kasteel:{x:10.2,z:24.2,y:0,kijkMee:1},
+      meer:{x:-15.5,z:4.15,y:Math.atan2(-13.7-(-15.5),1.15-4.15),kijkMee:1},
+      kasteel:{x:14.2,z:24.6,y:0,kijkMee:1},
       home:{x:13.0,z:14.0,y:-Math.PI/2,kijkMee:1},
       hal:{x:13.0,z:14.0,y:-Math.PI/2,kijkMee:1}
     };
@@ -4382,8 +4458,9 @@
     camVast=false;camAchterT=0;
     if(P.kijkMee){
       camYaw=wikkelYaw(P.y||0);
-      camPitch=CAM_PITCH0;
+      pitchVrij=false;
     }
+    pasCameraZone(zoneDoel(held.position.x,held.position.z),true);
     doelCamera(camPos,LOOK_CAM);
     lookPos.copy(LOOK_CAM);
     camera.position.copy(camPos);
@@ -4393,7 +4470,8 @@
   }
 
   window.ZW_TUIN={
-    camDist:()=>CAM_DIST,
+    camDist:()=>liveDist,
+    camZone:()=>zoneDoel(held.position.x,held.position.z).id,
     fps:()=>fps,
     fpsMin:()=>fpsMin,
     licht:()=>licht,

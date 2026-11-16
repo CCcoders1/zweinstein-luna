@@ -446,3 +446,14 @@ v187 — 3D-tuin
   torens. De uil heeft vleugels, de kabouter laarzen en armen,
   en de eenden dobberen op het water. Zelfgemaakt, geen
   EA/Warner-assets.
+
+v188 — 3D-tuin
+  Ruimere kasteelplaats: de muur en torens staan verder naar
+  achteren en uit elkaar, de oostwand is opgeschoven, en je
+  kunt verder het plein op. De camera past per zone soepel
+  afstand en beeldhoek aan (breder en verder op het kasteelplein,
+  iets ruimer bij hut en meer), zonder sprongen. De dagelijkse
+  vondsten liggen verspreid over de nieuwe stukken (kikker bij
+  het kasteel, pompoen bij de hut, Smekkie bij het meer).
+  Wegwijzers en zachte lantaarns markeren de paden.
+  Zelfgemaakt, geen EA/Warner-assets.
