@@ -4,3 +4,74 @@
 .m3ico[style*="#c9a227"],.m3ico[style*="#5a2a12"]{box-shadow:inset 0 0 0 1px rgba(255,244,200,.4)}
 #m3c{transition:box-shadow .25s ease}
 .m3aan #m3c{box-shadow:0 0 0 2px #fff4c8,0 0 0 5px #c9a227,0 0 0 7px #7a5410,0 0 0 9px rgba(255,226,140,.55),0 14px 30px rgba(0,0,0,.55),0 0 28px rgba(255,200,80,.28)!important}
+
+
+/* v192: vormkaders, belonende doelen, introkaart */
+.m3bord.m3vorm, .m3.m3heeftvorm .m3bord{
+  background:
+    radial-gradient(80% 70% at 50% 40%,rgba(255,248,230,.55),transparent 70%),
+    linear-gradient(180deg,#f6e6c0,#e8d09a);
+  box-shadow:0 0 0 3px rgba(201,162,39,.45),0 10px 24px rgba(60,40,10,.18),inset 0 0 40px rgba(255,255,255,.25);
+}
+.m3bord.m3vorm-hart{
+  background:
+    radial-gradient(60% 60% at 50% 45%,rgba(255,200,214,.5),transparent 70%),
+    linear-gradient(180deg,#ffe8f0,#f3c8d4);
+  box-shadow:0 0 0 3px #c45a78,0 10px 24px rgba(140,40,60,.22),inset 0 0 36px rgba(255,255,255,.3);
+}
+.m3bord.m3vorm-bliksem{
+  background:
+    radial-gradient(70% 50% at 50% 30%,rgba(255,240,160,.55),transparent 70%),
+    linear-gradient(180deg,#fff4c0,#e8c44a 80%,#1a1630);
+  box-shadow:0 0 0 3px #e8c44a,0 0 22px rgba(255,210,40,.35),0 10px 24px rgba(40,30,0,.2);
+}
+.m3bord.m3vorm-kasteel{
+  background:
+    radial-gradient(80% 60% at 50% 20%,rgba(255,236,190,.4),transparent 65%),
+    linear-gradient(180deg,#efe0b8,#c9a878 60%,#5a4630);
+  box-shadow:0 0 0 3px #c9a227,0 10px 24px rgba(80,50,10,.25),inset 0 0 0 1px rgba(255,236,190,.4);
+}
+.m3bord.m3vorm-ketel{
+  background:
+    radial-gradient(70% 60% at 50% 70%,rgba(120,180,80,.28),transparent 70%),
+    linear-gradient(180deg,#efe0c0,#8a6a3a 70%,#2a2010);
+  box-shadow:0 0 0 3px #8a5a2b,0 10px 24px rgba(40,24,8,.25);
+}
+.m3bord.m3vorm-groot{
+  background:
+    radial-gradient(70% 70% at 50% 40%,rgba(200,180,255,.4),transparent 70%),
+    linear-gradient(180deg,#efe6ff,#c8b8f0);
+  box-shadow:0 0 0 3px #7a5ad4,0 10px 24px rgba(60,40,120,.22);
+}
+.m3vormkaart{display:flex;align-items:center;gap:.7rem;margin:.7rem 0 0;padding:.7rem .85rem;border-radius:16px;background:linear-gradient(135deg,#fff8e8,#f4e4c0);box-shadow:0 4px 14px rgba(60,40,10,.12);text-align:left}
+.m3vormkaart b{display:block;font-size:1.02rem}
+.m3vormkaart p{margin:.15rem 0 0;font-size:.9rem;opacity:.9}
+.m3vormkaart.vorm-hart{background:linear-gradient(135deg,#fff0f4,#ffd0dc);color:#5a1830}
+.m3vormkaart.vorm-bliksem{background:linear-gradient(135deg,#fff8d0,#ffe08a);color:#4a3008}
+.m3vormkaart.vorm-kasteel{background:linear-gradient(135deg,#fff4d8,#e8d09a);color:#3a2408}
+.m3vormkaart.vorm-ketel{background:linear-gradient(135deg,#f0e4c4,#d4c090);color:#2a1a08}
+.m3vormkaart.vorm-groot{background:linear-gradient(135deg,#efe6ff,#d8c8ff);color:#2a1858}
+.m3vormico{width:36px;height:36px;flex:0 0 36px;border-radius:10px;background:currentColor;opacity:.9;
+  -webkit-mask:center/80% no-repeat;mask:center/80% no-repeat}
+.vorm-hart .m3vormico{-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 21s-7-4.4-9.5-8.2C.6 9.6 2.2 6 5.5 6c1.8 0 3.2 1 4 2.4C10.3 7 11.7 6 13.5 6c3.3 0 4.9 3.6 3 6.8C19 16.6 12 21 12 21z'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 21s-7-4.4-9.5-8.2C.6 9.6 2.2 6 5.5 6c1.8 0 3.2 1 4 2.4C10.3 7 11.7 6 13.5 6c3.3 0 4.9 3.6 3 6.8C19 16.6 12 21 12 21z'/></svg>")}
+.vorm-bliksem .m3vormico{-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M13 2L4 14h7l-2 8 11-14h-7z'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M13 2L4 14h7l-2 8 11-14h-7z'/></svg>")}
+.vorm-kasteel .m3vormico{-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M3 21V9l3-2 2 2 2-3 2 3 2-2 3 2v12H3zm5-7h2v4H8v-4zm6 0h2v4h-2v-4z'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M3 21V9l3-2 2 2 2-3 2 3 2-2 3 2v12H3zm5-7h2v4H8v-4zm6 0h2v4h-2v-4z'/></svg>")}
+.vorm-ketel .m3vormico{-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M5 10h14s1 3 1 6-3 6-8 6-8-3-8-6 1-6 1-6zm3-3c0-2 2-4 4-4s4 2 4 4'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M5 10h14s1 3 1 6-3 6-8 6-8-3-8-6 1-6 1-6zm3-3c0-2 2-4 4-4s4 2 4 4'/></svg>")}
+.vorm-groot .m3vormico{-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z'/></svg>")}
+.m3vormintro{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(20,12,4,.28);border-radius:inherit;animation:m3vormin .25s ease}
+.m3vormintro-in{max-width:86%;padding:.95rem 1.1rem;border-radius:18px;background:#fff8e8;box-shadow:0 12px 32px rgba(0,0,0,.28);text-align:center;color:#3a2408}
+.m3vormintro.vorm-hart .m3vormintro-in{background:#fff0f4;color:#5a1830}
+.m3vormintro.vorm-bliksem .m3vormintro-in{background:#fff8d0;color:#4a3008}
+.m3vormintro.vorm-kasteel .m3vormintro-in{background:#fff4d8;color:#3a2408}
+.m3vormintro.vorm-ketel .m3vormintro-in{background:#f0e4c4;color:#2a1a08}
+.m3vormintro.vorm-groot .m3vormintro-in{background:#efe6ff;color:#2a1858}
+.m3vormintro-in .m3vormico{margin:0 auto .4rem;display:block}
+.m3vormintro-in b{display:block;font-size:1.15rem}
+.m3vormintro-in p{margin:.3rem 0 .5rem;font-size:.95rem}
+.m3vormintro-in small{opacity:.7}
+.m3vormintro.uit{opacity:0;transition:opacity .35s ease;pointer-events:none}
+@keyframes m3vormin{from{opacity:0}to{opacity:1}}
+.m3doel[data-t=kaars] .m3ico, .m3doel.kaars .m3ico{filter:drop-shadow(0 0 4px #ffb024)}
+@media (prefers-reduced-motion:reduce){
+  .m3vormintro, .m3vormkaart{animation:none}
+}

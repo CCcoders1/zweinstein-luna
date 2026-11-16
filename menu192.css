@@ -1,0 +1,193 @@
+/* v192: Hal, Kaart en Meer — kleur, diepte, zachte beweging, grote knoppen */
+.knop-groot{min-height:52px;padding:.78rem 1.15rem;font-size:1.08rem;font-weight:800;letter-spacing:.01em;border-radius:16px}
+body.hal192 #app, body.meer192 #app, body.pad192 #app{transition:background .4s ease}
+
+/* ——— HAL ——— */
+body.hal192 #app.hal192{background:
+  radial-gradient(120% 70% at 50% -10%,rgba(255,236,190,.55),transparent 60%),
+  linear-gradient(180deg,#f7efe0 0%,#efe4cc 55%,#e8d8b6 100%)}
+.hal192 .halbanner{position:relative;overflow:hidden;border-radius:22px;padding:1.05rem 1.1rem 1.05rem 1.2rem;box-shadow:0 10px 28px rgba(80,50,20,.14),inset 0 1px 0 rgba(255,255,255,.55);background:linear-gradient(135deg,#fff8e8,#f3e4c4)}
+.hal192 .halbanner[data-tijd=ochtend]{background:linear-gradient(135deg,#fff3d4,#f7c98a 70%,#e8a85a)}
+.hal192 .halbanner[data-tijd=middag]{background:linear-gradient(135deg,#fff8e8,#e8d4a4)}
+.hal192 .halbanner[data-tijd=avond]{background:linear-gradient(135deg,#3a2a68,#1e1648);color:#fff8e8}
+.hal192 .halbanner[data-tijd=avond] .groetnaam, .hal192 .halbanner[data-tijd=avond] h2, .hal192 .halbanner[data-tijd=avond] p{color:#fff8e8}
+.hal192 .halbanner[data-tijd=nacht]{background:linear-gradient(135deg,#1a1638,#0c0a1c);color:#e8e4ff}
+.hal192 .halbanner-bg{position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(circle at 88% 20%,rgba(255,255,255,.45),transparent 42%),
+  repeating-linear-gradient(115deg,transparent 0 18px,rgba(255,255,255,.08) 18px 19px);opacity:.7}
+.hal192 #volgendestap.halstap{position:relative;overflow:hidden;border:0;border-radius:24px;padding:1.05rem 1.1rem 1.15rem;background:
+  linear-gradient(165deg,#2b1a10 0%,#5a3218 48%,#8a4a1c 100%);
+  color:#fff8e8;box-shadow:0 14px 32px rgba(80,30,8,.28),inset 0 1px 0 rgba(255,220,160,.35)}
+.hal192 #volgendestap.halstap::before{content:"";position:absolute;inset:auto -10% -40% 40%;height:140%;border-radius:50%;background:radial-gradient(circle,rgba(255,200,80,.28),transparent 65%);pointer-events:none}
+.hal192 #volgendestap.halstap small{color:#ffd27a;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+.hal192 #volgendestap.halstap h3{color:#fff8e8;font-size:1.28rem;margin:.2rem 0 .35rem}
+.hal192 #volgendestap.halstap p{color:#f4e4c8;opacity:.95}
+.hal192 #volgendestap.halstap #stapknop,.hal192 #volgendestap.halstap .knop-groot{background:linear-gradient(180deg,#ffe08a,#e8b024);color:#3a2408;border:0;box-shadow:0 4px 0 #b8860a,0 8px 16px rgba(0,0,0,.2)}
+.hal192 #volgendestap.halstap #stapknop:active{transform:translateY(2px);box-shadow:0 2px 0 #b8860a}
+.hal192 .hallokaal{position:relative;overflow:hidden;border-radius:22px;padding-top:0;box-shadow:0 10px 26px rgba(40,30,10,.14);background:#fff8ea}
+.hal192 .lokbeeld{height:72px;margin:0 -4px 0;background-size:cover;background-position:center 30%;border-radius:22px 22px 0 0;box-shadow:inset 0 -20px 24px #fff8ea}
+.hal192 .hallokaal.lok-herbologie{--vak:#3a8a4a;border-top:5px solid #3a8a4a}
+.hal192 .hallokaal.lok-bezweringen{--vak:#c9a227;border-top:5px solid #c9a227}
+.hal192 .hallokaal.lok-toverdranken{--vak:#5a7a2a;border-top:5px solid #5a7a2a}
+.hal192 .hallokaal.lok-gedaante{--vak:#7a5ad4;border-top:5px solid #7a5ad4}
+.hal192 .hallokaal.lok-astronomie{--vak:#2a3a88;border-top:5px solid #2a3a88}
+.hal192 .hallokaal.lok-verweer{--vak:#8a5a2b;border-top:5px solid #8a5a2b}
+.hal192 #tuinknop.haltuin, .hal192 button.haldpdeur{background:linear-gradient(180deg,#3a6a38,#245028);color:#f4ffe8;border:0;box-shadow:0 6px 0 #16381a,0 10px 18px rgba(20,40,10,.22);border-radius:18px}
+.hal192 #ookvandaag.halook{display:flex;flex-wrap:wrap;gap:.55rem}
+.hal192 #ookvandaag.halook .ookchip,
+.hal192 #ookvandaag.halook button,
+.hal192 #ookvandaag.halook .knop{border-radius:999px;padding:.55rem .95rem;font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.12);border:0}
+.hal192 #ookvandaag.halook [style*="--chip: 0"],.hal192 #ookvandaag.halook [style*="--chip:0"]{background:#ffe08a;color:#4a3008}
+.hal192 #ookvandaag.halook [style*="--chip: 1"],.hal192 #ookvandaag.halook [style*="--chip:1"]{background:#c8e8ff;color:#16345a}
+.hal192 #ookvandaag.halook [style*="--chip: 2"],.hal192 #ookvandaag.halook [style*="--chip:2"]{background:#d8f0c8;color:#1a3a14}
+.hal192 #ookvandaag.halook [style*="--chip: 3"],.hal192 #ookvandaag.halook [style*="--chip:3"]{background:#ffd4e4;color:#5a1830}
+.hal192 .haldoelen,.hal192 .halspellen,.hal192 .halrang{border-radius:20px;box-shadow:0 8px 20px rgba(60,40,10,.1);background:#fffaf0}
+
+/* zachte zweef */
+@keyframes halzweef{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+body.hal192:not(.rmp) .hal192 .halbanner,
+body.hal192:not(.rmp) .hal192 #volgendestap.halstap,
+body.hal192:not(.rmp) .hal192 .hallokaal,
+body.hal192:not(.rmp) .hal192 #tuinknop{animation:halzweef .55s ease both}
+body.hal192:not(.rmp) .hal192 #volgendestap.halstap{animation-delay:.05s}
+body.hal192:not(.rmp) .hal192 .hallokaal{animation-delay:.1s}
+body.hal192:not(.rmp) .hal192 #tuinknop{animation-delay:.16s}
+
+/* ——— MEER ——— */
+body.meer192 #app.meer192{background:
+  radial-gradient(90% 50% at 100% 0,rgba(122,90,212,.14),transparent 55%),
+  linear-gradient(180deg,#f3ecff 0%,#efe4cc 40%,#e8d8b8 100%)}
+.meer192 .meer-koph{position:relative;overflow:hidden;border-radius:20px;padding:.85rem 1rem;background:linear-gradient(135deg,#3a2a68,#1c1440);color:#fff8e8;box-shadow:0 10px 24px rgba(40,20,80,.25)}
+.meer192 .meer-koph .meerkop-bg{position:absolute;inset:0;background:radial-gradient(circle at 90% 20%,rgba(255,200,80,.28),transparent 50%);pointer-events:none}
+.meer192 .meer-koph, .meer192 h1.meer-koph{color:#fff8e8}
+.meer192 .meer192-blok{border-radius:22px;padding:.85rem .85rem 1rem;margin:0 0 1rem;box-shadow:0 8px 22px rgba(40,30,10,.1);border:1px solid rgba(255,255,255,.45)}
+.meer192 .meer192-blok h3{display:flex;align-items:center;gap:.5rem;font-size:1.05rem;margin:.15rem 0 .65rem}
+.meer192 .meerblok-ico{width:28px;height:28px;border-radius:9px;flex:0 0 28px;background:currentColor;opacity:.9;
+  -webkit-mask:center/70% no-repeat;mask:center/70% no-repeat;
+  -webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 2l2.4 6.8H21l-5.4 4.2 2 6.8L12 16.6 6.4 19.8l2-6.8L3 8.8h6.6z'/></svg>");
+  mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M12 2l2.4 6.8H21l-5.4 4.2 2 6.8L12 16.6 6.4 19.8l2-6.8L3 8.8h6.6z'/></svg>")}
+.meer192 .meer-vandaag{background:linear-gradient(180deg,#fff4d4,#ffe08a);color:#4a3008}
+.meer192 .meer-verzamelen{background:linear-gradient(180deg,#efe6ff,#d8c8ff);color:#2a1858}
+.meer192 .meer-school-en-winkels{background:linear-gradient(180deg,#e8f6d8,#c8e8a8);color:#1a3a14}
+.meer192 .meer-instellingen{background:linear-gradient(180deg,#e4f0ff,#c8dcff);color:#16345a}
+.meer192 .meer-nog-meer{background:linear-gradient(180deg,#fff0e0,#f0d8b8);color:#4a3010}
+.meer192 .meer-tegel{min-height:76px;border-radius:18px;box-shadow:0 4px 0 rgba(0,0,0,.1),0 8px 14px rgba(0,0,0,.06)!important;background:#fffaf0!important;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:.7rem .85rem;font-weight:800}
+.meer192 .meer-tegel[data-tegel=boek]{border-left:6px solid #c9a227}
+.meer192 .meer-tegel[data-tegel=zon]{border-left:6px solid #e08a2a}
+.meer192 .meer-tegel[data-tegel=uil]{border-left:6px solid #e08a2a}
+.meer192 .meer-tegel[data-tegel=lijst]{border-left:6px solid #3d8cff}
+.meer192 .meer-tegel[data-tegel=ster]{border-left:6px solid #c9a227}
+.meer192 .meer-tegel[data-tegel=hoed]{border-left:6px solid #7a5ad4}
+.meer192 .meer-tegel[data-tegel=beker]{border-left:6px solid #c9a227}
+.meer192 .meer-tegel[data-tegel=ketel]{border-left:6px solid #3a8a4a}
+.meer192 .meer-tegel[data-tegel=fop]{border-left:6px solid #d45a8a}
+.meer192 .meer-tegel[data-tegel=blad]{border-left:6px solid #3a8a4a}
+.meer192 .meer-tegel[data-tegel=hart]{border-left:6px solid #d45a8a}
+.meer192 .meer-tegel[data-tegel=staf]{border-left:6px solid #7a5ad4}
+.meer192 .meer-tegel[data-tegel=huis]{border-left:6px solid #c9a227}
+.meer192 .meer-tegel[data-tegel=klok]{border-left:6px solid #3d8cff}
+.meer192 .meer-tegel[data-tegel=kist]{border-left:6px solid #8a5a2b}
+@keyframes meergolf{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+body.meer192:not(.rmp) .meer192-blok{animation:meergolf .5s ease both}
+body.meer192:not(.rmp) .meer192-blok:nth-child(2){animation-delay:.05s}
+body.meer192:not(.rmp) .meer192-blok:nth-child(3){animation-delay:.1s}
+body.meer192:not(.rmp) .meer192-blok:nth-child(4){animation-delay:.15s}
+body.meer192:not(.rmp) .meer192-blok:nth-child(5){animation-delay:.2s}
+
+/* ——— KAART ——— */
+body.pad192 #app.pad192{background:
+  radial-gradient(80% 40% at 50% 0,rgba(201,162,39,.22),transparent 60%),
+  #e8d8b0}
+.pad192 .vakbalk{padding:.45rem .4rem .55rem;border-radius:18px;background:linear-gradient(180deg,rgba(255,248,232,.92),rgba(244,228,190,.88));box-shadow:0 8px 20px rgba(40,20,8,.12)}
+.pad192 .pad192-kop{position:relative;overflow:hidden;border-radius:22px;box-shadow:0 14px 32px rgba(40,20,8,.28),inset 0 0 0 3px rgba(201,162,39,.7);min-height:132px}
+.pad192 .padkop-zin{margin:.35rem 0 0;font-size:.92rem;font-weight:600;color:#fff8e8;text-shadow:0 1px 4px rgba(0,0,0,.45)}
+.pad192 .pv{border-radius:14px;font-weight:800}
+.pad192 .pv-herbologie{border-color:#3a8a4a!important}
+.pad192 .pv-bezweringen{border-color:#c9a227!important}
+.pad192 .pv-toverdranken{border-color:#5a7a2a!important}
+.pad192 .pv-gedaante{border-color:#7a5ad4!important}
+.pad192 .pv-astronomie{border-color:#2a3a88!important}
+.pad192 .pv-verweer{border-color:#8a5a2b!important}
+.pad192 .pad .padlijn{filter:drop-shadow(0 0 4px rgba(255,220,120,.55))}
+@keyframes padin{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+body.pad192:not(.rmp) .pad192-kop, body.pad192:not(.rmp) .vakbalk{animation:padin .45s ease both}
+
+@media (prefers-reduced-motion:reduce){
+  body.hal192 #app *, body.meer192 #app *, body.pad192 #app *{animation:none!important;transition:none!important}
+}
+
+
+/* v192 overrides: wint van thema.css perkament-!important */
+body.hal192 #volgendestap.halstap{
+  background:linear-gradient(165deg,#2b1a10 0%,#5a3218 48%,#8a4a1c 100%)!important;
+  color:#fff8e8!important;
+  border:0!important;
+  box-shadow:0 14px 32px rgba(80,30,8,.28),inset 0 1px 0 rgba(255,220,160,.35)!important;
+}
+body.hal192 #volgendestap.halstap small{color:#ffd27a!important;-webkit-text-fill-color:#ffd27a!important}
+body.hal192 #volgendestap.halstap h3{color:#fff8e8!important;-webkit-text-fill-color:#fff8e8!important;background:none!important}
+body.hal192 #volgendestap.halstap p{color:#f4e4c8!important}
+body.hal192 #volgendestap.halstap #stapknop,
+body.hal192 #volgendestap.halstap .knop-groot{
+  background:linear-gradient(180deg,#ffe08a,#e8b024)!important;
+  color:#3a2408!important;
+  border:0!important;
+  box-shadow:0 4px 0 #b8860a,0 8px 16px rgba(0,0,0,.2)!important;
+}
+body.hal192 .hallokaal{border-top-width:5px!important;overflow:hidden}
+body.hal192 #tuinknop.haltuin, body.hal192 button.haldpdeur{
+  background:linear-gradient(180deg,#3a6a38,#245028)!important;
+  color:#f4ffe8!important;
+  border:0!important;
+  box-shadow:0 6px 0 #16381a,0 10px 18px rgba(20,40,10,.22)!important;
+}
+body.hal192 #ookvandaag.halook .ookchip,
+body.hal192 #ookvandaag.halook button{
+  border:0!important;
+}
+body.hal192 #ookvandaag.halook [style*="--chip: 0"],body.hal192 #ookvandaag.halook [style*="--chip:0"]{background:#ffe08a!important;color:#4a3008!important}
+body.hal192 #ookvandaag.halook [style*="--chip: 1"],body.hal192 #ookvandaag.halook [style*="--chip:1"]{background:#c8e8ff!important;color:#16345a!important}
+body.hal192 #ookvandaag.halook [style*="--chip: 2"],body.hal192 #ookvandaag.halook [style*="--chip:2"]{background:#d8f0c8!important;color:#1a3a14!important}
+body.hal192 #ookvandaag.halook [style*="--chip: 3"],body.hal192 #ookvandaag.halook [style*="--chip:3"]{background:#ffd4e4!important;color:#5a1830!important}
+
+body.meer192 #app.meer192 #meerkop.meer-koph,
+body.meer192 #meerkop.meer-koph{
+  background:linear-gradient(135deg,#3a2a68,#1c1440)!important;
+  color:#fff8e8!important;
+  -webkit-text-fill-color:#fff8e8!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.3)!important;
+  border:0!important;
+  box-shadow:0 10px 24px rgba(40,20,80,.25)!important;
+  border-radius:20px!important;
+  padding:.85rem 1rem!important;
+}
+body.meer192 #app.meer192 .meerblok.meer-vandaag{background:linear-gradient(180deg,#fff4d4,#ffe08a)!important;color:#4a3008!important;border-color:#e0a020!important}
+body.meer192 #app.meer192 .meerblok.meer-verzamelen{background:linear-gradient(180deg,#efe6ff,#d8c8ff)!important;color:#2a1858!important;border-color:#7a5ad4!important}
+body.meer192 #app.meer192 .meerblok.meer-school-en-winkels{background:linear-gradient(180deg,#e8f6d8,#c8e8a8)!important;color:#1a3a14!important;border-color:#3a8a4a!important}
+body.meer192 #app.meer192 .meerblok.meer-instellingen{background:linear-gradient(180deg,#e4f0ff,#c8dcff)!important;color:#16345a!important;border-color:#3d8cff!important}
+body.meer192 #app.meer192 .meerblok.meer-nog-meer{background:linear-gradient(180deg,#fff0e0,#f0d8b8)!important;color:#4a3010!important;border-color:#c9a227!important}
+body.meer192 #app.meer192 .meerblok.meer192-blok h3{
+  color:inherit!important;-webkit-text-fill-color:currentColor!important;
+}
+body.meer192 #app.meer192 .meer-tegel{
+  background:linear-gradient(180deg,#fffaf0,#fff4e0)!important;
+  color:#3a2408!important;
+  min-height:76px!important;
+  box-shadow:0 4px 0 rgba(0,0,0,.1),0 8px 14px rgba(0,0,0,.06)!important;
+}
+body.meer192 #app.meer192 .meer-tegel b{color:inherit!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=boek]{border-left:6px solid #c9a227!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=zon],
+body.meer192 #app.meer192 .meer-tegel[data-tegel=uil]{border-left:6px solid #e08a2a!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=lijst]{border-left:6px solid #3d8cff!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=ster]{border-left:6px solid #c9a227!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=hoed]{border-left:6px solid #7a5ad4!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=beker]{border-left:6px solid #c9a227!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=ketel]{border-left:6px solid #3a8a4a!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=fop]{border-left:6px solid #d45a8a!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=blad]{border-left:6px solid #3a8a4a!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=hart]{border-left:6px solid #d45a8a!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=staf]{border-left:6px solid #7a5ad4!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=huis]{border-left:6px solid #c9a227!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=klok]{border-left:6px solid #3d8cff!important}
+body.meer192 #app.meer192 .meer-tegel[data-tegel=kist]{border-left:6px solid #8a5a2b!important}

@@ -507,3 +507,5 @@ v191 — Match-3
   puntenaantal halen en kaarsen aansteken. Toverstaf- en
   match-effecten zijn rijker. Zelfgemaakt, bestaande stukken
   (geen EA/Warner-assets).
+
+v192 (16 november 2026): de Grote Hal, de kaart en het menu Meer kregen per onderdeel een eigen kleur, geïllustreerde koppen en kaarten, meer diepte en een zachte beweging, met grotere knoppen. Vormborden hebben nu een themakader en achtergrond, kaarsen- en puntendoelen een beloning als ze klaar zijn, en een speciale vorm krijgt een korte introkaart. Mama’s voortgang is alleen aangevuld, niet gereset.

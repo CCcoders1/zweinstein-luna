@@ -262,6 +262,8 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
  const gloed=a=>{const f=$('#m3fx');if(!f||RMP)return;const g=document.createElement('div');g.className='m3gloed';g.style.setProperty('--a',a);f.appendChild(g);setTimeout(()=>g.remove(),800)};
  const C=(r,c)=>[(c+.5)*cel,(r+.5)*cel];
  const toonFx=()=>{let groot=0;const poef=[];b.fx.splice(0).forEach(f=>{const[px,py]=C(f.r,f.c);if(f.t=='strik'||f.t=='strikgroei'){const kleur=b.L&&b.L.plaag&&b.L.plaag.soort==='damp'?'#7ddea0':'#c084fc';for(let i=0;i<(RMP?2:7);i++)deeltjes.push({x:px,y:py,vx:(Math.random()-.5)*3,vy:-1-Math.random()*2,l:1,k:kleur,r:2.5,sq:1});return}if((f.t=='pu'||f.t=='schat'||f.t=='tik')&&window.m3PuFx){const cr=cv.getBoundingClientRect();m3PuFx(f,cr.left+(f.c+.5)*cel,cr.top+(f.r+.5)*cel,cel);if(f.t=='tik'){schud=Math.max(schud,2);try{krak(0)}catch(e){}}if(f.t=='schat'){schud=Math.max(schud,4);stofW(px,py,'#fff6d0',RMP?2:14)}return}if(f.t=='sleep'){const[qx,qy]=C(f.r2,f.c2);fxs.push({t:'zwiep',x:px,y:py,run:[[px,py],[qx,qy]],l:0});stofW((px+qx)/2,(py+qy)/2,'#ffe28a',RMP?1:8)}
+  if(f.t=='kaars'){stofW(px,py,'#ffb024',RMP?2:14);stofW(px,py,'#fff6c0',RMP?1:8);schud=Math.max(schud,4);gloed(.3);vlieg('kaars',f.r,f.c);if(f.laatste)combo('Alle kaarsen!');try{fx.speel('goed')}catch(e){}}
+  if(f.t=='scoreklaar'){stofW(px,py,'#ffe08a',RMP?2:18);combo('Punten gehaald!');gloed(.42);schud=Math.max(schud,6);vlieg('score',f.r||0,f.c||0);try{fx.speel('fanfare')}catch(e){}}
   if(f.t=='pof')poef.push([px,py,T.t[f.k]?T.t[f.k][1]:'#fff']);
   if(f.t=='pof'){const kl=T.t[f.k]?T.t[f.k][1]:'#fff';geesten.push({x:px,y:py,k:f.k,l:1});stofW(px,py,kl,RMP?2:16);vlieg(f.k,f.r,f.c)}
   if(f.t=='vrij'){const i=b.doel.findIndex(d=>d.t===f.s),kaart=$('#m3d')&&$('#m3d').children[i],ico=kaart&&kaart.querySelector('.m3ico'),cr=cv.getBoundingClientRect(),X=cr.left+(f.c+.5)*cel,Y=cr.top+(f.r+.5)*cel;if(f.s=='d'){for(let j=0;j<(RMP?2:14);j++)deeltjes.push({x:px,y:py,vx:(Math.random()-.5)*6,vy:-Math.random()*5,l:1,k:'#ffe08a',r:2.5,sq:1});schud=Math.max(schud,3);try{krak(0)}catch(e){};window.m3Bevrijd&&m3Bevrijd(f.it,X,Y,ico)}else window.m3Spreuk&&m3Spreuk(f.it,X,Y,ico);return}
@@ -320,6 +322,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
  let laatst=performance.now();
  const frame=nu=>{if(!document.body.contains(cv)){if(!document.getElementById('m3c'))document.body.classList.remove('m3aan');document.body.classList.remove('m3bijna');const bn=document.getElementById('m3bijna');if(bn)bn.remove();removeEventListener('resize',maat);removeEventListener('zw-hint',opHint);return}let dt=Math.min(40,nu-laatst)/16.7;if(nu<slowTot)dt*=.35;laatst=nu;
   ctx.clearRect(0,0,W,H);ctx.save();if(schud>0){ctx.translate((Math.random()-.5)*schud,(Math.random()-.5)*schud);schud*=.85;if(schud<.5)schud=0}
+  if(b.vormTekenAchter)b.vormTekenAchter(ctx,cel,nu);
   for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){if(b.kist[r][c]===undefined||b.gatCel(r,c))continue;ctx.fillStyle=(r+c)%2?'rgba(150,110,50,.13)':'rgba(255,255,255,.28)';ctx.beginPath();ctx.roundRect(c*cel+1.5,r*cel+1.5,cel-3,cel-3,cel*.18);ctx.fill();
    if(b.lay[r][c]){const R1=window._rank1,R2=window._rank2,x=c*cel+cel/2,y=r*cel+cel/2;ctx.fillStyle=b.lay[r][c]>1?'rgba(70,110,40,.28)':'rgba(110,150,60,.18)';ctx.beginPath();ctx.roundRect(c*cel+2,r*cel+2,cel-4,cel-4,8);ctx.fill();
    }}
@@ -358,7 +361,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
  addEventListener('zw-hint',opHint);
  async function probeer(a,c){if(bezig||!b.binnen(...c)||Math.abs(a[0]-c[0])+Math.abs(a[1]-c[1])!=1)return;if(window.strikTegen&&strikTegen(b,a,c,cel)){sel=null;wisHint();hintT=Date.now();return}bezig=true;sel=null;wisHint();
   const ok=await b.wissel(a,c,hooks);toonFx();doelUI();if(!ok){fx.speel('fout');vib(20)}bezig=false;hintT=Date.now();einde()}
- M3.probeer=probeer;M3.toonFx=toonFx;
+ M3.probeer=probeer;M3.toonFx=toonFx;M3.doelUI=doelUI;
  let lev=null;M3.leviosa=()=>{lev={f:'kies'};sel=null;toast('Wingardium Leviosa! Pak een blok vast en sleep het.')};
  const vastC=(rr,cc)=>(b.kist[rr]&&b.kist[rr][cc])||(b.strik&&b.strik[rr][cc]);
  const posPx=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
