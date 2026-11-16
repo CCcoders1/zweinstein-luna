@@ -29,7 +29,6 @@ function serieBeloon(s,opt={}){
 }
 window.serieNaKaart=function(nieuw){
   try{
-    if(!nieuw&&window.ampulGeef)ampulGeef(3);
     series().forEach(s=>serieBeloon(s));
   }catch(e){console.warn(e)}
 };
@@ -49,11 +48,11 @@ V.album=function(){
     }).join('');
     return `<section class="aserie ${s.klaar?'compleet':''}">${kop}<div class="album">${kaarten}</div></section>`;
   }).join('');
-  app(`<h1 class="pagkop">Kaartenalbum</h1><p>${hebN} van ${totaal} kaarten verzameld. Een complete serie geeft een titel, een korte scène en een zeldzaam zaadje. Dubbele kaarten worden toverpoeder voor de elfjes.</p>${blok}<p class="klein">Kaarten vind je in kistjes in de levels, als mijlpaal bij elk 10e level, als cadeau, in de bonuskamer en in Hagrids pompoenen.</p>`);
+  app(`<h1 class="pagkop">Kaartenalbum</h1><p>${hebN} van ${totaal} kaarten verzameld. Een complete serie geeft een titel, een korte scène en een zeldzaam zaadje. Dubbele kaarten bewaar je gewoon in je album.</p>${blok}<p class="klein">Kaarten vind je in kistjes in de levels, als mijlpaal bij elk 10e level, als cadeau, in de bonuskamer en in Hagrids pompoenen.</p>`);
   try{lijst.forEach(s=>serieBeloon(s))}catch(e){}
 };
 
-/* ---------- ochtendpost: uilenbrief + dagbeloning ---------- */
+/* ---------- dagbeloning (uilenpost-beloning verwijderd) ---------- */
 const POSTREGELS=(typeof POST!=='undefined'&&POST)?POST:[['Tilly','Er kwam een uil voor je, Luna!']];
 function postVerhaal(){
   try{
@@ -82,16 +81,16 @@ V.login=function(){
   const geclaimd=L.laatst===vandaag();
   const d=geclaimd?(L.dag+6)%7:L.dag%7;
   if(document.querySelector('.modal[data-pop=login],.modal[data-pop=ochtend]'))return;
-  const uil= !geclaimd && uilenpostDue();
+  const uil=false;
   const LOGINLIJST=typeof LOGIN!=='undefined'?LOGIN:[['15 Smekkies',{g:15}]];const bel=LOGINLIJST[d];
   const [wie,zin]=postVerhaal();
   const volg=volgendeZin();
   const o=document.createElement('div');o.className='modal';o.dataset.pop='ochtend';
   o.innerHTML=`<div class="perkament modalin rococo ochtendpost">
-    <p class="klein ochtenduil">Uilenpost</p>
-    <h2>${geclaimd?'Ochtendpost':'Welkom terug, '+((S.naam||'Luna').trim().split(/\s+/)[0])}</h2>
+    <p class="klein ochtenduil">Dagbeloning</p>
+    <h2>${geclaimd?'Dagbeloning':'Welkom terug, '+((S.naam||'Luna').trim().split(/\s+/)[0])}</h2>
     <p><b>${wie}:</b> ${zin}</p>
-    ${geclaimd?'':`<p class="opcadeau">Vandaag in je brief: <b>${bel[0]}</b>${uil?' en <b>10 extra Smekkies</b> van de uilenpost':''}.</p>`}
+    ${geclaimd?'':`<p class="opcadeau">Vandaag: <b>${bel[0]}</b>.</p>`}
     <div class="kalender">${LOGINLIJST.map((x,i)=>{const b=x[1]||{};const kort=b.t?'⏳ +30':b.k?'🐸 +1':'15';return `<div class="kdag ${i<d||geclaimd&&i==d?'gehad':''} ${i==d&&!geclaimd?'nu':''}"><small>Dag ${i+1}</small><b>${kort}</b></div>`}).join('')}</div>
     <p class="klein">Tijdverdrijvers: ${S.tijdverdrijver||0} – bewaart je reeks als je één dag mist.</p>
     ${volg&&!geclaimd?`<p class="opvolg">Daarna: ${volg}</p>`:''}
@@ -106,7 +105,6 @@ V.login=function(){
         if(b.k&&window.kikkerKrijg)kikkerKrijg(1,{wacht:900});
         if(b.t)S.tijdverdrijver=(S.tijdverdrijver|0)+1;
         L.dag=d+1;L.laatst=vandaag();
-        if(uil){S.galjoenen=(S.galjoenen|0)+10;S.uilenpost=Date.now()}
         bewaar();
       }
     }catch(x){console.warn(x)}
@@ -127,13 +125,7 @@ loginCheck=function(){
 window.loginCheck=loginCheck;
 
 const uilOud=window.uilenpostCheck||(typeof uilenpostCheck==='function'?uilenpostCheck:null);
-uilenpostCheck=function(){
-  if(S.login&&S.login.laatst!==vandaag())return; // ochtendpost neemt het mee
-  if(!uilenpostDue())return;
-  const nu=Date.now();S.uilenpost=nu;S.galjoenen=(S.galjoenen|0)+10;bewaar();try{stats()}catch(e){};
-  const [w,t]=postVerhaal();
-  setTimeout(()=>verhaal([[w,t+' Er zaten 10 Smekkies bij.']]),700);
-};
+uilenpostCheck=function(){};
 window.uilenpostCheck=uilenpostCheck;
 
 /* ---------- één duidelijke volgende stap in de Hal ---------- */
@@ -142,7 +134,7 @@ function volgendeStap(opt){
   try{
     opt=opt||{};
     if(!opt.geenPost&&S.login&&S.login.laatst!==vandaag()){
-      return {id:'post',titel:'Je ochtendpost is er',tekst:'Er ligt een uilenbrief voor je, met een cadeautje en het plan voor vandaag.',knop:'Open de brief',ga:()=>V.login()};
+      return {id:'post',titel:'Je dagbeloning is er',tekst:'Er staat een cadeautje voor je klaar, met het plan voor vandaag.',knop:'Openen',ga:()=>V.login()};
     }
     if(window.leraarPoort){const p=leraarPoort();if(p)return {id:'poort',titel:'Eerst deze opdracht',tekst:p.titel+(p.prof?(' · '+p.prof):''),knop:p.titel,ga:()=>ga('leraarpoort')}}
     const stage=typeof schoolDag==='function'?schoolDag():null;
@@ -178,15 +170,13 @@ V.home=function(...a){
   return r;
 };
 
-/* Meer-menu: Dagbeloning heet nu Ochtendpost */
+/* Meer-menu: Dagbeloning */
 document.addEventListener('click',e=>{/* no-op, label is patched below */},true);
 const meerOud=V.meer;
 V.meer=function(...a){
   const r=meerOud.apply(this,a);
   try{
-    document.querySelectorAll('#app .tegel, #app button').forEach(t=>{
-      if(/Dagbeloning/.test(t.textContent||'')){t.innerHTML=t.innerHTML.replace('Dagbeloning','Ochtendpost');t.onclick=()=>V.login()}
-    });
+    /* Dagbeloning blijft Dagbeloning */
   }catch(e){}
   return r;
 };

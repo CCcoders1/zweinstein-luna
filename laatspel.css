@@ -544,3 +544,10 @@ body.halstrak #halvr{margin-top:4px}
 @media (prefers-reduced-motion:reduce){
   #tuinovergang{transition:none}
 }
+
+/* v190: Hal-deur naar de tuin, met Pip. Geen ampulgloed. */
+button.haldpdeur.kasdeur{display:flex;align-items:center;gap:.7rem;width:100%;margin:.6rem 0 0;text-align:left;background:transparent;border:0;padding:0;cursor:pointer}
+button.haldpdeur .kd-elf{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffe8f4,#ffb0e0 45%,#e889c0);box-shadow:0 2px 0 #c86a9a;flex:none;position:relative}
+button.haldpdeur .kd-elf:after{content:"";position:absolute;left:8px;top:11px;width:8px;height:6px;border-radius:50%;background:#3a2030;box-shadow:12px 0 #3a2030,6px 7px 0 -1px #c04a7a}
+.halvr-vrienden{display:block;margin:.45rem 0 0;width:100%}
+.rgvrrij{margin:.6rem 0 .2rem}

@@ -31,8 +31,7 @@ function proefKist(){
  S.vloerpot=1;S.groteTafel=1;S.mkUitleg=1;S.kasVerhuisMeld=1;S.groenPoortUitleg=1;S.levUitleg=1;
  S.mest=Math.max(S.mest|0,15);
  S.harten=S.harten||{n:5,t:Date.now()};S.harten.n=5;S.harten.t=Date.now();
- S.ampul=S.ampul||{n:0,vol:0};S.ampul.vol=Math.max(S.ampul.vol|0,8);
- S.elfjes=S.elfjes||{};if((S.elfjes.pip||0)<Date.now())S.elfjes.pip=Date.now()+864e5;
+ /* oude ampul-/huurvelden blijven ongemoeid */
  S.zaden=S.zaden||{};
  ['varkensgras','valeriaan','wolfsmelk','alsem','affodil','sodejus','kieuwwier','mandragora','tentacula','duivelsstrik'].forEach(z=>{S.zaden[z]=Math.max(S.zaden[z]|0,3)});
  S.kweek=S.kweek||{};

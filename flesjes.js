@@ -80,7 +80,7 @@ setInterval(tik,90);new MutationObserver(()=>{if(document.querySelector('canvas.
 
 /* ---------- plaatsen ---------- */
 // level-start van een plaaglevel: welk flesje hoort erbij
-if(typeof V!=='undefined'&&V.match3){const _m=V.match3;V.match3=async function(n,...a){const r=await _m.call(this,n,...a);try{const p=window.plaagVan&&plaagVan(n);const h=document.querySelector('.m3voor h2');if(p&&h&&!document.querySelector('.fmintro')){const heb=(S.flesjes&&S.flesjes[p.id])|0;h.insertAdjacentHTML('afterend',`<div class="fmintro">${flesModel(p.id,{h:84})}<small>${P[p.id]?P[p.id].n:''}<b>${heb?'×'+heb+' in je kist':'nog niet gebrouwen'}</b></small></div>`)}}catch(e){console.warn(e)}return r}}
+if(typeof V!=='undefined'&&V.match3){const _m=V.match3;V.match3=async function(n,...a){const r=await _m.call(this,n,...a);try{const p=window.plaagVan&&plaagVan(n);const h=document.querySelector('.m3voor h2');if(p&&p.soort==='damp'&&h&&!document.querySelector('.fmintro')){const heb=(S.flesjes&&S.flesjes[p.id])|0;h.insertAdjacentHTML('afterend',`<div class="fmintro">${flesModel(p.id,{h:84})}<small>${P[p.id]?P[p.id].n:''}<b>${heb?'×'+heb+' in je kist':'nog niet gebrouwen'}</b></small></div>`)}}catch(e){console.warn(e)}return r}}
 
 /* ---------- harten ---------- */
 let hid=0;

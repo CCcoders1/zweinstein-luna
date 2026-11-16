@@ -1045,6 +1045,8 @@ body[data-view=mijnkas] .pipbubbel{z-index:45}
 @media (prefers-reduced-motion: reduce){.krgloed,.kruithang,.krblad i{animation:none}}
 .gpsfeer{display:flex;flex-direction:column;gap:8px;margin:14px 0 4px}.gpsfeer input[type=range]{width:100%}
 .spl{position:relative;max-width:540px;margin:0 auto;padding:8px;border-radius:14px;background:linear-gradient(rgba(10,10,30,.35),rgba(10,10,30,.55)),url(img/spel/bezweringen.webp) center/cover;color:#fff8e6;text-align:center}
+.spl-vuur{background:radial-gradient(ellipse at 50% 62%,#6a1814 0%,#2a0608 70%,#140304 100%);color:#ffe8d0}
+.spl-vuur .spl-balk i{background:#ff8a62}
 .spl-top{display:flex;justify-content:space-between;font-weight:bold;padding:4px 6px}
 .spl-meters{display:flex;justify-content:space-around;gap:8px;font-size:1.05em;padding:4px;background:rgba(0,0,0,.35);border-radius:10px}
 .spl-balk{display:inline-block;width:60px;height:8px;border-radius:4px;background:rgba(255,255,255,.2);vertical-align:middle;margin-left:4px;overflow:hidden}.spl-balk i{display:block;height:100%;width:100%;background:#ff7a6a}

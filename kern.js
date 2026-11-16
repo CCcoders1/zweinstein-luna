@@ -58,8 +58,8 @@ function m3VakVoor(n){const j=Math.ceil(n/30),i=Math.min(4,Math.floor(((n-1)%30)
 function takenKlaar(){return Object.keys(S.taken).length}
 /* bonusspellen, één voor één via het verhaal */
 const BONUS=[['memory','Kruidenkunde-memory','blad','herbologie',2,'Er lag een stapel kaartjes met plantentekeningen in de kas…'],['drank','Toverdranken brouwen','ketel','herbologie',5,'Professor Sneep heeft een recept voor ons achtergelaten.'],['lessen','Lessen & examens','les','herbologie',1,'De professoren geven extra lessen voor wie nieuwsgierig is.'],
- ['snaai','Snaai vangen','snaai','toverdranken',5,'Er zoemt iets goudkleurigs door de gang…'],['spreuk','Spreuken-raadsels','stok','bezweringen',3,'Professor Banning heeft raadsels over spreuken.'],['toverstok','Spreuken tekenen','stok','bezweringen',5,'Teken een spreuk in de lucht met je toverstok.'],
- ['mysterie','Geheimschrift-mysterie','loep','fabeldieren',5,'Hagrid vond een briefje in vreemde letters bij de Maanbloem…'],['bonen','Smakkerbonen','boon','astronomie',5,'Een zakje Bertie Botts Smakkerbonen. Durf jij?']];
+ ['spreuk','Spreuken-raadsels','stok','bezweringen',3,'Professor Banning heeft raadsels over spreuken.'],
+ ['mysterie','Geheimschrift-mysterie','loep','fabeldieren',5,'Hagrid vond een briefje in vreemde letters bij de Maanbloem…']];
 function bonusVrij(b){if(S.bonusOpen[b[0]])return true;const v=VAK1.find(x=>x.id==b[3]);const n=v.taken.filter(t=>S.taken[t[0]]).length;return n>=b[4]}
 function bonusCheck(){BONUS.forEach(b=>{if(!S.bonusOpen[b[0]]&&bonusVrij(b)){S.bonusOpen[b[0]]=1;bewaar();setTimeout(()=>verhaal([['Tilly',`${b[5]} Luna, we hebben iets nieuws ontdekt: <b>${b[1]}</b>! Je vindt het onder Bonus. Daar verdien je extra Smekkies en kaarten.`]],()=>{}),700)}})}
 /* verhaalmoment */
@@ -99,7 +99,7 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home='zaal';try{zetDecor('zaal')
  <p class="bronlink"><a href="CREDITS.txt" target="_blank">Bronnen & licenties</a> · weer: <a href="https://open-meteo.com/" target="_blank">Open-Meteo</a></p>`);
  M3.nieuw=null;
  document.querySelectorAll('.dd').forEach(b=>b.onclick=()=>{const g=dd.find(x=>x.k==b.dataset.k);if(!g.af)g.f()});
- $('#speelknop').onclick=()=>ga('match3');$('#afscheid').onclick=()=>{try{afscheid()}catch(e){}};const nb=$('#halnaarbuiten');if(nb)nb.onclick=()=>{try{if(typeof openTuin==='function')openTuin('poort');else ga('kas')}catch(e){ga('kas')}};
+ $('#speelknop').onclick=()=>ga('match3');$('#afscheid').onclick=()=>{try{afscheid()}catch(e){}};const nb=$('#halnaarbuiten');if(nb)nb.onclick=()=>{try{if(typeof openTuin==='function')openTuin('poort');else ga('mijnkas')}catch(e){ga('home')}};
  const tk=$('#taakknop');if(tk)tk.onclick=()=>doeTaak(v,vol);
  try{loginCheck&&loginCheck()}catch(e){}
  if(!S.verhaalGezien[v.id+j]){
@@ -116,7 +116,7 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home='zaal';try{zetDecor('zaal')
     };
     setTimeout(startIntro,RMP?50:600);
   }
- }else uilenpostCheck();
+ }
  potCheck();stats()};
 function spellenHal(){const open=BONUS.filter(b=>S.bonusOpen[b[0]]);const dicht=BONUS.find(b=>!S.bonusOpen[b[0]]);return `<section class="halspel"><h3>Spellen</h3><div class="hs-rij"><button class="hs hs-hoofd" onclick="ga('match3')"><i class="rond">${icoon('ster')}</i><b>Level ${S.m3lvl}</b><small>${m3VakVoor(S.m3lvl).n}</small></button>${open.map(b=>`<button class="hs" onclick="ga('${b[0]}')"><i class="rond">${icoon(b[2])}</i><b>${b[1]}</b></button>`).join('')}${dicht?`<button class="hs dicht" onclick="toast('Nog op slot: ${dicht[5].replace(/'/g,'’')}')"><i class="rond">${icoon('slot')}</i><b>${dicht[1]}</b><small>binnenkort</small></button>`:''}</div></section>`}
 function tillyZin(v,vol){if(!vol)return 'Alles klaar hier! Ik ben zo benieuwd wat er achter de volgende deur zit.';if(S.schilden>=vol[2])return `We hebben genoeg huisschilden! Zullen we “${vol[1].toLowerCase()}”? Ik heb er zin in.`;return `Nog ${vol[2]-S.schilden} ${vol[2]-S.schilden==1?'huisschild':'huisschilden'} nodig voor “${vol[1].toLowerCase()}”. Eén level en we zijn er bijna. Kom!`}
@@ -128,7 +128,7 @@ function doeTaak(v,t){if(S.schilden<t[2]){toast(`Je hebt nog ${t[2]-S.schilden} 
   o.querySelectorAll('.kzopt').forEach(b=>b.onclick=()=>{o.remove();rond(+b.dataset.i)})}else rond(null)}
 /* elke paar dagen: uilenpost met een extra verhaalmoment */
 const POST=[['Tilly','Er kwam een uil voor je, Luna! Een briefje van Professor Stronk: “Voor de beste helpster van de kas.” Er zaten 10 Smekkies bij.'],['Tilly','Uilenpost! Hagrid schrijft dat zijn pompoenen al zo groot zijn als een kruiwagen. En hij stuurt 10 Smekkies mee.'],['Tilly','Een geheimzinnig briefje zonder afzender… alleen 10 glinsterende Smekkies en de woorden: “Kijk vannacht omhoog.”'],['Tilly','Professor Banning stuurt een zwevende kaart: “Bedankt voor de hulp!” Er zitten 10 Smekkies bij, en de kaart danst nog steeds een beetje.']];
-function uilenpostCheck(){if(S.login&&S.login.laatst&&S.login.laatst!==(typeof vandaag==='function'?vandaag():''))return;const nu=Date.now();if(!S.uilenpost){S.uilenpost=nu;bewaar();return}if(nu-S.uilenpost<2*864e5)return;S.uilenpost=nu;S.galjoenen+=10;bewaar();stats();setTimeout(()=>verhaal([POST[Math.floor(nu/864e5)%POST.length]]),700)}
+function uilenpostCheck(){/* uilenpost verwijderd; S.uilenpost blijft ongemoeid */}
 /* ---------- levelpad ---------- */
 V.pad=()=>{const j=Math.max(1,Math.ceil(S.m3lvl/30));const start=(j-1)*30+1;const n=30;const pts=[];for(let i=0;i<n;i++){const y=60+i*86;const x=50+Math.sin(i*.9)*28;pts.push([x,y])}pts.reverse();
  const H=60+n*86;const vs=vakkenVan(j);
@@ -142,12 +142,12 @@ V.bonus=()=>{app(`<h2>Bonusspellen</h2>${tilly('Hier spelen we tussendoor. Niet 
  document.querySelectorAll('[data-b]').forEach(t=>t.onclick=()=>{if(S.bonusOpen[t.dataset.b])ga(t.dataset.b);else{t.classList.remove('schud');void t.offsetWidth;t.classList.add('schud');toast('Deze deur is nog op slot. Knap eerst het lokaal verder op!')}})};
 const BONUSID=new Set(BONUS.map(b=>b[0]));
 /* ---------- meer ---------- */
-V.meer=()=>{const T=[['groei','hoed','Ontwikkeling & badges'],['album','boek','Kaartenalbum'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Ochtendpost']];
+V.meer=()=>{const T=[['groei','hoed','Ontwikkeling & badges'],['album','boek','Kaartenalbum'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Dagbeloning']];
  app(`<h1 class="pagkop" id="meerkop">Meer</h1><div class="raster">${T.map(t=>`<button class="tegel" onclick="ga('${t[0]}')"><span class="ico">${icoon(t[1])}</span><b>${t[2]}</b></button>`).join('')}</div>`)};
 /* ---------- navigatie (max 5) ---------- */
 def('menuVariant','B');const NAV=[['pad','kaart','Kaart'],['tuin','bloem','Buiten'],['home','','Hal'],['boek','boek','Boek'],['meer','lijst','Meer']];
 nav=function(act){const m={match3:'home',lessen:'meer',les:'meer',bonus:'meer',kas:'tuin',moestuin:'tuin',mijnkas:'tuin'};const a=BONUSID.has(act)?'home':(m[act]||act);$('#nav').className='menu'+S.menuVariant;$('#nav').innerHTML=NAV.map(t=>t[0]=='home'?`<button class="hal ${a=='home'?'actief':''}" aria-label="Hal" onclick="ga('home')"><span class="halknop">${wapen(46)}</span><span>Hal</span></button>`:`<button class="${t[0]==a?'actief':''}" aria-label="${t[2]}" onclick="ga('${t[0]}')"><i class="rond">${icoon(t[1])}</i><span>${t[2]}</span></button>`).join('')};
-const _gaK=ga;ga=function(s,...a){if(BONUSID.has(s)&&!S.bonusOpen[s]&&S.huis){s='bonus';a=[]}if(s=='spel')s='bonus';if(s=='match3'){const v=m3VakVoor(a[0]||S.m3lvl);VIEWDECOR.match3=v.decor}return _gaK(s,...a)};
+const _gaK=ga;ga=function(s,...a){if(BONUSID.has(s)&&!S.bonusOpen[s]&&S.huis){s='bonus';a=[]}if(s=='spel')s='bonus';if(s==='bertie'||s==='snaai'||s==='bonen'||s==='toverstok')s='home';if(s=='match3'){const v=m3VakVoor(a[0]||S.m3lvl);VIEWDECOR.match3=v.decor}return _gaK(s,...a)};
 Object.assign(VIEWDECOR,{pad:'kaart',bonus:'gang',meer:'zaal'});
 Object.assign(UITLEG,{match3:['Een level spelen','Veeg een magisch voorwerp naar een buur om ze te wisselen: Herinnerballen, Drankjes, Hedwig, Chocokikkers, Drakeneieren, Pompoenen… Drie of meer gelijke op een rij verdwijnen in sterrenstof. Vier op een rij geeft een toverstaf, die vijf vakjes in een lijn wist. Een blok van 2×2 geeft een uil, een L of T een ketelexplosie en vijf op een rij een Gouden Snaai. Haal de doelen bovenaan voordat je zetten op zijn.'],pad:['Het levelpad','Elk level levert één huisschild per ster op (1 tot 3). Huisschilden krijg je alleen met levels. Hoe hoger je score, hoe meer sterren: 1 ster voor winnen, 2 en 3 sterren bij een hoge score (de streepjes op de scorebalk). Zetten die over zijn, tellen aan het eind extra mee. Opnieuw spelen geeft alleen iets als je meer sterren haalt. Met huisschilden knap je de lokalen op.'],bonus:['Bonusspellen','Extra spellen voor tussendoor, met extra beloningen. Nieuwe spellen ontdek je via het verhaal.']});
 Object.assign(HINT,{match3:'Tip: kijk onderaan het bord. Daar ontstaan de meeste kettingreacties.',home:'Tip: de gouden knop is altijd je volgende stap.'});

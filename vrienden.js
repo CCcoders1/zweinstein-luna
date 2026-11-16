@@ -158,7 +158,7 @@ function teken(){const app=$('#app');if(!app||document.body.dataset.view!=='same
  app.querySelectorAll('[data-naar]').forEach(b=>b.onclick=()=>{V.samen.tab=b.dataset.naar;teken()});
  app.querySelectorAll('[data-naarleraren]').forEach(b=>b.onclick=()=>ga('vrienden'));
  if(tab!=='vr')return;const v=vr();
- const deelTekst=`Speel je mee in Zweinstein? Open ${LINK} en zet de app op je beginscherm. Voeg mij daarna toe als vriend: tik onderaan op Vrienden → Vrienden en vul mijn code in: ${v.code}`;
+ const deelTekst=`Speel je mee in Zweinstein? Open ${LINK} en zet de app op je beginscherm. Voeg mij daarna toe als vriend: open de ranglijst, tik op Vrienden en vul mijn code in: ${v.code}`;
  const kopie=$('#vrkopie');if(kopie)kopie.onclick=async()=>{try{await navigator.clipboard.writeText(v.code);toast('Code gekopieerd')}catch(e){prompt('Jouw vriendcode:',v.code)}};
  const deel=$('#vrdeel');if(deel)deel.onclick=async()=>{try{if(navigator.share){await navigator.share({text:deelTekst});return}}catch(e){if(e&&e.name==='AbortError')return}window.open('https://wa.me/?text='+encodeURIComponent(deelTekst),'_blank')};
  const inp=$('#vrin');if(inp)inp.oninput=()=>{inp.value=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'')};
@@ -206,7 +206,7 @@ const rgRijGat=(r,w)=>r.gat?rgRij(r.m,w).replace('<li class="','<li class="rggat
 function halPaneel(){if(document.body.dataset.view!=='home'||!S.naam)return;const app=$('#app');if(!app)return;let el=document.getElementById('halvr');
  const st=rangStand();
  const html=`<div class="halvrkop"><b>🛡️ Ranglijst</b><span><b class="rgplek">#${st.plek} van ${st.tot}</b>${rangPijl(st.plek)} <i class="rgopen">▾</i></span></div><ol class="rgmini">${vijfRijen(st).map(r=>rgRijGat(r,22)).join('')}</ol>`;
- if(!el){el=document.createElement('section');el.id='halvr';el.className='halvr rgstrook rococo';el.setAttribute('role','button');el.setAttribute('aria-expanded','false');el.setAttribute('aria-label','Hele ranglijst uitklappen');const voor=app.querySelector('.dagdoelen');if(voor)voor.before(el);else app.appendChild(el);el.onclick=()=>rgUitklap(el)}
+ if(!el){el=document.createElement('section');el.id='halvr';el.className='halvr rgstrook rococo';el.setAttribute('role','button');el.setAttribute('aria-expanded','false');el.setAttribute('aria-label','Hele ranglijst uitklappen');const voor=app.querySelector('.dagdoelen');if(voor)voor.before(el);else app.appendChild(el);el.onclick=()=>rgUitklap(el);if(!el.querySelector('.halvr-vrienden')){const vb=document.createElement('button');vb.type='button';vb.className='knop klein halvr-vrienden';vb.textContent='Vrienden';vb.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();ga('samen','vr')});el.appendChild(vb)}}
  if(el.innerHTML!==html)el.innerHTML=html;const o=document.getElementById('rgover');if(o&&o.dataset.html!==rgVolHtml())rgVulOver(o);try{window.zwHuisTeken&&zwHuisTeken()}catch(e){}}
 /* Uitklappen: de hele ranglijst als laag over de Hal (geen sprong in de pagina). Inklappen: kop, knop of ernaast tikken. */
 const rgVolHtml=()=>rangStand().L.map(m=>rgRij(m,24)).join('');
@@ -223,9 +223,9 @@ function rgUitklap(el){if(document.getElementById('rgover')){rgDicht();return}
  const b=document.createElement('div');b.id='rgachter';b.className='rgachter';b.addEventListener('pointerdown',e=>{e.preventDefault();rgDicht()});b.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});b.addEventListener('wheel',e=>e.preventDefault(),{passive:false});
  const o=document.createElement('div');o.id='rgover';o.className='rgover halvr rococo';o.style.cssText=`top:${top}px;left:${r.left}px;width:${r.width}px;max-height:${hoog}px`;
  const st=rangStand();
- o.innerHTML=`<div class="halvrkop rgoverkop" role="button" aria-label="Inklappen"><b>🛡️ Ranglijst</b><span><b class="rgplek">#${st.plek} van ${st.tot}</b> <i class="rgopen">▴</i></span></div><p class="klein rguitleg">Alle huisschilden die met levels zijn verdiend (beste sterren per level).</p><ol class="rgmini rgvol"></ol><button class="knop rginklap" type="button">Inklappen ▴</button>`;
+ o.innerHTML=`<div class="halvrkop rgoverkop" role="button" aria-label="Inklappen"><b>🛡️ Ranglijst</b><span><b class="rgplek">#${st.plek} van ${st.tot}</b> <i class="rgopen">▴</i></span></div><p class="klein rguitleg">Alle huisschilden die met levels zijn verdiend (beste sterren per level).</p><ol class="rgmini rgvol"></ol><p class="rgvrrij"><button class="knop volgende rgvrienden" type="button">Vrienden</button></p><button class="knop rginklap" type="button">Inklappen ▴</button>`;
  rgVulOver(o);document.body.append(b,o);el.setAttribute('aria-expanded','true');
- o.querySelector('.rgoverkop').onclick=rgDicht;o.querySelector('.rginklap').onclick=rgDicht;
+ o.querySelector('.rgoverkop').onclick=rgDicht;o.querySelector('.rginklap').onclick=rgDicht;const vrBtn=o.querySelector('.rgvrienden');if(vrBtn)vrBtn.onclick=function(ev){ev.preventDefault();ev.stopPropagation();rgDicht();ga('samen','vr')};
  const ol=o.querySelector('ol');o.addEventListener('wheel',e=>{const L=ol;const op=e.deltaY<0&&L.scrollTop<=0,neer=e.deltaY>0&&L.scrollTop+L.clientHeight>=L.scrollHeight-1;if(!L.contains(e.target)||op||neer)e.preventDefault()},{passive:false});
  o.addEventListener('touchmove',e=>{if(!ol.contains(e.target)||ol.scrollHeight<=ol.clientHeight)e.preventDefault()},{passive:false});
  const ik=ol.querySelector('.rgik');if(ik&&ik.offsetTop-ol.offsetTop+ik.offsetHeight>ol.clientHeight)ol.scrollTop=Math.max(0,ik.offsetTop-ol.offsetTop-ol.clientHeight/2+ik.offsetHeight/2);
@@ -248,9 +248,7 @@ function lvBord(n){const voor=document.querySelector('.m3voor');if(!AAN||!voor||
 if(V.match3){const _m=V.match3;V.match3=async function(n,...a){const r=await _m.call(this,n,...a);try{rangLijn()}catch(e){}try{lvBord(n||S.m3lvl||1)}catch(e){}return r}}
 function rangLijn(){const voor=document.querySelector('.m3voor');if(!voor||!S.naam||document.getElementById('rglijn'))return;const p=document.createElement('p');p.id='rglijn';p.className='rglijn';p.innerHTML=rangLijnTekst(rangStand());p.onclick=()=>ga('samen','rang');voor.prepend(p)}
 /* Vaste knop in de menubalk (alleen als online is ingesteld) */
-if(AAN){try{if(typeof NAV!=='undefined'&&!NAV.some(t=>t[0]==='samen')){const i=NAV.findIndex(t=>t[0]==='meer');NAV.splice(i<0?NAV.length:i,0,['samen','','Vrienden'])}}catch(e){}
- const _nav=nav;nav=function(act,...a){const r=_nav(act,...a);try{const el=document.getElementById('nav');el.classList.toggle('nav6',el.querySelectorAll('button').length>5);const b=el.querySelector('button[onclick="ga(\'samen\')"]');if(b){b.classList.add('glinster');const vak=b.querySelector('.rond');if(vak&&!vak.querySelector('img'))vak.innerHTML='<img class="uiico" alt="" src="img/ui/nav-vrienden-192.webp" decoding="async">';if(act==='samen')b.classList.add('actief')}}catch(e){}return r};
- try{nav(document.body.dataset.view||'home')}catch(e){}
+if(AAN){
  setTimeout(()=>sync(),2500);setInterval(()=>{if(vr().vuil||Object.keys(vr().lsq||{}).length)sync()},3*60e3);setInterval(()=>sync(),30*60e3);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>sync(),1500)});window.addEventListener('online',()=>sync())}
 window.zwTel=tel;window.zwWeekKey=weekKey;window.zwScoresVan=scoresVan;window.zwMijnId=mijnId;

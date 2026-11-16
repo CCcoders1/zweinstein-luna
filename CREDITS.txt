@@ -476,3 +476,24 @@ v189 — 3D-tuin
   Middenkwaliteit houdt normaalkaarten, fonteinschuim en de
   wolkenhalo; alleen de lichte modus laat die weg.
   Zelfgemaakt of CC0, geen EA/Warner-assets.
+
+v190 — 3D-tuin
+  Loop tegen de kasdeur en je komt meteen in je eigen kas
+  (het bestaande kasscherm), zonder tussenscherm. Drie
+  extra lege pleintjes (voor later te plaatsen versiering)
+  en een gewone heg die na Alohomora als schuifdeur opengaat,
+  zonder te gloeien of te knipperen. Zelfgemaakt, geen
+  EA/Warner-assets.
+
+v190 — Lessen
+  Duivelsstrik in Herbologie begint met Incendio in plaats van
+  een drankje. Het gebaar is een zelfgetekende vlam met een
+  krul van binnen, op een donkerrode achtergrond, geïnspireerd
+  op de spreukkleur uit het eerste spel (niet gekopieerd).
+  Het Lichtbrouwsel verdwijnt uit Herbologie; bestaande flesjes
+  blijven in de kist maar doen niets meer. Toverdranken (ketel
+  en Vocht van de Levende Dood) blijven voor later.
+
+  Extra dieren uit de Quaternius Ultimate Animated Animal
+  Pack (CC0): vos (Red Fox), arend (Eagle) en kuiken (Chick).
+  https://quaternius.com — geen aanpassing van de licentie.

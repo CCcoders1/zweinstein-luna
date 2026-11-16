@@ -184,3 +184,7 @@ body.laden-bezig #ui .hint,body.laden-bezig #loopstok,body.laden-bezig #camstok,
 }
 body.debug #tuindebug{display:block}
 body.debug #meta{display:none}
+
+/* v190: spreukwoord, geen gloedhint */
+.aloho{position:fixed;left:50%;top:22%;transform:translate(-50%,-8px);font:700 2rem/1.1 Georgia,"Times New Roman",serif;color:#f7e7b0;letter-spacing:.08em;text-shadow:0 2px 0 #3a2a10,0 0 18px rgba(40,24,8,.55);pointer-events:none;opacity:0;transition:opacity .2s,transform .35s ease-out;z-index:40;padding:.15rem .4rem}
+.aloho.aan{opacity:1;transform:translate(-50%,0)}

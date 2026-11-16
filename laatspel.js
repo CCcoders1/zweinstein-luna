@@ -1698,7 +1698,7 @@ window.winHaakZin=function(n){
 
 /* v178: 3D-tuin als echte binnenplaats, met heen-en-weer naar kas, moestuin en Hal */
 (function(){
-  const OPEN={'kas':'kas','moestuin':'moestuin','home':'home','poort':'home'};
+  const OPEN={'kas':'mijnkas','mijnkas':'mijnkas','moestuin':'moestuin','home':'home','poort':'home'};
   function tuinSleutel(k,v){
     try{if(v===undefined)return sessionStorage.getItem(k);if(v===null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,v);}catch(e){return null}
   }
@@ -1716,8 +1716,7 @@ window.winHaakZin=function(n){
     const d=deur&&OPEN[deur]?deur:'poort';
     if(!tuinHeeftWebGL()){
       try{if(typeof toast==='function')toast('Deze telefoon kan de 3D-tuin niet tonen. Je blijft in het gewone spel.');}catch(e){}
-      const v=(d==='poort'||d==='home')?'kas':(OPEN[d]||'kas');
-      if(typeof ga==='function')ga(v);
+      if(typeof ga==='function')ga('mijnkas');
       return;
     }
     try{if(typeof fx!=='undefined'&&fx.speel)fx.speel('whoosh')}catch(e){}
@@ -1744,15 +1743,21 @@ window.winHaakZin=function(n){
     const oud=app.querySelector('#tuinknop');
     if(oud)oud.remove();
     const uit=tuinSleutel('zw_tuin_uit');
-    const deur=view==='kas'?'kas':view==='moestuin'?'moestuin':(uit==='home'?'home':'poort');
-    const terug=(view==='kas'&&uit==='kas')||(view==='moestuin'&&uit==='moestuin')||(view==='home'&&(uit==='home'||uit==='poort'));
+    const deur=view==='kas'||view==='mijnkas'?'kas':view==='moestuin'?'moestuin':(uit==='home'?'home':'poort');
+    const terug=((view==='kas'||view==='mijnkas')&&uit==='kas')||(view==='moestuin'&&uit==='moestuin')||(view==='home'&&(uit==='home'||uit==='poort'));
     const label=terug?'← Naar buiten':'Naar buiten';
     const b=document.createElement('button');
     b.type='button';
     b.id='tuinknop';
-    b.className='knop tuinknop';
-    b.textContent=label;
-    b.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();openTuin(deur)});
+    if(view==='home'){
+      b.className='kasdeur tuinknop haldpdeur';
+      b.setAttribute('aria-label',label);
+      b.innerHTML='<span class="kd-kozijn"><span class="kd-blad"><i class="kd-raam"></i><i class="kd-knop"></i></span></span><span class="kd-elf" aria-hidden="true"></span><span class="kd-tekst"><b>'+label+'</b><small>De tuin in, met Pip</small></span>';
+    }else{
+      b.className='knop tuinknop';
+      b.textContent=label;
+    }
+    b.addEventListener('click',function(ev){ev.preventDefault();ev.stopPropagation();openTuin(view==='home'?'poort':deur)});
     const groet=app.querySelector('.groet');
     const rij=app.querySelector('.kleinrij');
     const kop=app.querySelector('.pp-tuin h2, h2.pagkop, .lokaal h2, h2');
@@ -1769,6 +1774,8 @@ window.winHaakZin=function(n){
   if(_kas)V.kas=function(){const r=_kas.apply(this,arguments);try{const a=document.getElementById('app');if(a&&(a.querySelector('.kweekbalk')||a.querySelector('.kassen')))zetTuinKnop('kas')}catch(e){}return r};
   const _mo=V.moestuin;
   if(_mo)V.moestuin=function(){const r=_mo.apply(this,arguments);try{zetTuinKnop('moestuin')}catch(e){}return r};
+  const _mijn=V.mijnkas;
+  if(_mijn)V.mijnkas=function(){const r=_mijn.apply(this,arguments);try{zetTuinKnop('mijnkas')}catch(e){}return r};
 
   const _mk=V.maker;
   if(_mk)V.maker=function(){
@@ -1777,7 +1784,7 @@ window.winHaakZin=function(n){
       const app=document.getElementById('app');
       if(!app||app.querySelector('#mk-tuin3d'))return r;
       app.insertAdjacentHTML('beforeend',
-        '<section class="kaart sierlijst" id="mk-tuin3d"><h3>De 3D-tuin</h3><p class="klein">De binnenplaats met deuren naar de Kassen, Hagrids moestuin en de Grote Hal. Vanaf de Hal of de knop Buiten ga je naar buiten; zonder 3D blijf je in het gewone spel.</p><button type="button" class="knop" id="mk-tuin3d-open">Open de tuin</button></section>');
+        '<section class="kaart sierlijst" id="mk-tuin3d"><h3>De 3D-tuin</h3><p class="klein">De binnenplaats met deuren naar de kas, Hagrids moestuin en de Grote Hal. Vanaf de Hal of de knop Buiten ga je naar buiten. De kas bereik je lopend. Zonder 3D open je je eigen kas in het gewone spel.</p><button type="button" class="knop" id="mk-tuin3d-open">Open de tuin</button></section>');
       const bn=document.getElementById('mk-tuin3d-open');
       if(bn)bn.onclick=function(){openTuin('poort')};
     }catch(e){}

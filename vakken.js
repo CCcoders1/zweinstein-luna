@@ -65,7 +65,7 @@ const LES_KOSTEN=false;
    $('#ldverder').onclick=()=>ga('match3',Math.max(v.van,Math.min(S.m3lvl,v.van+VAK_LEVELS-1)))},2100)}
  /* --- laadschermen per vak --- */
  const TIPS={bezweringen:['Banning: “Zwaaien en tikken, niet vergeten: zwaaien en tikken!”','Tip: Wingardium Leviósa – de klemtoon ligt op de ó.','Tilly: “Ik liet gisteren per ongeluk mijn inktpot zweven. Hij hangt er nog.”','Tip: zwevende veren breek je door ernaast te matchen.'],
-  toverdranken:['Sneep: “Ik verwacht stilte… en precisie.”','Tip: de Kalmeringsdrank roer je met de klok mee.','Tilly: “Fluister maar even, in de kerkers galmt alles.”','Tip: vijf of meer in één keer vult je toverpoeder-ampul.'],
+  toverdranken:['Sneep: “Ik verwacht stilte… en precisie.”','Tip: de Kalmeringsdrank roer je met de klok mee.','Tilly: “Fluister maar even, in de kerkers galmt alles.”','Tip: vijf of meer in één keer geeft een extra mooie combo.'],
   gedaanteverwisselingen:['Anderling: “Gedaanteverwisselingen is een van de lastigste en gevaarlijkste vakken.”','Tip: een muis wordt een theekop, maar zonder snorharen graag.','Tilly: “Zag je die kat op haar bureau? Ik zweer dat hij knipoogde.”','Tip: versteende tegels hebben soms twee lagen.'],
   astronomie:['Tip: de manen van Jupiter: Europa, Io, Ganymedes en Callisto.','Tilly: “Kijk, de Grote Beer! Of is dat een koekenpan?”','Tip: sterrenstofwolken verdwijnen als je ernaast matcht.','Sinistra: “Sterren liegen niet, ze wachten alleen.”'],
   verweer:['Tip: een Boeman verjaag je met Ridiculus, en gelach.','Lupos: “Verweer begint met moed, niet met toverkracht.”','Tilly: “Ik heb een chocoladekikker bij me, voor na de les. Helpt echt.”','Tip: zwarte nevel breek je door er vlak naast te matchen.']};
@@ -74,7 +74,7 @@ const LES_KOSTEN=false;
  Object.entries(thLS).forEach(([th,f])=>{LAADSCHERM[th]={img:'img/laadschermen/'+f,klein:'img/laadschermen/'+f+'-klein',pan:PAN[f],duur:6000,tips:TIPS[f]}});
  /* --- levelpad: per les een thema, vijf levels vooruit, daarna nevel --- */
  const PAD_VOORUIT=19;
- function padCadeau(n){if(n===22)return 'Lichtbrouwsel';if(n===222)return 'Vocht van de Levende Dood';if(n===16)return 'Een elfje';if(n===30)return 'Groene pot';if(n===60)return 'Diep Lichtbrouwsel';if(n===150||n===250||n===350||n===450||n===550)return 'Een nieuw elfje';return ''}
+ function padCadeau(n){if(n===222)return 'Vocht van de Levende Dood';if(n===16)return 'Een elfje';if(n===30)return 'Groene pot';if(n===150||n===250||n===350||n===450||n===550)return 'Een nieuw elfje';return ''}
  function padPlaag(n){return window.plaagVan&&plaagVan(n)}
  function padZwaar(n){return window.lvZwaar?lvZwaar(n):0}
  function padScan(v,van,tot,fn){for(let L=van;L<=tot;L++){const r=fn(L);if(r)return r}return null}
@@ -112,7 +112,7 @@ const LES_KOSTEN=false;
    knoppen=pts.map(p=>{const L=p.L,d=L-hier;const st=L<hier?'af':L==hier?'nu':'vooruit';
     const plaag=padPlaag(L),cadeau=padCadeau(L),zwaar=!plaag&&padZwaar(L);
     const cls=[st,plaag?'plaag':'',cadeau?'cadeau':'',zwaar?(zwaar>1?'zwaar superzwaar':'zwaar'):'',L>=100?'lang':'','v'+Math.max(0,d)].filter(Boolean).join(' ');
-    const tip=plaag&&cadeau?(plaag.soort==='damp'?plaag.kaart+', recept: '+cadeau:'Duivelsstrik, recept: '+cadeau):plaag?(plaag.soort==='damp'?'Plaaglevel, '+plaag.kaart:'Plaaglevel, Duivelsstrik'):cadeau?('Hier krijg je: '+cadeau):zwaar?(zwaar>1?'Heel pittig level: Tilly helpt als het niet lukt':'Pittig level: Tilly helpt als het niet lukt'):'';
+    const tip=plaag&&cadeau?(plaag.soort==='damp'?plaag.kaart+', recept: '+cadeau:plaag.kaart+', begin met Incendio'):plaag?(plaag.soort==='damp'?'Plaaglevel, '+plaag.kaart:(plaag.intro?'Plaaglevel, Duivelsstrik':'Duivelsstrik, begin met Incendio')):cadeau?('Hier krijg je: '+cadeau):zwaar?(zwaar>1?'Heel pittig level: Tilly helpt als het niet lukt':'Pittig level: Tilly helpt als het niet lukt'):'';
     return `<button class="padlvl ${cls}" data-l="${L}"${tip?` title="${tip}"`:''} style="left:${p.x}%;top:${p.y}px${d>0?';--v:'+d:''}">${L}${L==hier?'<span class="luna">L</span>':''}</button>`}).join('');
    if(mist)nevel=`<div class="pad-nevel">${plaagVer?padTeken('plaag',plaagVer.kaart+' nadert',''):''}${giftVer?padTeken('cadeau',giftVer,'dat krijg je'):''}</div>`;
   }
@@ -121,7 +121,7 @@ const LES_KOSTEN=false;
    ${deur}<div class="pad thema thema-${v.id}${metNevel?' met-nevel':''}" style="height:${H}px">${lijn}${knoppen}${nevel}</div>`);
   document.querySelectorAll('.pv').forEach(b=>b.onclick=()=>{const x=M3VAKKEN.find(y=>y.id==b.dataset.v);if(!open(x)&&x.van>hier&&vakVan(hier)!==x&&M3VAKKEN.indexOf(x)>M3VAKKEN.indexOf(vakVan(hier))+1){toast('Eerst de vorige les afmaken.');}V.pad(x.id)});
   const nd=$('#naardeur');if(nd)nd.onclick=()=>{if(M3VAKKEN.indexOf(v)>M3VAKKEN.indexOf(nu)&&hier<v.van){toast('Eerst de vorige les afmaken.');return}ga('lesdeur',v.id)};
-  document.querySelectorAll('.padlvl').forEach(b=>b.onclick=()=>{const L=+b.dataset.l;if(!open(vakVan(L)))return ga('lesdeur',vakVan(L).id);if(L<=hier)ga('match3',L);else{const p=padPlaag(L),c=padCadeau(L);toast(p&&c?(p.soort==='damp'?'Hier bevrijd je het recept voor '+c+'. Eerst level '+hier+' afmaken.':'Hier bevrijd je het recept tegen de duivelsstrik. Eerst level '+hier+' afmaken.'):p?(p.soort==='damp'?'Dit is een plaaglevel. Gestold brouwsel groeit over het bord.':'Dit is een plaaglevel. Duivelsstrik groeit over het bord.'):c?('Hier krijg je: '+c+'. Eerst level '+hier+' afmaken.'):padZwaar(L)?(padZwaar(L)>1?'Dit level is heel zwaar. Eerst level ':'Dit level is zwaar. Eerst level ')+hier+' afmaken.':'Speel eerst level '+hier)}});
+  document.querySelectorAll('.padlvl').forEach(b=>b.onclick=()=>{const L=+b.dataset.l;if(!open(vakVan(L)))return ga('lesdeur',vakVan(L).id);if(L<=hier)ga('match3',L);else{const p=padPlaag(L),c=padCadeau(L);toast(p&&c?(p.soort==='damp'?'Hier bevrijd je het recept voor '+c+'. Eerst level '+hier+' afmaken.':'Hier begint de les met Incendio. Eerst level '+hier+' afmaken.'):p?(p.soort==='damp'?'Dit is een plaaglevel. Gestold brouwsel groeit over het bord. Je hebt daar het drankje voor nodig.':(p.intro?'Dit is een plaaglevel. Duivelsstrik groeit over het bord.':'Dit is een plaaglevel. Je begint met Incendio, daarna groeit de duivelsstrik over het bord.')):c?('Hier krijg je: '+c+'. Eerst level '+hier+' afmaken.'):padZwaar(L)?(padZwaar(L)>1?'Dit level is heel zwaar. Eerst level ':'Dit level is zwaar. Eerst level ')+hier+' afmaken.':'Speel eerst level '+hier)}});
   setTimeout(()=>{const a=document.querySelector('.pv.actief');a&&a.scrollIntoView({inline:'center',block:'nearest'});
    const n=$('.padlvl.nu');
    if(n){const nav=$('#nav');const onder=nav?nav.getBoundingClientRect().height:0;const r=n.getBoundingClientRect();window.scrollTo(0,Math.max(0,window.scrollY+r.bottom-(window.innerHeight-onder-18)))}

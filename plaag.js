@@ -1,21 +1,22 @@
 'use strict';
 /* Plaaglevels en het ingrediëntenboek in de kas.
-   Herbologie: duivelsstrik. Toverdranken: gestold brouwsel, zelfde kist en boek. */
+   Herbologie: duivelsstrik, bij de start Incendio (geen drankje).
+   Toverdranken: gestold brouwsel en het Vocht van de Levende Dood. */
 const PLAAG={22:'licht',35:'licht',48:'licht',61:'licht',74:'diep',88:'diep',100:'diep',222:'vocht',235:'vocht',248:'vocht',261:'vocht'};
 const MIXEN=[
  {id:'licht',naam:'Lichtbrouwsel',na:12,slot:'Komt in het boek als je de eerste Duivelsstrik-les haalt.',zin:'Valeriaan zodat je kalm blijft, alsem voor de warmte, affodil voor het licht. Haalt driekwart van de duivelsstrik weg. De rest groeit elke beurt.',nodig:[['valeriaan',1],['alsem',1],['affodil',1]]},
  {id:'diep',naam:'Diep Lichtbrouwsel',na:60,zin:'Een Lichtbrouwsel plus een mandragora, voor de zware plaag. De rest groeit twee vakjes per beurt.',nodig:[['licht',1],['mandragora',1]]},
  {id:'vocht',naam:'Vocht van de Levende Dood',na:222,slot:'Komt in het boek als je Sneeps eerste kerkerles haalt.',zin:'Affodilwortel in een aftreksel van alsem. Een slaapdrank zo krachtig dat de drinker lijkt te sterven. Haalt driekwart van het gestolde brouwsel weg. De rest groeit elke beurt. Monnikskap en wolfswortel zijn dezelfde plant, akoniet. Dat is de strikvraag van Sneep.',nodig:[['affodil',1],['alsem',1]]}];
 function plaagVan(n){const id=PLAAG[n];if(!id)return null;const m=MIXEN.find(x=>x.id===id),zwaar=id==='diep',intro=n===22||n===222,damp=id==='vocht';
- return {id,naam:m.naam,zwaar,intro,groei:zwaar?2:1,soort:damp?'damp':'strik',prof:damp?'Professor Sneep':'Professor Stronk',beeld:damp?'toverdranken':'herbologie',kaart:damp?'Gestold brouwsel':'Duivelsstrik',over:damp?'het stolsel':'de strik',groeiZin:zwaar?'De strik groeit twee vakjes per beurt.':damp?'Het stolsel groeit elke beurt.':'De strik groeit elke beurt.',dicht:damp?'Het gestolde brouwsel hield de stukken vast.':'De stekels hielden de stukken vast.',auw:damp?'HET BRANDT!':'AUW!',vast:damp?'Eerst de vier korsten om het recept weg.':'Eerst de vier ranken om het recept weg.',regel:intro?(damp?'Vier korsten houden het recept vast. Bevrijd het, dan komt het Vocht van de Levende Dood in je boek.':'Vier ranken duivelsstrik houden het recept vast. Bevrijd het, dan komt Lichtbrouwsel in je boek.'):(damp?'Gestold brouwsel kruipt over het bord. '+m.naam+' haalt driekwart weg. '+(plaagDek(n)<1?'Zonder flesje kan het ook, met flesje gaat het makkelijker.':'Zonder flesje is het te veel.'):'Duivelsstrik kruipt over het bord. '+m.naam+' haalt driekwart weg. '+(plaagDek(n)<1?'Zonder flesje kan het ook, met flesje gaat het makkelijker.':'Zonder flesje is het te veel.'))}}
-window.plaagVan=plaagVan;
+ return {id,naam:m.naam,zwaar,intro,groei:zwaar?2:1,soort:damp?'damp':'strik',prof:damp?'Professor Sneep':'Professor Stronk',beeld:damp?'toverdranken':'herbologie',kaart:damp?'Gestold brouwsel':'Duivelsstrik',over:damp?'het stolsel':'de strik',groeiZin:zwaar?'De strik groeit twee vakjes per beurt.':damp?'Het stolsel groeit elke beurt.':'De strik groeit elke beurt.',dicht:damp?'Het gestolde brouwsel hield de stukken vast.':'De stekels hielden de stukken vast.',auw:damp?'HET BRANDT!':'AUW!',vast:damp?'Eerst de vier korsten om het recept weg.':'Eerst de vier ranken om het recept weg.',regel:intro?(damp?'Vier korsten houden het recept vast. Bevrijd het, dan komt het Vocht van de Levende Dood in je boek.':'Vier ranken duivelsstrik houden een briefje vast. Bevrijd het, dan weet je hoe Incendio de strik verdrijft.'):(damp?'Gestold brouwsel kruipt over het bord. '+m.naam+' haalt driekwart weg. Zonder dat drankje kun je deze les nog niet starten.':'Duivelsstrik kruipt over het bord. Incendio haalt driekwart weg. Daarna speel je het level zoals je gewend bent.')}}
+window.plaagVan=plaagVan;window.mixOpen=mixOpen;window.mixVerborgen=mixVerborgen;window.voorraad=voorraad;
 S.flesjes=S.flesjes||{};S.oogst=S.oogst||{};S.receptOpen=S.receptOpen||{};
-if((S.m3lvl|0)>22&&!S.receptOpen.licht){S.receptOpen.licht=1;bewaar()}
 if((S.m3lvl|0)>222&&!S.receptOpen.vocht){S.receptOpen.vocht=1;bewaar()}
 function isFles(id){return id==='licht'||id==='diep'||id==='vocht'}
 function voorraad(id){if(isFles(id))return S.flesjes[id]|0;return S.oogst[id]|0}
 function kruidNaam(id){const m=MIXEN.find(x=>x.id===id);if(m)return m.naam;return (ZADEN[id]&&ZADEN[id][0])||id}
-function mixOpen(m){if(m.id==='licht'||m.id==='vocht')return !!(S.receptOpen&&S.receptOpen[m.id]);return (S.m3lvl|0)>m.na||!!(S.receptOpen&&S.receptOpen[m.id])}
+function mixVerborgen(id){return id==='licht'||id==='diep'}
+function mixOpen(m){if(mixVerborgen(m.id))return false;if(m.id==='vocht')return !!(S.receptOpen&&S.receptOpen[m.id]);return (S.m3lvl|0)>m.na||!!(S.receptOpen&&S.receptOpen[m.id])}
 function mixStatus(m){if(!mixOpen(m))return {open:0,miss:[],klaar:0};const miss=m.nodig.filter(([id,n])=>voorraad(id)<n);return {open:1,miss,klaar:!miss.length}}
 function flesTotaal(){return (S.flesjes.licht|0)+(S.flesjes.diep|0)+(S.flesjes.vocht|0)}
 
@@ -109,29 +110,51 @@ const _vm3=V.match3;V.match3=async function(n,...a){n=n||S.m3lvl||1;const p=plaa
  const r=await _vm3.call(this,n,...a);const h=document.querySelector('.m3voor h2');if(p&&h&&!document.querySelector('.plaagregel'))h.insertAdjacentHTML('afterend',`<p class="plaagregel">${p.regel}</p>`);return r};
 const _verP=m3Verlies;m3Verlies=function(n,b){const r=_verP(n,b);if(b&&b.strikDicht){const el=document.querySelector('.m3eind p');if(el)el.insertAdjacentHTML('afterend','<p>'+((b.L&&b.L.plaag&&b.L.plaag.dicht)||'De stekels hielden de stukken vast.')+'</p>')}return r};
 
+function drankNodigZin(p){const m=MIXEN.find(x=>x.id===p.id);const miss=(m?m.nodig:[]).filter(([id,n])=>voorraad(id)<n);const kruid=miss.filter(([id])=>!isFles(id)).map(([id])=>kruidNaam(id).toLowerCase());
+ if(voorraad(p.id)>0)return '';
+ if(kruid.length)return 'Voor deze les heb je '+p.naam+' nodig. Kweek eerst '+kruid.join(' en ')+' in je kas, en brouw het drankje daarna in de ketel.';
+ return 'Je hebt de kruiden al. Brouw nu '+p.naam+' in de ketel (of bij Recepten), dan kun je de les starten.'}
 function stronkVraag(n,thema,boost){const p=plaagVan(n),heb=voorraad(p.id);const o=document.createElement('div');o.className='modal';
  const beeld=innerWidth<=700?`img/laadschermen/${p.beeld}-klein.webp`:`img/laadschermen/${p.beeld}.webp`;
- const ja=heb?`<button class="knop volgende" id="stronkja">Ja, ik heb het bij me</button>`:'';
- o.innerHTML=`<div class="modalin rococo stronk-in"><div class="stronk-beeld" style="background-image:url('${beeld}')"></div><h2>${p.prof}</h2>${window.flesModel?`<div class="stronk-fles">${flesModel(p.id,{h:96})}</div>`:''}<p>${naam()}, heb je je ${p.naam} meegenomen?</p><p class="klein">${p.groeiZin} ${plaagDek(n)<1?'Zonder flesje lukt het ook, maar met flesje is het makkelijker. ':'Zonder het flesje zit het hele bord vast, dus dan kun je niet spelen. '}${heb?`In je kist: ${heb} ${heb===1?'flesje':'flesjes'}.`:'Het flesje staat niet in je kist. Brouw het eerst bij Recepten in de kas.'}</p><div class="stronk-knoppen">${ja}${plaagDek(n)<1?'<button class="knop" id="stronktoch">Toch starten</button>':''}<button class="knop" id="stronkkas">Naar de kas</button></div></div>`;
+ const moet=plaagDek(n)>=1;const ja=heb?`<button class="knop volgende" id="stronkja">Ja, ik heb het bij me</button>`:'';
+ const uitleg=heb?(p.groeiZin+' '+p.naam+' haalt driekwart van '+p.over+' weg. In je kist: '+heb+(heb===1?' flesje.':' flesjes.')):(drankNodigZin(p)+' '+(moet?'Deze les start pas als het drankje klaar is.':'Zonder flesje is het lastiger, maar het kan.'));
+ o.innerHTML=`<div class="modalin rococo stronk-in"><div class="stronk-beeld" style="background-image:url('${beeld}')"></div><h2>${p.prof}</h2>${window.flesModel?`<div class="stronk-fles">${flesModel(p.id,{h:96})}</div>`:''}<p>${heb?naam()+', heb je je '+p.naam+' meegenomen?':naam()+', deze les vraagt om '+p.naam+'.'}</p><p class="klein">${uitleg}</p><div class="stronk-knoppen">${ja}${(!moet)?'<button class="knop" id="stronktoch">Toch starten</button>':''}<button class="knop" id="stronkkas">Naar de kas</button><button class="knop" id="stronketel">Naar de ketel</button></div></div>`;
  document.body.appendChild(o);
  const verder=weg=>{o.remove();window._strikWeg=weg;m3Speel(n,thema,Object.assign({},boost,{_stronkKlaar:1}))};
- const jb=$('#stronkja');if(jb)jb.onclick=()=>{if(voorraad(p.id)<1){toast('Het flesje is er niet.');return}S.flesjes[p.id]--;window._flesInzet={n,id:p.id};bewaar();toast(p.naam+' giet over '+p.over+'.');verder(.75)};
+ const jb=$('#stronkja');if(jb)jb.onclick=()=>{if(voorraad(p.id)<1){toast('Het flesje is er niet. Kweek de kruiden en brouw het drankje eerst.');return}S.flesjes[p.id]--;window._flesInzet={n,id:p.id};bewaar();toast(p.naam+' giet over '+p.over+'.');verder(.75)};
  const tb=$('#stronktoch');if(tb)tb.onclick=()=>verder(0);
- $('#stronkkas').onclick=()=>{o.remove();ga('mijnkas');setTimeout(()=>{try{ingredientenBoek()}catch(e){}},700)}}
+ $('#stronkkas').onclick=()=>{o.remove();ga('mijnkas')};
+ const ke=$('#stronketel');if(ke)ke.onclick=()=>{o.remove();ga('ketel')}}
+function incendioStart(n,thema,boost){
+ const regels=[['Tilly',naam()+', de duivelsstrik houdt van donker en vocht. Warmte jaagt hem weg.'],['Professor Stronk','Teken Incendio. Het vuur haalt het grootste deel van de strik weg. Daarna speel je het level zoals je gewend bent.']];
+ const start=()=>{
+  if(!window.zwSpreuk){window._strikWeg=1;m3Speel(n,thema,Object.assign({},boost,{_stronkKlaar:1}));return}
+  window.zwSpreuk('incendio',50,ok=>{
+   if(ok){window._strikWeg=1;m3Speel(n,thema,Object.assign({},boost,{_stronkKlaar:1}));return}
+   const o=document.createElement('div');o.className='modal';
+   o.innerHTML=`<div class="modalin rococo stronk-in"><h2>Professor Stronk</h2><p>Bijna, ${naam()}. Teken Incendio nog eens, in alle rust. Het hoeft niet perfect.</p><div class="stronk-knoppen"><button class="knop volgende" id="incopn">Opnieuw tekenen</button><button class="knop" id="incterug">Terug naar de Hal</button></div></div>`;
+   document.body.appendChild(o);
+   $('#incopn').onclick=()=>{o.remove();start()};
+   $('#incterug').onclick=()=>{o.remove();ga('home')};
+  });
+ };
+ verhaal(regels,start)}
+
 function introLes(n,thema,boost){const p=plaagVan(n),al=!!(S.receptOpen&&S.receptOpen[p.id]);
- const regels=p.soort==='damp'?(al?[['Tilly','De korst staat er weer. Niet aantikken, het brandt.'],['Professor Sneep',naam()+', het recept staat al in uw boek. Bevrijd het perkament nog een keer.']]:[['Tilly',naam()+', niet op die groene korst tikken. Het brouwsel brandt, en de stukken eronder zitten vast.'],['Professor Sneep','Iemand heeft in mijn kerker gemorst. Het stolsel groeit na elke beurt. Eronder verschuift u niets.'],['Tilly','In het midden ligt het recept. Vier korsten houden het vast. Maak die vrij.'],['Professor Sneep','Affodilwortel in een aftreksel van alsem. Dat is het Vocht van de Levende Dood. Daarmee gaat later driekwart van het stolsel weg. Zonder dat flesje is de echte plaag te veel om te winnen.'],['Professor Sneep','En onthoud dit: monnikskap en wolfswortel zijn dezelfde plant. Akoniet. Wie daar verschil in ziet, heeft niet opgelet.']]):al?[['Tilly','De ranken staan er weer. Niet op de stekels tikken, dat doet zeer.'],['Professor Stronk',naam()+', het recept heb je al. Bevrijd het perkament nog een keer, dan oefen je voor de echte plaag.']]:[['Tilly',naam()+', niet op die paarse ranken tikken. De stekels doen zeer, en de stukken eronder zitten vast.'],['Professor Stronk','Dit is duivelsstrik. Hij houdt van donker en vochtig, en hij groeit na elke beurt. Eronder kun je niets verschuiven.'],['Tilly','In het midden ligt het recept voor Lichtbrouwsel. Vier ranken houden het vast. Maak die vrij.'],['Professor Stronk','Daarna brouw je het in de kas: valeriaan, alsem en affodil. Zonder dat flesje is een echte plaag te veel om te winnen.']];
+ const regels=p.soort==='damp'?(al?[['Tilly','De korst staat er weer. Niet aantikken, het brandt.'],['Professor Sneep',naam()+', het recept staat al in uw boek. Bevrijd het perkament nog een keer.']]:[['Tilly',naam()+', niet op die groene korst tikken. Het brouwsel brandt, en de stukken eronder zitten vast.'],['Professor Sneep','Iemand heeft in mijn kerker gemorst. Het stolsel groeit na elke beurt. Eronder verschuift u niets.'],['Tilly','In het midden ligt het recept. Vier korsten houden het vast. Maak die vrij.'],['Professor Sneep','Affodilwortel in een aftreksel van alsem. Dat is het Vocht van de Levende Dood. Daarmee gaat later driekwart van het stolsel weg. Zonder dat flesje is de echte plaag te veel om te winnen.'],['Professor Sneep','En onthoud dit: monnikskap en wolfswortel zijn dezelfde plant. Akoniet. Wie daar verschil in ziet, heeft niet opgelet.']]):al?[['Tilly','De ranken staan er weer. Niet op de stekels tikken, dat doet zeer.'],['Professor Stronk',naam()+', bevrijd het briefje nog een keer. Zo oefen je voor de echte plaag. Incendio komt daarna.']]:[['Tilly',naam()+', niet op die paarse ranken tikken. De stekels doen zeer, en de stukken eronder zitten vast.'],['Professor Stronk','Dit is duivelsstrik. Hij houdt van donker en vochtig, en hij groeit na elke beurt. Eronder kun je niets verschuiven.'],['Tilly','In het midden ligt een briefje. Vier ranken houden het vast. Maak die vrij.'],['Professor Stronk','Onthoud: licht en warmte jagen hem weg. In de volgende striklessen teken je Incendio. Daar heb je geen drankje voor nodig.']];
  verhaal(regels,()=>m3Speel(n,thema,Object.assign({},boost,{_stronkKlaar:1})))}
 const _speelP=m3Speel;m3Speel=function(n,thema,boost){boost=boost||{};const p=plaagVan(n);
  if(p&&p.intro&&!boost._stronkKlaar)return introLes(n,thema,boost);
+ if(p&&p.soort==='strik'&&!boost._stronkKlaar)return incendioStart(n,thema,boost);
  if(p&&!boost._stronkKlaar)return stronkVraag(n,thema,boost);
  return _speelP(n,thema,boost)};
 const _naB=window.m3NaBord;window.m3NaBord=function(b,boost){if(_naB)try{_naB(b,boost)}catch(e){}
  if(b&&b.L&&b.L.plaag&&!b.L.plaag.intro&&b.strik&&!b.heeftZet()){b.strikDicht=1;try{((boost&&boost.bo)||[]).forEach(k=>{S.bo[k]=(S.bo[k]|0)+1});bewaar()}catch(e){}b.zet=0;setTimeout(()=>{try{M3.einde&&M3.einde()}catch(e){}},500)}};
 
 function nodigHtml(m){return `<span class="mixnodig">${m.nodig.map(([id,n])=>{const heb=voorraad(id);const pl=isFles(id)?`${window.flesModel?flesModel(id,{h:44}):'<i class="flesje"></i>'}`:plantSVG(3,(ZADEN[id]||[])[4],id);return `<span>${pl}<small>${kruidNaam(id)}</small><b>${heb}/${n}</b></span>`}).join('')}</span>`}
-function voorraadStrip(){const ids=Object.keys(ZADEN);const rij=ids.map(id=>`<span>${plantSVG(3,ZADEN[id][4],id)}<small>${kruidNaam(id)}</small><b>${voorraad(id)}</b></span>`).join('');const fles=MIXEN.map(m=>`<span>${window.flesModel?flesModel(m.id,{h:44}):'<i class="flesje"></i>'}<small>${m.naam}</small><b>${voorraad(m.id)}</b></span>`).join('');return `<p class="klein">Zoveel heb je van elk voorwerp.</p><div class="mixnodig voorraadstrip">${rij}${fles}</div>`}
+function voorraadStrip(){const ids=Object.keys(ZADEN);const rij=ids.map(id=>`<span>${plantSVG(3,ZADEN[id][4],id)}<small>${kruidNaam(id)}</small><b>${voorraad(id)}</b></span>`).join('');const fles=MIXEN.filter(m=>!mixVerborgen(m.id)||voorraad(m.id)>0).map(m=>`<span>${window.flesModel?flesModel(m.id,{h:44}):'<i class="flesje"></i>'}<small>${m.naam}</small><b>${voorraad(m.id)}</b></span>`).join('');return `<p class="klein">Zoveel heb je van elk voorwerp.</p><div class="mixnodig voorraadstrip">${rij}${fles}</div>`}
 function ingredientenBoek(){const o=document.createElement('div');o.className='modal';
- const teken=()=>{o.innerHTML=`<div class="modalin rococo kasblad"><h2>Recepten</h2>${voorraadStrip()}<p class="klein">Tik een mix aan als je alles hebt.</p><div class="zlijst">${MIXEN.map(m=>{const st=mixStatus(m);if(!st.open)return `<button class="zkoop dicht" disabled><b>${m.naam}</b><small>${m.slot||('Komt in het boek na level '+m.na+'.')}</small></button>`;return `<button class="zkoop ${st.klaar?'klaar':''}" data-mix="${m.id}"><b>${m.naam}</b>${nodigHtml(m)}<small>${m.zin}</small><small class="mixheb">${st.klaar?'Je hebt alles':'Je mist nog '+st.miss.map(([id])=>kruidNaam(id)).join(' en ')}</small></button>`}).join('')}</div><button class="knop" id="boekdicht">Sluiten</button></div>`;
+ const zicht=MIXEN.filter(m=>!mixVerborgen(m.id));const teken=()=>{o.innerHTML=`<div class="modalin rococo kasblad"><h2>Recepten</h2>${voorraadStrip()}<p class="klein">De eerste toverdrankles komt bij Professor Sneep. Tik een mix aan als je alles hebt.</p><div class="zlijst">${zicht.map(m=>{const st=mixStatus(m);if(!st.open)return `<button class="zkoop dicht" disabled><b>${m.naam}</b><small>${m.slot||('Komt in het boek na level '+m.na+'.')}</small></button>`;return `<button class="zkoop ${st.klaar?'klaar':''}" data-mix="${m.id}"><b>${m.naam}</b>${nodigHtml(m)}<small>${m.zin}</small><small class="mixheb">${st.klaar?'Je hebt alles':'Je mist nog '+st.miss.map(([id])=>kruidNaam(id)).join(' en ')}</small></button>`}).join('')}</div><button class="knop" id="boekdicht">Sluiten</button></div>`;
   o.querySelectorAll('[data-mix]').forEach(b=>b.onclick=()=>brouw(b.dataset.mix,teken));
   o.querySelector('#boekdicht').onclick=()=>o.remove()};
  teken();document.body.appendChild(o)}
@@ -139,7 +162,7 @@ function brouw(id,teken){const m=MIXEN.find(x=>x.id===id);const st=mixStatus(m);
  m.nodig.forEach(([i,n])=>{if(isFles(i))S.flesjes[i]-=n;else S.oogst[i]=(S.oogst[i]|0)-n});S.flesjes[m.id]=(S.flesjes[m.id]|0)+1;bewaar();try{fx.speel('munt')}catch(e){}try{vib([20,30,40])}catch(e){}toast(m.naam+' staat in de kist.');teken()}
 function ingredientenKist(){const o=document.createElement('div');o.className='modal';
  const oogst=Object.keys(ZADEN).filter(id=>voorraad(id)>0).map(id=>`<div class="zkoop vanjou">${plantSVG(3,ZADEN[id][4],id)}<b>${kruidNaam(id)}</b><small>${voorraad(id)} geoogst</small></div>`).join('')||'<p class="klein">Nog geen oogst in de kist.</p>';
- const fles=MIXEN.map(m=>`<div class="zkoop vanjou">${window.flesModel?flesModel(m.id,{h:60}):'<i class="flesje"></i>'}<b>${m.naam}</b><small>${voorraad(m.id)} ${voorraad(m.id)===1?'flesje':'flesjes'}</small></div>`).join('');
+ const fles=MIXEN.filter(m=>!mixVerborgen(m.id)||voorraad(m.id)>0).map(m=>`<div class="zkoop vanjou">${window.flesModel?flesModel(m.id,{h:60}):'<i class="flesje"></i>'}<b>${m.naam}</b><small>${voorraad(m.id)} ${voorraad(m.id)===1?'flesje':'flesjes'}</small></div>`).join('');
  const zaad=Object.entries(S.zaden||{}).filter(([,n])=>n>0).map(([z,n])=>ZADEN[z]?`<div class="zkoop vanjou">${plantSVG(0,ZADEN[z][4],z)}<b>${ZADEN[z][0]}</b><small>${n} ${n===1?'zaadje':'zaadjes'}</small></div>`:'').join('')||'<p class="klein">Geen zaadjes.</p>';
  const superz=Object.entries(S.superzaad||{}).filter(([,n])=>n>0).map(([z,n])=>{const d=window.SUPERPLANTEN&&window.SUPERPLANTEN[z];return d?`<div class="zkoop vanjou"><b>${d.naam}</b><small>${n} superzaad</small></div>`:''}).join('');
  const boost=typeof BOOSTERS=='undefined'?'':Object.entries(BOOSTERS).map(([k,d])=>`<span class="${S.bo[k]?'':'nul'}"><img src="img/pu/${d.img}.webp" alt="">${d.naam} ${S.bo[k]||0}</span>`).join('');
@@ -148,7 +171,7 @@ function ingredientenKist(){const o=document.createElement('div');o.className='m
 window.ingredientenBoek=ingredientenBoek;window.ingredientenKist=ingredientenKist;
 
 const _icoP=m3DoelIco;m3DoelIco=function(d,T,L){if(d[0]=='recept'){const groen=L&&L.plaag&&L.plaag.soort==='damp';return `<svg viewBox="0 0 24 24" class="m3ico" style="background:${groen?'#1d6b45':'#7a3ea8'}"><path d="M6 3h9l3 3v15H6z" fill="#f3e2b8" stroke="#fff" stroke-width="1.4"/><path d="M15 3v3h3" fill="none" stroke="#fff" stroke-width="1.4"/><circle cx="12" cy="14" r="2.2" fill="${groen?'#b6f0c8':'#c45cff'}"/></svg>`}return _icoP.apply(this,arguments)};
-const _winstP=m3Winst;m3Winst=function(n,b){let vers='';const p=plaagVan(n);if(p&&p.intro&&!(S.receptOpen&&S.receptOpen[p.id])){S.receptOpen[p.id]=1;vers=p.naam}const r=_winstP(n,b);
+const _winstP=m3Winst;m3Winst=function(n,b){let vers='';const p=plaagVan(n);if(p&&p.intro&&p.soort==='damp'&&!(S.receptOpen&&S.receptOpen[p.id])){S.receptOpen[p.id]=1;vers=p.naam}const r=_winstP(n,b);
  if(vers){const h=document.querySelector('.m3eind');const kn=h&&h.querySelector('.knop');if(kn)kn.insertAdjacentHTML('beforebegin','<p class="klein">'+vers+' staat in je receptenboek.</p>')}return r};
 /* Telefoon die de testkist al kreeg: oogst erbij, zodat de mixpen te proberen zijn. */
 function proefMix(){if(S.proefMix)return;S.proefMix=1;S.oogst=S.oogst||{};['valeriaan','alsem','affodil','mandragora'].forEach(z=>{S.oogst[z]=Math.max(S.oogst[z]|0,3)});S.flesjes=S.flesjes||{};S.flesjes.licht=Math.max(S.flesjes.licht|0,1);S.flesjes.diep=Math.max(S.flesjes.diep|0,1);S.flesjes.vocht=Math.max(S.flesjes.vocht|0,1);bewaar()}

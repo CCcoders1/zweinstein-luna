@@ -72,7 +72,7 @@ function dimMeer(){const q=s=>document.querySelector(s);
  if(!heeftKaart())zwDicht(q('#app [onclick="ga(\'album\')"]'),VL(10),'Je eerste tovenaarskaart krijg je bij level 10.')}
 const _meer=V.meer;V.meer=(...a)=>{const r=_meer(...a);try{dimMeer()}catch(e){console.warn(e)}return r};
 const _home2=V.home;V.home=(...a)=>{const r=_home2(...a);try{if(!lesOpen())document.querySelectorAll('#app [onclick="ga(\'spreuken\')"]').forEach(b=>zwDicht(b,VL(lesVan()),'Professor Banning geeft je eerste les vanaf level '+lesVan()+'.'))}catch(e){}return r};
-if(V.mijnkas){const _mk=V.mijnkas;V.mijnkas=(...a)=>{const r=_mk(...a);try{if(!(S.receptOpen&&S.receptOpen.licht))zwDicht(document.getElementById('balkrecept'),VL(23),'Recepten komen in je boek als je de eerste Duivelsstrik-les haalt (level 22).')}catch(e){}return r}}
+if(V.mijnkas){const _mk=V.mijnkas;V.mijnkas=(...a)=>{const r=_mk(...a);try{if(!(S.receptOpen&&(S.receptOpen.vocht||S.receptOpen.licht)))zwDicht(document.getElementById('balkrecept'),'Bij de toverdrankenlessen','Recepten komen in je boek als je Sneeps eerste kerkerles haalt.')}catch(e){}return r}}
 
 /* ---------- winstscherm: 'Verder' speelt meteen het volgende level ---------- */
 function speelVolgende(k){if(typeof schoolDagKanStarten=='function'&&!schoolDagKanStarten(k)){ga('pad');let st=null;try{st=schoolDag()}catch(e){}T(()=>toast(st&&k>st.einde?'Rond eerst de doelen van deze schooldag af, dan kun je verder.':'Level '+k+' kan nu nog niet. Kies een level op het pad.'),400);return}ga('match3',k)}

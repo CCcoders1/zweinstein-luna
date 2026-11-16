@@ -205,12 +205,7 @@ function kasMorgen(){
     return 'In je kas groeit rustig '+naam.toLowerCase()+'. Geen haast.';
   }catch(e){return ''}
 }
-function uilMorgen(){
-  try{
-    const due=typeof uilenpostDue==='function'?uilenpostDue():(!S.uilenpost||Date.now()-S.uilenpost>=2*864e5);
-    return due?'Er kan zo een uil op het raam tikken.':'De uil rust nog even. Hij komt wanneer het uitkomt.';
-  }catch(e){return ''}
-}
+function uilMorgen(){return ''}
 function verhaalMorgen(){
   try{
     if(typeof hfdNieuw==='function'){const i=hfdNieuw();if(i>=0)return 'In je dagboek wacht een nieuw hoofdstuk.'}
