@@ -1,4 +1,4 @@
-/* v178: 3D-tuin als binnenplaats, deuren gekoppeld aan het spel. Vaste volgcamera, camerajoystick. CC0/zelfgemaakt. Geen EA/Warner-assets. */
+/* v179: snellere 3D-tuin en leven (vlinders, uil, kabouter, gras, rimpel). Vaste camera, deuren gekoppeld. CC0/zelfgemaakt. Geen EA/Warner-assets. */
 (function(){
   'use strict';
   const $ = id => document.getElementById(id);
@@ -602,7 +602,7 @@
     haag: new THREE.MeshLambertMaterial({map:T.haag,color:0xf4ffe0}),
     baksteen: new THREE.MeshLambertMaterial({map:T.baksteen}),
     zandsteen: new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xffffff,shininess:8,specular:0x332820}),
-    pad: new THREE.MeshPhongMaterial({map:T.pad,color:0xffffff,shininess:10,specular:0x333333}),
+    pad: new THREE.MeshLambertMaterial({map:T.pad,color:0xffffff}),
     aarde: new THREE.MeshLambertMaterial({map:T.aarde}),
     hout: new THREE.MeshLambertMaterial({map:T.hout}),
     sokkel: new THREE.MeshPhongMaterial({map:T.zandsteen,color:0xe8d8b0,shininess:8,specular:0x332820}),
@@ -612,7 +612,7 @@
     rimpel: new THREE.MeshBasicMaterial({map:T.rimpel,transparent:true,opacity:0.35,depthWrite:false,side:THREE.DoubleSide}),
     glinster: new THREE.MeshBasicMaterial({map:T.glinster,transparent:true,opacity:0.7,depthWrite:false,side:THREE.DoubleSide}),
     wolk: new THREE.MeshBasicMaterial({map:T.wolk,transparent:true,opacity:0.88,depthWrite:false,fog:false,side:THREE.DoubleSide,toneMapped:false}),
-    rank: new THREE.MeshLambertMaterial({map:T.rank,transparent:true,depthWrite:false,side:THREE.DoubleSide}),
+    rank: new THREE.MeshLambertMaterial({map:T.rank,alphaTest:0.32,side:THREE.DoubleSide}),
     nevel: new THREE.MeshBasicMaterial({map:T.nevel,transparent:true,opacity:0.65,depthWrite:false,fog:false,side:THREE.DoubleSide}),
     voering: new THREE.MeshLambertMaterial({color:0xd4a017,side:THREE.DoubleSide}),
     mantel: new THREE.MeshLambertMaterial({map:T.mantelPlooi,color:0x8a9488,side:THREE.FrontSide,emissive:0x1a2218,emissiveIntensity:0.2}),
@@ -620,8 +620,8 @@
     daksteen: new THREE.MeshLambertMaterial({color:0x1a2436}),
     druppel: new THREE.MeshBasicMaterial({color:0xc8eef6,transparent:true,opacity:0.7,depthWrite:false}),
     glas: new THREE.MeshLambertMaterial({map:T.glas,transparent:true,opacity:0.62,depthWrite:false,side:THREE.DoubleSide}),
-    klimop: new THREE.MeshLambertMaterial({map:T.klimop,transparent:true,depthWrite:false,side:THREE.DoubleSide}),
-    bloem: new THREE.MeshLambertMaterial({map:T.bloem,transparent:true,depthWrite:false,side:THREE.DoubleSide}),
+    klimop: new THREE.MeshLambertMaterial({map:T.klimop,alphaTest:0.32,side:THREE.DoubleSide}),
+    bloem: new THREE.MeshLambertMaterial({map:T.bloem,alphaTest:0.32,side:THREE.DoubleSide}),
     sjaal: new THREE.MeshLambertMaterial({map:T.sjaal}),
     pompoen: new THREE.MeshLambertMaterial({color:0xe07018}),
     steel: new THREE.MeshLambertMaterial({color:0x2a5a14}),
@@ -638,7 +638,7 @@
     vonk: new THREE.MeshBasicMaterial({map:T.vonk,transparent:true,depthWrite:false,opacity:0.9}),
     vlam: new THREE.MeshBasicMaterial({map:T.vlam,transparent:true,depthWrite:false,side:THREE.DoubleSide,fog:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:0.85}),
     halo: new THREE.MeshBasicMaterial({map:T.halo,transparent:true,depthWrite:false,side:THREE.DoubleSide,fog:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:0.4}),
-    blad: new THREE.MeshBasicMaterial({map:T.blad,transparent:true,depthWrite:false,side:THREE.DoubleSide}),
+    blad: new THREE.MeshBasicMaterial({map:T.blad,alphaTest:0.32,side:THREE.DoubleSide}),
     straal: new THREE.MeshBasicMaterial({map:T.straal,transparent:true,depthWrite:false,side:THREE.DoubleSide,fog:true,blending:THREE.AdditiveBlending,opacity:0.22,toneMapped:false}),
     bladHaag: new THREE.MeshLambertMaterial({map:T.bladKaart,alphaTest:0.4,side:THREE.DoubleSide,color:0xe8ff78,emissive:0x1a3008,emissiveIntensity:0.18,depthWrite:true}),
     hekIJzer: new THREE.MeshLambertMaterial({map:T.hek,alphaTest:0.35,side:THREE.DoubleSide,color:0x2a2a30,depthWrite:true}),
@@ -652,7 +652,7 @@
   const haagTopMat=new THREE.MeshLambertMaterial({map:T.haag,color:0xffffe8,emissive:0x243814,emissiveIntensity:0.16});
   const haagOnderMat=new THREE.MeshLambertMaterial({map:T.haag,color:0x5a7028,emissive:0x101808,emissiveIntensity:0.08});
   const haagToppen=[];
-  mat.padSlijt=new THREE.MeshPhongMaterial({map:T.pad,vertexColors:true,shininess:10,specular:0x333333});
+  mat.padSlijt=new THREE.MeshLambertMaterial({map:T.pad,vertexColors:true});
   mat.padRand=new THREE.MeshPhongMaterial({map:T.pad,transparent:true,depthWrite:false,shininess:6,specular:0x222222,vertexColors:true});
   mat.padRand.onBeforeCompile=function(sh){
     sh.fragmentShader=sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.a *= vColor.r;');
@@ -674,10 +674,12 @@
     renderer.toneMapping=THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure=0.94;
   }
+  // v179: ACES blijft, maar we verlagen de interne resolutie iets (zie pixelRatio)
+
   let licht=false;
   function pixelRatio(w,h){
-    const cap=licht?0.72:1;
-    const pix=licht?180000:320000;
+    const cap=licht?0.72:0.84;
+    const pix=licht?180000:230000;
     return Math.min(cap,window.devicePixelRatio||1,Math.sqrt(pix/Math.max(1,w*h)));
   }
   function maat(){
@@ -694,10 +696,7 @@
   const zon=new THREE.DirectionalLight(0xffffff,1.00);
   zon.position.set(-14,24,10);
   scene.add(zon);
-  const tegenZon=new THREE.DirectionalLight(0xe8eef2,0.16);
-  tegenZon.position.set(16,9,-8);
-  scene.add(tegenZon);
-  scene.add(new THREE.AmbientLight(0xdce0e6,0.30));
+  scene.add(new THREE.AmbientLight(0xdce0e6,0.40));
 
   const hemelkoepel=new THREE.Mesh(
     new THREE.SphereGeometry(110,16,12),
@@ -747,6 +746,14 @@
   const speerPos=[];
   const haagBladPos=[];
   const haagFade=[];
+  const haagLijfGeos=[],haagOnderGeos=[],haagRayMuurs=[];
+  let haagMuurN=0,haagMuurOp=null;
+  const haagFadeU={
+    fadeN:{value:0},
+    fadeMin:{value:[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()]},
+    fadeMax:{value:[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()]},
+    fadeAmt:{value:[1,1,1,1]}
+  };
   function maakFadeMesh(mesh){
     if(!mesh||!mesh.material)return mesh;
     const m=mesh.material.clone();
@@ -757,39 +764,60 @@
     haagFade.push(mesh);
     return mesh;
   }
-  function smeltInGroep(grp){
-    grp.updateMatrixWorld(true);
-    const groepen=new Map();
-    const kind=[...grp.children];
-    kind.forEach(o=>{
-      if(!o.isMesh||!o.material)return;
-      const g=o.geometry.clone();
-      o.updateWorldMatrix(true,false);
-      g.applyMatrix4(o.matrixWorld);
-      const k=o.material.uuid;
-      if(!groepen.has(k))groepen.set(k,{mat:o.material,geos:[],meshes:[]});
-      groepen.get(k).geos.push(g);
-      groepen.get(k).meshes.push(o);
-    });
-    groepen.forEach(gr=>{
-      const geom=gr.geos.length>1?voegGeos(gr.geos):gr.geos[0];
-      const mesh=new THREE.Mesh(geom,gr.mat);
+  function haagDoos(lijst,kleur,x,y,z,w,h,d){
+    const g=new THREE.BoxGeometry(w,h,d);
+    g.translate(x,y,z);
+    const n=g.attributes.position.count;
+    const col=new Float32Array(n*3);
+    const c=new THREE.Color(kleur);
+    for(let i=0;i<n;i++){col[i*3]=c.r;col[i*3+1]=c.g;col[i*3+2]=c.b}
+    g.setAttribute('color',new THREE.BufferAttribute(col,3));
+    lijst.push(g);
+    return g;
+  }
+  function hookHaagFade(mat){
+    mat.onBeforeCompile=function(sh){
+      sh.uniforms.fadeN=haagFadeU.fadeN;
+      sh.uniforms.fadeMin=haagFadeU.fadeMin;
+      sh.uniforms.fadeMax=haagFadeU.fadeMax;
+      sh.uniforms.fadeAmt=haagFadeU.fadeAmt;
+      sh.vertexShader=sh.vertexShader
+        .replace('#include <common>','#include <common>\nvarying vec3 vHaagW;')
+        .replace('#include <project_vertex>','#include <project_vertex>\nvHaagW=(modelMatrix*vec4(transformed,1.0)).xyz;');
+      sh.fragmentShader=sh.fragmentShader
+        .replace('#include <common>','#include <common>\nvarying vec3 vHaagW;\nuniform int fadeN;\nuniform vec3 fadeMin[4];\nuniform vec3 fadeMax[4];\nuniform float fadeAmt[4];')
+        .replace('#include <opaque_fragment>',
+          'if(fadeN>0){for(int i=0;i<4;i++){if(i>=fadeN)break;vec3 p=vHaagW;if(p.x>=fadeMin[i].x&&p.x<=fadeMax[i].x&&p.y>=fadeMin[i].y&&p.y<=fadeMax[i].y&&p.z>=fadeMin[i].z&&p.z<=fadeMax[i].z){float d=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);if(d>fadeAmt[i])discard;}}}'
+          +'\n#include <opaque_fragment>');
+    };
+    mat.customProgramCacheKey=function(){return 'haagFade2'};
+  }
+  function bouwHaagMerged(){
+    function meshVan(geos,basisKleur){
+      if(!geos.length)return null;
+      const matH=new THREE.MeshLambertMaterial({map:T.haag,color:0xffffff,vertexColors:true,emissive:0x1c3010,emissiveIntensity:0.14});
+      hookHaagFade(matH);
+      const mesh=new THREE.Mesh(geos.length>1?voegGeos(geos):geos[0],matH);
       mesh.matrixAutoUpdate=false;
-      scene.add(mesh);
-      maakFadeMesh(mesh);
-      gr.meshes.forEach(o=>{if(o.parent)o.parent.remove(o)});
-    });
+      mesh.frustumCulled=true;
+      mesh.userData.fadeOc=1;
+      voeg(mesh);
+      haagFade.push(mesh);
+      return mesh;
+    }
+    meshVan(haagLijfGeos,0xffffff);
+    meshVan(haagOnderGeos,0x5a7028);
+    haagMuurOp=new Float32Array(haagMuurN);haagMuurOp.fill(1);
   }
   function muur(x,z,w,d,h,y0){
     h=(h||3.2)+1.9;y0=y0||0;
-    const tint=haagMats[Math.floor(rnd(x*9+z*13)*haagMats.length)%haagMats.length];
-    const grp=new THREE.Group();
-    // blokvormig zoals HP1, scherpe randen; bladkaarten maken de silhouet oneffen
-    box(tint,x,y0+h/2,z,w,h,d,0,grp);
-    box(haagOnderMat,x,y0+0.14,z,w*1.02,0.28,d*1.02,0,grp);
+    const tint=haagTinten[Math.floor(rnd(x*9+z*13)*haagTinten.length)%haagTinten.length];
+    const mid=haagMuurN++;
+    haagRayMuurs.push({id:mid,minx:x-w/2,maxx:x+w/2,miny:y0,maxy:y0+h+0.5,minz:z-d/2,maxz:z+d/2});
+    haagDoos(haagLijfGeos,tint,x,y0+h/2,z,w,h,d);
+    haagDoos(haagOnderGeos,0x5a7028,x,y0+0.14,z,w*1.02,0.28,d*1.02);
     box(mat.grondSchaduw,x,0.03,z,w+0.50,0.06,d+0.50);
     const langs=w>=d?w:d, dwars=w>=d?d:w, alongX=w>=d;
-    // bobbelige, klonterige kam zoals HP1
     const nCl=Math.max(2,Math.round(langs/0.7));
     for(let i=0;i<nCl;i++){
       const tt=(i+0.3+rnd(x+i)*0.4)/nCl-0.5;
@@ -798,7 +826,7 @@
       const dd=dwars*(0.86+rnd(i+4)*0.30);
       const px=alongX?x+tt*langs:x+(rnd(i+6)-.5)*dwars*0.18;
       const pz=alongX?z+(rnd(i+7)-.5)*dwars*0.18:z+tt*langs;
-      box(tint,px,y0+h+hh*0.32,pz,alongX?ww:dd,hh,alongX?dd:ww,0,grp);
+      haagDoos(haagLijfGeos,tint,px,y0+h+hh*0.32,pz,alongX?ww:dd,hh,alongX?dd:ww);
     }
     if(langs>=2.4){
       const ns=Math.max(2,Math.round(langs/0.7));
@@ -809,19 +837,16 @@
         speerPos.push(px,y0+h+0.28,pz);
       }
     }
-    // bladkaarten langs de bovenrand en de lange zijden, voor een bobbelige silhouet
     const stap=0.42;
     const nTop=Math.max(2,Math.round(langs/stap));
     for(let i=0;i<nTop;i++){
       const tt=(i+0.5)/nTop-0.5;
       const px=alongX?x+tt*langs:x;
       const pz=alongX?z:z+tt*langs;
-      // één rij op de kam (silhouet) en één zijkant, zuinig voor fps
       haagBladPos.push(px+(rnd(i)-.5)*dwars*0.2, y0+h+0.22+rnd(x+i)*0.20, pz+(rnd(i+2)-.5)*dwars*0.2, alongX?0:Math.PI/2, 1.05+rnd(i)*0.55);
       const side=(i%2?1:-1)*dwars*0.52;
       haagBladPos.push(alongX?px:x+side,y0+h-0.04,alongX?z+side:pz, alongX?0:Math.PI/2, 0.7+rnd(i+3)*0.45);
     }
-    smeltInGroep(grp);
     solid(x,z,w,d,y0+h+0.45);
   }
 
@@ -989,7 +1014,7 @@
     }
     if(nP){
       const geo=new THREE.PlaneGeometry(0.28,0.2);
-      const inst=new THREE.InstancedMesh(geo,new THREE.MeshLambertMaterial({map:T.haag,color:0xc8f070,transparent:true,depthWrite:false,side:THREE.DoubleSide}),nP);
+      const inst=new THREE.InstancedMesh(geo,new THREE.MeshLambertMaterial({map:T.haag,color:0xc8f070,alphaTest:0.3,side:THREE.DoubleSide}),nP);
       inst.renderOrder=2;
       for(let i=0;i<nP;i++){
         const k=polMeshes[i];
@@ -1027,6 +1052,7 @@
   muur(-24,14,1.5,28,3.5);
   muur(24,14,1.5,28,3.45);
   muur(0,-2.2,20,1.5,3.3);
+  bouwHaagMerged();
   (function plaatsSperen(){
     const n=speerPos.length/3;if(!n)return;
     const dummy=new THREE.Object3D();
@@ -1044,7 +1070,6 @@
     const n=haagBladPos.length/5;if(!n)return;
     const dummy=new THREE.Object3D();
     const inst=new THREE.InstancedMesh(new THREE.PlaneGeometry(0.38,0.26),mat.bladHaag.clone(),n);
-    maakFadeMesh(inst);
     inst.frustumCulled=true;
     for(let i=0;i<n;i++){
       const o=i*5;
@@ -1816,15 +1841,194 @@
   const pollen=new THREE.Points(pGeo,new THREE.PointsMaterial({
     map:T.pollen,transparent:true,depthWrite:false,size:0.22,sizeAttenuation:true,opacity:0.85,color:0xffe080
   }));
-  scene.add(pollen);
+  pollen.visible=false;
 
-  const vlinder=new THREE.Group();
-  const vMat=new THREE.MeshBasicMaterial({color:0xf0d878,transparent:true,opacity:0.88,depthWrite:false,side:THREE.DoubleSide});
-  const vleugelL=new THREE.Mesh(new THREE.CircleGeometry(0.12,7),vMat);
-  vleugelL.position.x=-0.08;vlinder.add(vleugelL);
-  const vleugelR=new THREE.Mesh(new THREE.CircleGeometry(0.12,7),vMat);
-  vleugelR.position.x=0.08;vlinder.add(vleugelR);
-  vlinder.userData={vL:vleugelL,vR:vleugelR};scene.add(vlinder);
+  /* ===== v179: leven in de tuin (goedkoop, zelfgemaakt) ===== */
+  const vlinders=[];
+  (function maakVlinders(){
+    const kleuren=[0xf0d878,0xe8a0c8,0xc8e878,0xf0c060];
+    const paden=[
+      {cx:-5.0,cz:9.7,rx:3.2,rz:2.4,y:1.15,s:0.42,f:1.5,fase:0.2},
+      {cx:0,cz:14,rx:5.5,rz:4.2,y:1.35,s:0.33,f:1.3,fase:1.7},
+      {cx:0,cz:22,rx:2.4,rz:3.6,y:1.25,s:0.28,f:1.7,fase:3.1},
+      {cx:-8,cz:14,rx:3.0,rz:1.8,y:1.05,s:0.37,f:1.2,fase:4.4}
+    ];
+    for(let i=0;i<paden.length;i++){
+      const g=new THREE.Group();
+      const m=new THREE.MeshBasicMaterial({color:kleuren[i],transparent:true,opacity:0.9,depthWrite:false,side:THREE.DoubleSide,fog:true});
+      const vL=new THREE.Mesh(new THREE.CircleGeometry(0.11,6),m);
+      const vR=new THREE.Mesh(new THREE.CircleGeometry(0.11,6),m.clone());
+      vL.position.x=-0.07;vR.position.x=0.07;
+      g.add(vL);g.add(vR);
+      g.userData={vL,vR,pad:paden[i]};
+      scene.add(g);vlinders.push(g);
+    }
+  })();
+  const vlinder=vlinders[0]||null;
+
+  const uil=new THREE.Group();
+  (function maakUil(){
+    const veer=new THREE.MeshLambertMaterial({color:0x6a4a28});
+    const buik=new THREE.MeshLambertMaterial({color:0xc8b08a});
+    const oogM=new THREE.MeshLambertMaterial({color:0xf4ead4});
+    const pupilM=new THREE.MeshLambertMaterial({color:0x1a120c});
+    const snavelM=new THREE.MeshLambertMaterial({color:0xd09020});
+    const lijf=new THREE.Mesh(new THREE.SphereGeometry(0.16,7,5),veer);
+    lijf.scale.set(0.85,1.15,0.9);lijf.position.y=0.16;uil.add(lijf);
+    const buikM=new THREE.Mesh(new THREE.SphereGeometry(0.11,7,5),buik);
+    buikM.position.set(0.06,0.12,0);buikM.scale.set(0.7,1,0.8);uil.add(buikM);
+    const kop=new THREE.Group();kop.position.y=0.34;uil.add(kop);
+    const kopM=new THREE.Mesh(new THREE.SphereGeometry(0.12,7,5),veer);
+    kopM.scale.set(1.05,0.9,0.95);kop.add(kopM);
+    [[-0.055,0.02,0.09],[0.055,0.02,0.09]].forEach(([x,y,z])=>{
+      const o=new THREE.Mesh(new THREE.CircleGeometry(0.035,7),oogM);
+      o.position.set(x,y,z);kop.add(o);
+      const pu=new THREE.Mesh(new THREE.CircleGeometry(0.016,7),pupilM);
+      pu.position.set(x,y,z+0.004);kop.add(pu);
+    });
+    const sn=new THREE.Mesh(new THREE.ConeGeometry(0.025,0.06,5),snavelM);
+    sn.rotation.x=Math.PI/2;sn.position.set(0,-0.01,0.13);kop.add(sn);
+    [[-0.08,0.12,0],[0.08,0.12,0]].forEach(([x,y,z])=>{
+      const oor=new THREE.Mesh(new THREE.ConeGeometry(0.04,0.08,5),veer);
+      oor.position.set(x,y,z);oor.rotation.z=x<0?0.4:-0.4;kop.add(oor);
+    });
+    uil.position.set(-6.85,2.55,9.7);
+    uil.rotation.y=Math.PI/2;
+    uil.userData={kop};
+    world.add(uil);
+  })();
+
+  const kabouterPlekken=[[-8.6,8.95],[-11.2,19.05],[8.2,8.95],[2.4,25.1],[-2.4,3.6]];
+  const kabouter=new THREE.Group();
+  (function maakKabouter(){
+    const jas=new THREE.MeshLambertMaterial({color:0x3a6a28});
+    const hoed=new THREE.MeshLambertMaterial({color:0x8a1c18});
+    const huid=new THREE.MeshLambertMaterial({color:0xe8c8a0});
+    const baard=new THREE.MeshLambertMaterial({color:0xe8e0d0});
+    const lijf=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.12,0.22,6),jas);
+    lijf.position.y=0.18;kabouter.add(lijf);
+    const kop=new THREE.Mesh(new THREE.SphereGeometry(0.08,6,5),huid);
+    kop.position.y=0.34;kabouter.add(kop);
+    const neus=new THREE.Mesh(new THREE.SphereGeometry(0.025,5,4),huid);
+    neus.position.set(0,0.33,0.08);kabouter.add(neus);
+    const ba=new THREE.Mesh(new THREE.SphereGeometry(0.06,5,4),baard);
+    ba.scale.set(1,0.8,0.7);ba.position.set(0,0.26,0.05);kabouter.add(ba);
+    const h=new THREE.Mesh(new THREE.ConeGeometry(0.1,0.22,6),hoed);
+    h.position.y=0.48;kabouter.add(h);
+    const p0=kabouterPlekken[0];
+    kabouter.position.set(p0[0],0,p0[1]);
+    kabouter.userData={fase:'wacht',t:2+Math.random()*4,van:0,naar:1,u:0};
+    world.add(kabouter);
+  })();
+
+  let grasTuft=null,grasDummy=null,grasPlek=null;
+  (function maakGrasTuft(){
+    const plekken=(polMeshes||[]).slice(0,24);
+    const n=plekken.length;if(!n)return;
+    const geo=new THREE.PlaneGeometry(0.16,0.34);
+    geo.translate(0,0.17,0);
+    const m=new THREE.MeshLambertMaterial({map:T.haag,color:0x8ed030,side:THREE.DoubleSide,alphaTest:0.3,emissive:0x143008,emissiveIntensity:0.1});
+    const inst=new THREE.InstancedMesh(geo,m,n);
+    inst.frustumCulled=true;
+    inst.geometry.computeBoundingSphere();
+    if(inst.geometry.boundingSphere){inst.geometry.boundingSphere.center.set(0,0.2,14);inst.geometry.boundingSphere.radius=28}
+    const d=new THREE.Object3D();
+    grasPlek=[];
+    for(let i=0;i<n;i++){
+      const k=plekken[i];
+      grasPlek.push({x:k.x,z:k.z,s:k.s||1,ry:k.ry||0});
+      d.position.set(k.x,0,k.z);
+      d.rotation.set(0,k.ry||0,0);
+      d.scale.set(k.s||1,(k.s||1)*1.05,1);
+      d.updateMatrix();inst.setMatrixAt(i,d.matrix);
+    }
+    inst.instanceMatrix.needsUpdate=true;
+    voeg(inst);grasTuft=inst;grasDummy=d;
+  })();
+
+  const rimpelVlak=new THREE.Mesh(new THREE.CircleGeometry(1.62,16),mat.rimpel);
+  rimpelVlak.rotation.x=-Math.PI/2;rimpelVlak.position.set(-5.0,0.815,9.7);voeg(rimpelVlak);
+
+  function kabouterRitsel(){
+    if(!audioCtx||!geluidAan||!masterGain)return;
+    try{
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain(),f=audioCtx.createBiquadFilter();
+      o.type='triangle';o.frequency.value=180+Math.random()*80;
+      f.type='bandpass';f.frequency.value=420;f.Q.value=0.8;
+      g.gain.value=0.03;g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.18);
+      o.connect(f);f.connect(g);g.connect(masterGain);o.start();o.stop(audioCtx.currentTime+0.2);
+    }catch(e){}
+  }
+  function levenTic(t,dt){
+    const nVl=RMP?0:(licht?2:vlinders.length);
+    for(let i=0;i<vlinders.length;i++){
+      const v=vlinders[i],aan=i<nVl;
+      v.visible=aan;if(!aan)continue;
+      const p=v.userData.pad;
+      const a=t*p.s+p.fase;
+      v.position.set(p.cx+Math.sin(a)*p.rx,p.y+Math.sin(t*p.f+p.fase)*0.22,p.cz+Math.cos(a*0.9)*p.rz);
+      v.rotation.y=a+1.2;
+      const flap=Math.sin(t*16+p.fase)*0.75;
+      v.userData.vL.rotation.y=-0.35+flap;
+      v.userData.vR.rotation.y=0.35-flap;
+    }
+    if(uil&&uil.userData.kop){
+      const kop=uil.userData.kop;
+      let doel=Math.sin(t*0.45)*0.55+Math.sin(t*0.17)*0.25;
+      if(typeof held!=='undefined'&&held){
+        const dx=held.position.x-uil.position.x,dz=held.position.z-uil.position.z;
+        if(dx*dx+dz*dz<90){
+          let kijk=Math.atan2(dx,dz)-uil.rotation.y;
+          while(kijk>Math.PI)kijk-=Math.PI*2;while(kijk<-Math.PI)kijk+=Math.PI*2;
+          doel=Math.max(-0.9,Math.min(0.9,kijk));
+        }
+      }
+      kop.rotation.y+=(doel-kop.rotation.y)*Math.min(1,3*dt);
+    }
+    if(rimpelVlak){
+      rimpelVlak.rotation.z=t*0.22;
+      rimpelVlak.material.opacity=0.28+Math.sin(t*1.6)*0.1;
+    }
+    if(grasTuft&&grasDummy&&grasPlek&&!RMP&&(Math.floor(t*8)%2===0)){
+      const d=grasDummy,i=Math.floor(t*8)%grasPlek.length;
+      const k=grasPlek[i];
+      d.position.set(k.x,0,k.z);
+      d.rotation.set(0,k.ry,Math.sin(t*2.2+i)*0.2);
+      d.scale.set(k.s,k.s*1.05,1);
+      d.updateMatrix();grasTuft.setMatrixAt(i,d.matrix);
+      grasTuft.instanceMatrix.needsUpdate=true;
+    }
+    if(kabouter){
+      const u=kabouter.userData;
+      u.t-=dt;
+      if(u.fase==='wacht'){
+        kabouter.visible=true;
+        kabouter.rotation.y+=dt*0.4;
+        kabouter.position.y=0;
+        if(u.t<=0){
+          u.van=u.naar;
+          let n=u.van;while(n===u.van)n=Math.floor(Math.random()*kabouterPlekken.length);
+          u.naar=n;u.fase='ren';u.u=0;u.t=0;
+          kabouterRitsel();
+        }
+      }else if(u.fase==='ren'){
+        u.u+=dt*0.85;
+        const a=kabouterPlekken[u.van],b=kabouterPlekken[u.naar];
+        const k=Math.min(1,u.u),e=k*k*(3-2*k);
+        kabouter.position.set(a[0]+(b[0]-a[0])*e,0.12*Math.sin(k*Math.PI),a[1]+(b[1]-a[1])*e);
+        kabouter.rotation.y=Math.atan2(b[0]-a[0],b[1]-a[1]);
+        kabouter.visible=true;
+        if(k>=1){u.fase='weg';u.t=1.6+Math.random()*2.2;kabouter.visible=false}
+      }else{
+        kabouter.visible=false;
+        if(u.t<=0){
+          const b=kabouterPlekken[u.naar];
+          kabouter.position.set(b[0],0,b[1]);
+          u.fase='wacht';u.t=5+Math.random()*8;
+        }
+      }
+    }
+  }
 
   /* ===== v172: fakkels, lichtstralen, vuurvliegjes, stof, bladeren ===== */
   const fakkels=[];
@@ -2001,33 +2205,8 @@
     return vol;
   }
   function sfeerTic(t,dt){
-    const flikk=licht?0.35:1;
-    fakkels.forEach((f,i)=>{
-      const k=0.75+0.25*Math.sin(t*11+f.fase)+0.12*Math.sin(t*23+f.fase*1.7);
-      const s=(0.85+0.22*k)*flikk;
-      f.vlam.scale.set(0.9+k*0.15,s,1);
-      f.vlam.material.opacity=0.70+0.20*k;
-      f.halo.material.opacity=(licht?0.18:0.36)*k;
-      f.halo.scale.setScalar(0.85+0.3*k);
-      f.vlam.lookAt(camera.position);
-      f.halo.lookAt(camera.position);
-    });
-    const vol=zetSfeerLicht();
-    const nLicht=licht||RMP?0:N_FAKKEL_LICHT;
-    for(let i=0;i<nLicht;i++){
-      const L=fakkelLichten[i];
-      if(!L)continue;
-      const f=fakkels[vol[i].i];
-      const k=0.75+0.25*Math.sin(t*11+f.fase)+0.12*Math.sin(t*23+f.fase*1.7);
-      L.intensity=1.85*k;
-      L.distance=7.5;
-    }
-    const nVlieg=RMP?0:Math.min(vuurvlieg.nVol,licht?Math.min(12,VLIEG_N):VLIEG_N);
-    const nStof=RMP?0:Math.min(stof.nVol,licht?Math.min(6,STOF_N):STOF_N);
-    const nDeur=RMP?0:Math.min(deurVonken.nVol,licht?Math.min(4,VONKDEUR_N):VONKDEUR_N);
-    const nEmber=RMP?0:Math.min(embers.nVol,licht?Math.min(12,EMBER_N):EMBER_N);
-    vuurvlieg.pts.visible=nVlieg>0;stof.pts.visible=nStof>0;deurVonken.pts.visible=nDeur>0;embers.pts.visible=nEmber>0;
-    vuurvlieg.geo.setDrawRange(0,nVlieg);stof.geo.setDrawRange(0,nStof);deurVonken.geo.setDrawRange(0,nDeur);embers.geo.setDrawRange(0,nEmber);
+    const nVlieg=0,nStof=0,nDeur=0,nEmber=0;
+    if(vuurvlieg.pts.visible){vuurvlieg.pts.visible=false;stof.pts.visible=false;deurVonken.pts.visible=false;embers.pts.visible=false}
     function drift(set,n,fn){
       if(n<=0)return;
       const arr=set.pos;
@@ -2566,7 +2745,7 @@
   function tekenDebug(){
     if(!debugAan||!debugEl)return;
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
-    debugEl.textContent='v178  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
+    debugEl.textContent='v179  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
       'kijk '+(kijkAan?'AAN':'uit')+(kijkSleep?' SLEEP':'')+'  id '+(kijkId==null?'-':kijkId)+'\n'+
@@ -2955,37 +3134,47 @@
     camAchterT=0.001;
     camVast=false;
   }
-  function fadeOcclusie(){
-    if(!haagFade.length)return;
-    const kop=LOOK;
-    kop.set(held.position.x,held.position.y+1.45,held.position.z);
-    const dir=CAM_ZOEK;
-    dir.subVectors(kop,camera.position);
-    const dist=dir.length();
-    if(dist<0.05)return;
-    dir.multiplyScalar(1/dist);
-    ray.set(camera.position,dir);
-    ray.far=dist-0.12;
-    const hits=ray.intersectObjects(haagFade,false);
+  function rayRaaktDoos(ox,oy,oz,dx,dy,dz,len,b){
+    let tmin=0,tmax=len;
+    function as(o,d,mn,mx){
+      if(Math.abs(d)<1e-8)return o>=mn&&o<=mx;
+      const inv=1/d;let t1=(mn-o)*inv,t2=(mx-o)*inv;if(t1>t2){const k=t1;t1=t2;t2=k}
+      tmin=Math.max(tmin,t1);tmax=Math.min(tmax,t2);return tmax>=tmin;
+    }
+    return as(ox,dx,b.minx,b.maxx)&&as(oy,dy,b.miny,b.maxy)&&as(oz,dz,b.minz,b.maxz);
+  }
+  function murenVoorCamera(){
+    const ox=camera.position.x,oy=camera.position.y,oz=camera.position.z;
+    const dx=held.position.x-ox,dy=(held.position.y+1.45)-oy,dz=held.position.z-oz;
+    const len=Math.sqrt(dx*dx+dy*dy+dz*dz);
+    if(len<0.05)return new Set();
+    const inv=1/len,x=dx*inv,y=dy*inv,z=dz*inv;
     const blok=new Set();
-    for(let i=0;i<hits.length;i++){
-      const o=hits[i].object;
-      if(o&&o.userData&&o.userData.fadeOc)blok.add(o);
+    for(let i=0;i<haagRayMuurs.length;i++){
+      if(rayRaaktDoos(ox,oy,oz,x,y,z,len-0.12,haagRayMuurs[i]))blok.add(haagRayMuurs[i].id);
     }
-    for(let i=0;i<haagFade.length;i++){
-      const m=haagFade[i], mat=m.userData.fadeMat||m.material;
-      const cur=m.userData.fadeOp==null?1:m.userData.fadeOp;
-      // occlusie meteen doorzichtig (Luna nooit een frame weg), terugkomen is zacht
+    return blok;
+  }
+  function fadeOcclusie(){
+    if(!haagMuurOp)return;
+    const blok=murenVoorCamera();
+    let veranderd=false;
+    for(let m=0;m<haagMuurOp.length;m++){
+      const cur=haagMuurOp[m];
       const nxt=blok.has(m)?0.28:cur+(1-cur)*0.18;
-      m.userData.fadeOp=nxt;
-      if(mat){
-        const tr=nxt<0.95;
-        mat.transparent=tr;
-        mat.opacity=nxt;
-        mat.depthWrite=!tr;
-        mat.needsUpdate=true;
-      }
+      if(Math.abs(nxt-cur)>0.002){haagMuurOp[m]=nxt;veranderd=true}
     }
+    if(!veranderd&&haagFadeU.fadeN.value===0)return;
+    let n=0;
+    for(let m=0;m<haagMuurOp.length&&n<4;m++){
+      if(haagMuurOp[m]>=0.97)continue;
+      const b=haagRayMuurs[m];
+      haagFadeU.fadeMin.value[n].set(b.minx,b.miny,b.minz);
+      haagFadeU.fadeMax.value[n].set(b.maxx,b.maxy,b.maxz);
+      haagFadeU.fadeAmt.value[n]=haagMuurOp[m];
+      n++;
+    }
+    haagFadeU.fadeN.value=n;
   }
   function camInSolid(x,y,z){
     const r=0.28;
@@ -2996,20 +3185,9 @@
     return false;
   }
   function lunaZichtbaar(){
-    const kop=new THREE.Vector3(held.position.x,held.position.y+1.45,held.position.z);
-    const dir=new THREE.Vector3().subVectors(kop,camera.position);
-    const dist=dir.length();
-    if(dist<0.05)return true;
-    dir.multiplyScalar(1/dist);
-    ray.set(camera.position,dir);
-    ray.far=dist-0.12;
-    const hits=ray.intersectObjects(haagFade,false);
-    for(let i=0;i<hits.length;i++){
-      const mat=hits[i].object&&(hits[i].object.userData.fadeMat||hits[i].object.material);
-      const op=hits[i].object&&hits[i].object.userData.fadeOp;
-      if(mat&&!mat.transparent&&(op==null||op>0.6))return false;
-      if(op!=null&&op>0.6)return false;
-    }
+    if(!haagMuurOp)return true;
+    const blok=murenVoorCamera();
+    for(const id of blok){if(haagMuurOp[id]>0.6)return false}
     return true;
   }
   function volgCamera(dt){
@@ -3107,7 +3285,7 @@
         s.material.opacity=0.5+Math.sin(t*6+i)*0.16;
         if(licht)s.material.opacity*=0.7;
       });
-      const nDrup=licht?8:druppels.length;
+      const nDrup=licht?6:Math.min(10,druppels.length);
       druppels.forEach((d,i)=>{
         if(i>=nDrup){d.visible=false;return}
         d.visible=true;
@@ -3136,14 +3314,6 @@
       if(typeof deurGloed!=='undefined'){
         deurGloed.forEach((g,i)=>{g.material.opacity=0.35+Math.sin(t*2.1+i)*0.2});
       }
-      if(typeof vlinder!=='undefined' && vlinder && !licht){
-        vlinder.visible=true;
-        vlinder.position.set(Math.sin(t*0.35)*6.5,1.2+Math.sin(t*1.4)*0.35,10+Math.cos(t*0.28)*5);
-        vlinder.rotation.y=t*0.35+1.2;
-        const flap=Math.sin(t*14)*0.7;
-        vlinder.userData.vL.rotation.y=-0.4+flap;
-        vlinder.userData.vR.rotation.y=0.4-flap;
-      }else if(typeof vlinder!=='undefined' && vlinder){vlinder.visible=false}
       if(typeof vonkRingen!=='undefined' && stafPunt){
         stafPunt.getWorldPosition(TMP);
         vonkRingen.forEach((r,i)=>{
@@ -3191,8 +3361,7 @@
     }
     if(mark.visible)mark.material.opacity=0.45+Math.sin(t*4)*0.3;
     // stapelwolken staan vast (geen lookAt per frame, te duur en gaf eerder kruisen)
-    bloemen.forEach(f=>f.lookAt(camera.position));
-    if(pollen)pollen.visible=false;
+    if(typeof levenTic==='function')levenTic(t,dt);
     if(typeof sfeerTic==='function')sfeerTic(t,dt);
     if(!camVast)volgCamera(dt);
     zetDeurKaart();
@@ -3284,6 +3453,11 @@
     if(versmolten)return;versmolten=true;
     function mark(o){if(!o)return;o.userData.dyn=1;if(o.traverse)o.traverse(c=>c.userData.dyn=1)}
     if(typeof waterVlakken!=='undefined')waterVlakken.forEach(mark);
+    if(typeof uil!=='undefined')mark(uil);
+    if(typeof kabouter!=='undefined')mark(kabouter);
+    if(typeof vlinders!=='undefined')vlinders.forEach(mark);
+    if(typeof rimpelVlak!=='undefined')mark(rimpelVlak);
+    if(typeof grasTuft!=='undefined')mark(grasTuft);
     if(typeof druppels!=='undefined')druppels.forEach(mark);
     if(typeof stralen!=='undefined')stralen.forEach(mark);
     if(typeof spatten!=='undefined')spatten.forEach(mark);
@@ -3298,7 +3472,7 @@
     world.traverse(o=>{
       if(!o.isMesh||o.isInstancedMesh||o.userData.dyn||o.userData.fadeOc||skip.has(o))return;
       if(!o.material||Array.isArray(o.material))return;
-      if(o.material.transparent&&!o.material.alphaTest)return;
+      if(o.material.transparent&&!o.material.alphaTest&&o.material!==mat.padRand)return;
       const g=o.geometry.clone();
       o.updateWorldMatrix(true,false);
       g.applyMatrix4(o.matrixWorld);
@@ -3500,6 +3674,7 @@
       return this.camStok();
     },
     camReset:zetCameraAchter,
+    toonLeven(){if(kabouter){kabouter.visible=true;kabouter.position.set(-2.85,0,7.35);kabouter.rotation.y=0.85;kabouter.userData.fase='wacht';kabouter.userData.t=30}if(uil&&uil.userData.kop)uil.userData.kop.rotation.y=0.45;},
     camTest(){
       return {
         pos:{x:held.position.x,y:held.position.y,z:held.position.z,rot:held.rotation.y},
@@ -3507,7 +3682,7 @@
         zichtbaar:lunaZichtbaar(),
         inSolid:camInSolid(camera.position.x,camera.position.y,camera.position.z),
         inRail:inRail(camera.position.x,camera.position.z),
-        fade:haagFade.filter(m=> (m.userData.fadeOp||1)<0.95).length,
+        fade:haagMuurOp?Array.from(haagMuurOp).filter(v=>v<0.95).length:0,
         stok:{aan:stokAan,dx:stokDx,dz:stokDz,kracht:stokKracht},
         camStok:{aan:camStokAan,dx:camStokDx,dy:camStokDy,kracht:camStokKracht}
       };

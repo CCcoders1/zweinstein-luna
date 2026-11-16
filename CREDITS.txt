@@ -365,3 +365,12 @@ v178 — 3D-tuin
   binnenplaats, voor de deur waar je uitkwam. Bereikbaar vanaf de
   Hal, de Kassen, de moestuin en de Sluipwegwijzer. Zonder WebGL
   blijf je in het 2D-spel. Zelfgemaakt, geen EA/Warner-assets.
+
+v179 — 3D-tuin
+  Snellere tuin: hagen samengevoegd tot twee meshes met goedkope
+  fade, paden in Lambert, bladeren en klimop als knipkaarten,
+  iets lagere interne resolutie in volle kwaliteit. Leven in de
+  tuin: vlinders, een bruine tuinuil die omkijkt, wuivend gras,
+  rimpelend fonteinwater en een kabouter die soms wegrent
+  (kleine procedurele geluidjes). Zelfgemaakt, geen EA/Warner-
+  assets.
