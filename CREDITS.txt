@@ -398,3 +398,14 @@ v182 — 3D-tuin
   deur valt achter haar dicht. Geldt voor De Kassen, Hagrids
   moestuin, de Grote Hal en de zuidelijke poort. Zelfgemaakt,
   geen EA/Warner-assets.
+
+v183 — 3D-tuin en navigatie
+  In het hoofdspel is de knop Kassen vervangen door Buiten /
+  Naar buiten, die de 3D-tuin opent. Overbodige korte routes
+  naar de Kassen (onderbalk, Hal-link, Sluipwegwijzer) en naar
+  Hagrids moestuin (pagina Meer) zijn weg; je loopt erheen via
+  de deuren in de tuin. Zonder WebGL val je terug op het 2D-spel.
+  De loopknop werkt weer bij een deur (de deurbalk ving de
+  tikken af). Ambient deeltjes zijn stiller: minder en kleinere
+  vlinders, zachtere fonteindruppels en fijner stof in de
+  2D-kas. Zelfgemaakt, geen EA/Warner-assets.

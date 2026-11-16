@@ -95,11 +95,11 @@ V.home=()=>{const{j,vs,v}=huidigVak();VIEWDECOR.home='zaal';try{zetDecor('zaal')
  <button class="knop speel ${vol&&S.schilden<vol[2]?'volgende':''}" id="speelknop">Spelen · Level ${S.m3lvl}</button></section>
  ${spellenHal()}
  ${tilly(tillyZin(v,vol))}
- <div class="kleinrij"><button class="linkknop" onclick="ga('kas')">Naar de Kassen</button><button class="linkknop" id="afscheid">Voor nu stoppen</button></div>
+ <div class="kleinrij"><button class="linkknop" type="button" id="halnaarbuiten">Naar buiten</button><button class="linkknop" id="afscheid">Voor nu stoppen</button></div>
  <p class="bronlink"><a href="CREDITS.txt" target="_blank">Bronnen & licenties</a> · weer: <a href="https://open-meteo.com/" target="_blank">Open-Meteo</a></p>`);
  M3.nieuw=null;
  document.querySelectorAll('.dd').forEach(b=>b.onclick=()=>{const g=dd.find(x=>x.k==b.dataset.k);if(!g.af)g.f()});
- $('#speelknop').onclick=()=>ga('match3');$('#afscheid').onclick=()=>{try{afscheid()}catch(e){}};
+ $('#speelknop').onclick=()=>ga('match3');$('#afscheid').onclick=()=>{try{afscheid()}catch(e){}};const nb=$('#halnaarbuiten');if(nb)nb.onclick=()=>{try{if(typeof openTuin==='function')openTuin('poort');else ga('kas')}catch(e){ga('kas')}};
  const tk=$('#taakknop');if(tk)tk.onclick=()=>doeTaak(v,vol);
  try{loginCheck&&loginCheck()}catch(e){}
  if(!S.verhaalGezien[v.id+j]){
@@ -145,8 +145,8 @@ const BONUSID=new Set(BONUS.map(b=>b[0]));
 V.meer=()=>{const T=[['groei','hoed','Ontwikkeling & badges'],['album','boek','Kaartenalbum'],['quests','lijst','Opdrachten'],['beker','beker','Afdelingsbeker'],['verhaal','rol','Het verhaal van dit jaar'],['login','kalender','Ochtendpost']];
  app(`<h1 class="pagkop" id="meerkop">Meer</h1><div class="raster">${T.map(t=>`<button class="tegel" onclick="ga('${t[0]}')"><span class="ico">${icoon(t[1])}</span><b>${t[2]}</b></button>`).join('')}</div>`)};
 /* ---------- navigatie (max 5) ---------- */
-def('menuVariant','B');const NAV=[['pad','kaart','Kaart'],['kas','bloem','Kassen'],['home','','Hal'],['boek','boek','Boek'],['meer','lijst','Meer']];
-nav=function(act){const m={match3:'home',lessen:'meer',les:'meer',bonus:'meer'};const a=BONUSID.has(act)?'home':(m[act]||act);$('#nav').className='menu'+S.menuVariant;$('#nav').innerHTML=NAV.map(t=>t[0]=='home'?`<button class="hal ${a=='home'?'actief':''}" aria-label="Hal" onclick="ga('home')"><span class="halknop">${wapen(46)}</span><span>Hal</span></button>`:`<button class="${t[0]==a?'actief':''}" aria-label="${t[2]}" onclick="ga('${t[0]}')"><i class="rond">${icoon(t[1])}</i><span>${t[2]}</span></button>`).join('')};
+def('menuVariant','B');const NAV=[['pad','kaart','Kaart'],['tuin','bloem','Buiten'],['home','','Hal'],['boek','boek','Boek'],['meer','lijst','Meer']];
+nav=function(act){const m={match3:'home',lessen:'meer',les:'meer',bonus:'meer',kas:'tuin',moestuin:'tuin',mijnkas:'tuin'};const a=BONUSID.has(act)?'home':(m[act]||act);$('#nav').className='menu'+S.menuVariant;$('#nav').innerHTML=NAV.map(t=>t[0]=='home'?`<button class="hal ${a=='home'?'actief':''}" aria-label="Hal" onclick="ga('home')"><span class="halknop">${wapen(46)}</span><span>Hal</span></button>`:`<button class="${t[0]==a?'actief':''}" aria-label="${t[2]}" onclick="ga('${t[0]}')"><i class="rond">${icoon(t[1])}</i><span>${t[2]}</span></button>`).join('')};
 const _gaK=ga;ga=function(s,...a){if(BONUSID.has(s)&&!S.bonusOpen[s]&&S.huis){s='bonus';a=[]}if(s=='spel')s='bonus';if(s=='match3'){const v=m3VakVoor(a[0]||S.m3lvl);VIEWDECOR.match3=v.decor}return _gaK(s,...a)};
 Object.assign(VIEWDECOR,{pad:'kaart',bonus:'gang',meer:'zaal'});
 Object.assign(UITLEG,{match3:['Een level spelen','Veeg een magisch voorwerp naar een buur om ze te wisselen: Herinnerballen, Drankjes, Hedwig, Chocokikkers, Drakeneieren, Pompoenen… Drie of meer gelijke op een rij verdwijnen in sterrenstof. Vier op een rij geeft een toverstaf, die vijf vakjes in een lijn wist. Een blok van 2×2 geeft een uil, een L of T een ketelexplosie en vijf op een rij een Gouden Snaai. Haal de doelen bovenaan voordat je zetten op zijn.'],pad:['Het levelpad','Elk level levert één huisschild per ster op (1 tot 3). Huisschilden krijg je alleen met levels. Hoe hoger je score, hoe meer sterren: 1 ster voor winnen, 2 en 3 sterren bij een hoge score (de streepjes op de scorebalk). Zetten die over zijn, tellen aan het eind extra mee. Opnieuw spelen geeft alleen iets als je meer sterren haalt. Met huisschilden knap je de lokalen op.'],bonus:['Bonusspellen','Extra spellen voor tussendoor, met extra beloningen. Nieuwe spellen ontdek je via het verhaal.']});

@@ -445,12 +445,12 @@ body[data-view="kas"] #app{position:relative}
 body[data-view="kas"] #app{padding-bottom:calc(140px + env(safe-area-inset-bottom))}
 body[data-view="kas"] #app>.kassfeer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;border-radius:inherit}
 body[data-view="kas"] #app>:not(.kassfeer){position:relative;z-index:1}
-.kassfeer .kaszon{position:absolute;left:8%;top:-8%;width:70%;height:55%;background:linear-gradient(180deg,rgba(255,236,160,.28),rgba(180,220,140,.08) 55%,transparent);transform:skewX(-16deg);filter:blur(2px)}
-.kassfeer .kasstof{position:absolute;width:6px;height:6px;border-radius:50%;background:#fff6c8;opacity:.55;box-shadow:0 0 8px #ffe9a8;animation:kasstof 7s linear infinite}
+.kassfeer .kaszon{position:absolute;left:8%;top:-8%;width:70%;height:55%;background:linear-gradient(180deg,rgba(255,236,160,.12),rgba(180,220,140,.04) 55%,transparent);transform:skewX(-16deg);filter:blur(3px)}
+.kassfeer .kasstof{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff6c8;opacity:.22;box-shadow:0 0 4px #ffe9a8;animation:kasstof 9s linear infinite}
 .kassfeer .kasstof:nth-child(2){left:18%;top:70%;animation-duration:8.5s;animation-delay:-2s}
 .kassfeer .kasstof:nth-child(3){left:62%;top:40%;width:4px;height:4px;animation-duration:6.2s;animation-delay:-4s}
 .kassfeer .kasstof:nth-child(4){left:80%;top:22%;width:5px;height:5px;animation-duration:9s;animation-delay:-1s}
-@keyframes kasstof{0%{transform:translate(0,20px);opacity:.15}40%{opacity:.7}100%{transform:translate(16px,-80px);opacity:0}}
+@keyframes kasstof{0%{transform:translate(0,20px);opacity:.06}40%{opacity:.28}100%{transform:translate(16px,-80px);opacity:0}}
 .mk-kamer>.kassfeer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
 .mk-kamer>.kassfeer .kaszon{position:absolute;left:10%;top:0;width:80%;height:42%;background:linear-gradient(180deg,rgba(255,244,190,.35),transparent 70%);transform:skewX(-12deg)}
 .kasdeur{filter:drop-shadow(0 0 10px rgba(255,220,120,.35))}

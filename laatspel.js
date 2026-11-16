@@ -1716,7 +1716,7 @@ window.winHaakZin=function(n){
     const d=deur&&OPEN[deur]?deur:'poort';
     if(!tuinHeeftWebGL()){
       try{if(typeof toast==='function')toast('Deze telefoon kan de 3D-tuin niet tonen. Je blijft in het gewone spel.');}catch(e){}
-      const v=OPEN[d]||'home';
+      const v=(d==='poort'||d==='home')?'kas':(OPEN[d]||'kas');
       if(typeof ga==='function')ga(v);
       return;
     }
@@ -1746,7 +1746,7 @@ window.winHaakZin=function(n){
     const uit=tuinSleutel('zw_tuin_uit');
     const deur=view==='kas'?'kas':view==='moestuin'?'moestuin':(uit==='home'?'home':'poort');
     const terug=(view==='kas'&&uit==='kas')||(view==='moestuin'&&uit==='moestuin')||(view==='home'&&(uit==='home'||uit==='poort'));
-    const label=terug?'← Terug naar de tuin':'Naar de tuin';
+    const label=terug?'← Naar buiten':'Naar buiten';
     const b=document.createElement('button');
     b.type='button';
     b.id='tuinknop';
@@ -1756,6 +1756,7 @@ window.winHaakZin=function(n){
     const groet=app.querySelector('.groet');
     const rij=app.querySelector('.kleinrij');
     const kop=app.querySelector('.pp-tuin h2, h2.pagkop, .lokaal h2, h2');
+    const dub=app.querySelector('#halnaarbuiten');if(dub)dub.remove();
     if(view==='home'&&groet)groet.insertAdjacentElement('afterend',b);
     else if(view==='home'&&rij)rij.parentNode.insertBefore(b,rij);
     else if(kop)kop.insertAdjacentElement('afterend',b);
@@ -1776,7 +1777,7 @@ window.winHaakZin=function(n){
       const app=document.getElementById('app');
       if(!app||app.querySelector('#mk-tuin3d'))return r;
       app.insertAdjacentHTML('beforeend',
-        '<section class="kaart sierlijst" id="mk-tuin3d"><h3>De 3D-tuin</h3><p class="klein">De binnenplaats met deuren naar de Kassen, Hagrids moestuin en de Grote Hal. Je vindt hem ook vanaf de Hal, de Kassen, de moestuin en de Sluipwegwijzer.</p><button type="button" class="knop" id="mk-tuin3d-open">Open de tuin</button></section>');
+        '<section class="kaart sierlijst" id="mk-tuin3d"><h3>De 3D-tuin</h3><p class="klein">De binnenplaats met deuren naar de Kassen, Hagrids moestuin en de Grote Hal. Vanaf de Hal of de knop Buiten ga je naar buiten; zonder 3D blijf je in het gewone spel.</p><button type="button" class="knop" id="mk-tuin3d-open">Open de tuin</button></section>');
       const bn=document.getElementById('mk-tuin3d-open');
       if(bn)bn.onclick=function(){openTuin('poort')};
     }catch(e){}

@@ -67,7 +67,7 @@ const _dd=dagDoelen;dagDoelen=function(){const l=_dd();const d=vandaag();const h
  l.splice(1,1,{n:new Date().getDate()%2?`Oogst iets in de Kassen voor ${o[3]}`:'Oogst een plant in de Kassen',h:Math.min(h,1),m:1,f:()=>ga('kas'),i:'bloem',af:h>=1,k:d+1});return l};
 /* melding in de Hal als er iets rijp is */
 function rijpTeller(){return Object.keys(S.kweek).filter(i=>S.kweek[i]&&stadium(S.kweek[i])==4).length}
-const _navK=nav;nav=function(a){_navK(a);const n=rijpTeller();const b=document.querySelector('#nav button[onclick*="kas"] .rond');if(b&&n)b.insertAdjacentHTML('beforeend',`<em class="rijp-badge">${n}</em>`)};
+const _navK=nav;nav=function(a){_navK(a);const n=rijpTeller();const b=document.querySelector('#nav button[onclick*="tuin"] .rond,#nav button[aria-label="Buiten"] .rond,#nav button[onclick*="kas"] .rond');if(b&&n)b.insertAdjacentHTML('beforeend',`<em class="rijp-badge">${n}</em>`)};
 setInterval(()=>{if(rijpTeller()&&!document.querySelector('.rijp-badge'))nav(document.body.dataset.view)},60000);
 /* ---------- klasgenoot-toon voor oude teksten ---------- */
 Object.assign(UITLEG,{drank:['Toverdranken brouwen','Kijk, het recept staat boven de ketel. Tikken we de ingrediënten in de goede volgorde erin? Daarna roeren met je vinger, in rondjes. Ik hou de hint-knop voor ons in de gaten.'],

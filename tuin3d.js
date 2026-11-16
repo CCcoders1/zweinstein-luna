@@ -618,7 +618,7 @@
     mantel: new THREE.MeshLambertMaterial({map:T.mantelPlooi,color:0x8a9488,side:THREE.FrontSide,emissive:0x1a2218,emissiveIntensity:0.2}),
     kasteel: new THREE.MeshLambertMaterial({color:0x24344c}),
     daksteen: new THREE.MeshLambertMaterial({color:0x1a2436}),
-    druppel: new THREE.MeshBasicMaterial({color:0xc8eef6,transparent:true,opacity:0.7,depthWrite:false}),
+    druppel: new THREE.MeshBasicMaterial({color:0xc8eef6,transparent:true,opacity:0.38,depthWrite:false}),
     glas: new THREE.MeshLambertMaterial({map:T.glas,transparent:true,opacity:0.62,depthWrite:false,side:THREE.DoubleSide}),
     klimop: new THREE.MeshLambertMaterial({map:T.klimop,alphaTest:0.32,side:THREE.DoubleSide}),
     bloem: new THREE.MeshLambertMaterial({map:T.bloem,alphaTest:0.32,side:THREE.DoubleSide}),
@@ -1870,7 +1870,7 @@
   }
   pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
   const pollen=new THREE.Points(pGeo,new THREE.PointsMaterial({
-    map:T.pollen,transparent:true,depthWrite:false,size:0.22,sizeAttenuation:true,opacity:0.85,color:0xffe080
+    map:T.pollen,transparent:true,depthWrite:false,size:0.10,sizeAttenuation:true,opacity:0.28,color:0xffe080
   }));
   pollen.visible=false;
 
@@ -1886,8 +1886,8 @@
     ];
     for(let i=0;i<paden.length;i++){
       const g=new THREE.Group();
-      const m=new THREE.MeshBasicMaterial({color:kleuren[i],transparent:true,opacity:0.9,depthWrite:false,side:THREE.DoubleSide,fog:true});
-      const vL=new THREE.Mesh(new THREE.CircleGeometry(0.11,6),m);
+      const m=new THREE.MeshBasicMaterial({color:kleuren[i],transparent:true,opacity:0.48,depthWrite:false,side:THREE.DoubleSide,fog:true});
+      const vL=new THREE.Mesh(new THREE.CircleGeometry(0.07,6),m);
       const vR=new THREE.Mesh(new THREE.CircleGeometry(0.11,6),m.clone());
       vL.position.x=-0.07;vR.position.x=0.07;
       g.add(vL);g.add(vR);
@@ -2159,7 +2159,7 @@
   }
   function levenTic(t,dt){
     vondstTic(t,dt);
-    const nVl=RMP?0:(licht?2:vlinders.length);
+    const nVl=RMP?0:(licht?1:2);
     for(let i=0;i<vlinders.length;i++){
       const v=vlinders[i],aan=i<nVl;
       v.visible=aan;if(!aan)continue;
@@ -2903,7 +2903,8 @@
   let stokId=null,kijkAan=false,kijkId=null,kijkSleep=false,kijkX=0,kijkY=0,kijkStartX=0,kijkStartY=0;
   if(loopStok){
     loopStok.addEventListener('pointerdown',function(ev){
-      if(naarBinnen)return;
+      if(naarBinnen&&deurCinema)return;
+      if(naarBinnen){naarBinnen=false;overgangKlaar=true}
       eersteTikGeluid();
       ev.preventDefault();ev.stopPropagation();
       try{loopStok.setPointerCapture(ev.pointerId)}catch(e){}
@@ -2935,7 +2936,8 @@
   }
   if(camStokEl){
     camStokEl.addEventListener('pointerdown',function(ev){
-      if(naarBinnen)return;
+      if(naarBinnen&&deurCinema)return;
+      if(naarBinnen){naarBinnen=false;overgangKlaar=true}
       ev.preventDefault();ev.stopPropagation();
       try{camStokEl.setPointerCapture(ev.pointerId)}catch(e){}
       camStokAan=true;camStokId=ev.pointerId;camStokEl.classList.add('aan');
@@ -2972,7 +2974,7 @@
   function tekenDebug(){
     if(!debugAan||!debugEl)return;
     const ptrs=[...wijzers.values()].map(w=>w.id+':'+(w.typ||'?')+':'+w.rol+' @'+w.x+','+w.y).join(' | ')||'(geen)';
-    debugEl.textContent='v182  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
+    debugEl.textContent='v183  camYaw '+camYaw.toFixed(3)+'  heading '+held.rotation.y.toFixed(3)+'  pitch '+camPitch.toFixed(3)+'\n'+
       'stok '+(stokAan?'AAN':'uit')+'  dx '+stokDx.toFixed(2)+'  dz '+stokDz.toFixed(2)+'  k '+stokKracht.toFixed(2)+'  id '+(stokId==null?'-':stokId)+'\n'+
       'camstok '+(camStokAan?'AAN':'uit')+'  dx '+camStokDx.toFixed(2)+'  dy '+camStokDy.toFixed(2)+'  k '+camStokKracht.toFixed(2)+'  id '+(camStokId==null?'-':camStokId)+'\n'+
       'kijk '+(kijkAan?'AAN':'uit')+(kijkSleep?' SLEEP':'')+'  id '+(kijkId==null?'-':kijkId)+'\n'+
@@ -3633,7 +3635,7 @@
         s.material.opacity=0.5+Math.sin(t*6+i)*0.16;
         if(licht)s.material.opacity*=0.7;
       });
-      const nDrup=licht?6:Math.min(10,druppels.length);
+      const nDrup=licht?3:Math.min(5,druppels.length);
       druppels.forEach((d,i)=>{
         if(i>=nDrup){d.visible=false;return}
         d.visible=true;
