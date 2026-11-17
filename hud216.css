@@ -1,0 +1,43 @@
+/* v216: HUD-labels en geluidsknop netjes uitgelijnd */
+#smekbadge.heeftlbl::after,
+#sterbadge.heeftlbl::after{
+  bottom:-1.05em!important;
+  padding:1px 6px!important;
+  border-radius:7px!important;
+  font-size:9px!important;
+  line-height:1.2!important;
+  letter-spacing:.06em!important;
+  font-weight:700!important;
+  text-transform:none;
+  color:#f6e7c2!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.85)!important;
+  background:rgba(20,8,6,.42)!important;
+  border:1px solid rgba(201,162,39,.45);
+  box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+#sterbadge.heeftlbl::after{content:"Schilden"!important}
+#smekbadge.heeftlbl::after{content:"Smekkies"!important}
+#luid{
+  top:calc(6px + env(safe-area-inset-top))!important;
+  right:calc(8px + env(safe-area-inset-right));
+  width:44px!important;
+  height:44px!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(circle at 32% 28%,#fff8e0,transparent 44%),
+    radial-gradient(circle at 50% 55%,#3a2a4a,#1a1028 70%)!important;
+  border:2px solid #c9a227!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.35),
+    0 2px 6px rgba(0,0,0,.35)!important;
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+}
+#luid .icn,
+#luid svg{
+  width:20px!important;
+  height:20px!important;
+  stroke:#f6e7c2!important;
+  fill:none!important;
+}
