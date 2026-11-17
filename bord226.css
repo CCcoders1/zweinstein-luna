@@ -1,0 +1,110 @@
+/* v226: elk lesbord krijgt een eigen, rijke viltkleur */
+body.m3aan[data-m3les] .m3bord:not(.m3vorm){
+  box-shadow:
+    0 10px 24px rgba(20,10,0,.42),
+    0 0 0 2px #d4b24a,
+    0 0 0 5px rgba(60,36,8,.45);
+}
+body.m3aan[data-m3les] .m3bord:not(.m3vorm) #m3c{
+  box-shadow:0 0 0 2px rgba(255,244,200,.45),0 0 0 5px #c9a227,0 0 0 7px #7a5410,0 10px 22px rgba(0,0,0,.4)!important;
+}
+/* vormborden blijven doorzichtig in de gaten */
+body.m3aan .m3bord.m3vorm #m3c,
+body.m3aan.m3heeftvorm .m3bord #m3c{
+  background:transparent!important;
+}
+
+/* Herbologie: mosgroen */
+body.m3aan[data-m3les=herbologie] .m3bord:not(.m3vorm),
+body.kleur195.m3aan[data-m3les=herbologie] .m3bord:not(.m3vorm){
+  background:linear-gradient(180deg,#3d7a4a,#1d4328)!important;
+}
+body.m3aan[data-m3les=herbologie] .m3bord:not(.m3vorm) #m3c,
+body.kleur195.m3aan[data-m3les=herbologie] .m3bord #m3c{
+  background:
+    radial-gradient(circle at 18% 22%,rgba(200,230,140,.16) 0 2px,transparent 3px),
+    radial-gradient(circle at 78% 68%,rgba(200,230,140,.12) 0 2px,transparent 3px),
+    linear-gradient(160deg,#2f6840,#1a3f26 60%,#163520)!important;
+}
+
+/* Toverdranken: diep paars */
+body.m3aan[data-m3les=toverdranken] .m3bord:not(.m3vorm),
+body.kleur195.m3aan[data-m3les=toverdranken] .m3bord:not(.m3vorm){
+  background:linear-gradient(180deg,#4a2a6a,#2a1544)!important;
+}
+body.m3aan[data-m3les=toverdranken] .m3bord:not(.m3vorm) #m3c,
+body.kleur195.m3aan[data-m3les=toverdranken] .m3bord #m3c{
+  background:
+    radial-gradient(circle at 30% 40%,rgba(220,170,255,.18) 0 3px,transparent 4px),
+    radial-gradient(circle at 70% 20%,rgba(180,120,255,.12) 0 2px,transparent 3px),
+    linear-gradient(160deg,#3c2260,#281444 60%,#1c0e30)!important;
+}
+
+/* Bezweringen: koningsblauw */
+body.m3aan[data-m3les=bezweringen] .m3bord:not(.m3vorm),
+body.kleur195.m3aan[data-m3les=bezweringen] .m3bord:not(.m3vorm){
+  background:linear-gradient(180deg,#2a4a8a,#15285a)!important;
+}
+body.m3aan[data-m3les=bezweringen] .m3bord:not(.m3vorm) #m3c,
+body.kleur195.m3aan[data-m3les=bezweringen] .m3bord #m3c{
+  background:
+    radial-gradient(circle at 25% 30%,rgba(255,230,160,.16) 0 2px,transparent 3px),
+    linear-gradient(160deg,#243e78,#152452 60%,#101c40)!important;
+}
+
+/* Gedaanteverwisselingen: diep teal */
+body.m3aan[data-m3les=gedaante] .m3bord:not(.m3vorm),
+body.kleur195.m3aan[data-m3les=gedaante] .m3bord:not(.m3vorm){
+  background:linear-gradient(180deg,#1c6a68,#0e3c40)!important;
+}
+body.m3aan[data-m3les=gedaante] .m3bord:not(.m3vorm) #m3c,
+body.kleur195.m3aan[data-m3les=gedaante] .m3bord #m3c{
+  background:
+    radial-gradient(circle at 60% 30%,rgba(160,255,230,.14) 0 3px,transparent 4px),
+    linear-gradient(160deg,#17615c,#0c383c 60%,#0a2c30)!important;
+}
+
+/* Astronomie: nachtblauw met sterren */
+body.m3aan[data-m3les=astronomie] .m3bord:not(.m3vorm),
+body.kleur195.m3aan[data-m3les=astronomie] .m3bord:not(.m3vorm){
+  background:linear-gradient(180deg,#1a2a68,#0a1238)!important;
+}
+body.m3aan[data-m3les=astronomie] .m3bord:not(.m3vorm) #m3c,
+body.kleur195.m3aan[data-m3les=astronomie] .m3bord #m3c{
+  background:
+    radial-gradient(circle at 20% 25%,#fff6c8 0 1.2px,transparent 2px),
+    radial-gradient(circle at 70% 18%,#fff 0 1px,transparent 2px),
+    radial-gradient(circle at 82% 72%,#ffe08a 0 1.2px,transparent 2px),
+    radial-gradient(circle at 40% 80%,#fff 0 1px,transparent 2px),
+    linear-gradient(160deg,#152050,#0c1238 60%,#080c28)!important;
+}
+
+/* Verweer: bordeaux */
+body.m3aan[data-m3les=verweer] .m3bord:not(.m3vorm),
+body.kleur195.m3aan[data-m3les=verweer] .m3bord:not(.m3vorm){
+  background:linear-gradient(180deg,#7a2230,#3a1018)!important;
+}
+body.m3aan[data-m3les=verweer] .m3bord:not(.m3vorm) #m3c,
+body.kleur195.m3aan[data-m3les=verweer] .m3bord #m3c{
+  background:
+    radial-gradient(circle at 30% 30%,rgba(255,200,160,.14) 0 3px,transparent 4px),
+    linear-gradient(160deg,#5c1c28,#381018 60%,#2a0c14)!important;
+}
+
+/* Fabeldieren / Meer / Geschiedenis */
+body.m3aan[data-m3les=fabeldieren] .m3bord:not(.m3vorm),
+body.kleur195.m3aan[data-m3les=fabeldieren] .m3bord:not(.m3vorm){
+  background:linear-gradient(180deg,#4a5a28,#2a3014)!important;
+}
+body.m3aan[data-m3les=fabeldieren] .m3bord:not(.m3vorm) #m3c,
+body.kleur195.m3aan[data-m3les=fabeldieren] .m3bord #m3c{
+  background:linear-gradient(160deg,#3e4e22,#262c14 60%,#1c2010)!important;
+}
+body.m3aan[data-m3les=meer] .m3bord:not(.m3vorm) #m3c,
+body.kleur195.m3aan[data-m3les=meer] .m3bord #m3c{
+  background:linear-gradient(160deg,#1c5860,#123848 60%,#0c2834)!important;
+}
+body.m3aan[data-m3les=geschiedenis] .m3bord:not(.m3vorm) #m3c,
+body.kleur195.m3aan[data-m3les=geschiedenis] .m3bord #m3c{
+  background:linear-gradient(160deg,#5a3a22,#3a2414 60%,#2a180e)!important;
+}
