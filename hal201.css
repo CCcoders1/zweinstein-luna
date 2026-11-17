@@ -1,0 +1,112 @@
+/* v201: alleen de Hal-deur “Naar buiten” — nette kaart, deur en tekst op één lijn */
+body.hal192 #tuinknop.haltuin,
+body.hal192 button.haldpdeur,
+body.kleur195.hal192 #tuinknop.haltuin,
+body.kleur195.hal192 button.haldpdeur,
+body.kleur195 #tuinknop.haltuin,
+body.kleur195 button.haldpdeur{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:14px!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:10px 14px 10px 12px!important;
+  min-height:76px;
+  box-sizing:border-box;
+  text-align:left!important;
+  background:linear-gradient(165deg,#1f5a32,#0d2a18 58%,#16381a)!important;
+  color:#fff8e8!important;
+  -webkit-text-fill-color:#fff8e8!important;
+  border:1.5px solid #c9a227!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 20px rgba(40,24,8,.22),inset 0 1px 0 rgba(255,230,160,.2)!important;
+  text-shadow:none!important;
+  overflow:hidden;
+  perspective:none!important;
+  filter:none!important;
+}
+body.hal192 button.haldpdeur .kd-kozijn,
+body.kleur195 button.haldpdeur .kd-kozijn{
+  width:44px!important;
+  height:60px!important;
+  flex:0 0 44px;
+  border-radius:22px 22px 4px 4px!important;
+  box-shadow:0 0 0 3px #5a3a1a,0 0 0 5px #c9a04a,0 3px 6px rgba(0,0,0,.28)!important;
+  margin:0!important;
+  order:0!important;
+  transform:none!important;
+}
+body.hal192 button.haldpdeur .kd-blad,
+body.kleur195 button.haldpdeur .kd-blad{
+  border-radius:22px 22px 4px 4px!important;
+}
+body.hal192 button.haldpdeur .kd-tekst,
+body.kleur195 button.haldpdeur .kd-tekst{
+  order:1!important;
+  text-align:left!important;
+  margin:0!important;
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  text-shadow:0 1px 2px rgba(0,0,0,.35)!important;
+}
+body.hal192 button.haldpdeur .kd-tekst b,
+body.kleur195 button.haldpdeur .kd-tekst b{
+  font-size:1.16rem!important;
+  font-weight:800!important;
+  line-height:1.2;
+  color:#fff8e8!important;
+  -webkit-text-fill-color:#fff8e8!important;
+  letter-spacing:.02em;
+}
+body.hal192 button.haldpdeur .kd-tekst small,
+body.kleur195 button.haldpdeur .kd-tekst small{
+  font-size:.88rem!important;
+  line-height:1.25;
+  color:#e8d9b0!important;
+  -webkit-text-fill-color:#e8d9b0!important;
+  opacity:1!important;
+  margin-top:2px;
+}
+body.hal192 button.haldpdeur .kd-elf,
+body.kleur195 button.haldpdeur .kd-elf{
+  order:2;
+  width:40px!important;
+  height:40px!important;
+  flex:0 0 40px;
+  margin:0 0 0 auto!important;
+  box-shadow:0 2px 0 #c86a9a,0 0 0 2px rgba(255,248,232,.35)!important;
+}
+/* Pip: klein huiselfje met oren, geen roze bol */
+body.hal192 button.haldpdeur .kd-elf,
+body.kleur195 button.haldpdeur .kd-elf{
+  background:
+    radial-gradient(circle at 35% 28%,#fff1e4 0 18%,#e8c4a4 42%,#c48a68 100%)!important;
+  box-shadow:0 2px 0 #8a5a40,0 0 0 2px rgba(255,248,232,.4)!important;
+  overflow:visible!important;
+}
+body.hal192 button.haldpdeur .kd-elf::before,
+body.kleur195 button.haldpdeur .kd-elf::before{
+  content:""!important;
+  position:absolute;
+  left:-7px;right:-7px;top:5px;
+  height:18px;
+  background:
+    radial-gradient(ellipse 7px 15px at 6px 60%,#d4a07a 66%,transparent 68%) left,
+    radial-gradient(ellipse 7px 15px at calc(100% - 6px) 60%,#d4a07a 66%,transparent 68%) right;
+  pointer-events:none;
+}
+body.hal192 button.haldpdeur .kd-elf::after,
+body.kleur195 button.haldpdeur .kd-elf::after{
+  content:""!important;
+  left:9px!important;top:13px!important;
+  width:6px!important;height:6px!important;
+  border-radius:50%!important;
+  background:#3a2030!important;
+  box-shadow:16px 0 #3a2030,8px 8px 0 -1px #a06050!important;
+}
