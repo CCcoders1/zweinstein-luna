@@ -1,0 +1,23 @@
+/* v230: onderste kaarten in Hal en Meer blijven volledig zichtbaar boven de navigatie */
+body[data-view=home] #app,
+body.hal192[data-view=home] #app,
+body.kleur195[data-view=home] #app,
+body.halstrak #app,
+body[data-view=meer] #app,
+body.meer192 #app,
+body.kleur195[data-view=meer] #app,
+body.kleur194[data-view=meer] #app{
+  padding-bottom:calc(220px + env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box;
+}
+/* laatste kaart heeft extra ademruimte onder de gouden hoeken */
+body[data-view=home] #ookvandaag,
+body[data-view=home] #ookvandaag.halook,
+body.kleur195[data-view=home] #ookvandaag,
+body[data-view=home] #app > .bronlink,
+body[data-view=meer] #app > :last-child,
+body[data-view=meer] #app .meer192-blok:last-of-type,
+body[data-view=meer] #app .zwversie{
+  margin-bottom:24px!important;
+  scroll-margin-bottom:calc(200px + env(safe-area-inset-bottom,0px));
+}
