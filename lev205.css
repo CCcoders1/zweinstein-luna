@@ -1,0 +1,23 @@
+/* v205: Leviosa-knop volledig leesbaar op smalle schermen, geen afkapping */
+body.m3aan.m3grootbord .m3levrij{
+  max-width:58vw!important;
+}
+body.m3aan.m3grootbord .m3levrij .knop,
+body.m3aan.m3grootbord #m3lev{
+  max-width:58vw!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  letter-spacing:0!important;
+  font-variant:normal!important;
+  text-transform:none!important;
+}
+@media (max-width:380px){
+  body.m3aan.m3grootbord .m3lev-lang{display:none!important}
+  body.m3aan.m3grootbord .m3levrij,
+  body.m3aan.m3grootbord #m3lev{
+    max-width:54vw!important;
+    font-size:.9rem!important;
+    padding:8px 12px!important;
+  }
+}
