@@ -1,0 +1,170 @@
+/* v202: alleen “Ook vandaag” — gelijke, sierlijke chips */
+body.hal192 #ookvandaag.halook,
+body.kleur195 #ookvandaag.halook,
+body.kleur195 #ookvandaag{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:10px!important;
+  padding:14px 16px 16px!important;
+  box-sizing:border-box;
+}
+body.hal192 #ookvandaag.halook > small,
+body.kleur195 #ookvandaag.halook > small,
+body.kleur195 #ookvandaag > small{
+  display:block;
+  margin:0 0 2px!important;
+  padding:0!important;
+  font-family:Georgia,"Palatino Linotype",Palatino,serif!important;
+  font-size:.78rem!important;
+  font-weight:700!important;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#6a3a10!important;
+  -webkit-text-fill-color:#6a3a10!important;
+  text-align:center;
+  position:relative;
+}
+body.hal192 #ookvandaag.halook > small::after,
+body.kleur195 #ookvandaag.halook > small::after{
+  content:"◆";
+  display:block;
+  margin:6px auto 0;
+  width:88px;
+  color:#c9a227;
+  font-size:8px;
+  line-height:1;
+  -webkit-text-fill-color:#c9a227!important;
+  background:linear-gradient(90deg,transparent,#c9a227 18%,#c9a227 82%,transparent) no-repeat center 3px / 100% 1.5px;
+}
+body.hal192 #ookvandaag.halook .ookrij,
+body.kleur195 #ookvandaag.halook .ookrij,
+body.kleur195 #ookvandaag .ookrij{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  width:100%!important;
+  overflow:visible!important;
+}
+body.hal192 #ookvandaag.halook .ookchip,
+body.hal192 #ookvandaag.halook .ookrij > button,
+body.hal192 #ookvandaag.halook .ookrij > a,
+body.hal192 #ookvandaag.halook .ookrij .knop,
+body.hal192 #ookvandaag.halook .ookrij .linkknop,
+body.hal192 #ookvandaag.halook #boekknop,
+body.kleur195 #ookvandaag .ookchip,
+body.kleur195 #ookvandaag .ookrij > button,
+body.kleur195 #ookvandaag .ookrij > a,
+body.kleur195 #ookvandaag .ookrij .knop,
+body.kleur195 #ookvandaag .ookrij .linkknop,
+body.kleur195 #ookvandaag #boekknop{
+  flex:1 1 calc(33.33% - 8px)!important;
+  min-width:calc(30% - 8px)!important;
+  max-width:calc(50% - 4px)!important;
+  min-height:64px!important;
+  margin:0!important;
+  padding:8px 8px 10px!important;
+  box-sizing:border-box;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  border-radius:14px!important;
+  border:1.5px solid #5a3a14!important;
+  background:linear-gradient(180deg,#fffaf0,#f3e4c4)!important;
+  color:#1a1810!important;
+  -webkit-text-fill-color:#1a1810!important;
+  text-decoration:none!important;
+  box-shadow:0 3px 8px rgba(40,24,8,.14),inset 0 1px 0 rgba(255,255,255,.7)!important;
+  font-family:Georgia,"Palatino Linotype",Palatino,serif!important;
+  font-weight:700!important;
+  font-size:.78rem!important;
+  line-height:1.2!important;
+  letter-spacing:.01em;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow:hidden;
+  text-shadow:none!important;
+}
+/* zachte, gelijke tint per chip — zelfde gewicht, geen felle mismatch */
+body.hal192 #ookvandaag.halook .ookrij > :nth-child(1),
+body.kleur195 #ookvandaag .ookrij > :nth-child(1){
+  background:linear-gradient(180deg,#fff6d8,#f3e0a8)!important;
+}
+body.hal192 #ookvandaag.halook .ookrij > :nth-child(2),
+body.kleur195 #ookvandaag .ookrij > :nth-child(2){
+  background:linear-gradient(180deg,#e8f2ff,#d0e4f8)!important;
+}
+body.hal192 #ookvandaag.halook .ookrij > :nth-child(3),
+body.kleur195 #ookvandaag .ookrij > :nth-child(3){
+  background:linear-gradient(180deg,#eaf6e0,#d4e8c4)!important;
+}
+body.hal192 #ookvandaag.halook .ookrij > :nth-child(4),
+body.kleur195 #ookvandaag .ookrij > :nth-child(4){
+  background:linear-gradient(180deg,#fde8f0,#f3d0dc)!important;
+}
+body.hal192 #ookvandaag.halook .ookchip .icn,
+body.hal192 #ookvandaag.halook .ookchip svg,
+body.kleur195 #ookvandaag .ookchip .icn,
+body.kleur195 #ookvandaag .ookchip svg,
+body.kleur195 #ookvandaag #boekknop .icn{
+  width:22px!important;
+  height:22px!important;
+  flex:0 0 22px;
+  stroke:#5a3a14;
+  color:#5a3a14;
+}
+body.hal192 #ookvandaag.halook .ookchip small,
+body.kleur195 #ookvandaag .ookchip small{
+  font-size:.7rem!important;
+  font-weight:600!important;
+  color:#3a3428!important;
+  -webkit-text-fill-color:#3a3428!important;
+  opacity:1!important;
+}
+@media (max-width:360px){
+  body.hal192 #ookvandaag.halook .ookchip,
+  body.kleur195 #ookvandaag .ookchip{
+    min-height:58px!important;
+    font-size:.72rem!important;
+    padding:6px 6px 8px!important;
+  }
+}
+/* 3 chips: één rij; 4 chips: 2×2; 5 chips: 3 + 2 gelijke */
+body.hal192 #ookvandaag.halook .ookrij > *,
+body.kleur195 #ookvandaag .ookrij > *{
+  flex:1 1 calc(33.33% - 8px)!important;
+  max-width:calc(33.33% - 8px)!important;
+}
+body.hal192 #ookvandaag.halook .ookrij:has(> :nth-child(4):last-child) > *,
+body.kleur195 #ookvandaag .ookrij:has(> :nth-child(4):last-child) > *{
+  flex-basis:calc(50% - 8px)!important;
+  max-width:calc(50% - 8px)!important;
+}
+body.hal192 #ookvandaag.halook .ookrij:has(> :nth-child(5):last-child) > :nth-last-child(-n+2),
+body.kleur195 #ookvandaag .ookrij:has(> :nth-child(5):last-child) > :nth-last-child(-n+2){
+  flex-basis:calc(50% - 8px)!important;
+  max-width:calc(50% - 8px)!important;
+}
+/* speciale les-chip dezelfde taal, lakzegel als klein merkteken */
+body.hal192 #ookvandaag.halook .ookrij .nieuwles,
+body.kleur195 #ookvandaag .ookrij .nieuwles,
+body.hal192 #ookvandaag.halook .ookrij .mpknop{
+  background:linear-gradient(180deg,#fde8f0,#f3d0dc)!important;
+  color:#1a1810!important;
+  -webkit-text-fill-color:#1a1810!important;
+  text-shadow:none!important;
+  box-shadow:0 3px 8px rgba(40,24,8,.14),inset 0 1px 0 rgba(255,255,255,.7)!important;
+}
+body.hal192 #ookvandaag #nieuwles,
+body.kleur195 #ookvandaag #nieuwles,
+#ookvandaag button#nieuwles{
+  background:linear-gradient(180deg,#fde8f0,#f3d0dc)!important;
+  background-color:#fde8f0!important;
+  color:#1a1810!important;
+  -webkit-text-fill-color:#1a1810!important;
+  text-shadow:none!important;
+}
