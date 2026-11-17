@@ -1,0 +1,75 @@
+/* v243: doel-chips als mini-medailles met tellende stand */
+body.m3aan .m3doel,
+body.m3aan.m3grootbord .m3doel{
+  gap:6px!important;
+  align-items:center;
+  overflow:visible!important;
+}
+body.m3aan .m3kaart,
+body.m3aan.m3grootbord .m3kaart{
+  position:relative;
+  width:44px!important;
+  height:44px!important;
+  padding:3px 3px 2px!important;
+  border-radius:50%!important;
+  display:flex!important;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% 28%,#fff6d0 0%,#e8d090 52%,#c9a227 100%)!important;
+  border:2.5px solid #8a6a18!important;
+  box-shadow:
+    0 3px 6px rgba(0,0,0,.4),
+    inset 0 1px 0 #fff8e0,
+    inset 0 0 0 2px #5a3a10!important;
+  overflow:visible!important;
+}
+body.m3aan .m3kaart .m3ico,
+body.m3aan.m3grootbord .m3kaart .m3ico{
+  width:24px!important;
+  height:24px!important;
+  border-radius:50%;
+  object-fit:contain;
+  padding:0!important;
+  margin:0!important;
+  background:none!important;
+}
+body.m3aan .m3kaart svg.m3ico,
+body.m3aan.m3grootbord .m3kaart svg.m3ico{
+  width:22px!important;
+  height:22px!important;
+  padding:1px!important;
+}
+body.m3aan .m3kaart b,
+body.m3aan.m3grootbord .m3kaart b{
+  position:absolute;
+  left:50%;
+  bottom:-6px;
+  transform:translateX(-50%);
+  min-width:16px;
+  height:15px;
+  padding:0 4px;
+  margin:0!important;
+  line-height:15px;
+  font-size:11px!important;
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+  text-align:center;
+  border-radius:8px;
+  background:linear-gradient(#5a3a14,#3a2410);
+  color:#fff8e0!important;
+  border:1px solid #c9a227;
+  box-shadow:0 1px 3px rgba(0,0,0,.4);
+  z-index:2;
+}
+body.m3aan .m3kaart.af b{display:none}
+body.m3aan .m3kaart.bump{animation:m3medaille .4s cubic-bezier(.3,1.6,.5,1)}
+@keyframes m3medaille{
+  0%{transform:scale(.92)}
+  55%{transform:scale(1.1)}
+  100%{transform:scale(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  body.m3aan .m3kaart.bump{animation:none}
+}

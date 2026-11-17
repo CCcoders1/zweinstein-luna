@@ -560,3 +560,4 @@ v239 (17 november 2026): het lila flesje en het hartflesje van Toverdranken zijn
 v240 (17 november 2026): het leeuwenschild, de slang en het wolfsklauw-flesje van Verweer zijn groter en helderder, zodat je ze op het bord meteen herkent. Mama’s voortgang is alleen aangevuld, niet gereset.
 v241 (17 november 2026): het spoor van de toverstaf en de vonken bij een match krijgen de kleur van de les, bijvoorbeeld groen bij Herbologie en blauw bij Bezweringen. Mama’s voortgang is alleen aangevuld, niet gereset.
 v242 (17 november 2026): de opdrachtkaart van een personage, zoals Professor Stronk, heeft nu een gouden portretlijst en een lint met de titel. Mama’s voortgang is alleen aangevuld, niet gereset.
+v243 (17 november 2026): de doel-fiches bovenaan het bord zijn mini-medailles, en het getal telt zichtbaar af als je iets verzamelt. Mama’s voortgang is alleen aangevuld, niet gereset.
