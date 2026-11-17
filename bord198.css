@@ -1,0 +1,25 @@
+/* v198: vormborden tonen alleen speelbare vakjes, rand volgt de vorm */
+body.m3aan.m3grootbord .m3bord.m3vorm,
+body.m3aan.m3grootbord .m3.m3heeftvorm .m3bord,
+body.m3aan.m3heeftvorm .m3bord.m3vorm,
+body.m3aan .m3bord.m3vorm{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+body.m3aan.m3grootbord .m3bord.m3vorm:before,
+body.m3aan.m3grootbord .m3heeftvorm .m3bord:before,
+body.m3aan .m3bord.m3vorm:before{display:none!important;content:none!important;background:none!important}
+body.m3aan.m3grootbord .m3bord.m3vorm #m3c,
+body.m3aan.m3grootbord .m3heeftvorm .m3bord #m3c,
+body.m3aan .m3bord.m3vorm #m3c,
+body.m3aan.m3heeftvorm #m3c,
+body.m3aan.m3grootbord.kleur195 .m3bord.m3vorm #m3c,
+body.m3bijna .m3bord.m3vorm,
+body.m3bijna .m3bord.m3vorm #m3c,
+.m3aan .m3bord.m3vorm #m3c{
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  margin:0!important;
+  border-radius:0!important;
+}
