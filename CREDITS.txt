@@ -550,3 +550,4 @@ v229 (17 november 2026): als je van het ene scherm naar het andere gaat, openen 
 v230 (17 november 2026): in de Hal en in Meer kun je nu helemaal naar beneden scrollen, zodat de onderste kaarten volledig boven de menubalk blijven, inclusief hun gouden hoeken. Mama’s voortgang is alleen aangevuld, niet gereset.
 v231 (17 november 2026): de lesbanner op de Kaart blijft netjes onder de hartjes plakken als je het pad afscrollt, en schuift er niet meer onder. Mama’s voortgang is alleen aangevuld, niet gereset.
 v232 (17 november 2026): het pad op de Kaart krijgt meer lantaarns en planten verderop, met een gouden poort bij het einde van de les en struiken bij het begin. Mama’s voortgang is alleen aangevuld, niet gereset.
+v233 (17 november 2026): in de 3D-tuin kun je de fontein aantikken. Er klinkt Flipendo en de fontein spuit vrolijk omhoog. De steen zelf gaat niet gloeien of knipperen. Mama’s voortgang is alleen aangevuld, niet gereset.

@@ -1830,6 +1830,58 @@
     s.rotation.x=Math.PI/2;s.visible=false;voeg(s);spatten.push(s);
   }
 
+  /* onzichtbaar tikvlak: geen gloed, geen knipperen */
+  let flipendoBurst=0;
+  const fonteinTik=new THREE.Mesh(
+    new THREE.CylinderGeometry(2.15,2.15,2.2,12),
+    new THREE.MeshBasicMaterial({visible:false})
+  );
+  fonteinTik.position.set(fx,1.1,fz);
+  fonteinTik.userData.fontein=1;
+  voeg(fonteinTik);
+  function spreekFlipendo(){
+    let el=document.getElementById('aloho');
+    if(!el){
+      el=document.createElement('div');
+      el.id='aloho';
+      el.className='aloho';
+      el.setAttribute('aria-live','polite');
+      document.body.appendChild(el);
+    }
+    el.textContent='Flipendo';
+    el.classList.remove('aan');
+    void el.offsetWidth;
+    el.classList.add('aan');
+    setTimeout(function(){if(el)el.classList.remove('aan')},2200);
+    try{
+      if(window.speechSynthesis){
+        const u=new SpeechSynthesisUtterance('Flipendo');
+        u.lang='nl-NL';u.rate=0.95;u.pitch=1;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }
+    }catch(e){}
+    try{
+      if(geluidAan&&audioCtx&&masterGain){
+        const t0=audioCtx.currentTime;
+        const o=audioCtx.createOscillator(),gg=audioCtx.createGain();
+        o.type='sine';
+        o.frequency.setValueAtTime(880,t0);
+        o.frequency.exponentialRampToValueAtTime(220,t0+0.35);
+        gg.gain.setValueAtTime(0.0001,t0);
+        gg.gain.exponentialRampToValueAtTime(0.07,t0+0.02);
+        gg.gain.exponentialRampToValueAtTime(0.0001,t0+0.5);
+        o.connect(gg);gg.connect(masterGain);
+        o.start(t0);o.stop(t0+0.55);
+      }
+    }catch(e){}
+  }
+  function tikFlipendoFontein(){
+    spreekFlipendo();
+    flipendoBurst=1;
+    return true;
+  }
+
   // houten brug met stenen dek en treden, over de beek
   const brug=new THREE.Group();brug.position.set(0,0,9.7);world.add(brug);
   function brugBox(m,x,y,z,w,h,d){
@@ -3299,6 +3351,13 @@
         if(dx*dx+dz*dz<64){tikSchuifHeg();return}
       }
     }
+    if(fonteinTik){
+      const fHits=ray.intersectObjects([fonteinTik],true);
+      if(fHits.length&&fHits[0].distance<18){
+        const dx=held.position.x-fx,dz=held.position.z-fz;
+        if(dx*dx+dz*dz<64){tikFlipendoFontein();return}
+      }
+    }
     const vHits=ray.intersectObjects(vondsten.filter(v=>v.visible),true);
     if(vHits.length&&vHits[0].distance<22){
       let o=vHits[0].object,id=null;
@@ -4261,31 +4320,39 @@
       if(T.glinster){T.glinster.offset.x=-t*0.06;T.glinster.offset.y=t*0.08}
       if(T.rimpel){T.rimpel.offset.x=t*0.05;T.rimpel.offset.y=Math.sin(t*0.7)*0.03}
       if(T.schuim){T.schuim.offset.x=t*0.04;T.schuim.offset.y=Math.sin(t*0.9)*0.04}
+      if(flipendoBurst>0)flipendoBurst=Math.max(0,flipendoBurst-dt/1.6);
+      const burst=flipendoBurst;
       stralen.forEach((s,i)=>{
-        s.scale.set(1,1+Math.sin(t*5+i)*0.1,1);
-        s.material.opacity=0.5+Math.sin(t*6+i)*0.16;
+        const k=1+burst*1.4;
+        s.scale.set(k,1+Math.sin(t*5+i)*0.1+burst*0.8,k);
+        s.material.opacity=0.5+Math.sin(t*6+i)*0.16+burst*0.28;
         if(licht)s.material.opacity*=0.7;
       });
       const dFont=(held.position.x+5)*(held.position.x+5)+(held.position.z-9.7)*(held.position.z-9.7);
-      const nDrup=(dFont>160||licht)?0:Math.min(5,druppels.length);
+      const nDrup=(dFont>160||licht)?0:(burst>0.04?druppels.length:Math.min(5,druppels.length));
       druppels.forEach((d,i)=>{
         if(i>=nDrup){d.visible=false;return}
         d.visible=true;
         const k=monden[d.userData.kop];
-        const u=(t*0.7+d.userData.fase)%1, iu=1-u;
+        const midX=k.mid.x+(k.mid.x-k.mond.x)*burst*0.45;
+        const midY=k.mid.y+burst*1.05;
+        const midZ=k.mid.z+(k.mid.z-k.mond.z)*burst*0.45;
+        const landX=k.land.x+(k.land.x-k.mond.x)*burst*0.25;
+        const landZ=k.land.z+(k.land.z-k.mond.z)*burst*0.25;
+        const u=(t*(0.7+burst*0.5)+d.userData.fase)%1, iu=1-u;
         d.position.set(
-          iu*iu*k.mond.x+2*iu*u*k.mid.x+u*u*k.land.x,
-          iu*iu*k.mond.y+2*iu*u*k.mid.y+u*u*k.land.y,
-          iu*iu*k.mond.z+2*iu*u*k.mid.z+u*u*k.land.z
+          iu*iu*k.mond.x+2*iu*u*midX+u*u*landX,
+          iu*iu*k.mond.y+2*iu*u*midY+u*u*k.land.y,
+          iu*iu*k.mond.z+2*iu*u*midZ+u*u*landZ
         );
-        d.scale.setScalar(1.15-u*0.45);
-        d.material.opacity=0.9-u*0.55;
+        d.scale.setScalar((1.15-u*0.45)*(1+burst*0.7));
+        d.material.opacity=0.9-u*0.55+burst*0.15;
         if(u>0.88){
           const s=spatten[d.userData.kop];
           s.visible=true;
           s.position.copy(k.land);s.position.y=0.822;
-          s.scale.setScalar(0.85+(u-0.88)*12);
-          s.material.opacity=0.62-(u-0.88)*4.2;
+          s.scale.setScalar((0.85+(u-0.88)*12)*(1+burst*1.2));
+          s.material.opacity=0.62-(u-0.88)*4.2+burst*0.2;
         }
       });
       // haagzwaai uitgezet: te duur voor weinig winst
@@ -4900,6 +4967,7 @@
     naarWerktafel:()=>naarDeur('kas'),
     hegOpen:()=>!!(schuifHeg&&(schuifHeg.open||schuifHeg.anim>0.5)),
     tikHeg:()=>tikSchuifHeg(),
+    tikFontein:()=>tikFlipendoFontein(),
     deuren:()=>Object.keys(deuren).map(k=>({id:k,open:deuren[k].open,naam:deuren[k].naam,x:deuren[k].punt.x,z:deuren[k].punt.z})),
     loopNaar(x,z){doel=new THREE.Vector3(x,0,z);doelDeur=null;mark.position.set(x,0.08,z);mark.visible=true;lopen=true},
     schermPlek(x,y,z){
