@@ -1,0 +1,51 @@
+/* v197: alleen het speelscherm, groter bord, compacte HUD-rij, geen onderbalk */
+body.m3aan{padding-bottom:0}
+body.m3aan nav,body.m3aan #nav{display:none!important}
+body.m3aan #wmkaart,
+body.m3aan #ookvandaag,
+body.m3aan #morgenkaart,
+body.m3aan #tuinknop,
+body.m3aan #hwkaart,
+body.m3aan #halvr,
+body.m3aan #volgendestap,
+body.m3aan .groet,
+body.m3aan .halbanner,
+body.m3aan .lokaal,
+body.m3aan .dagdoelen,
+body.m3aan .halspel,
+body.m3aan #wmdecor{display:none!important}
+body.m3aan main,
+body.m3aan #app{
+  padding:0!important;max-width:none!important;
+  min-height:calc(100dvh - 52px);
+}
+body.m3aan.m3grootbord .m3{
+  width:100%;min-height:calc(100dvh - 52px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0 0 8px;box-sizing:border-box;
+}
+body.m3aan.m3grootbord .m3hud{
+  max-width:none;width:calc(100% - 8px);margin:2px auto 4px;
+  grid-template-columns:52px minmax(0,1fr) auto;gap:4px;
+}
+body.m3aan.m3grootbord .m3doel{
+  display:flex!important;flex-wrap:nowrap;gap:3px!important;
+  justify-content:flex-end;align-items:center;
+}
+body.m3aan.m3grootbord .m3kaart{width:40px;height:42px;padding-top:1px}
+body.m3aan.m3grootbord .m3kaart .m3ico{width:26px;height:26px}
+body.m3aan.m3grootbord .m3bord{margin:4px auto}
+body.m3aan.m3grootbord .m3bord:before{inset:-2px;border-radius:12px}
+body.m3aan.m3grootbord .m3bord #m3c{
+  border-radius:12px!important;
+  box-shadow:0 0 0 2px #c9a227,0 6px 16px rgba(0,0,0,.4)!important;
+}
+body.m3aan.m3grootbord.kleur195 .m3bord #m3c{
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--k-accent) 70%,#c9a227),0 6px 16px rgba(0,0,0,.4)!important;
+}
+body.m3aan.m3grootbord #terug{
+  position:fixed;left:8px;right:auto;top:auto;bottom:10px;
+  margin:0;z-index:6;transform:none;
+}
+body.m3aan.m3grootbord .pompmeter{margin:0 auto 2px}
+body.m3aan.m3grootbord .m3levrij{margin:2px 0 0}

@@ -248,11 +248,12 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
   const pomp=document.getElementById('pompmeter');
   const lev=document.querySelector('.m3levrij');
   const top=header?header.getBoundingClientRect().bottom:0;
-  const bot=nav?nav.getBoundingClientRect().top:innerHeight;
+  const navWeg=!nav||document.body.classList.contains('m3aan')||getComputedStyle(nav).display==='none';
+  const bot=navWeg?innerHeight:nav.getBoundingClientRect().top;
   let chrome=8;
   [hud,pomp,lev].forEach(el=>{if(el)chrome+=el.getBoundingClientRect().height});
   const vw=(window.visualViewport&&visualViewport.width)||innerWidth;
-  const availW=Math.max(200,vw-8);
+  const availW=Math.max(200,vw-4);
   const availH=Math.max(220,bot-top-chrome);
   cel=Math.max(30,Math.floor(Math.min(availW/KOL,availH/RIJEN,110)));
   W=cel*KOL;H=cel*RIJEN;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);try{m3Voorrender(T.id||thema,cel,b.L.kleuren)}catch(e){for(let k=0;k<b.L.kleuren;k++)tegelBeeld(T,k,cel)}};
