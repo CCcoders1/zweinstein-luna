@@ -1,0 +1,54 @@
+/* v231: de lesbanner op de Kaart blijft onder de hartjes plakken, er niet onder schuiven.
+   overflow-x:hidden op html/body zet overflow-y stiekem op auto, en dan werkt position:sticky niet.
+   clip doet dat niet, en knipt horizontale uitloop nog steeds af. */
+html:has(body[data-view=pad]),
+body[data-view=pad]{
+  overflow-x:clip!important;
+}
+/* vaste kopstrook zodat kaarten niet onder de hartjes doorschuiven */
+body[data-view=pad]::before{
+  content:"";
+  position:fixed;
+  top:0;left:0;right:0;
+  height:calc(62px + env(safe-area-inset-top,0px));
+  background:linear-gradient(#2a0f18,#3a1520 70%,#4a1a28);
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+  z-index:7;
+  pointer-events:none;
+}
+body[data-view=pad] .padkopbeeld,
+body.pad192 .padkopbeeld,
+body.kleur195[data-view=pad] .padkopbeeld,
+body.pad192 .pad192-kop{
+  position:sticky!important;
+  top:calc(62px + env(safe-area-inset-top,0px))!important;
+  z-index:8;
+  height:88px!important;
+  min-height:88px!important;
+  max-height:88px!important;
+  margin:4px 0 12px!important;
+  box-shadow:0 8px 18px rgba(0,0,0,.35),0 0 0 2px #c9a227;
+}
+body[data-view=pad] .padkopbeeld > div,
+body.pad192 .padkopbeeld > div{
+  padding:10px 14px 8px!important;
+}
+/* compact: lesnummer, titel en professor blijven; de sfeerzin past er niet bij */
+body[data-view=pad] .padkopbeeld .padkop-zin,
+body.pad192 .padkopbeeld .padkop-zin{
+  display:none!important;
+}
+body[data-view=pad] .padkopbeeld h2,
+body.kleur195[data-view=pad] .padkopbeeld h2{
+  font-size:1.12em!important;
+  line-height:1.15!important;
+}
+body[data-view=pad] .padkopbeeld small{
+  display:block;
+}
+/* medailles komen niet onder de vastgeplakte banner */
+body[data-view=pad] .padlvl,
+body.pad192 .padlvl,
+body.kleur195[data-view=pad] .padlvl{
+  scroll-margin-top:calc(162px + env(safe-area-inset-top,0px))!important;
+}
