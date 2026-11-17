@@ -1,0 +1,85 @@
+/* v250: Meer-menu en instellingen — niets onder de navigatie, knoppen leesbaar */
+body[data-view=meer] .meerblok,
+body.meer192 #app .meerblok{
+  margin:8px 12px 10px!important;
+  padding:8px 8px 10px!important;
+}
+body[data-view=meer] .meer-tegel,
+body.meer192 .meer-tegel,
+body.kleur195[data-view=meer] .meer-tegel{
+  min-height:78px!important;
+  padding:10px!important;
+  gap:6px!important;
+}
+body[data-view=meer] #app,
+body.meer192 #app,
+body.kleur195[data-view=meer] #app{
+  padding-bottom:calc(240px + env(safe-area-inset-bottom,0px))!important;
+}
+body[data-view=meer] #app .meerblok:last-of-type,
+body[data-view=meer] #app .meer192-blok:last-of-type,
+body[data-view=meer] #app .zwversie{
+  margin-bottom:36px!important;
+  scroll-margin-bottom:calc(220px + env(safe-area-inset-bottom,0px))!important;
+}
+
+/* Instellingen-subpagina's: ruimte boven de menubalk */
+body[data-view=geluid] #app,
+body[data-view=backup] #app,
+body[data-view=groei] #app,
+body[data-view=album] #app,
+body[data-view=login] #app,
+body[data-view=geluidstap] #app{
+  padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box;
+}
+
+/* Geluid: lange groene knop niet over de lakzegel heen, schuifjes in huisstijl */
+body[data-view=geluid] #gpkies.knop.volgende{
+  padding-left:2.6em!important;
+  padding-right:1.1em!important;
+  font-size:.9rem!important;
+  letter-spacing:.02em;
+  white-space:nowrap;
+}
+body[data-view=geluid] #gpkies.knop.volgende::before,
+body[data-view=geluid] #gpkies.knop.volgende::after{
+  left:10px!important;
+}
+body[data-view=geluid] #app .gpsfeer{
+  margin:12px 0 8px!important;
+  padding:10px 12px 12px!important;
+  background:rgba(255,248,230,.55);
+  border:1.5px solid rgba(201,162,39,.5);
+  border-radius:14px;
+  box-shadow:inset 0 1px 0 #fff8e8;
+}
+body[data-view=geluid] #app .gpsfeer .gpslider input[type=range]{
+  -webkit-appearance:none;
+  appearance:none;
+  height:8px;
+  border-radius:99px;
+  background:linear-gradient(#e8c97a,#c9a227);
+  outline:none;
+  accent-color:#c9a227;
+}
+body[data-view=geluid] #app .gpsfeer .gpslider input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:22px;height:22px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff6dc,#e8c44a 58%,#8a5a10);
+  border:2px solid #8a5a10;
+  box-shadow:0 1px 3px rgba(0,0,0,.35);
+}
+
+/* Backup: onderste kaart volledig zichtbaar */
+body[data-view=backup] #app > :last-child,
+body[data-view=backup] .perkament > section:last-of-type,
+body[data-view=backup] .kaart:last-of-type{
+  scroll-margin-bottom:calc(140px + env(safe-area-inset-bottom,0px));
+  margin-bottom:16px;
+}
+@media(max-width:360px){
+  body[data-view=meer] .meer-tegel{min-height:72px!important;padding:8px!important}
+  body[data-view=geluid] #gpkies.knop.volgende{font-size:.82rem!important;padding-left:2.4em!important}
+}

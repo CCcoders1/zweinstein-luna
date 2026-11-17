@@ -567,3 +567,4 @@ v246 (17 november 2026): de tuin heeft meer bloemen en lantaarns, warm licht bij
 v247 (17 november 2026): in je eigen kas staan de potten en planten groter en rustiger in beeld, met een gouden etiket en een duidelijke groeibalk. Mama’s voortgang is alleen aangevuld, niet gereset.
 v248 (17 november 2026): de Smekkies-bonuskamer heeft een feestelijke startkaart met een zak bonen, een groene Start-knop, en een duidelijkere tijd- en tellingbalk. Mama’s voortgang is alleen aangevuld, niet gereset.
 v249 (17 november 2026): het Ranglijst- en Vrienden-scherm is netter, met gouden tabbladen, een duidelijke plek voor jou op de lijst en een sierlijke vriendcode. Mama’s voortgang is alleen aangevuld, niet gereset.
+v250 (17 november 2026): in Meer en bij de instellingen blijven de onderste knoppen en schuifjes boven de menubalk, en de knop Geluidspakket laden is helemaal leesbaar. Mama’s voortgang is alleen aangevuld, niet gereset.
