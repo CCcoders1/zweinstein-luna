@@ -1,0 +1,51 @@
+/* v217: overal dezelfde gouden hoeken en scheidingslijnen */
+body[data-view=home] #volgendestap.halstap,
+body.hal192 #volgendestap.halstap,
+body[data-view=home] #ookvandaag.ookvandaag,
+body.hal192 #ookvandaag.halook{
+  box-shadow:
+    inset 0 0 0 2px #c9a227,
+    0 8px 18px rgba(0,0,0,.22)!important;
+  border:0!important;
+  position:relative;
+}
+body[data-view=home] #volgendestap.halstap:before,
+body[data-view=home] #ookvandaag.ookvandaag:before,
+body.hal192 #volgendestap.halstap:before,
+body.hal192 #ookvandaag.halook:before,
+body[data-view=home] #volgendestap.halstap:after,
+body[data-view=home] #ookvandaag.ookvandaag:after,
+body.hal192 #volgendestap.halstap:after,
+body.hal192 #ookvandaag.halook:after{
+  content:"";
+  position:absolute;width:14px;height:14px;pointer-events:none;z-index:2;
+  border:2px solid #c9a227;
+}
+body[data-view=home] #volgendestap.halstap:before,
+body[data-view=home] #ookvandaag.ookvandaag:before,
+body.hal192 #volgendestap.halstap:before,
+body.hal192 #ookvandaag.halook:before{left:7px;top:7px;border-right:0;border-bottom:0;border-radius:3px 0 0 0}
+body[data-view=home] #volgendestap.halstap:after,
+body[data-view=home] #ookvandaag.ookvandaag:after,
+body.hal192 #volgendestap.halstap:after,
+body.hal192 #ookvandaag.halook:after{right:7px;top:7px;border-left:0;border-bottom:0;border-radius:0 3px 0 0}
+body.hal192 #volgendestap.halstap > small,
+body[data-view=home] #volgendestap.halstap > small,
+body.hal192 #ookvandaag.halook > small,
+body[data-view=home] #ookvandaag > small{
+  display:block;
+  text-align:center;
+  letter-spacing:.12em;
+  font-size:.7rem!important;
+  color:#7a4a18!important;
+  margin:2px 0 8px!important;
+  padding-bottom:8px;
+  background:
+    linear-gradient(#c9a227,#c9a227) center 100%/min(140px,60%) 1.5px no-repeat;
+}
+body[data-view=meer] .meerblok h3,
+body.meer192 .meerblok h3{
+  background:
+    linear-gradient(#c9a227,#c9a227) center 100%/min(160px,70%) 1.5px no-repeat;
+  padding-bottom:8px!important;
+}
