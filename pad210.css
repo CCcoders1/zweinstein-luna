@@ -1,0 +1,82 @@
+/* v210: levelknoppen op de Kaart weer als medailles, pad blijft boven de navigatie */
+body.kleur195[data-view=pad] #app,
+body.pad192 #app,
+body[data-view=pad] #app{
+  padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box;
+}
+body[data-view=pad] .pad,
+body.pad192 .pad{
+  margin-bottom:24px!important;
+}
+
+body.kleur195 .pad .padlvl,
+body.kleur195[data-view=pad] .padlvl,
+body.pad192 .pad .padlvl,
+body[data-view=pad] .padlvl{
+  border-radius:50%!important;
+  min-height:0!important;
+  min-width:0!important;
+  width:58px;
+  height:58px;
+  padding:0!important;
+  border:3px solid #e8c56a!important;
+  font-family:Georgia,"Palatino Linotype",Palatino,serif!important;
+  font-weight:800!important;
+  font-size:1.05rem!important;
+  letter-spacing:.02em;
+  line-height:1;
+  box-shadow:
+    0 5px 0 rgba(40,20,0,.35),
+    0 10px 16px rgba(0,0,0,.28),
+    inset 0 2px 0 rgba(255,255,255,.5),
+    inset 0 -3px 6px rgba(80,40,0,.22)!important;
+}
+body.kleur195 .pad .padlvl.af,
+body[data-view=pad] .padlvl.af{
+  border-color:#ffe9a8!important;
+  color:#3a2408!important;
+  -webkit-text-fill-color:#3a2408!important;
+  background:
+    radial-gradient(circle at 32% 28%,rgba(255,255,255,.7),transparent 42%),
+    radial-gradient(circle at 50% 50%,#ffe9a8,#d4a017 62%,#8a5a10)!important;
+}
+body.kleur195 .pad .padlvl.nu,
+body[data-view=pad] .padlvl.nu{
+  width:72px!important;
+  height:72px!important;
+  border-color:#fff6c8!important;
+  color:#3a2408!important;
+  -webkit-text-fill-color:#3a2408!important;
+  background:
+    radial-gradient(circle at 32% 26%,#fffce8,transparent 44%),
+    radial-gradient(circle at 50% 50%,#ffe58a,#e0a810 60%,#a06a08)!important;
+  box-shadow:
+    0 0 0 3px rgba(255,214,90,.55),
+    0 0 26px rgba(255,214,90,.9),
+    0 6px 0 rgba(40,20,0,.3),
+    inset 0 2px 0 rgba(255,255,255,.7)!important;
+  z-index:3;
+}
+body.kleur195 .pad .padlvl.zwaar:not(.plaag),
+body[data-view=pad] .padlvl.zwaar:not(.plaag){
+  border-color:#e07a55!important;
+}
+body.kleur195 .pad .padlvl.superzwaar:not(.plaag),
+body[data-view=pad] .padlvl.superzwaar:not(.plaag){
+  border-color:#c9a227!important;
+}
+
+body[data-view=pad] .padlvl,
+body.pad192 .padlvl,
+body.kleur195[data-view=pad] .padlvl{
+  scroll-margin-bottom:calc(176px + env(safe-area-inset-bottom,0px))!important;
+  scroll-margin-top:16px;
+}
+body[data-view=pad] .padster{
+  margin-top:4px;
+  font-size:13px;
+  letter-spacing:2px;
+  color:#ffd36a;
+  text-shadow:0 1px 3px rgba(0,0,0,.7);
+}
