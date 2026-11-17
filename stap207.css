@@ -1,0 +1,109 @@
+/* v207: Volgende-stap-kaart sierlijk, en Openen blijft boven de navigatie */
+body[data-view=home] #app,
+body.hal192[data-view=home] #app,
+body.kleur195[data-view=home] #app{
+  padding-bottom:calc(132px + env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box;
+}
+
+body.kleur195.hal192 #volgendestap.halstap,
+body.hal192 #volgendestap.halstap,
+body.kleur195 #volgendestap.halstap{
+  position:relative;
+  margin:2px 0 10px!important;
+  padding:18px 16px 16px!important;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,rgba(255,232,180,.18),transparent 28%),
+    linear-gradient(165deg,#3a1218 0%,#6e1c2a 58%,#3e1218 100%)!important;
+  color:#fff7ec!important;
+  border:1.5px solid #d4b24a!important;
+  border-radius:18px!important;
+  box-shadow:
+    0 8px 22px rgba(40,8,12,.38),
+    inset 0 1px 0 rgba(255,236,190,.35)!important;
+}
+/* binnenrand + hoekvlammen */
+body.kleur195.hal192 #volgendestap.halstap::before,
+body.hal192 #volgendestap.halstap::before,
+body.kleur195 #volgendestap.halstap::before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  left:8px;right:8px;top:8px;
+  height:auto;
+  border:1px solid rgba(212,178,74,.42);
+  border-radius:12px;
+  background:none;
+  opacity:1;
+  pointer-events:none;
+  box-shadow:
+    inset 7px 0 0 -6px #d4b24a,
+    inset -7px 0 0 -6px #d4b24a,
+    inset 0 7px 0 -6px transparent,
+    inset 0 -7px 0 -6px transparent;
+}
+body.kleur195.hal192 #volgendestap.halstap::after,
+body.hal192 #volgendestap.halstap::after,
+body.kleur195 #volgendestap.halstap::after{
+  content:"✦";
+  position:absolute;
+  top:10px;right:16px;
+  left:auto;height:auto;width:auto;
+  background:none;
+  color:#e8c44a;
+  font-size:11px;
+  line-height:1;
+  pointer-events:none;
+  opacity:.9;
+}
+
+body.kleur195.hal192 #volgendestap.halstap>small,
+body.hal192 #volgendestap.halstap>small,
+body.kleur195 #volgendestap.halstap>small{
+  display:block;
+  margin:0 0 4px!important;
+  font-family:Georgia,serif!important;
+  font-size:.68rem!important;
+  font-weight:700!important;
+  letter-spacing:.16em!important;
+  text-transform:uppercase!important;
+  color:#efd27a!important;
+  -webkit-text-fill-color:#efd27a!important;
+  opacity:1!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.35);
+}
+body.kleur195.hal192 #volgendestap.halstap h3,
+body.hal192 #volgendestap.halstap h3,
+body.kleur195 #volgendestap.halstap h3{
+  margin:0 0 .3em!important;
+  padding:0!important;
+  font-family:Georgia,"Palatino Linotype",Palatino,serif!important;
+  font-size:1.28rem!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+  letter-spacing:.03em!important;
+  color:#fff7ec!important;
+  -webkit-text-fill-color:#fff7ec!important;
+  background:none!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.35);
+}
+body.kleur195.hal192 #volgendestap.halstap p,
+body.hal192 #volgendestap.halstap p,
+body.kleur195 #volgendestap.halstap p{
+  margin:0 0 12px!important;
+  color:#f4e4c8!important;
+  -webkit-text-fill-color:#f4e4c8!important;
+  font:italic .95rem/1.4 Georgia,serif!important;
+  opacity:1!important;
+  text-shadow:none;
+}
+body.kleur195.hal192 #volgendestap.halstap #stapknop,
+body.hal192 #volgendestap.halstap #stapknop,
+body.kleur195 #volgendestap.halstap #stapknop{
+  width:100%;
+  min-height:54px!important;
+  margin:0!important;
+  font-size:1.08rem!important;
+  letter-spacing:.06em;
+}
