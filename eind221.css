@@ -1,0 +1,77 @@
+/* v221: resultaatkaart netjes — ornamenten binnen de rand, knoppen binnen de kaart, geen witte knopbak, confetti onder de badge-cijfers */
+body .modalin.m3eind,
+body .modalin.rococo.m3eind,
+body.kleur195 .modalin.m3eind{
+  overflow:visible!important;
+}
+/* rococo-hoeken horen IN de kaart, niet half erbuiten */
+body .modalin.m3eind:before,
+body .modalin.m3eind:after,
+body .modalin.rococo.m3eind:before,
+body .modalin.rococo.m3eind:after,
+body.kleur195 .modalin.m3eind:before,
+body.kleur195 .modalin.m3eind:after{
+  inset:6px auto auto 6px!important;
+  width:auto!important;
+  height:auto!important;
+  left:6px!important;
+  top:6px!important;
+  right:auto!important;
+  bottom:auto!important;
+  border:0!important;
+  background-size:34px!important;
+  background-position:left top, right top, left bottom, right bottom!important;
+  pointer-events:none;
+  z-index:3;
+}
+body .modalin.m3eind:after,
+body .modalin.rococo.m3eind:after{
+  left:6px!important;
+  right:6px!important;
+  top:6px!important;
+  bottom:6px!important;
+  inset:6px!important;
+  width:auto!important;
+  height:auto!important;
+}
+/* geen extra L-hoek bovenop de rococo-versiering */
+body .modalin.m3eind:before{content:none!important;display:none!important}
+
+/* knoppenstrook: geen tweede achtergrondbak */
+body .m3eind .m3actie,
+body.kleur195 .m3eind .m3actie,
+body .m3eind.has-winsterr .m3actie{
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+  padding:10px 0 0!important;
+  margin:8px 0 0!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  overflow:visible;
+}
+/* knoppen vullen de kaartbreedte, zonder 100%+marge die rechts uitsteekt */
+body .m3eind .m3actie .knop,
+body .m3eind .knop,
+body .m3eind .knop.volgende,
+body .m3eind .knop.volgende:first-of-type,
+body.kleur195 .m3eind .knop.volgende:first-of-type,
+body .m3eind #m3verder.knop,
+body.kleur195 .m3eind #m3verder.knop,
+body .m3eind #m3volg.knop,
+body.kleur195 .m3eind #m3volg.knop{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  margin-top:.28rem!important;
+  margin-bottom:.2rem!important;
+}
+/* confetti onder de cijfers van Smekkies, Schilden, harten en volume */
+#smekbadge, #sterbadge, #luid, #koprit, #halharten,
+#smekbadge.heeftlbl, #sterbadge.heeftlbl{
+  z-index:90!important;
+}
