@@ -1,0 +1,134 @@
+/* v206: typografie van de Hal-groet — vast, leesbaar, sierlijk op de crèmekaart */
+body.kleur195.hal192 .groet.halbanner,
+body.hal192 .groet.halbanner{
+  padding:16px 16px 14px!important;
+  background:
+    linear-gradient(180deg,rgba(255,248,232,.5),rgba(255,248,232,0) 28%),
+    linear-gradient(135deg,#fff6e4,#f3e4c4)!important;
+  color:#2a2214!important;
+}
+body.kleur195.hal192 .groet.halbanner h2,
+body.hal192 .groet.halbanner h2{
+  font-family:Georgia,"Palatino Linotype",Palatino,serif!important;
+  font-size:1.42rem!important;
+  font-weight:700!important;
+  line-height:1.18!important;
+  letter-spacing:.04em!important;
+  color:#5a2218!important;
+  -webkit-text-fill-color:#5a2218!important;
+  background:none!important;
+  text-shadow:none!important;
+  margin:0 0 .15em!important;
+  padding:0!important;
+  text-align:left;
+}
+body.kleur195.hal192 .groet.halbanner h2::after,
+body.hal192 .groet.halbanner h2::after{
+  content:"✦";
+  display:block;
+  width:104px;
+  margin:7px 0 8px;
+  font-size:.48em;
+  line-height:1;
+  letter-spacing:0;
+  color:#c9a227;
+  -webkit-text-fill-color:#c9a227;
+  text-align:center;
+  background:
+    linear-gradient(90deg,transparent,#c9a227 12%,#c9a227) left 0 center / 38px 1.5px no-repeat,
+    linear-gradient(90deg,#c9a227,#c9a227 88%,transparent) right 0 center / 38px 1.5px no-repeat;
+}
+
+/* “Nu in Zweinstein” was crème-op-crème; nu een leesbaar etiket */
+body.kleur195.hal192 .groet .nuinzw,
+body.hal192 .groet .nuinzw{margin:.1em 0 0;padding:0;color:#2a2214}
+body.kleur195.hal192 .groet .nuinzw>small,
+body.hal192 .groet .nuinzw>small{
+  display:block;
+  margin:0 0 4px!important;
+  font-family:Georgia,serif!important;
+  font-size:.68rem!important;
+  font-weight:700!important;
+  letter-spacing:.14em!important;
+  text-transform:uppercase!important;
+  color:#8a5a14!important;
+  -webkit-text-fill-color:#8a5a14!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+body.kleur195.hal192 .groet .nuinzw-meta,
+body.hal192 .groet .nuinzw-meta{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:1px;
+  margin:0 0 10px;
+  text-align:left!important;
+  color:#3a2a14!important;
+  -webkit-text-fill-color:#3a2a14!important;
+  font-size:.95rem!important;
+  font-weight:500!important;
+  line-height:1.35!important;
+  text-shadow:none!important;
+}
+body.kleur195.hal192 .groet .nuinzw-meta span,
+body.hal192 .groet .nuinzw-meta span{
+  display:block;
+  min-height:0;
+  color:inherit!important;
+  -webkit-text-fill-color:inherit!important;
+  text-shadow:none!important;
+}
+
+/* Tilly-citaat: perkamentstrook, gouden rand, portret in een ring */
+body.kleur195.hal192 .groet .nuinzw-wie,
+body.hal192 .groet .nuinzw-wie{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  box-sizing:border-box;
+  margin-top:2px;
+  padding:8px 12px 8px 8px;
+  min-height:52px;
+  text-align:left;
+  color:#2a2214!important;
+  background:
+    linear-gradient(180deg,#fffaf0,#f4e6c8)!important;
+  border:1.5px solid rgba(184,134,11,.62)!important;
+  border-radius:16px!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.7),
+    0 2px 8px rgba(60,30,8,.12)!important;
+  font:italic 1em/1.4 Georgia,serif!important;
+}
+body.kleur195.hal192 .groet .nuinzw-wie p,
+body.hal192 .groet .nuinzw-wie p{
+  margin:0!important;
+  flex:1;
+  color:#2a2214!important;
+  -webkit-text-fill-color:#2a2214!important;
+  font:italic .95em/1.4 Georgia,serif!important;
+  text-shadow:none!important;
+}
+body.kleur195.hal192 .groet .nuinzw-wie .whport,
+body.hal192 .groet .nuinzw-wie .whport{
+  flex:0 0 44px;
+  width:44px;height:44px;
+}
+body.kleur195.hal192 .groet .nuinzw-wie img,
+body.kleur195.hal192 .groet .nuinzw-wie .pportret,
+body.hal192 .groet .nuinzw-wie img,
+body.hal192 .groet .nuinzw-wie .pportret{
+  width:44px!important;
+  height:44px!important;
+  border-radius:50%!important;
+  object-fit:cover;
+  border:2px solid #d4b24a!important;
+  box-shadow:0 0 0 2px rgba(90,50,10,.12),0 2px 6px rgba(40,20,0,.25);
+  background:#f3e4c4;
+}
+body.kleur195.hal192 .groet .nuinzw-wie:focus{
+  outline:2px solid #c9a227;
+  outline-offset:2px;
+}
