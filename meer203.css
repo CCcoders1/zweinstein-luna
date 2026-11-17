@@ -1,0 +1,19 @@
+/* v203: Meer-pagina blijft boven de navigatie, laatste blok volledig zichtbaar */
+body[data-view=meer] #app,
+body.meer192 #app,
+body.kleur195[data-view=meer] #app,
+body.kleur194[data-view=meer] #app{
+  padding-bottom:calc(132px + env(safe-area-inset-bottom,0px))!important;
+  box-sizing:border-box;
+}
+body[data-view=meer] #app > :last-child,
+body.meer192 #app > .meer192-blok:last-of-type,
+body[data-view=meer] #app .meerblok:last-of-type,
+body[data-view=meer] #app .zwversie{
+  margin-bottom:8px!important;
+}
+/* versielabel niet klem onder de balk */
+body[data-view=meer] .zwversie{
+  padding-bottom:8px;
+  color:rgba(255,248,232,.8)!important;
+}
