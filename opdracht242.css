@@ -1,0 +1,93 @@
+/* v242: opdrachtkaart — portretlijst en lint */
+body[data-view=match3]:not(.m3aan) .m3voor .m3opdrachtkaart,
+body.kleur195 .m3voor .m3opdrachtkaart,
+body.kleur195 .m3opdrachtkaart,
+.m3opdrachtkaart{
+  display:flex!important;
+  align-items:center;
+  gap:.9rem;
+  margin:.9rem 1rem .15rem!important;
+  padding:.9rem 1rem .95rem .9rem!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#fffaf0,#f3e4c0)!important;
+  border:2px solid #c9a227!important;
+  box-shadow:0 7px 16px rgba(40,24,8,.22),inset 0 0 0 1px rgba(255,248,230,.75)!important;
+  position:relative;
+  overflow:visible!important;
+  color:#2a1c0c!important;
+}
+.m3opdrachtkaart .m3op-hoek{
+  position:absolute;width:13px;height:13px;pointer-events:none;z-index:2;
+  border:2px solid #c9a227;
+}
+.m3opdrachtkaart .m3op-hoek.tl{left:7px;top:7px;border-right:0;border-bottom:0;border-radius:3px 0 0 0}
+.m3opdrachtkaart .m3op-hoek.tr{right:7px;top:7px;border-left:0;border-bottom:0;border-radius:0 3px 0 0}
+.m3opdrachtkaart .m3op-hoek.bl{left:7px;bottom:7px;border-right:0;border-top:0;border-radius:0 0 0 3px}
+.m3opdrachtkaart .m3op-hoek.br{right:7px;bottom:7px;border-left:0;border-top:0;border-radius:0 0 3px 0}
+
+.m3opdrachtkaart .m3op-lijst{
+  flex:0 0 86px;
+  width:86px;height:86px;
+  padding:5px;
+  box-sizing:border-box;
+  border-radius:50%;
+  background:radial-gradient(circle at 50% 28%,#ffe9a0 0%,#c9a227 58%,#7a5414 100%);
+  box-shadow:0 3px 8px rgba(40,24,8,.35),inset 0 0 0 1.5px #5a3a10;
+}
+.m3opdrachtkaart .m3op-lijst img,
+body.kleur195 .m3opdrachtkaart .m3op-lijst .pportret,
+body.kleur195 .m3opdrachtkaart .m3op-lijst .m3op-port{
+  width:100%!important;height:100%!important;
+  border-radius:50%!important;
+  object-fit:cover;
+  display:block;
+  border:2px solid #3a2410!important;
+  box-shadow:none!important;
+  background:#efe0b8;
+}
+
+.m3opdrachtkaart .m3op-tekst{flex:1;min-width:0;padding-right:.15rem}
+.m3opdrachtkaart .m3op-lint{
+  display:inline-block;
+  position:relative;
+  background:linear-gradient(180deg,var(--k-kop-bg1,#6b1d14),var(--k-kop-bg2,#3a100c));
+  padding:.28rem .95rem .3rem;
+  margin:0 0 .4rem;
+  border-radius:2px;
+  box-shadow:0 2px 0 rgba(20,6,4,.55),0 3px 7px rgba(0,0,0,.22);
+  z-index:1;
+}
+.m3opdrachtkaart .m3op-lint::before,
+.m3opdrachtkaart .m3op-lint::after{
+  content:"";
+  position:absolute;
+  top:0;width:12px;height:100%;
+  background:inherit;
+  z-index:-1;
+}
+.m3opdrachtkaart .m3op-lint::before{left:-7px;transform:skewX(22deg);border-radius:2px 0 0 2px}
+.m3opdrachtkaart .m3op-lint::after{right:-7px;transform:skewX(-22deg);border-radius:0 2px 2px 0}
+.m3opdrachtkaart .m3op-lint b,
+body.kleur195 .m3opdrachtkaart .m3op-lint b,
+body.kleur194 .m3opdrachtkaart .m3op-lint b{
+  color:#fff8e0!important;
+  -webkit-text-fill-color:#fff8e0!important;
+  font-family:Cinzel,Georgia,serif;
+  font-size:.92rem;
+  font-weight:700;
+  letter-spacing:.03em;
+  text-shadow:0 1px 2px rgba(0,0,0,.45);
+  display:block;
+}
+.m3opdrachtkaart .m3op-tekst p,
+body.kleur195 .m3opdrachtkaart .m3op-tekst p{
+  margin:.15rem 0 0!important;
+  font-size:.98rem!important;
+  line-height:1.35;
+  color:#2a1c0c!important;
+  -webkit-text-fill-color:#2a1c0c!important;
+  opacity:1!important;
+}
+@media (prefers-reduced-motion:reduce){
+  .m3opdrachtkaart{animation:none}
+}
