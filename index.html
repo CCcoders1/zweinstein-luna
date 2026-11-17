@@ -1,19 +1,36 @@
 <!DOCTYPE html>
 <html lang="nl" class="kleur194 kleur195"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<style id="kritiek">html,body{background:#120c06;color:#f4e4c1;margin:0}html{background:#120c06!important}
-#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 30%,rgba(90,55,12,.45),transparent 55%),#120c06;color:#f4e4c1;text-align:center;padding:24px;transition:opacity .45s ease}
-#splash .splashkaarsen{display:flex;gap:22px;margin-bottom:22px}
-#splash .kaars{width:10px;height:42px;border-radius:4px 4px 2px 2px;background:linear-gradient(#f4e4c1,#c9a06a);position:relative;box-shadow:0 0 16px rgba(255,180,60,.35)}
-#splash .kaars:before{content:"";position:absolute;left:50%;top:-12px;transform:translateX(-50%);width:8px;height:12px;border-radius:50% 50% 40% 40%;background:radial-gradient(circle at 40% 30%,#fff6c8,#ffb03a 55%,#d06010);box-shadow:0 0 14px 4px rgba(255,170,50,.7);animation:splashvlam 1.2s ease-in-out infinite alternate}
+<style id="kritiek">html,body{background:#0a1024;color:#f4e4c1;margin:0}html{background:#0a1024!important}
+#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 16%,rgba(200,150,50,.3),transparent 42%),radial-gradient(ellipse at 50% 100%,rgba(8,6,14,.92),transparent 55%),linear-gradient(180deg,#0a1028 0%,#16102c 48%,#120c10 100%);color:#f4e4c1;text-align:center;padding:24px 16px 32px;transition:opacity .45s ease;overflow:hidden}
+#splash:before{content:"";position:absolute;inset:0;pointer-events:none;background:url(img/sterrenhemel-sm.webp) center 28%/cover no-repeat;opacity:.42}
+#splash:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 22%,#fff 0 1px,transparent 1.6px),radial-gradient(circle at 72% 16%,#ffe9a0 0 1px,transparent 1.6px),radial-gradient(circle at 84% 38%,#fff 0 .8px,transparent 1.3px),radial-gradient(circle at 28% 48%,#ffe9a0 0 .8px,transparent 1.3px),radial-gradient(circle at 62% 72%,#fff 0 1px,transparent 1.6px),radial-gradient(circle at 10% 78%,#ffe9a0 0 .7px,transparent 1.2px);opacity:.7}
+#splash .splashkaart{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;max-width:300px;width:100%;padding:20px 16px 18px;border-radius:22px;background:linear-gradient(180deg,rgba(20,16,36,.58),rgba(12,10,20,.76));border:1.5px solid rgba(232,196,74,.58);box-shadow:0 0 0 5px rgba(16,10,8,.35),0 18px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,230,160,.25);box-sizing:border-box}
+#splash .splashkaart:before,#splash .splashkaart:after{content:"";position:absolute;width:16px;height:16px;border-color:#e8c44a;pointer-events:none}
+#splash .splashkaart:before{top:8px;left:8px;border-top:2px solid;border-left:2px solid}
+#splash .splashkaart:after{top:8px;right:8px;border-top:2px solid;border-right:2px solid}
+#splash .splashhoek{position:absolute;width:16px;height:16px;border-color:#e8c44a;pointer-events:none}
+#splash .splashhoek.l{left:8px;bottom:8px;border-bottom:2px solid;border-left:2px solid}
+#splash .splashhoek.r{right:8px;bottom:8px;border-bottom:2px solid;border-right:2px solid}
+#splash .splashkasteel{width:164px;height:auto;display:block;margin:0 auto 6px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.45))}
+#splash .splashmerk{margin:2px 0 0;font:700 26px/1.1 Georgia,serif;letter-spacing:.06em;color:#ffe9a8;text-shadow:0 1px 0 #7a5408,0 0 18px rgba(255,200,80,.45)}
+#splash .splashlijn{width:54%;height:2px;margin:10px auto 14px;background:linear-gradient(90deg,transparent,#e8c44a,#fff4c0,#e8c44a,transparent)}
+#splash .splashkaarsen{display:flex;gap:22px;margin:0 0 18px;align-items:flex-end;padding-bottom:8px}
+#splash .kaars{width:11px;height:46px;border-radius:3px 3px 2px 2px;background:linear-gradient(#fff6dc,#f0d48a 55%,#c9a06a);position:relative;box-shadow:0 0 18px rgba(255,180,60,.4)}
+#splash .kaars:after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);width:20px;height:8px;border-radius:2px 2px 3px 3px;background:linear-gradient(180deg,#e8c44a,#8a5a18);box-shadow:0 2px 4px rgba(0,0,0,.35)}
+#splash .kaars:before{content:"";position:absolute;left:50%;top:-14px;transform:translateX(-50%);width:9px;height:14px;border-radius:50% 50% 40% 40%;background:radial-gradient(circle at 40% 30%,#fff6c8,#ffb03a 55%,#d06010);box-shadow:0 0 16px 5px rgba(255,170,50,.7);animation:splashvlam 1.2s ease-in-out infinite alternate}
 #splash .kaars:nth-child(2):before{animation-delay:.3s}
 #splash .kaars:nth-child(3):before{animation-delay:.6s}
 @keyframes splashvlam{from{transform:translateX(-50%) scale(.9);opacity:.85}to{transform:translateX(-50%) scale(1.08);opacity:1}}
-#splash p{margin:0;font-family:Georgia,serif;font-size:18px;letter-spacing:.02em}
-#splash .splashsub{margin-top:8px;font-size:14px;opacity:.75}
+#splash p{margin:0;font-family:Georgia,serif;font-size:17px;letter-spacing:.02em;color:#fff6dc;-webkit-text-fill-color:#fff6dc;text-shadow:0 1px 3px rgba(0,0,0,.85);position:relative;z-index:1}
+#splash .splashmerk{color:#ffe9a8;-webkit-text-fill-color:#ffe9a8;text-shadow:0 1px 0 #7a5408,0 0 18px rgba(255,200,80,.45)}
+#splash .splashsub{margin-top:6px;font-size:13.5px;letter-spacing:.04em;color:#f3dc9a;-webkit-text-fill-color:#f3dc9a;opacity:.95}
+#splash .splashbalk{width:44%;height:3px;margin:16px auto 0;border-radius:99px;background:rgba(255,230,160,.18);overflow:hidden;position:relative;z-index:1}
+#splash .splashbalk i{display:block;height:100%;width:42%;border-radius:99px;background:linear-gradient(90deg,transparent,#e8c44a,#fff6dc,#e8c44a,transparent);animation:splashbalk 1.6s ease-in-out infinite}
+@keyframes splashbalk{0%{transform:translateX(-130%)}100%{transform:translateX(280%)}}
 html.klaar #splash{opacity:0;pointer-events:none}
 #sterren,header,main,nav,#toast{opacity:0}
 html.klaar #sterren,html.klaar header,html.klaar main,html.klaar nav,html.klaar #toast{opacity:1;transition:opacity .7s ease}
-@media(prefers-reduced-motion:reduce){html.klaar #sterren,html.klaar header,html.klaar main,html.klaar nav,html.klaar #toast,#splash{transition:opacity .4s linear}#splash .kaars:before{animation:none}}
+@media(prefers-reduced-motion:reduce){html.klaar #sterren,html.klaar header,html.klaar main,html.klaar nav,html.klaar #toast,#splash{transition:opacity .4s linear}#splash .kaars:before,#splash .splashbalk i{animation:none}}
 </style>
 <title>Zweinstein – Magische Reis</title>
 <meta name="theme-color" content="#0c1124"><meta name="mobile-web-app-capable" content="yes">
@@ -25,9 +42,16 @@ html.klaar #sterren,html.klaar header,html.klaar main,html.klaar nav,html.klaar 
 </head>
 <body class="huis-geen">
 <div id="splash" aria-live="polite">
-  <div class="splashkaarsen" aria-hidden="true"><span class="kaars"></span><span class="kaars"></span><span class="kaars"></span></div>
-  <p>Even de kaarsen aansteken…</p>
-  <p class="splashsub">Welkom terug in het kasteel</p>
+  <div class="splashkaart">
+    <i class="splashhoek l" aria-hidden="true"></i><i class="splashhoek r" aria-hidden="true"></i>
+    <img class="splashkasteel" src="img/ui/kasteelframe-320.webp" width="164" height="219" alt="">
+    <p class="splashmerk">Zweinstein Luna</p>
+    <div class="splashlijn" aria-hidden="true"></div>
+    <div class="splashkaarsen" aria-hidden="true"><span class="kaars"></span><span class="kaars"></span><span class="kaars"></span></div>
+    <p>Even de kaarsen aansteken…</p>
+    <p class="splashsub">Welkom terug in het kasteel</p>
+    <div class="splashbalk" aria-hidden="true"><i></i></div>
+  </div>
 </div>
 <div id="sterren"></div>
 <header><div id="logo" title="Zweinstein">🏰 <span>Zweinstein</span></div>
