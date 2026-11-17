@@ -1,0 +1,70 @@
+/* v204: Kaart-banner — leesbare tekst op het lesbeeld, één gouden rand */
+body[data-view=pad] .padkopbeeld,
+body.pad192 .padkopbeeld,
+body.kleur195[data-view=pad] .padkopbeeld{
+  position:relative!important;
+  overflow:hidden!important;
+  border:1.5px solid #c9a227!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 20px rgba(8,6,14,.32)!important;
+  min-height:168px;
+}
+body[data-view=pad] .padkopbeeld::before,
+body.pad192 .padkopbeeld::before{
+  content:""!important;
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(8,6,14,.28) 0%,rgba(8,6,14,.18) 32%,rgba(8,6,14,.88) 100%)!important;
+  pointer-events:none;
+  z-index:0;
+  display:block!important;
+  opacity:1!important;
+}
+body[data-view=pad] .padkopbeeld > div,
+body.pad192 .padkopbeeld > div{
+  position:relative!important;
+  z-index:1;
+  width:100%;
+  background:none!important;
+  padding:22px 16px 14px!important;
+  text-align:left!important;
+}
+body[data-view=pad] .padkopbeeld h2,
+body.pad192 .padkopbeeld h2,
+body.kleur195[data-view=pad] .padkopbeeld h2,
+body.kleur195[data-view=pad] .padkopbeeld > div h2{
+  color:#ffe58a!important;
+  -webkit-text-fill-color:#ffe58a!important;
+  text-shadow:0 1px 2px #000,0 2px 12px rgba(0,0,0,.75)!important;
+  background:none!important;
+  margin:2px 0 4px!important;
+  padding:0!important;
+  font-size:1.28rem!important;
+  font-weight:800!important;
+  line-height:1.2!important;
+  letter-spacing:.03em;
+}
+body[data-view=pad] .padkopbeeld small,
+body.pad192 .padkopbeeld small,
+body[data-view=pad] .padkopbeeld p,
+body.pad192 .padkopbeeld p,
+body[data-view=pad] .padkop-zin,
+body.pad192 .padkop-zin,
+body.kleur195[data-view=pad] .padkopbeeld p,
+body.kleur195[data-view=pad] .padkop-zin{
+  color:#fff6dc!important;
+  -webkit-text-fill-color:#fff6dc!important;
+  text-shadow:0 1px 2px #000,0 2px 8px rgba(0,0,0,.7)!important;
+  background:none!important;
+  margin:0!important;
+  font-weight:600!important;
+  opacity:1!important;
+}
+body[data-view=pad] .padkopbeeld small,
+body.pad192 .padkopbeeld small{
+  color:#ffe58a!important;
+  -webkit-text-fill-color:#ffe58a!important;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-size:.78rem!important;
+}
