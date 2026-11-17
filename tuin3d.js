@@ -771,7 +771,7 @@
   const zon=new THREE.DirectionalLight(0xffffff,1.00);
   zon.position.set(-14,24,10);
   scene.add(zon);
-  scene.add(new THREE.AmbientLight(0xdce0e6,0.40));
+  const omgeef=new THREE.AmbientLight(0xdce0e6,0.40);scene.add(omgeef);
 
   const hemelkoepel=new THREE.Mesh(
     new THREE.SphereGeometry(110,16,12),
@@ -1115,9 +1115,6 @@
     plint.position.set(x,0.075,z);voeg(plint);
   }
   reserverPlek(0,14);
-  reserverPlek(-9.2,23.4);
-  reserverPlek(18.5,4.0);
-  reserverPlek(20.2,20.6);
   (function strooiPad(){
     const nK=keiMeshes.length,nP=polMeshes.length;
     if(nK){
@@ -1937,6 +1934,66 @@
     f.position.set(x+(rnd(i)-.5)*0.2,0.68,z+(rnd(i+3)-.5)*0.15);
     bloemen.push(f);voeg(f);
   });
+  /* v246: extra bloemen langs de paden */
+  [[-1.6,8.2],[1.7,8.4],[-1.8,16.8],[1.6,17.0],[-1.7,24.6],[1.8,24.8],[-6.4,14.2],[6.4,14.2],[-11.2,8.6],[15.2,25.4],[12.4,26.6]].forEach(([x,z],i)=>{
+    for(let k=0;k<2;k++){
+      const f=new THREE.Mesh(new THREE.PlaneGeometry(0.18,0.26),mat.bloem);
+      f.position.set(x+(rnd(i*5+k)-.5)*0.35,0.58+rnd(i+k)*0.12,z+(rnd(i*3+k+2)-.5)*0.3);
+      bloemen.push(f);voeg(f);
+    }
+  });
+  const lantaarnSfeer=[];
+  function bankje(x,z,rotY){
+    const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rotY||0;
+    box(mat.zandsteen,0,0.28,0,1.45,0.16,0.46,0,g);
+    box(mat.zandsteen,-0.62,0.22,0,0.16,0.42,0.42,0,g);
+    box(mat.zandsteen,0.62,0.22,0,0.16,0.42,0.42,0,g);
+    box(mat.zandsteen,0,0.60,0.20,1.45,0.14,0.12,0,g);
+    schijf(mat.schaduw,0,0,0.8,g);
+    voeg(g);solid(x,z,1.55,0.7,0.8);
+  }
+  function bloemBij(x,z,n,zaad){
+    for(let i=0;i<n;i++){
+      const f=new THREE.Mesh(new THREE.PlaneGeometry(0.17,0.25),mat.bloem);
+      f.position.set(x+(rnd(zaad+i)-.5)*0.4,0.58+rnd(zaad+i+3)*0.1,z+(rnd(zaad+i+5)-.5)*0.35);
+      bloemen.push(f);voeg(f);
+    }
+  }
+  /* v246: de drie lege pleintjes — sierlijke steenrand, bankjes, leeg midden voor later */
+  function werkPleinAf(x,z,r,ingang){
+    const gap=0.52;
+    const N=28;
+    for(let i=0;i<N;i++){
+      const a=(i+0.5)/N*Math.PI*2;
+      let da=a-ingang;while(da>Math.PI)da-=Math.PI*2;while(da<-Math.PI)da+=Math.PI*2;
+      if(Math.abs(da)<gap)continue;
+      const px=x+Math.sin(a)*r*0.98,pz=z+Math.cos(a)*r*0.98;
+      box(mat.zandsteen,px,0.11,pz,0.52,0.22,0.22,a);
+    }
+    for(let i=0;i<4;i++){
+      const a=ingang+Math.PI/4+i*Math.PI/2;
+      let da=a-ingang;while(da>Math.PI)da-=Math.PI*2;while(da<-Math.PI)da+=Math.PI*2;
+      if(Math.abs(da)<gap+0.05)continue;
+      const px=x+Math.sin(a)*r*0.98,pz=z+Math.cos(a)*r*0.98;
+      cyl(mat.sokkel||mat.zandsteen,px,0.28,pz,0.10,0.08,0.56,8);
+    }
+    cyl(mat.sokkel||mat.zandsteen,x,0.07,z,0.58,0.48,0.14,16);
+    const lijst=new THREE.Mesh(new THREE.TorusGeometry(0.54,0.045,6,24),new THREE.MeshLambertMaterial({color:0xb08a28}));
+    lijst.rotation.x=Math.PI/2;lijst.position.set(x,0.16,z);voeg(lijst);
+    const b1=ingang+Math.PI*0.62,b2=ingang-Math.PI*0.62;
+    bankje(x+Math.sin(b1)*r*0.58,z+Math.cos(b1)*r*0.58,b1+Math.PI);
+    bankje(x+Math.sin(b2)*r*0.58,z+Math.cos(b2)*r*0.58,b2+Math.PI);
+    const sch=0.42;
+    lantaarn(x+Math.sin(ingang-sch)*r*1.08,z+Math.cos(ingang-sch)*r*1.08);
+    lantaarn(x+Math.sin(ingang+sch)*r*1.08,z+Math.cos(ingang+sch)*r*1.08);
+    for(let i=0;i<6;i++){
+      const a=ingang+Math.PI*0.4+i*(Math.PI*1.2/5);
+      bloemBij(x+Math.sin(a)*r*1.18,z+Math.cos(a)*r*1.18,2,i*7+x*3);
+    }
+  }
+  werkPleinAf(-9.2,23.4,2.7,Math.atan2((-6.15)-(-9.2),(19.45)-23.4));
+  werkPleinAf(18.5,4.0,2.55,Math.atan2((18.25)-18.5,(7.05)-4.0));
+  werkPleinAf(20.2,20.6,2.55,Math.atan2((20.05)-20.2,(16.9)-20.6));
 
   /* klimop-vlakken */
   function klimopVlak(x,y,z,w,h,rotY){
@@ -2315,14 +2372,15 @@
     kop.position.set(x,1.22,z);voeg(kop);
     const gloed=new THREE.Mesh(new THREE.BoxGeometry(0.16,0.18,0.16),new THREE.MeshBasicMaterial({color:0xffe08a,transparent:true,opacity:0.72,toneMapped:false}));
     gloed.position.set(x,1.22,z);voeg(gloed);
-    const schijf=new THREE.Mesh(new THREE.CircleGeometry(0.55,10),new THREE.MeshBasicMaterial({color:0xffd090,transparent:true,opacity:0.16,depthWrite:false,toneMapped:false}));
-    schijf.rotation.x=-Math.PI/2;schijf.position.set(x,0.03,z);voeg(schijf);
+    const schijfL=new THREE.Mesh(new THREE.CircleGeometry(0.55,10),new THREE.MeshBasicMaterial({color:0xffd090,transparent:true,opacity:0.16,depthWrite:false,toneMapped:false}));
+    schijfL.rotation.x=-Math.PI/2;schijfL.position.set(x,0.03,z);voeg(schijfL);
+    lantaarnSfeer.push({gloed,schijf:schijfL});
     solid(x,z,0.2,0.2,1.3);
   }
   wegWijzer(-10.25,13.55,Math.PI/2,'Hagrids hut','en het meer');
   wegWijzer(2.45,23.85,Math.PI/2,'Kasteelplaats','');
   wegWijzer(-10.55,6.85,-0.55,'Het meer','');
-  [[-10.85,12.35],[-13.25,9.15],[-14.35,5.55],[-16.55,5.55],[4.15,24.45],[8.55,27.25],[15.55,25.05],[15.45,29.55],[19.15,24.85]].forEach(([x,z])=>lantaarn(x,z));
+  [[-10.85,12.35],[-13.25,9.15],[-14.35,5.55],[-16.55,5.55],[4.15,24.45],[8.55,27.25],[15.55,25.05],[15.45,29.55],[19.15,24.85],[0.95,8.35],[-0.95,18.15],[0.95,27.4],[-8.35,14.15],[8.35,14.15]].forEach(([x,z])=>lantaarn(x,z));
 
   /* pollen */
   const pN=12;
@@ -3004,6 +3062,39 @@
       bladeren.forEach(m=>m.visible=false);
     }
     if(hemelkoepel){hemelkoepel.position.x=camera.position.x;hemelkoepel.position.z=camera.position.z}
+    if(!sfeerKlok||t-sfeerKlok>1.2){sfeerKlok=t;pasTuinSfeer()}
+  }
+  let sfeerVast=null,sfeerNu='dag',sfeerKlok=0;
+  const SFEER={
+    dag:{hh:0x9ec8f4,hg:0x2a3e18,hi:0.92,zc:0xffffff,zi:1.00,zp:[-14,24,10],ai:0.40,ex:0.94,fg:0x6a9ae0,cl:0x2a62d4,kp:0xffffff,lo:0.72,so:0.16},
+    schemer:{hh:0xffb070,hg:0x1a1824,hi:0.52,zc:0xff8a4a,zi:0.40,zp:[-6,9,16],ai:0.20,ex:0.76,fg:0x4a3658,cl:0x2c1e38,kp:0xffc090,lo:0.95,so:0.34},
+    nacht:{hh:0x3a4a78,hg:0x0a0c14,hi:0.26,zc:0x8899cc,zi:0.12,zp:[-14,22,10],ai:0.12,ex:0.68,fg:0x121428,cl:0x0c1020,kp:0x6a88cc,lo:1.0,so:0.28}
+  };
+  function sfeerFase(){
+    if(sfeerVast)return sfeerVast;
+    const d=new Date(),h=d.getHours()+d.getMinutes()/60;
+    if(h>=20.6||h<6.2)return 'nacht';
+    if((h>=17.3&&h<20.6)||(h>=6.2&&h<8.0))return 'schemer';
+    return 'dag';
+  }
+  function pasTuinSfeer(force){
+    const fase=sfeerFase();
+    if(!force&&fase===sfeerNu&&sfeerKlok>0)return sfeerNu;
+    sfeerNu=fase;
+    const S=SFEER[fase]||SFEER.dag;
+    hemel.color.setHex(S.hh);hemel.groundColor.setHex(S.hg);hemel.intensity=S.hi;
+    zon.color.setHex(S.zc);zon.intensity=S.zi;zon.position.set(S.zp[0],S.zp[1],S.zp[2]);
+    if(typeof omgeef!=='undefined')omgeef.intensity=S.ai;
+    if(renderer.toneMappingExposure!=null)renderer.toneMappingExposure=S.ex+(kwalTrap||0)*0.03;
+    if(scene.fog)scene.fog.color.setHex(S.fg);
+    scene.background=new THREE.Color(S.cl);
+    renderer.setClearColor(S.cl,1);
+    if(hemelkoepel&&hemelkoepel.material)hemelkoepel.material.color.setHex(S.kp);
+    lantaarnSfeer.forEach(L=>{
+      if(L.gloed&&L.gloed.material)L.gloed.material.opacity=S.lo;
+      if(L.schijf&&L.schijf.material)L.schijf.material.opacity=S.so;
+    });
+    return sfeerNu;
   }
 
   const vonkRingen=[];
@@ -4790,7 +4881,10 @@
       meer:{x:-15.5,z:4.15,y:Math.atan2(-13.7-(-15.5),1.15-4.15),kijkMee:1},
       kasteel:{x:14.2,z:24.6,y:0,kijkMee:1},
       home:{x:13.0,z:14.0,y:-Math.PI/2,kijkMee:1},
-      hal:{x:13.0,z:14.0,y:-Math.PI/2,kijkMee:1}
+      hal:{x:13.0,z:14.0,y:-Math.PI/2,kijkMee:1},
+      pleinGeheim:{x:-7.4,z:21.6,y:Math.atan2(-9.2-(-7.4),23.4-21.6),kijkMee:1},
+      pleinZuid:{x:17.6,z:6.2,y:Math.atan2(18.5-17.6,4.0-6.2),kijkMee:1},
+      pleinOost:{x:18.4,z:18.6,y:Math.atan2(20.2-18.4,20.6-18.6),kijkMee:1}
     };
     const P=(plek&&typeof plek==='object'&&'x' in plek)?plek:(NAMED[plek]||{x:0,z:5.6,y:0});
     held.position.set(P.x,0,P.z);
@@ -4991,6 +5085,8 @@
     sluitMelding:()=>{if(overgang){overgang.classList.remove('aan');overgang.hidden=true}naarBinnen=false},
     blokkeerNav:(v)=>{blokkeerNav=!!v},
     geluidBronnen:()=>Object.assign({},geluidBronnen),
-    kijkNaar(px,py,pz,lx,ly,lz){camVast=true;if(hintEl)hintEl.style.opacity='0';camera.position.set(px,py,pz);camera.lookAt(lx,ly,lz);renderer.render(scene,camera)}
+    kijkNaar(px,py,pz,lx,ly,lz){camVast=true;if(hintEl)hintEl.style.opacity='0';camera.position.set(px,py,pz);camera.lookAt(lx,ly,lz);renderer.render(scene,camera)},
+    zetSfeer(naam){sfeerVast=naam||null;pasTuinSfeer(true);renderer.render(scene,camera);return sfeerNu},
+    sfeer:()=>sfeerNu
   };
 })();

@@ -563,3 +563,4 @@ v242 (17 november 2026): de opdrachtkaart van een personage, zoals Professor Str
 v243 (17 november 2026): de doel-fiches bovenaan het bord zijn mini-medailles, en het getal telt zichtbaar af als je iets verzamelt. Mama’s voortgang is alleen aangevuld, niet gereset.
 v244 (17 november 2026): de sterrenbalk en de scorebalk bovenaan het bord zijn rijker: een gouden rand, een glans op de balk en sterren die mooier oplichten. Mama’s voortgang is alleen aangevuld, niet gereset.
 v245 (17 november 2026): als je op de Kaart op een level-medaille tikt, veert die even en verschijnt een klein kaartje met je sterren en een Spelen-knop. Mama’s voortgang is alleen aangevuld, niet gereset.
+v246 (17 november 2026): de tuin heeft meer bloemen en lantaarns, warm licht bij schemering, en de drie lege pleintjes hebben een sierlijke steenrand en bankjes, klaar voor later verdiende versiering. Mama’s voortgang is alleen aangevuld, niet gereset.
