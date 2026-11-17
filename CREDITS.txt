@@ -565,3 +565,4 @@ v244 (17 november 2026): de sterrenbalk en de scorebalk bovenaan het bord zijn r
 v245 (17 november 2026): als je op de Kaart op een level-medaille tikt, veert die even en verschijnt een klein kaartje met je sterren en een Spelen-knop. Mama’s voortgang is alleen aangevuld, niet gereset.
 v246 (17 november 2026): de tuin heeft meer bloemen en lantaarns, warm licht bij schemering, en de drie lege pleintjes hebben een sierlijke steenrand en bankjes, klaar voor later verdiende versiering. Mama’s voortgang is alleen aangevuld, niet gereset.
 v247 (17 november 2026): in je eigen kas staan de potten en planten groter en rustiger in beeld, met een gouden etiket en een duidelijke groeibalk. Mama’s voortgang is alleen aangevuld, niet gereset.
+v248 (17 november 2026): de Smekkies-bonuskamer heeft een feestelijke startkaart met een zak bonen, een groene Start-knop, en een duidelijkere tijd- en tellingbalk. Mama’s voortgang is alleen aangevuld, niet gereset.

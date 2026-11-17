@@ -1,0 +1,164 @@
+/* v248: Smekkies-bonuskamer — intro, HUD en eindkaart netjes en feestelijk */
+body[data-view=bonuskamer] nav,
+body[data-view=bonuskamer] #nav,
+body[data-view=bonuskamer] header,
+body[data-view=bonuskamer] #sterren{display:none!important}
+body[data-view=bonuskamer] #app{padding:0!important;margin:0!important;max-width:none!important}
+
+.bk-intro{
+  background:
+    radial-gradient(ellipse at 50% 30%,rgba(80,40,10,.25),rgba(10,6,4,.72) 70%)!important;
+  padding:18px 14px!important;
+}
+.bk-perk{
+  position:relative;
+  background:
+    linear-gradient(180deg,rgba(255,250,236,.55),transparent 28%),
+    linear-gradient(180deg,#fff6e0,#ecd7a4 70%,#e2c078)!important;
+  border:3px solid #c9a227!important;
+  border-radius:18px!important;
+  padding:18px 16px 16px!important;
+  max-width:400px!important;
+  color:#3a2410!important;
+  box-shadow:
+    inset 0 0 0 2px #fff8e6,
+    inset 0 0 0 5px rgba(201,162,39,.65),
+    0 16px 36px rgba(0,0,0,.55)!important;
+  font-size:1rem!important;
+}
+.bk-perk::before{
+  content:'';
+  display:block;
+  width:78px;height:78px;
+  margin:-4px auto 6px;
+  background:url(img/smekkies/zak-vol-256.webp) center/contain no-repeat;
+  filter:drop-shadow(0 5px 6px rgba(40,20,0,.4));
+}
+.bk-perk h2{
+  margin:0 0 8px!important;
+  text-align:center;
+  font-family:Cinzel,Georgia,serif!important;
+  font-size:1.22rem!important;
+  letter-spacing:.04em;
+  color:#5a3010!important;
+  text-shadow:0 1px 0 #fff6dc;
+}
+.bk-perk p,
+.bk-perk li{
+  color:#3a2410!important;
+  line-height:1.4;
+}
+.bk-perk p{text-align:center;margin:0 0 8px}
+.bk-perk ul{
+  margin:8px 0 4px!important;
+  padding:0!important;
+  list-style:none!important;
+}
+.bk-perk li{
+  position:relative;
+  margin:0 0 7px!important;
+  padding:7px 8px 7px 28px;
+  background:rgba(255,248,230,.55);
+  border:1px solid rgba(201,162,39,.4);
+  border-radius:10px;
+  font-size:.88rem;
+}
+.bk-perk li::before{
+  content:'';
+  position:absolute;left:6px;top:10px;
+  width:16px;height:12px;
+  background:url(img/smekkies/boon-oranje-64.webp) center/contain no-repeat;
+}
+.bk-perk .knop.volgende,
+#bkstart, #bkklaar{
+  display:block!important;
+  margin:12px auto 0!important;
+  min-width:70%!important;
+  min-height:48px!important;
+  border-radius:16px!important;
+  border:2px solid #1a5a18!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.5) 0%,rgba(255,255,255,.12) 38%,transparent 52%),
+    linear-gradient(180deg,#7ed957,#2f9a2a 55%,#1e701c)!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-weight:800!important;
+  font-size:1.1rem!important;
+  letter-spacing:.03em;
+  text-shadow:0 1px 1px rgba(0,0,0,.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.55),
+    0 4px 0 #145014,
+    0 8px 16px rgba(0,0,0,.3)!important;
+}
+.bk-perk .knop.volgende:active,
+#bkstart:active, #bkklaar:active{
+  transform:translateY(3px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 1px 0 #145014!important;
+}
+
+.bk-groot{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:6px 0 10px!important;
+  font-family:Cinzel,Georgia,serif;
+  font-size:1.7rem!important;
+  font-weight:800;
+  color:#5a3010!important;
+  text-shadow:0 1px 0 #fff6dc;
+}
+.bk-groot .bk-boon,
+.bk-teller .bk-boon{
+  width:28px!important;height:20px!important;
+  border-radius:0!important;
+  background:url(img/smekkies/boon-oranje-64.webp) center/contain no-repeat!important;
+  box-shadow:none!important;
+}
+
+.bk-hud{z-index:6!important;gap:8px}
+.bk-stop{
+  width:42px!important;height:42px!important;
+  border:2px solid #c9a227!important;
+  background:linear-gradient(180deg,#3a2a14,#1c140c)!important;
+  color:#ffe9a0!important;
+  box-shadow:inset 0 1px 0 rgba(255,230,150,.3), 0 3px 8px rgba(0,0,0,.4);
+}
+.bk-tijd{
+  height:28px!important;
+  border:2px solid #c9a227!important;
+  background:rgba(20,14,8,.82)!important;
+  box-shadow:inset 0 1px 0 rgba(255,230,150,.2), 0 3px 8px rgba(0,0,0,.35);
+}
+.bk-tijd i{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.45),transparent 45%),
+    linear-gradient(90deg,#ffe28a,#d89a1a)!important;
+}
+.bk-tijd span{
+  color:#3a2410!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.7)!important;
+  font-weight:800!important;
+}
+.bk-tijd span::before{content:''!important;margin:0!important}
+.bk-teller{
+  background:linear-gradient(180deg,#fff6dc,#e8c97a)!important;
+  border:2px solid #c9a227!important;
+  color:#3a2410!important;
+  box-shadow:inset 0 1px 0 #fffaf0, 0 3px 8px rgba(0,0,0,.35);
+  font-weight:800;
+  min-height:36px;
+}
+.bk-combo{
+  font-family:Cinzel,Georgia,serif!important;
+  color:#ffe28a!important;
+  text-shadow:0 2px 8px #000, 0 0 12px rgba(255,200,60,.6)!important;
+}
+
+@media(max-width:360px){
+  .bk-perk{padding:14px 12px!important}
+  .bk-perk::before{width:64px;height:64px}
+  .bk-perk h2{font-size:1.08rem!important}
+  .bk-perk li{font-size:.82rem;padding:6px 6px 6px 26px}
+}
