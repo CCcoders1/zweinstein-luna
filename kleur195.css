@@ -1,0 +1,521 @@
+/* v195: rijke, verzadigde kleurwereld — Candy Crush-lessen: contrast, glossy CTA, diepte, cozy gloed */
+html.kleur195, body.kleur195{
+  --k-ink:#1a2016;
+  --k-ink-zacht:#2c3828;
+  --k-kaart:#fff4e0;
+  --k-kaart2:#f3e4c4;
+  --k-lijn:rgba(10,40,24,.42);
+  --k-kop:#0d4a30;
+  --k-kop-bg1:#0a3a26;
+  --k-kop-bg2:#167a44;
+  --k-kop-tekst:#fff7e8;
+  --k-accent:#e8c44a;
+  --k-accent2:#f0a020;
+  --k-knop:#1aa336;
+  --k-knop2:#6ee24a;
+  --k-knop-ink:#143010;
+  --k-knop-schaduw:#0a4a16;
+  --k-knop-rand:#0c5a1c;
+  --k-drank-bg:#1c4a34;
+  --k-chip-aan:#fff0b8;
+  --k-app-bg1:#1a4a34;
+  --k-app-bg2:#0c2a20;
+  --k-nav:#0a2418;
+  --k-nav-ink:#fff6e4;
+  --k-header1:#081c14;
+  --k-header2:#0e2e20;
+  --k-header-tekst:#fff6e4;
+  --k-gloed:rgba(255,190,70,.22);
+  --ink:var(--k-ink);
+  --perk:var(--k-kaart);
+  --perk-diep:var(--k-kaart2);
+  --wijn:var(--k-kop);
+  --goud:var(--k-accent);
+  --goud-diep:var(--k-accent2);
+  --lijn:var(--k-lijn);
+}
+body.kleur195[data-vak=herbologie]{
+  --k-ink:#142018;--k-ink-zacht:#2a3a2e;
+  --k-kaart:#fff4e0;--k-kaart2:#f0e2c0;
+  --k-lijn:rgba(8,50,28,.45);
+  --k-kop:#0d4a30;--k-kop-bg1:#0a3a26;--k-kop-bg2:#167a44;--k-kop-tekst:#fff7e8;
+  --k-accent:#e8c44a;--k-accent2:#f0a020;
+  --k-drank-bg:#1a4a34;--k-chip-aan:#fff0b8;
+  --k-app-bg1:#174a34;--k-app-bg2:#0b2a1e;
+  --k-nav:#0a2418;--k-nav-ink:#fff6e4;
+  --k-header1:#081c14;--k-header2:#0e2e20;--k-header-tekst:#fff6e8;
+  --k-gloed:rgba(255,196,70,.24);
+}
+body.kleur195[data-vak=bezweringen]{
+  --k-ink:#121828;--k-ink-zacht:#2a3248;
+  --k-kaart:#fff4e4;--k-kaart2:#efe0c8;
+  --k-lijn:rgba(20,36,90,.45);
+  --k-kop:#1a2e88;--k-kop-bg1:#152a6a;--k-kop-bg2:#2a4ab0;--k-kop-tekst:#fff7ec;
+  --k-accent:#e8c44a;--k-accent2:#f0a020;
+  --k-drank-bg:#1a2a68;--k-chip-aan:#ffe8c0;
+  --k-app-bg1:#1a2c70;--k-app-bg2:#0c1848;
+  --k-nav:#0c1638;--k-nav-ink:#fff6e8;
+  --k-header1:#0a1230;--k-header2:#152050;--k-header-tekst:#fff6e8;
+  --k-gloed:rgba(255,180,90,.18);
+}
+body.kleur195[data-vak=toverdranken]{
+  --k-ink:#1a1224;--k-ink-zacht:#3a2a48;
+  --k-kaart:#fff4e4;--k-kaart2:#f0e0c8;
+  --k-lijn:rgba(70,24,110,.42);
+  --k-kop:#5a2088;--k-kop-bg1:#3a1460;--k-kop-bg2:#6a28a0;--k-kop-tekst:#fff7ec;
+  --k-accent:#e8c44a;--k-accent2:#f0a020;
+  --k-drank-bg:#3a1a58;--k-chip-aan:#ffe8c4;
+  --k-app-bg1:#3a1860;--k-app-bg2:#1a0a32;
+  --k-nav:#1a0c30;--k-nav-ink:#fff6e8;
+  --k-header1:#140824;--k-header2:#2a1450;--k-header-tekst:#fff6e8;
+  --k-gloed:rgba(255,170,80,.2);
+}
+body.kleur195[data-vak=gedaante]{
+  --k-ink:#102428;--k-ink-zacht:#2a4044;
+  --k-kaart:#fff4e0;--k-kaart2:#e8e0c8;
+  --k-lijn:rgba(8,70,74,.42);
+  --k-kop:#0d5a58;--k-kop-bg1:#0a3a40;--k-kop-bg2:#1a7a78;--k-kop-tekst:#fff7ec;
+  --k-accent:#e8c44a;--k-accent2:#f0a020;
+  --k-drank-bg:#0e4448;--k-chip-aan:#fff0c0;
+  --k-app-bg1:#0e4448;--k-app-bg2:#083034;
+  --k-nav:#082428;--k-nav-ink:#fff6e8;
+  --k-header1:#061c20;--k-header2:#0c3438;--k-header-tekst:#fff6e8;
+  --k-gloed:rgba(255,200,90,.18);
+}
+body.kleur195[data-vak=astronomie]{
+  --k-ink:#14182a;--k-ink-zacht:#2c3450;
+  --k-kaart:#fff4e4;--k-kaart2:#ece0c8;
+  --k-lijn:rgba(40,60,140,.45);
+  --k-kop:#1a2a80;--k-kop-bg1:#0a1028;--k-kop-bg2:#1c2a70;--k-kop-tekst:#fff7ec;
+  --k-accent:#e8c44a;--k-accent2:#c8d4ff;
+  --k-drank-bg:#141a48;--k-chip-aan:#ffe8c4;
+  --k-app-bg1:#12183a;--k-app-bg2:#080c20;
+  --k-nav:#080c20;--k-nav-ink:#fff6e8;
+  --k-header1:#060814;--k-header2:#121848;--k-header-tekst:#fff6e8;
+  --k-gloed:rgba(255,200,100,.14);
+}
+body.kleur195[data-vak=verweer]{
+  --k-ink:#241014;--k-ink-zacht:#4a2830;
+  --k-kaart:#fff4e4;--k-kaart2:#f3e0c8;
+  --k-lijn:rgba(90,16,28,.42);
+  --k-kop:#7a1828;--k-kop-bg1:#4a1018;--k-kop-bg2:#8a1a28;--k-kop-tekst:#fff7ec;
+  --k-accent:#e8c44a;--k-accent2:#f0a020;
+  --k-drank-bg:#4a141c;--k-chip-aan:#ffe4b8;
+  --k-app-bg1:#4a141c;--k-app-bg2:#2a0c12;
+  --k-nav:#2a0c12;--k-nav-ink:#fff6e8;
+  --k-header1:#1c080c;--k-header2:#3a1018;--k-header-tekst:#fff6e8;
+  --k-gloed:rgba(255,170,60,.2);
+}
+
+/* Rijke achtergrond + warme gloed + zachte vignet (cozy, geen pastelvlak) */
+html.kleur195{background:var(--k-app-bg2)!important}
+html.kleur195::before{
+  background:
+    radial-gradient(ellipse at 50% -8%,var(--k-gloed),transparent 52%),
+    radial-gradient(ellipse at 50% 115%,rgba(0,0,0,.5),transparent 58%),
+    linear-gradient(180deg,var(--k-app-bg1) 0%,var(--k-app-bg2) 100%)!important;
+}
+html.kleur195::after{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 50% 45%,transparent 40%,rgba(0,0,0,.28) 100%);
+}
+body.kleur195{color:var(--k-ink);background:transparent!important}
+body.kleur195 #tint{
+  background:
+    radial-gradient(ellipse at 20% 0,var(--k-gloed),transparent 46%),
+    linear-gradient(180deg,rgba(0,0,0,.08),transparent 40%,rgba(0,0,0,.28))!important;
+}
+body.kleur195 #decor .bg{filter:saturate(1.15) brightness(.82) sepia(0)!important;opacity:.42!important}
+body.kleur195[data-vak=astronomie] #decor .bg{opacity:.28!important;filter:saturate(.7) brightness(.55) sepia(0)!important}
+body.kleur195[data-vak=astronomie] #app,
+body.kleur195[data-vak=astronomie][data-view=home] #app,
+body.kleur195[data-vak=astronomie][data-view=pad] #app,
+body.kleur195[data-vak=astronomie][data-view=meer] #app{
+  background-image:
+    radial-gradient(1.2px 1.2px at 12% 18%,rgba(255,255,255,.75),transparent),
+    radial-gradient(1px 1px at 28% 42%,rgba(255,230,160,.5),transparent),
+    radial-gradient(1.4px 1.4px at 68% 14%,rgba(255,255,255,.8),transparent),
+    radial-gradient(1px 1px at 82% 36%,rgba(255,255,255,.5),transparent),
+    radial-gradient(1.2px 1.2px at 48% 70%,rgba(255,230,160,.4),transparent),
+    linear-gradient(180deg,var(--k-app-bg1),var(--k-app-bg2))!important;
+}
+
+/* Donkere, fluweelachtige chrome */
+body.kleur195 header{
+  background:linear-gradient(var(--k-header1),var(--k-header2))!important;
+  border-bottom:2px solid color-mix(in srgb,var(--k-accent) 65%,transparent)!important;
+  box-shadow:0 6px 16px rgba(0,0,0,.35)!important;
+}
+body.kleur195 #logo, body.kleur195 #logo span, body.kleur195 header, body.kleur195 #stats{color:var(--k-header-tekst)!important}
+body.kleur195 #nav{
+  background:linear-gradient(180deg,var(--k-nav),color-mix(in srgb,var(--k-nav) 80%,#000))!important;
+  border-top:3px solid var(--k-accent)!important;
+  box-shadow:0 -8px 20px rgba(0,0,0,.35)!important;
+}
+body.kleur195 #nav button, body.kleur195 #nav button span{color:var(--k-nav-ink)!important;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+body.kleur195 #nav button.actief span{color:var(--k-accent)!important}
+
+/* Warme crèmekaarten met donkere rand en schaduw — geen kaal wit, geen bruin perkament */
+body.kleur195 .kaart, body.kleur195 .meerblok, body.kleur195 .ochtendpost,
+body.kleur195 .m3voor, body.kleur195 .lokaal, body.kleur195 .halvr,
+body.kleur195 .volgendestap, body.kleur195 #volgendestap, body.kleur195 .morgenkaart,
+body.kleur195 .dagboek, body.kleur195 .fgkader, body.kleur195 .vrkader,
+body.kleur195 .albumkop, body.kleur195 .perkament, body.kleur195 .modalin,
+body.kleur195 .mpmodal, body.kleur195 .ochtendpost .brief,
+body.kleur195 .schooldag-kaart, body.kleur195 .ookvandaag,
+body.kleur195 .blad, body.kleur195 .tilly, body.kleur195 .tilly.st-zacht,
+body.kleur195 .r-brief, body.kleur195 .afsch, body.kleur195 .vandaag,
+body.kleur195 .stronk-in, body.kleur195 .kasblad,
+body.kleur195 .m3eind, body.kleur195 .m3eind.modalin, body.kleur195 .modalin.m3eind{
+  background:linear-gradient(180deg,var(--k-kaart) 0%,var(--k-kaart2) 100%)!important;
+  color:var(--k-ink)!important;
+  border:2px solid var(--k-lijn)!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.55)!important;
+}
+body.kleur195 .kaart h1, body.kleur195 .kaart h2, body.kleur195 .kaart h3,
+body.kleur195 .meerblok h3, body.kleur195 .ochtendpost h2, body.kleur195 .m3voor h2,
+body.kleur195 .halvr h3, body.kleur195 .halvr .halvrkop,
+body.kleur195 .volgendestap h3, body.kleur195 #volgendestap h3,
+body.kleur195 .morgenkaart h3, body.kleur195 .dagboek h2,
+body.kleur195 .modalin h2, body.kleur195 .perkament h2, body.kleur195 .perkament h1,
+body.kleur195 .lokaal h2, body.kleur195 .schooldag-kaart h3,
+body.kleur195 .stronk-in h2, body.kleur195 .kasblad h2,
+body.kleur195 .m3eind h2, body.kleur195 #app>h1, body.kleur195 #app>h2,
+body.kleur195 .tilly b, body.kleur195 .blad>h2{
+  color:var(--k-kop)!important;
+  -webkit-text-fill-color:var(--k-kop)!important;
+  background:none!important;
+  text-shadow:none!important;
+  filter:none!important;
+}
+body.kleur195 #app h2{text-shadow:none!important}
+body.kleur195 .kaart p, body.kleur195 .meerblok p, body.kleur195 .m3voor p,
+body.kleur195 .modalin p, body.kleur195 .perkament p, body.kleur195 .lokaal p,
+body.kleur195 .dagboek p, body.kleur195 .m3eind p, body.kleur195 .tilly p{color:var(--k-ink)!important}
+
+/* Level-intro: verzadigde kopbalk, crème kaart */
+body.kleur195 .m3voor{overflow:hidden;padding:0 0 1rem!important}
+body.kleur195 .m3voor > h2{
+  background:linear-gradient(135deg,var(--k-kop-bg1),var(--k-kop-bg2))!important;
+  color:var(--k-kop-tekst)!important;
+  -webkit-text-fill-color:var(--k-kop-tekst)!important;
+  margin:0!important;
+  padding:1.15rem 1.15rem .15rem;
+  border-radius:0;
+  text-shadow:0 1px 2px rgba(0,0,0,.35)!important;
+}
+body.kleur195 .m3voor > h2 + .m3vak,
+body.kleur195 .m3voor .m3vak{
+  background:linear-gradient(135deg,var(--k-kop-bg1),var(--k-kop-bg2))!important;
+  color:var(--k-kop-tekst)!important;
+  -webkit-text-fill-color:var(--k-kop-tekst)!important;
+  margin:0!important;
+  padding:.1rem 1.15rem 1rem;
+  opacity:1;
+  text-shadow:0 1px 2px rgba(0,0,0,.3)!important;
+}
+body.kleur195 .m3voor .m3opdrachtkaart,
+body.kleur195 .m3opdrachtkaart,
+body.kleur195 .m3vormkaart{
+  background:linear-gradient(180deg,#fffaf0,var(--k-kaart))!important;
+  color:var(--k-ink)!important;
+  border:2px solid var(--k-lijn)!important;
+  box-shadow:0 6px 16px rgba(0,0,0,.16)!important;
+  margin:.85rem 1rem 0!important;
+}
+body.kleur195 .m3opdrachtkaart b, body.kleur195 .m3vormkaart b{color:var(--k-kop)!important}
+body.kleur195 .m3opdrachtkaart p, body.kleur195 .m3vormkaart p{color:var(--k-ink)!important}
+body.kleur195 .m3opdrachtkaart .pportret,
+body.kleur195 .m3opdrachtkaart .m3op-port{border-color:var(--k-accent)!important}
+body.kleur195 .m3voor .m3doelen-voor,
+body.kleur195 .m3voor .m3grens,
+body.kleur195 .m3voor > p{margin-left:1rem;margin-right:1rem;color:var(--k-ink)!important}
+
+/* Drankjes-strook: rijk, niet pastel of donkerbruin */
+body.kleur195 .drankkeuze,
+body.kleur195 #m3voor .drankkeuze,
+body.kleur195 .m3voor .drankkeuze,
+body.kleur195 .m3voor[data-compact] .drankkeuze{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--k-drank-bg) 88%,#fff),var(--k-drank-bg))!important;
+  color:var(--k-kop-tekst)!important;
+  border:2px solid color-mix(in srgb,var(--k-accent) 45%,var(--k-lijn))!important;
+  border-radius:16px!important;
+  margin:.7rem 1rem!important;
+  box-shadow:0 6px 14px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.18)!important;
+}
+body.kleur195 .drankkeuze > p,
+body.kleur195 .m3voor .drankkeuze > p{color:var(--k-kop-tekst)!important;text-shadow:0 1px 1px rgba(0,0,0,.35)}
+body.kleur195 #m3voor .drankkeuze .drankchip,
+body.kleur195 .drankkeuze .drankchip{
+  background:linear-gradient(180deg,#fffaf0,var(--k-kaart))!important;
+  color:var(--k-ink)!important;
+  border:2px solid rgba(20,20,16,.18)!important;
+  box-shadow:0 3px 0 rgba(0,0,0,.18),inset 0 1px 0 #fff!important;
+}
+body.kleur195 .drankkeuze .drankchip b,
+body.kleur195 .drankkeuze .drankchip strong{color:var(--k-ink)!important}
+body.kleur195 .drankkeuze .drankchip small{color:var(--k-ink-zacht)!important;opacity:1}
+body.kleur195 .drankkeuze .drankchip.aan,
+body.kleur195 .drankkeuze .drankchip[aria-pressed="true"]{
+  background:linear-gradient(180deg,#fff8d8,var(--k-chip-aan))!important;
+  border-color:var(--k-accent)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--k-accent) 55%,transparent),0 3px 0 rgba(0,0,0,.2)!important;
+}
+body.kleur195 .m3voor-vast,
+body.kleur195 .m3voor[data-compact] .m3voor-vast{
+  background:linear-gradient(180deg,transparent 0,var(--k-kaart) 14%,var(--k-kaart2) 36%)!important;
+}
+
+/* CTA: altijd fel groen, glossy, dikke rand, 3D-schaduw — felste kleur op het scherm */
+body.kleur195 #m3start,
+body.kleur195 button.knop.volgende,
+body.kleur195 .knop.volgende,
+body.kleur195 #speelknop,
+body.kleur195 .halknop-cta,
+body.kleur195 .knop-groot.volgende,
+body.kleur195 #stapknop,
+body.kleur195.hal192 #volgendestap.halstap #stapknop,
+body.kleur195.hal192 #volgendestap.halstap .knop-groot,
+body.kleur195.hal192 #tuinknop.haltuin,
+body.kleur195.hal192 button.haldpdeur,
+body.kleur195[data-view=mijnkas] .mk-balk button{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.12) 38%,transparent 52%),
+    linear-gradient(180deg,#8af04a 0%,#3dcc32 48%,#179a24 100%)!important;
+  color:#143010!important;
+  -webkit-text-fill-color:#143010!important;
+  border:3px solid #0c5a1c!important;
+  border-radius:18px!important;
+  box-shadow:
+    0 6px 0 #0a4a16,
+    0 12px 20px rgba(0,0,0,.38),
+    inset 0 2px 0 rgba(255,255,255,.65),
+    inset 0 -3px 0 rgba(0,80,20,.22)!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+  font-weight:800;
+  letter-spacing:.02em;
+}
+body.kleur195 #m3start{margin:.6rem 1rem .35rem!important;min-width:min(82%,300px);min-height:52px;font-size:1.15em}
+body.kleur195 #m3start:active,
+body.kleur195 button.knop.volgende:active,
+body.kleur195 #stapknop:active{
+  transform:translateY(3px);
+  box-shadow:0 3px 0 #0a4a16,0 6px 10px rgba(0,0,0,.3),inset 0 2px 0 rgba(255,255,255,.4)!important;
+}
+body.kleur195 button.knop:not(.volgende),
+body.kleur195 .knop:not(.volgende),
+body.kleur195 #terug{
+  background:linear-gradient(180deg,#fffaf0,var(--k-kaart2))!important;
+  color:var(--k-ink)!important;
+  -webkit-text-fill-color:var(--k-ink)!important;
+  border:2px solid var(--k-lijn)!important;
+  box-shadow:0 3px 0 color-mix(in srgb,var(--k-kop-bg1) 55%,#000),0 6px 10px rgba(0,0,0,.16),inset 0 1px 0 #fff!important;
+  background-image:linear-gradient(180deg,#fffaf0,var(--k-kaart2))!important;
+}
+body.kleur195 button.linkknop, body.kleur195 .linkknop,
+body.kleur195 .m3voor .linkknop, body.kleur195 .dagboek .linkknop, body.kleur195 .perkament .linkknop{
+  color:var(--k-kop)!important;
+}
+body.kleur195 button.knop:not(.volgende):before,
+body.kleur195 .knop:not(.volgende):before,
+body.kleur195 #m3start:before{content:none!important;display:none!important}
+body.kleur195 #terug .icn{stroke:var(--k-kop)!important;color:var(--k-kop)!important}
+
+/* Meer-tegels: crème op verzadigde blokken */
+body.kleur195 .tegel, body.kleur195 .meerblok .tegel, body.kleur195 .raster .tegel,
+body.kleur195 .meer-tegel,
+body.kleur195.meer192 #app.meer192 .meer-tegel{
+  background:linear-gradient(180deg,#fffaf0,var(--k-kaart))!important;
+  color:var(--k-ink)!important;
+  border:2px solid var(--k-lijn)!important;
+  box-shadow:0 4px 0 color-mix(in srgb,var(--k-kop-bg1) 40%,#000),0 8px 16px rgba(0,0,0,.16)!important;
+}
+body.kleur195 .tegel b, body.kleur195 .meerblok .tegel b, body.kleur195 .meer-tegel b,
+body.kleur195.meer192 #app.meer192 .meer-tegel b{color:var(--k-ink)!important}
+
+body.kleur195.hal192 #app,
+body.kleur195.meer192 #app,
+body.kleur195.pad192 #app{
+  background:linear-gradient(180deg,var(--k-app-bg1) 0%,var(--k-app-bg2) 100%)!important;
+}
+body.kleur195.meer192 #app.meer192 .meerblok.meer-vandaag{
+  background:linear-gradient(180deg,#5a3a10,#8a5a18)!important;
+  color:#fff6e4!important;
+  border-color:#e8c44a!important;
+}
+body.kleur195.meer192 #app.meer192 .meerblok.meer-verzamelen{
+  background:linear-gradient(180deg,#3a1860,#5a28a0)!important;
+  color:#fff6e8!important;
+  border-color:#c8a0ff!important;
+}
+body.kleur195.meer192 #app.meer192 .meerblok.meer-school-en-winkels{
+  background:linear-gradient(180deg,#0d4a30,#1a7a44)!important;
+  color:#fff6e8!important;
+  border-color:#6ee24a!important;
+}
+body.kleur195.meer192 #app.meer192 .meerblok.meer-instellingen{
+  background:linear-gradient(180deg,#152a6a,#2a4ab0)!important;
+  color:#fff6e8!important;
+  border-color:#8ab0ff!important;
+}
+body.kleur195.meer192 #app.meer192 .meerblok.meer-nog-meer{
+  background:linear-gradient(180deg,#4a1018,#8a1a28)!important;
+  color:#fff6e8!important;
+  border-color:#e07070!important;
+}
+body.kleur195.meer192 #app.meer192 .meerblok.meer192-blok h3,
+body.kleur195.meer192 #app.meer192 .meerblok.meer-vandaag,
+body.kleur195.meer192 #app.meer192 .meerblok.meer-verzamelen,
+body.kleur195.meer192 #app.meer192 .meerblok.meer-school-en-winkels,
+body.kleur195.meer192 #app.meer192 .meerblok.meer-instellingen,
+body.kleur195.meer192 #app.meer192 .meerblok.meer-nog-meer{
+  color:#fff6e8!important;
+  -webkit-text-fill-color:#fff6e8!important;
+}
+
+/* Hal: rijke panelen, CTA groen */
+body.kleur195.hal192 .halbanner{
+  background:linear-gradient(135deg,var(--k-kaart),var(--k-kaart2))!important;
+  color:var(--k-ink)!important;
+  border:2px solid var(--k-lijn)!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.28)!important;
+}
+body.kleur195.hal192 .halbanner[data-tijd=ochtend]{
+  background:linear-gradient(135deg,#fff0c4,#f0c060 55%,#e08a2a)!important;
+  color:#2a1a08!important;
+}
+body.kleur195.hal192 .halbanner h2,
+body.kleur195.hal192 .halbanner .halgroet,
+body.kleur195.hal192 .halbanner b{
+  color:var(--k-kop)!important;
+  -webkit-text-fill-color:var(--k-kop)!important;
+  text-shadow:none!important;
+}
+body.kleur195.hal192 .halbanner[data-tijd=ochtend] h2,
+body.kleur195.hal192 .halbanner[data-tijd=ochtend] .halgroet,
+body.kleur195.hal192 .halbanner[data-tijd=ochtend] b{
+  color:#4a2a08!important;
+  -webkit-text-fill-color:#4a2a08!important;
+}
+body.kleur195.hal192 #volgendestap.halstap,
+body.kleur195 #volgendestap.halstap{
+  background:linear-gradient(165deg,var(--k-kop-bg1) 0%,var(--k-kop-bg2) 100%)!important;
+  color:var(--k-kop-tekst)!important;
+  border:2px solid color-mix(in srgb,var(--k-accent) 55%,transparent)!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.25)!important;
+}
+body.kleur195.hal192 #volgendestap.halstap small,
+body.kleur195.hal192 #volgendestap.halstap h3,
+body.kleur195.hal192 #volgendestap.halstap p{
+  color:var(--k-kop-tekst)!important;
+  -webkit-text-fill-color:var(--k-kop-tekst)!important;
+}
+body.kleur195.hal192 .hallokaal{background:var(--k-kaart)!important}
+body.kleur195.hal192 .hallokaal.lok-herbologie{--vak:#1aa336;border-top-color:#1aa336}
+body.kleur195.hal192 .hallokaal.lok-bezweringen{--vak:#2a4ab0;border-top-color:#2a4ab0}
+body.kleur195.hal192 .hallokaal.lok-toverdranken{--vak:#6a28a0;border-top-color:#6a28a0}
+body.kleur195.hal192 .hallokaal.lok-gedaante{--vak:#1a7a78;border-top-color:#1a7a78}
+body.kleur195.hal192 .hallokaal.lok-astronomie{--vak:#1c2a70;border-top-color:#1c2a70}
+body.kleur195.hal192 .hallokaal.lok-verweer{--vak:#8a1a28;border-top-color:#8a1a28}
+body.kleur195.pad192 .vakbalk{
+  background:linear-gradient(180deg,var(--k-kaart),var(--k-kaart2))!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.28)!important;
+  border:2px solid var(--k-lijn)!important;
+}
+body.kleur195.pad192 .pv-herbologie{border-color:#1aa336!important}
+body.kleur195.pad192 .pv-bezweringen{border-color:#2a4ab0!important}
+body.kleur195.pad192 .pv-toverdranken{border-color:#6a28a0!important}
+body.kleur195.pad192 .pv-gedaante{border-color:#1a7a78!important}
+body.kleur195.pad192 .pv-astronomie{border-color:#1c2a70!important}
+body.kleur195.pad192 .pv-verweer{border-color:#8a1a28!important}
+
+/* HUD */
+body.kleur195 .m3titel{color:var(--k-kop-tekst);text-shadow:0 1px 3px rgba(0,0,0,.45)}
+body.kleur195 .m3vaknaam{color:var(--k-kop-tekst);opacity:.95}
+body.kleur195 .m3mid{
+  background:linear-gradient(180deg,var(--k-kop-bg1),var(--k-kop-bg2));
+  border-radius:16px;
+  padding:.35rem .6rem .45rem;
+  box-shadow:0 6px 14px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.2);
+  border:2px solid color-mix(in srgb,var(--k-accent) 50%,transparent);
+}
+body.kleur195 .m3balk{border-color:var(--k-accent)!important;background:rgba(8,12,16,.55)}
+body.kleur195 .m3balk i{background:linear-gradient(#fff8d0,var(--k-accent) 55%,var(--k-accent2));box-shadow:0 0 8px color-mix(in srgb,var(--k-accent) 55%,transparent)}
+body.kleur195 .m3kaart{
+  background:linear-gradient(180deg,#fffaf0,var(--k-kaart2))!important;
+  border-color:var(--k-accent)!important;
+  color:var(--k-ink)!important;
+  box-shadow:0 4px 10px rgba(0,0,0,.25)!important;
+}
+body.kleur195 .m3kaart b{color:var(--k-ink)!important}
+body.kleur195 .m3bord #m3c{box-shadow:0 0 0 3px color-mix(in srgb,var(--k-accent) 55%,transparent),0 10px 20px rgba(0,0,0,.35)}
+
+/* Resultaat: crème + goud (prestatie) + groene CTA */
+body.kleur195 .m3eind .m3eindscore, body.kleur195 .m3eindscore{color:var(--k-kop)!important}
+body.kleur195 .m3eind .m3actie{background:linear-gradient(180deg,transparent,var(--k-kaart) 28%)!important}
+body.kleur195 .winhaak, body.kleur195 .troost, body.kleur195 .schildmoment{
+  background:color-mix(in srgb,var(--k-kaart) 70%,var(--k-accent))!important;
+  color:var(--k-ink)!important;
+  border-color:var(--k-accent)!important;
+}
+
+/* Toasts en gids: crème met diepte */
+body.kleur195 #gids .gbel,
+body.kleur195 #toast,
+body.kleur195 .rglijn,
+body.kleur195 .vrlvbord{
+  background:linear-gradient(180deg,#fffaf0,var(--k-kaart))!important;
+  color:var(--k-ink)!important;
+  border:2px solid var(--k-lijn)!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.28)!important;
+}
+body.kleur195 .rglijn b, body.kleur195 .vrlvbord h3{color:var(--k-kop)!important}
+
+/* Kas-chrome */
+body.kleur195[data-view=mijnkas] .mk-lab{
+  background:color-mix(in srgb,var(--k-kop-bg1) 88%,#000)!important;
+  color:var(--k-kop-tekst)!important;
+}
+body.kleur195[data-view=mijnkas] .mk-hint{
+  background:color-mix(in srgb,var(--k-kop-bg1) 60%,transparent)!important;
+  color:#fff!important;
+}
+body.kleur195[data-view=mijnkas] .mk-balk{
+  background:linear-gradient(180deg,var(--k-kaart),var(--k-kaart2))!important;
+  border:2px solid var(--k-lijn)!important;
+  box-shadow:0 6px 16px rgba(0,0,0,.3)!important;
+}
+body.kleur195[data-view=mijnkas] .mk-balk .mk-tel,
+body.kleur195[data-view=mijnkas] .mk-balk span{
+  background:#fffaf0!important;
+  color:var(--k-ink)!important;
+  box-shadow:inset 0 0 0 1px var(--k-lijn)!important;
+}
+
+@media (prefers-reduced-motion:reduce){
+  body.kleur195 #m3start, body.kleur195 button.knop{transition:none;transform:none}
+}
+
+/* v195 fixes: introkop ook in compact-wrapper, Meer-tegels altijd donkere inkt */
+body.kleur195 .m3voor h2,
+body.kleur195 .m3voor .m3voor-rol h2{
+  background:linear-gradient(135deg,var(--k-kop-bg1),var(--k-kop-bg2))!important;
+  color:var(--k-kop-tekst)!important;
+  -webkit-text-fill-color:var(--k-kop-tekst)!important;
+  margin:0!important;
+  padding:1.15rem 1.15rem .15rem!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.4)!important;
+}
+body.kleur195.meer192 #app.meer192 .meer-tegel,
+body.kleur195.meer192 #app.meer192 .meer-tegel b,
+body.kleur195.meer192 #app.meer192 .meer-tegel span,
+body.kleur195.meer192 #app.meer192 .meer-tegel small,
+body.kleur195.meer192 #app.meer192 .meer-tegel *{
+  color:var(--k-ink)!important;
+  -webkit-text-fill-color:var(--k-ink)!important;
+}
+body.kleur195[data-vak=herbologie]{
+  --k-kop-bg1:#06301c;
+  --k-kop-bg2:#0f5a32;
+}
