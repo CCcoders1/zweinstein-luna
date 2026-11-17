@@ -12,7 +12,7 @@ JS=(
   ketel.js huispunten.js bonuskamer.js flesjes.js verloop.js minigames.js
   mijlpaal.js config-online.js vrienden.js speellog.js halloween.js versie.js
   feest.js kastaken.js kweekvolg.js samenhang.js sfeer.js verhaaljaar.js
-  kringloop.js winter.js strak.js huiskamer.js huisdoel.js laatspel.js m3ronde.js menu192.js kleur194.js kleur195.js valfix.js bord209.js pad210.js meer211.js spel197.js spel198.js eind214.js pittig219.js eind221.js combo222.js hint223.js bijna224.js start225.js bord226.js pad227.js hal228.js pad232.js speciaal236.js
+  kringloop.js winter.js strak.js huiskamer.js huisdoel.js laatspel.js m3ronde.js menu192.js kleur194.js kleur195.js valfix.js bord209.js pad210.js meer211.js spel197.js spel198.js eind214.js pittig219.js eind221.js combo222.js hint223.js bijna224.js start225.js bord226.js pad227.js hal228.js pad232.js speciaal236.js fx241.js
 )
 CSS=(
   style.css extra.css polish.css donker.css kern.css licht.css
@@ -31,7 +31,7 @@ js = '''
   ketel.js huispunten.js bonuskamer.js flesjes.js verloop.js minigames.js
   mijlpaal.js config-online.js vrienden.js speellog.js halloween.js versie.js
   feest.js kastaken.js kweekvolg.js samenhang.js sfeer.js verhaaljaar.js
-  kringloop.js winter.js strak.js huiskamer.js huisdoel.js laatspel.js m3ronde.js menu192.js kleur194.js kleur195.js valfix.js bord209.js pad210.js meer211.js spel197.js spel198.js eind214.js pittig219.js eind221.js combo222.js hint223.js bijna224.js start225.js bord226.js pad227.js hal228.js pad232.js speciaal236.js
+  kringloop.js winter.js strak.js huiskamer.js huisdoel.js laatspel.js m3ronde.js menu192.js kleur194.js kleur195.js valfix.js bord209.js pad210.js meer211.js spel197.js spel198.js eind214.js pittig219.js eind221.js combo222.js hint223.js bijna224.js start225.js bord226.js pad227.js hal228.js pad232.js speciaal236.js fx241.js
 '''.split()
 css = '''
   style.css extra.css polish.css donker.css kern.css licht.css
