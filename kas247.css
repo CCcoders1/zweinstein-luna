@@ -1,0 +1,174 @@
+/* v247: potten en planten in de persoonlijke kas mooier en rustiger in beeld */
+body[data-view=mijnkas] h2.mk-titel,
+body.kleur195[data-view=mijnkas] h2.mk-titel{
+  top:calc(10px + env(safe-area-inset-top))!important;
+  left:calc(16px + env(safe-area-inset-left))!important;
+  right:calc(16px + env(safe-area-inset-right))!important;
+  font-size:1.02rem!important;
+  letter-spacing:.07em!important;
+  color:#fff6d4!important;
+  -webkit-text-fill-color:#fff6d4!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.7), 0 0 12px rgba(40,30,8,.45)!important;
+  z-index:36!important;
+}
+body[data-view=mijnkas] .mk-tuin{
+  top:calc(42px + env(safe-area-inset-top))!important;
+  padding:6px 10px 7px!important;
+  border-radius:14px!important;
+  display:flex!important;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:6px 10px!important;
+  background:
+    linear-gradient(180deg,rgba(255,236,170,.16),transparent 40%),
+    linear-gradient(180deg,#2c3f18,#1a2810)!important;
+  border:1.5px solid #c9a227!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,236,180,.28),
+    0 6px 14px rgba(0,0,0,.4)!important;
+}
+body[data-view=mijnkas] .mk-tuin p{
+  margin:0!important;
+  font-size:.72rem!important;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:#ffe9a8!important;
+  width:100%;
+}
+body[data-view=mijnkas] .mk-tuinbed{
+  min-height:16px!important;
+  gap:3px!important;
+  margin:0!important;
+}
+body[data-view=mijnkas] .mk-tuinplant{
+  width:7px!important;
+  height:12px!important;
+}
+body[data-view=mijnkas] .mk-tuinplant.wacht{height:16px!important}
+body[data-view=mijnkas] .mk-tuinplant.aan{height:20px!important}
+body[data-view=mijnkas] .mk-tuin small{
+  margin:0!important;
+  font-size:.68rem!important;
+  color:#f0e0b4!important;
+}
+
+/* potten: groter, steviger op de plank, zachte schaduw */
+body[data-view=mijnkas] .mk-pot .potimg{
+  filter:
+    drop-shadow(0 7px 6px rgba(20,10,0,.42))
+    drop-shadow(0 1px 0 rgba(255,230,170,.25))!important;
+}
+body[data-view=mijnkas] .mk-tafel.klein .mk-pot .potimg{width:90%!important}
+body[data-view=mijnkas] .mk-tafel.groot .mk-pot .potimg{width:86%!important}
+body[data-view=mijnkas] .mk-pot.rijp .potimg{
+  filter:
+    drop-shadow(0 7px 6px rgba(20,10,0,.42))
+    drop-shadow(0 0 8px rgba(200,230,90,.4))!important;
+}
+
+/* planten: groter in beeld, netjes in de pot geplant */
+body[data-view=mijnkas] .mk-pot .kplant{
+  width:88%!important;
+  bottom:46%!important;
+  z-index:4;
+  overflow:visible;
+}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0){width:48%!important;bottom:50%!important;clip-path:inset(0 0 8% 0)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst1){width:64%!important;bottom:48%!important;clip-path:inset(0 0 14% 0)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst2){width:78%!important;bottom:47%!important;clip-path:inset(0 0 18% 0)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst3){width:96%!important;bottom:45%!important;clip-path:inset(0 0 22% 0)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst4){width:110%!important;bottom:44%!important;clip-path:inset(0 0 24% 0)!important}
+body[data-view=mijnkas] .mk-pot .kplant{
+  height:140px!important;
+}
+body[data-view=mijnkas] .mk-pot .plantimg,
+body[data-view=mijnkas] .mk-pot .plantimg.kst0,
+body[data-view=mijnkas] .mk-pot .plantimg.kst1,
+body[data-view=mijnkas] .mk-pot .plantimg.kst2,
+body[data-view=mijnkas] .mk-pot .plantimg.kst3,
+body[data-view=mijnkas] .mk-pot .plantimg.kst4{
+  width:100%!important;
+  height:140px!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:bottom center!important;
+  display:block!important;
+  transform:scale(calc(0.86 + var(--groei, 0) * 0.22))!important;
+  transform-origin:50% 100%!important;
+  filter:drop-shadow(0 3px 3px rgba(20,12,0,.4))!important;
+}
+body[data-view=mijnkas] .mk-pot.rijp .plantimg{
+  filter:
+    drop-shadow(0 3px 3px rgba(20,12,0,.4))
+    drop-shadow(0 0 6px rgba(180,230,80,.35))!important;
+}
+
+/* etiket en groeibalk */
+body[data-view=mijnkas] .mk-pot .mk-lab,
+body[data-view=mijnkas] .mk-tafel .mk-lab{
+  background:linear-gradient(180deg,#fff6dc,#f0d9a0)!important;
+  color:#3a2410!important;
+  border:1.5px solid #c9a227!important;
+  border-radius:10px!important;
+  box-shadow:inset 0 1px 0 #fffaf0, 0 2px 4px rgba(0,0,0,.35)!important;
+  font-weight:800!important;
+  font-size:.64rem!important;
+  letter-spacing:.02em;
+  padding:2px 7px 3px!important;
+  max-width:96%!important;
+  white-space:nowrap!important;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  bottom:-6px!important;
+}
+body[data-view=mijnkas] .mk-pot.rijp .mk-lab{
+  background:linear-gradient(180deg,#ffe98a,#d4a017 60%,#b8860b)!important;
+  color:#2a1808!important;
+  border-color:#8a5a10!important;
+  box-shadow:inset 0 1px 0 #fff3c0, 0 2px 0 #6a4508, 0 0 8px rgba(255,200,60,.35)!important;
+}
+body[data-view=mijnkas] .mk-pot .kpot-groei{
+  position:absolute;
+  left:50%;
+  bottom:8px;
+  transform:translateX(-50%);
+  z-index:5;
+  height:6px!important;
+  max-width:70%!important;
+  width:var(--groei-w,70%);
+  margin:0!important;
+  border-radius:99px!important;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.5),transparent 55%),
+    linear-gradient(90deg,#5a8a28,#c9a227)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 1.5px rgba(40,24,8,.4)!important;
+}
+body[data-view=mijnkas] .mk-pot .kpot-groei.klaar{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.6),transparent 50%),
+    linear-gradient(90deg,#e8c24a,#ffe28a)!important;
+}
+
+/* megapot eveneens wat voller */
+body[data-view=mijnkas] .mk-vloer .gpimg{
+  filter:drop-shadow(0 8px 7px rgba(20,10,0,.45))!important;
+}
+body[data-view=mijnkas] .mk-vloer .plantimg{
+  transform:scale(calc(0.86 + var(--groei, 0) * 0.24)) translateY(16%)!important;
+  transform-origin:50% 100%!important;
+  filter:drop-shadow(0 3px 3px rgba(20,12,0,.4))!important;
+}
+body[data-view=mijnkas] .mk-vloer .gplabel{
+  background:linear-gradient(180deg,#fff6dc,#f0d9a0)!important;
+  color:#3a2410!important;
+  border:1.5px solid #c9a227!important;
+  border-radius:10px!important;
+  font-weight:800!important;
+  font-size:.62rem!important;
+  padding:2px 6px!important;
+  box-shadow:inset 0 1px 0 #fffaf0, 0 2px 4px rgba(0,0,0,.35)!important;
+}
+body[data-view=mijnkas] .mk-vloer.rijp .gplabel{
+  background:linear-gradient(180deg,#ffe98a,#d4a017)!important;
+}

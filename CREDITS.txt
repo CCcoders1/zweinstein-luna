@@ -564,3 +564,4 @@ v243 (17 november 2026): de doel-fiches bovenaan het bord zijn mini-medailles, e
 v244 (17 november 2026): de sterrenbalk en de scorebalk bovenaan het bord zijn rijker: een gouden rand, een glans op de balk en sterren die mooier oplichten. Mama’s voortgang is alleen aangevuld, niet gereset.
 v245 (17 november 2026): als je op de Kaart op een level-medaille tikt, veert die even en verschijnt een klein kaartje met je sterren en een Spelen-knop. Mama’s voortgang is alleen aangevuld, niet gereset.
 v246 (17 november 2026): de tuin heeft meer bloemen en lantaarns, warm licht bij schemering, en de drie lege pleintjes hebben een sierlijke steenrand en bankjes, klaar voor later verdiende versiering. Mama’s voortgang is alleen aangevuld, niet gereset.
+v247 (17 november 2026): in je eigen kas staan de potten en planten groter en rustiger in beeld, met een gouden etiket en een duidelijke groeibalk. Mama’s voortgang is alleen aangevuld, niet gereset.
