@@ -1,0 +1,121 @@
+/* v214: resultaatscherm met echte sterren, confetti en duidelijke knoppen */
+.zwconf{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden}
+.zwconf i{
+  position:absolute;top:-12px;left:var(--x,50%);
+  width:8px;height:12px;border-radius:2px;
+  background:var(--k,#ffd84a);
+  box-shadow:0 0 6px var(--k,#ffd84a);
+  animation:zwconfval var(--t,2s) ease-in var(--d,0s) both;
+  transform:rotate(var(--r,20deg));
+}
+@keyframes zwconfval{
+  0%{transform:translate3d(0,-10px,0) rotate(0deg);opacity:1}
+  80%{opacity:1}
+  100%{transform:translate3d(var(--dx,0px),110vh,0) rotate(360deg);opacity:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .zwconf{display:none}
+}
+body .modalin.m3eind,
+body.kleur195 .modalin.m3eind{
+  position:relative;
+  border:2.5px solid #c9a227!important;
+  border-radius:22px!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.55),
+    0 16px 40px rgba(0,0,0,.45)!important;
+  padding:18px 16px 16px!important;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(255,230,140,.28),transparent 46%),
+    linear-gradient(#fff8e8,#f3e3bf)!important;
+}
+body .modalin.m3eind:before,
+body .modalin.m3eind:after{
+  content:"";
+  position:absolute;width:18px;height:18px;pointer-events:none;
+  border:2px solid #c9a227;
+}
+body .modalin.m3eind:before{left:8px;top:8px;border-right:0;border-bottom:0;border-radius:4px 0 0 0}
+body .modalin.m3eind:after{right:8px;top:8px;border-left:0;border-bottom:0;border-radius:0 4px 0 0}
+body.kleur195 .m3eind h2,
+body .m3eind h2{
+  font-family:Cinzel,Georgia,serif!important;
+  font-size:1.35rem!important;
+  letter-spacing:.04em;
+  color:#6b1d0e!important;
+  -webkit-text-fill-color:#6b1d0e!important;
+  margin:.2em 0 .15em!important;
+  padding:0!important;
+  background:none!important;
+}
+body .m3eind .m3ster svg{
+  width:78px!important;height:78px!important;
+  filter:drop-shadow(0 0 14px rgba(255,216,74,.85))!important;
+}
+body .m3eind .hp-sterren,
+body.kleur195 .m3eind .hp-sterren{
+  display:flex!important;
+  justify-content:center;
+  gap:8px;
+  margin:4px 0 2px;
+  font-size:0!important;
+  letter-spacing:0!important;
+  text-shadow:none!important;
+}
+body .m3eind .eindster{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;height:42px;
+  font-size:32px!important;
+  line-height:1;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 32% 28%,#fff8e0,transparent 42%),
+    radial-gradient(circle at 50% 55%,#ffe08a,#d4a017 62%,#8a5a10);
+  border:2px solid #c9a227;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65), 0 3px 8px rgba(40,20,0,.28);
+  color:#fff6d0;
+  text-shadow:0 1px 0 #7a4a10;
+  animation:eindsterpop .45s cubic-bezier(.2,1.6,.4,1) both;
+}
+body .m3eind .eindster:nth-child(2){animation-delay:.08s}
+body .m3eind .eindster:nth-child(3){animation-delay:.16s}
+body .m3eind .eindster.uit{
+  background:#d8c8a4;
+  border-color:#b89a5c;
+  color:#f3e8c8;
+  filter:grayscale(.25) brightness(.95);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+}
+@keyframes eindsterpop{0%{transform:scale(.4)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){
+  body .m3eind .eindster{animation:none}
+}
+body .m3eind .hp-winst{
+  margin:.2em 0 .4em;
+  color:#4a2a10!important;
+}
+body .m3eind .hp-winst small{display:block;margin-top:2px;opacity:.8;font-size:.75rem}
+body .m3eind .knop.volgende:first-of-type,
+body.kleur195 .m3eind .knop.volgende:first-of-type{
+  min-height:52px!important;
+  font-size:1.05rem!important;
+  margin:.45rem 12px .25rem!important;
+}
+body .m3eind #m3verder.knop,
+body.kleur195 .m3eind #m3verder.knop,
+body .m3eind #m3volg.knop,
+body.kleur195 .m3eind #m3volg.knop{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.12) 40%,transparent 55%),
+    linear-gradient(180deg,#ffe08a,#d4a017 55%,#a07812)!important;
+  color:#3a2410!important;
+  -webkit-text-fill-color:#3a2410!important;
+  border:2px solid #8a5a10!important;
+  border-radius:16px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65), 0 4px 0 #6a4508!important;
+  font-weight:800!important;
+  min-height:48px!important;
+  margin:.15rem 12px .2rem!important;
+}
