@@ -95,12 +95,14 @@ class Bord{
   if(typeof m3BordGat==='function')this.gat=m3BordGat(L,this);
   for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(this.gatCel(r,c)){this.lay[r][c]=0;this.kist[r][c]=0;this.g[r][c]=null}
   for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++)if(!this.kist[r][c]&&!this.gatCel(r,c)){let k;do k=this.rng()*L.kleuren|0;while((c>=2&&this.k(r,c-1)==k&&this.k(r,c-2)==k)||(r>=2&&this.k(r-1,c)==k&&this.k(r-2,c)==k));this.g[r][c]=this.tegel(k,r,c,r)}
-  // potten bovenaan, alleen op speelbare vakjes
-  let pi=0;for(let c of [1,Math.min(KOL-2,1+((KOL*4/7)|0))]){if(pi>=Math.min(2,L.pot))break;let gezet=0;for(let r=0;r<RIJEN&&!gezet;r++){if(this.gatCel(r,c)||this.kist[r][c]||!this.g[r][c]||this.g[r][c].k<0)continue;this.g[r][c]=this.tegel(-1,r,c,r);this.potGeplaatst++;pi++;gezet=1}}
+  // potten bovenaan, alleen in kolommen met een valroute naar een exit
+  if(typeof this.plaatsStartPotten==='function')this.plaatsStartPotten();
+  else{let pi=0;const kols=[];for(let c=0;c<KOL;c++){let ex=-1;for(let r=RIJEN-1;r>=0;r--){if(!this.gatCel(r,c)&&!this.kist[r][c]){ex=r;break}}if(ex<=0)continue;kols.push([c,ex])}for(const[c,ex] of kols){if(pi>=Math.min(2,L.pot))break;let gezet=0;for(let r=0;r<ex&&!gezet;r++){if(this.gatCel(r,c)||this.kist[r][c]||!this.g[r][c]||this.g[r][c].k<0)continue;this.g[r][c]=this.tegel(-1,r,c,r);this.potGeplaatst++;pi++;gezet=1}}}
   this.doel.forEach(d=>{if(d.t=='o')d.n=this.lay.flat().reduce((a,b)=>a+b,0);if(d.t=='k'||d.t=='i'||d.t=='d')d.n=this.kist.flat().filter(v=>v>0).length;d.over=d.n});
   if(typeof this.strikInit==='function')this.strikInit();
   if(typeof this.laatInit==='function')this.laatInit();
   if(typeof this.rondeInit==='function')this.rondeInit();
+  if(typeof this.plaatsStartPotten==='function')this.plaatsStartPotten();
   if(!this.heeftZet())this.schud();
   if(!this.heeftZet()&&typeof this.noodZet==='function')this.noodZet()}
  tegel(k,r,c,van){return{k,s:null,x:c,y:sim0(this)?r:(van===undefined?r:van-RIJEN),sc:1,vy:0,id:Math.random()}}
@@ -237,7 +239,25 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
  <div class="m3doel" id="m3d"></div></div><div class="m3bord"><canvas id="m3c"></canvas><div id="m3fx"></div></div></div>`);
  document.body.classList.add('m3aan');
  const cv=$('#m3c'),ctx=cv.getContext('2d');const dpr=Math.min(2,devicePixelRatio||1);let cel,W,H;
- const maat=()=>{cel=Math.floor(Math.min((innerWidth-18)/KOL,(innerHeight-250)/RIJEN,66));W=cel*KOL;H=cel*RIJEN;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);try{m3Voorrender(T.id||thema,cel,b.L.kleuren)}catch(e){for(let k=0;k<b.L.kleuren;k++)tegelBeeld(T,k,cel)}};maat();addEventListener('resize',maat);
+ let maatTok=0;
+ const maat=()=>{
+  document.body.classList.add('m3grootbord');
+  const nav=document.querySelector('nav');
+  const header=document.querySelector('header');
+  const hud=document.querySelector('.m3hud');
+  const pomp=document.getElementById('pompmeter');
+  const lev=document.querySelector('.m3levrij');
+  const top=header?header.getBoundingClientRect().bottom:0;
+  const bot=nav?nav.getBoundingClientRect().top:innerHeight;
+  let chrome=8;
+  [hud,pomp,lev].forEach(el=>{if(el)chrome+=el.getBoundingClientRect().height});
+  const vw=(window.visualViewport&&visualViewport.width)||innerWidth;
+  const availW=Math.max(200,vw-8);
+  const availH=Math.max(220,bot-top-chrome);
+  cel=Math.max(30,Math.floor(Math.min(availW/KOL,availH/RIJEN,110)));
+  W=cel*KOL;H=cel*RIJEN;cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);try{m3Voorrender(T.id||thema,cel,b.L.kleuren)}catch(e){for(let k=0;k<b.L.kleuren;k++)tegelBeeld(T,k,cel)}};
+ const maatLater=()=>{const tok=++maatTok;const go=()=>{if(tok!==maatTok||!document.getElementById('m3c'))return;maat()};maat();requestAnimationFrame(()=>{go();requestAnimationFrame(go)});setTimeout(go,60);setTimeout(go,200)};
+ maatLater();addEventListener('resize',maat);
  const deeltjes=[],geesten=[],fxs=[],planken=[];let slowTot=0,schud=0,sel=null,hintT=Date.now(),hint=null,bezig=false,vliegers=0;
  const M3ARM=RMP||((navigator.hardwareConcurrency||8)<=4);
  const vorig=b.doel.map(d=>d.over);
@@ -320,7 +340,7 @@ function m3Speel(n,thema,boost){const L=m3Level(n);const T=M3THEMA[thema];const 
    if(p>.55){const r2=(p-.55)/.45;ctx.globalCompositeOperation='lighter';ctx.globalAlpha=1-r2;ctx.strokeStyle='#fff3b0';ctx.lineWidth=4*(1-r2);ctx.beginPath();ctx.arc(e.x,e.y,cel*(.4+r2*.9),0,7);ctx.stroke()}}
   ctx.restore();if(e.l>=1)fxs.splice(i,1)}};
  let laatst=performance.now();
- const frame=nu=>{if(!document.body.contains(cv)){if(!document.getElementById('m3c'))document.body.classList.remove('m3aan');document.body.classList.remove('m3bijna');const bn=document.getElementById('m3bijna');if(bn)bn.remove();removeEventListener('resize',maat);removeEventListener('zw-hint',opHint);return}let dt=Math.min(40,nu-laatst)/16.7;if(nu<slowTot)dt*=.35;laatst=nu;
+ const frame=nu=>{if(!document.body.contains(cv)){if(!document.getElementById('m3c')){document.body.classList.remove('m3aan');document.body.classList.remove('m3grootbord')}document.body.classList.remove('m3bijna');maatTok++;const bn=document.getElementById('m3bijna');if(bn)bn.remove();removeEventListener('resize',maat);removeEventListener('zw-hint',opHint);return}let dt=Math.min(40,nu-laatst)/16.7;if(nu<slowTot)dt*=.35;laatst=nu;
   ctx.clearRect(0,0,W,H);ctx.save();if(schud>0){ctx.translate((Math.random()-.5)*schud,(Math.random()-.5)*schud);schud*=.85;if(schud<.5)schud=0}
   if(b.vormTekenAchter)b.vormTekenAchter(ctx,cel,nu);
   for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){if(b.kist[r][c]===undefined||b.gatCel(r,c))continue;ctx.fillStyle=(r+c)%2?'rgba(150,110,50,.13)':'rgba(255,255,255,.28)';ctx.beginPath();ctx.roundRect(c*cel+1.5,r*cel+1.5,cel-3,cel-3,cel*.18);ctx.fill();

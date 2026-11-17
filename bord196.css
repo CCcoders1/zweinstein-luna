@@ -1,0 +1,65 @@
+/* v196: compacter HUD tijdens het spel, zodat het bord het scherm vult */
+body.m3aan{padding-bottom:62px}
+body.m3aan header{padding:4px 10px}
+body.m3aan #logo{font-size:1.1em}
+body.m3aan #stats{font-size:.82em;gap:8px}
+body.m3aan main{padding:2px 0 0;max-width:none}
+body.m3aan #app{padding:0}
+body.m3aan #terug{margin:2px 6px}
+body.m3aan nav{padding:3px 0}
+body.m3aan.m3grootbord .m3{padding:0;align-items:center}
+body.m3aan.m3grootbord .m3hud{
+  max-width:none;width:calc(100% - 8px);margin:2px auto 3px;gap:6px;
+  grid-template-columns:58px 1fr auto;
+}
+body.m3aan.m3grootbord .m3med{width:58px;height:58px}
+body.m3aan.m3grootbord .m3med b{font-size:22px}
+body.m3aan.m3grootbord .m3med small{font-size:9px}
+body.m3aan.m3grootbord .m3titel{font-size:.95em}
+body.m3aan.m3grootbord .m3score{font-size:.85em}
+body.m3aan.m3grootbord .m3vaknaam{font-size:.75em}
+body.m3aan.m3grootbord .m3balk{height:10px;margin:3px 0}
+body.m3aan.m3grootbord .pompmeter{height:28px;margin:0 6px 2px;padding:0 4px}
+body.m3aan.m3grootbord .m3levrij{margin:2px 0 3px}
+body.m3aan.m3grootbord .m3levrij .knop{font-size:.95em;padding:6px 14px;margin:0}
+body.m3aan.m3grootbord .m3bord{margin:2px auto}
+body.m3aan.m3grootbord .m3bord:before{inset:-6px;border-radius:18px}
+body.m3aan.m3grootbord .m3bord #m3c{
+  box-shadow:0 0 0 2px #fff4c8,0 0 0 4px #c9a227,0 0 0 6px #7a5410,0 8px 18px rgba(0,0,0,.45)!important;
+}
+body.m3aan.m3grootbord.kleur195 .m3bord #m3c{
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--k-accent) 55%,transparent),0 8px 18px rgba(0,0,0,.35)!important;
+}
+@media(max-height:720px){
+  body.m3aan.m3grootbord .m3hud{grid-template-columns:52px 1fr auto}
+  body.m3aan.m3grootbord .m3med{width:52px;height:52px}
+  body.m3aan.m3grootbord .m3med b{font-size:20px}
+  body.m3aan.m3grootbord .pompmeter{height:24px}
+}
+body.m3aan header{padding:2px 8px;min-height:0}
+body.m3aan #stats{font-size:.78em;gap:6px}
+body.m3aan nav button{font-size:.7em;padding:0}
+body.m3aan nav button b{font-size:1.25em}
+body.m3aan.m3grootbord .m3hud{grid-template-columns:52px minmax(0,1fr) auto}
+body.m3aan.m3grootbord .m3med{width:52px;height:52px}
+body.m3aan.m3grootbord .m3med b{font-size:20px}
+body.m3aan.m3grootbord .m3doel{gap:3px!important}
+body.m3aan.m3grootbord .m3kaart{width:44px;height:48px;padding-top:1px;border-radius:8px}
+body.m3aan.m3grootbord .m3kaart .m3ico{width:28px;height:28px}
+body.m3aan.m3grootbord .m3kaart svg.m3ico{width:24px;height:24px;padding:2px;margin-top:1px}
+body.m3aan.m3grootbord .m3kaart b{font-size:13px}
+body.m3aan.m3grootbord .m3kaart.af:after,
+body.m3aan.m3grootbord .m3kaart.af b:after{width:18px;height:18px;right:-4px;bottom:-4px;font-size:12px}
+body.m3aan.m3grootbord .m3vaknaam{display:none}
+body.m3aan.m3grootbord .m3mid{padding:3px 6px 3px 8px}
+body.m3aan.m3grootbord .m3titel{font-size:14px;letter-spacing:.03em}
+body.m3aan.m3grootbord .m3balk{height:8px;margin:2px 2px 0}
+@media(max-height:720px){
+  body.m3aan.m3grootbord .m3kaart{width:40px;height:44px}
+  body.m3aan header{padding:1px 8px}
+}
+/* Terug niet over de zettenteller */
+body.m3aan.m3grootbord #terug{
+  position:fixed;left:auto;right:8px;top:auto;bottom:86px;
+  margin:0;z-index:6;transform:scale(.92);transform-origin:bottom right;
+}
