@@ -1,0 +1,19 @@
+/* v218: vakbalk onder de hartjes, 598 niet onder de kam */
+body[data-view=pad] #app,
+body.pad192 #app,
+body.kleur195[data-view=pad] #app{
+  padding-top:calc(78px + env(safe-area-inset-top,0px))!important;
+  padding-bottom:calc(200px + env(safe-area-inset-bottom,0px))!important;
+}
+body[data-view=pad] .vakbalk,
+body.pad192 .vakbalk,
+body.kleur195.pad192 .vakbalk{
+  margin-top:0!important;
+  position:relative;
+  z-index:2;
+}
+body[data-view=pad] .padlvl,
+body.pad192 .padlvl,
+body.kleur195[data-view=pad] .padlvl{
+  scroll-margin-bottom:calc(230px + env(safe-area-inset-bottom,0px))!important;
+}

@@ -535,3 +535,4 @@ v214 (17 november 2026): het resultaatscherm na een gewonnen level heeft nu drie
 v215 (17 november 2026): pop-ups zoals Tilly’s weekbrief en gesprekken zijn nu nette perkamentkaarten met gouden hoeken en een duidelijke knop. Mama’s voortgang is alleen aangevuld, niet gereset.
 v216 (17 november 2026): de labels Smekkies en Schilden onder de badges zijn nette naamplaatjes, en de geluidsknop is een ronde gouden medaille. Mama’s voortgang is alleen aangevuld, niet gereset.
 v217 (17 november 2026): de kaarten in de Hal en de koppen in Meer hebben dezelfde gouden hoeken en scheidingslijnen, zodat de menu’s bij elkaar horen. Mama’s voortgang is alleen aangevuld, niet gereset.
+v218 (17 november 2026): op de Kaart zitten de hartjes niet meer over de vakjes heen, en level 598 blijft boven de navigatie zichtbaar. Mama’s voortgang is alleen aangevuld, niet gereset.
