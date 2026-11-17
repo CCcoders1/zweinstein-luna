@@ -1,0 +1,40 @@
+/* v223: na stilstand wijst een warme gouden gloed de zet aan */
+body.m3aan .m3hintgloed{
+  border:3px solid #ffe58a!important;
+  border-radius:22%!important;
+  background:radial-gradient(circle at 50% 42%,rgba(255,244,190,.38),rgba(255,220,120,.08) 62%,transparent 76%)!important;
+  box-shadow:
+    inset 0 0 12px rgba(255,236,170,.7),
+    0 0 0 2px rgba(201,162,39,.45),
+    0 0 18px rgba(255,210,80,.95)!important;
+  animation:m3hint223 1.15s ease-in-out infinite!important;
+  z-index:4;
+}
+@keyframes m3hint223{
+  0%,100%{transform:scale(1);border-color:#ffe08a;filter:brightness(1)}
+  50%{transform:scale(1.09);border-color:#fff8d0;filter:brightness(1.12);
+    box-shadow:inset 0 0 16px rgba(255,244,200,.85),0 0 0 2px rgba(201,162,39,.6),0 0 26px rgba(255,230,140,1)}
+}
+/* verbindingsstreep tussen de twee tegels */
+.m3hintpad{
+  position:absolute;pointer-events:none;z-index:3;height:8px;border-radius:8px;
+  background:linear-gradient(90deg,rgba(255,232,160,0),#fff6c8 18%,#ffe08a 50%,#fff6c8 82%,rgba(255,232,160,0));
+  box-shadow:0 0 10px 2px rgba(255,220,120,.8);
+  transform-origin:left center;
+  animation:m3hintpad 1.15s ease-in-out infinite;
+}
+@keyframes m3hintpad{50%{opacity:.65;filter:brightness(1.2)}}
+/* klein pijltje dat de richting van de wissel laat zien */
+.m3hintpijl{
+  position:absolute;pointer-events:none;z-index:5;width:18px;height:18px;margin:-9px 0 0 -9px;
+  background:radial-gradient(circle at 50% 50%,#fffce8 0 28%,#ffe08a 55%,#c9a227 100%);
+  border-radius:50%;
+  box-shadow:0 0 10px 3px rgba(255,220,120,.9);
+  animation:m3hintstip 1.15s ease-in-out infinite;
+}
+@keyframes m3hintstip{0%,100%{transform:scale(.85)}50%{transform:scale(1.2)}}
+
+@media(prefers-reduced-motion:reduce){
+  body.m3aan .m3hintgloed,.m3hintpad,.m3hintpijl{animation:none!important}
+  body.m3aan .m3hintgloed{transform:none!important}
+}
