@@ -1,0 +1,15 @@
+/* v208: leeg vriendenbalkje op de level-intro verdwijnt */
+.m3voor #vrlv.vrlvbord:not(:has(ol,h3)),
+.m3voor #vrlv.vrlvbord:has(> .vrlvleeg:only-child),
+.m3voor #vrlv.vrlvbord:has(> .kortweg:only-child),
+.m3voor-rol #vrlv.vrlvbord:not(:has(ol,h3)){
+  display:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  min-height:0!important;
+  height:0!important;
+  overflow:hidden!important;
+  background:none!important;
+  box-shadow:none!important;
+}
