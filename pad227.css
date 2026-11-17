@@ -1,0 +1,51 @@
+/* v227: lantaarns en planten langs het pad op de Kaart */
+.pad-sier{
+  position:absolute;
+  pointer-events:none;
+  z-index:1;
+  transform:translate(-50%,-50%);
+}
+.pad-lantaarn{
+  width:22px;height:40px;
+}
+.pad-lantaarn:before{
+  content:"";position:absolute;left:50%;bottom:0;width:3px;height:22px;margin-left:-1.5px;
+  background:linear-gradient(180deg,#8a5a20,#3a220c);
+  border-radius:2px;
+}
+.pad-lantaarn:after{
+  content:"";position:absolute;left:50%;top:0;width:16px;height:18px;margin-left:-8px;
+  background:
+    radial-gradient(circle at 50% 58%,#fff6c8 0 22%,#ffd36a 40%,#c47a18 70%,#5a3008 100%);
+  border-radius:5px 5px 3px 3px;
+  box-shadow:0 0 10px 4px rgba(255,200,80,.55),0 0 22px rgba(255,180,40,.35);
+  animation:padlantaarn 2.4s ease-in-out infinite;
+}
+@keyframes padlantaarn{50%{box-shadow:0 0 14px 6px rgba(255,210,90,.7),0 0 28px rgba(255,180,40,.45);filter:brightness(1.12)}}
+
+.pad-plant{
+  width:32px;height:26px;
+}
+.pad-plant:before,
+.pad-plant:after{
+  content:"";position:absolute;bottom:2px;width:14px;height:20px;
+  background:radial-gradient(circle at 50% 80%,#4a8a3a,#1e4a22);
+  border-radius:80% 0 80% 80%;
+  transform:rotate(-28deg);
+  box-shadow:0 0 0 1px rgba(20,40,10,.25);
+}
+.pad-plant:after{
+  left:auto;right:0;transform:rotate(28deg) scaleX(-1);
+  background:radial-gradient(circle at 50% 80%,#5aa046,#265a28);
+}
+.pad-plant{
+  /* stengel */
+  background:linear-gradient(180deg,transparent 30%,#2a5a20 31%,#2a5a20 100%);
+  background-size:3px 100%;
+  background-repeat:no-repeat;
+  background-position:50% 0;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .pad-lantaarn:after{animation:none}
+}
