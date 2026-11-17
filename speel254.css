@@ -1,0 +1,22 @@
+/* v254: korte, duidelijke tip bij een nieuw soort doel */
+body[data-view=match3]:not(.m3aan) .m3voor .m3lestip{
+  margin:8px 16px 6px!important;
+  padding:10px 12px 10px 14px;
+  border-radius:12px;
+  border:1.5px solid rgba(201,162,39,.7);
+  border-left:5px solid #c9a227;
+  background:linear-gradient(180deg,#fffaf0,#f6e8c8);
+  color:#1a1810!important;
+  -webkit-text-fill-color:#1a1810!important;
+  text-shadow:none!important;
+  font:600 .95rem/1.35 Georgia,serif;
+  text-align:left;
+  box-shadow:0 2px 6px rgba(40,24,8,.12);
+}
+@media(max-width:360px){
+  body[data-view=match3]:not(.m3aan) .m3voor .m3lestip{
+    margin:6px 10px 4px!important;
+    padding:8px 10px 8px 12px;
+    font-size:.88rem!important;
+  }
+}
