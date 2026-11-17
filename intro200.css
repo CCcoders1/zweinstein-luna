@@ -1,0 +1,170 @@
+/* v200: alleen de level-introkaart — geen overlap, volle leskop, één gouden ornament */
+body[data-view=match3]:not(.m3aan) .m3voor{
+  padding:56px 0 18px!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#fff6e6,#f3e4c4)!important;
+  border:1.5px solid var(--z-lijn,#5a3a14)!important;
+  border-radius:16px!important;
+  box-shadow:0 10px 24px rgba(40,24,8,.24)!important;
+  position:relative;
+}
+/* de algemene goudlijn van v199 zit te hoog en botst met Terug */
+body[data-view=match3]:not(.m3aan) .m3voor::before,
+body[data-view=match3]:not(.m3aan) .m3voor::after{content:none!important;display:none!important}
+
+/* rangregel vast in de reservestrook, rechts van Terug — niet in de scrollbak */
+body[data-view=match3]:not(.m3aan) .m3voor{position:relative!important}
+body[data-view=match3]:not(.m3aan) #rglijn,
+body[data-view=match3]:not(.m3aan) .m3voor #rglijn,
+body[data-view=match3]:not(.m3aan) .m3voor-rol #rglijn,
+body[data-view=match3]:not(.m3aan) .rglijn{
+  position:absolute!important;
+  top:8px!important;
+  left:108px!important;
+  right:14px!important;
+  margin:0!important;
+  padding:8px 12px!important;
+  min-height:36px;
+  box-sizing:border-box;
+  z-index:6;
+  border-radius:12px!important;
+  border:1.5px solid var(--z-goud,#c9a227)!important;
+  background-color:#fffaf0!important;
+  background-image:linear-gradient(180deg,#fffaf0,#f4e6c6)!important;
+  background:linear-gradient(180deg,#fffaf0,#f4e6c6)!important;
+  box-shadow:0 2px 6px rgba(40,24,8,.14)!important;
+  color:#1a1810!important;
+  -webkit-text-fill-color:#1a1810!important;
+  font-size:.86rem!important;
+  line-height:1.3!important;
+  text-align:left;
+  text-shadow:none!important;
+  overflow:visible!important;
+}
+body[data-view=match3]:not(.m3aan) #rglijn b,
+body[data-view=match3]:not(.m3aan) .m3voor #rglijn b{
+  color:var(--k-kop,#6a3a10)!important;
+  -webkit-text-fill-color:var(--k-kop,#6a3a10)!important;
+}
+body[data-view=match3]:not(.m3aan) .m3voor-rol{padding-top:0!important}
+
+
+
+/* volle leskop: diepe leskleur over de hele breedte */
+body[data-view=match3]:not(.m3aan) .m3voor h2,
+body[data-view=match3]:not(.m3aan) .m3voor .m3voor-rol h2,
+body[data-view=match3]:not(.m3aan) .m3voor .m3vak,
+body[data-view=match3]:not(.m3aan) .m3voor .m3sfeer{
+  background:linear-gradient(165deg,var(--k-kop-bg1,#1a4a28),var(--k-kop-bg2,#0d2a18))!important;
+  color:var(--k-kop-tekst,#fff8e8)!important;
+  -webkit-text-fill-color:var(--k-kop-tekst,#fff8e8)!important;
+  margin:0!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.4)!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+body[data-view=match3]:not(.m3aan) .m3voor h2,
+body[data-view=match3]:not(.m3aan) .m3voor .m3voor-rol h2{
+  padding:16px 18px 0!important;
+  font-size:1.5rem!important;
+  font-weight:800!important;
+  letter-spacing:.06em;
+  line-height:1.15!important;
+  text-align:center;
+}
+body[data-view=match3]:not(.m3aan) .m3voor .m3vak{
+  padding:4px 18px 0!important;
+  font-size:1.05rem!important;
+  font-weight:600!important;
+  letter-spacing:.02em;
+  text-align:center;
+  opacity:1!important;
+  position:relative;
+}
+/* één gouden ornament onder de vaknaam */
+body[data-view=match3]:not(.m3aan) .m3voor .m3vak::after{
+  content:"◆";
+  display:block;
+  margin:10px auto 0;
+  color:#e8c44a;
+  font-size:9px;
+  line-height:1;
+  letter-spacing:0;
+  text-shadow:none!important;
+  -webkit-text-fill-color:#e8c44a!important;
+  width:120px;
+  background:linear-gradient(90deg,transparent,#e8c44a 18%,#e8c44a 82%,transparent) no-repeat center 4px / 100% 1.5px;
+  padding-top:0;
+}
+body[data-view=match3]:not(.m3aan) .m3voor .m3sfeer{
+  padding:10px 22px 18px!important;
+  font-style:italic;
+  font-size:.95rem!important;
+  line-height:1.4!important;
+  text-align:center;
+  opacity:.95;
+}
+
+/* crème lichaam: gelijke zijmarge, geen afgesneden tekst */
+body[data-view=match3]:not(.m3aan) .m3voor .m3doelen-voor,
+body[data-view=match3]:not(.m3aan) .m3voor .m3grens,
+body[data-view=match3]:not(.m3aan) .m3voor > p,
+body[data-view=match3]:not(.m3aan) .m3voor .zwaarhint,
+body[data-view=match3]:not(.m3aan) .m3voor .m3opdrachtkaart,
+body[data-view=match3]:not(.m3aan) .m3voor .m3vormkaart,
+body[data-view=match3]:not(.m3aan) .m3voor .drankkeuze,
+body[data-view=match3]:not(.m3aan) .m3voor .reeks,
+body[data-view=match3]:not(.m3aan) .m3voor .harten{
+  margin-left:16px!important;
+  margin-right:16px!important;
+  color:var(--z-ink,#1a1810)!important;
+  -webkit-text-fill-color:var(--z-ink,#1a1810)!important;
+  text-shadow:none!important;
+}
+body[data-view=match3]:not(.m3aan) .m3voor .m3doelen-voor{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  margin-top:16px!important;
+  margin-bottom:4px!important;
+}
+body[data-view=match3]:not(.m3aan) .m3voor .m3opdrachtkaart,
+body[data-view=match3]:not(.m3aan) .m3voor .m3vormkaart{
+  margin-top:12px!important;
+  padding:14px 16px!important;
+  border:1.5px solid var(--z-lijn,#5a3a14)!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#fffaf0,#f6e8c8)!important;
+  box-shadow:0 4px 10px rgba(40,24,8,.12)!important;
+  text-align:left;
+}
+body[data-view=match3]:not(.m3aan) #m3start{
+  display:block;
+  width:calc(100% - 32px);
+  margin:16px 16px 4px!important;
+  box-sizing:border-box;
+}
+
+@media (max-width:360px){
+  body[data-view=match3]:not(.m3aan) #rglijn,
+  body[data-view=match3]:not(.m3aan) .m3voor #rglijn{
+    left:100px!important;
+    font-size:.8rem!important;
+  }
+}
+
+/* kaart volledig dekkend, geen gaten waar de Hal doorheen kan schemeren */
+body[data-view=match3]:not(.m3aan) .m3voor,
+body[data-view=match3]:not(.m3aan) .m3voor[data-compact]{
+  background-color:#f3e4c4!important;
+  isolation:isolate;
+}
+body[data-view=match3]:not(.m3aan) .m3voor-rol{
+  background-color:#f3e4c4!important;
+}
+body[data-view=match3]:not(.m3aan) .m3voor.rococo::after,
+body[data-view=match3]:not(.m3aan) .m3voor.rococo::before,
+body[data-view=match3]:not(.m3aan) .m3voor::after,
+body[data-view=match3]:not(.m3aan) .m3voor::before{
+  content:none!important;display:none!important;background:none!important;opacity:0!important;
+}
