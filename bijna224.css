@@ -1,0 +1,63 @@
+/* v224: laatste zetten voelen warm en spannend, zonder het bord te verbergen */
+body.m3aan.m3bijna .m3med.weinig{
+  background:radial-gradient(circle at 50% 30%,#fff3c0,#e8a020 55%,#8a4a10);
+  box-shadow:0 0 0 3px #fff4c8,0 0 16px rgba(255,180,40,.85);
+  animation:m3medBijna 1.2s ease-in-out infinite;
+}
+body.m3aan.m3bijna .m3med.weinig b,
+body.m3aan.m3bijna #m3z{
+  color:#fff8dc!important;
+  text-shadow:0 1px 0 #7a3a08,0 0 8px rgba(255,220,120,.8);
+  font-weight:800;
+}
+@keyframes m3medBijna{50%{box-shadow:0 0 0 3px #fffbe6,0 0 22px rgba(255,200,60,1);transform:scale(1.05)}}
+
+/* lint onder de balk */
+body.m3aan #m3bijna{
+  display:block;
+  margin:.25em auto .1em!important;
+  max-width:92%;
+  padding:.28em .9em .32em;
+  border-radius:999px;
+  background:linear-gradient(180deg,#fff3c0,#e8a028 55%,#c47a12);
+  border:1.5px solid #7a4a10;
+  box-shadow:0 2px 0 #7a4a10,0 4px 10px rgba(80,30,0,.28);
+  color:#4a2408!important;
+  font:800 .92em/1.2 Georgia,serif!important;
+  letter-spacing:.03em;
+  text-shadow:0 1px 0 rgba(255,248,220,.7);
+  text-align:center;
+  animation:m3lint 1.3s ease-in-out infinite;
+}
+@keyframes m3lint{50%{filter:brightness(1.08)}}
+
+/* warme gloed om het bord, geen extra bak eroverheen */
+body.m3aan.m3bijna .m3bord{
+  box-shadow:
+    0 0 0 2px #fff4c8,
+    0 0 0 5px #c9a227,
+    0 0 0 8px #7a5410,
+    0 0 28px rgba(255,170,40,.55),
+    0 14px 30px rgba(0,0,0,.5)!important;
+}
+body.m3aan.m3bijna .m3bord:after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:2;
+  box-shadow:inset 0 0 28px 4px rgba(255,160,40,.28);
+}
+
+/* laatste zet: iets roder, het lint zegt het duidelijk */
+body.m3aan.m3laatste .m3med.weinig{
+  background:radial-gradient(circle at 50% 30%,#ffe0c0,#e05028 58%,#7a1808);
+  box-shadow:0 0 0 3px #ffd0b0,0 0 18px rgba(255,80,40,.75);
+}
+body.m3aan.m3laatste #m3bijna{
+  background:linear-gradient(180deg,#ffe0c4,#e06030 55%,#b03018);
+  border-color:#6a1808;
+  color:#fff8f0!important;
+  text-shadow:0 1px 0 #6a1808;
+  box-shadow:0 2px 0 #6a1808,0 4px 12px rgba(80,10,0,.3);
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.m3aan.m3bijna .m3med.weinig,body.m3aan #m3bijna{animation:none!important;transform:none}
+}
