@@ -13,6 +13,21 @@
     return -1;
   };
 
+  /* onderkant van het huidige kolomstuk: cel waar onder een gat, de rand, een kist of een muur zit */
+  Bord.prototype.segmentExit=function(r,c,opt){
+    const ignore=opt&&opt.ignoreKist;
+    let last=-1;
+    for(let rr=r;rr<RIJEN;rr++){
+      if(this.gatCel(rr,c))break;
+      if(!ignore&&(this.kist[rr][c]||muur(this,rr,c)))break;
+      last=rr;
+    }
+    return last;
+  };
+  Bord.prototype.isSegmentExit=function(r,c,opt){
+    return this.segmentExit(r,c,opt)===r;
+  };
+
   Bord.prototype.valBuren=function(r,c,opt){
     const ignoreKist=opt&&opt.ignoreKist;
     const out=[];
@@ -39,12 +54,12 @@
     if(r<0||c<0||this.gatCel(r,c))return false;
     const ignoreKist=opt&&opt.ignoreKist;
     if(!ignoreKist&&(this.kist[r][c]||muur(this,r,c)))return false;
-    const startExit=this.kolomExit(c)===r;
+    const startExit=this.segmentExit(r,c,opt)===r;
     const q=[[r,c]], gezien=new Set([r+','+c]);
     let i=0;
     while(i<q.length){
       const[rr,cc]=q[i++];
-      if(this.kolomExit(cc,opt)===rr){
+      if(this.segmentExit(rr,cc,opt)===rr){
         if(!(opt&&opt.nietZelf&&rr===r&&cc===c))return true;
         if(startExit&&q.length===1){/* ga verder zoeken via schuiven */}
         else return true;
@@ -56,22 +71,25 @@
       }
     }
     if(opt&&opt.nietZelf&&startExit)return false;
-    return this.kolomExit(c,opt)===r && !(opt&&opt.nietZelf);
+    return this.segmentExit(r,c,opt)===r && !(opt&&opt.nietZelf);
   };
 
   Bord.prototype.kanPotSpawn=function(r,c){
     if(!this.binnen(r,c)||this.kist[r][c]||muur(this,r,c))return false;
+    /* nooit op de uitgang zelf zetten: die wordt meteen verzameld, of lijkt vast te zitten */
+    if(this.segmentExit(r,c)===r)return false;
     return this.kanValPad(r,c,{nietZelf:true});
   };
 
   Bord.prototype.packKolom=function(c){
     const bar=(r)=>muur(this,r,c)||this.kist[r][c];
+    const einde=(r)=>r>=RIJEN||bar(r)||this.gatCel(r,c);
     let start=0;
     for(let r=0;r<=RIJEN;r++){
-      if(r<RIJEN&&!bar(r))continue;
+      if(r<RIJEN&&!einde(r))continue;
       const dests=[], tiles=[];
       for(let i=start;i<r;i++){
-        if(this.gatCel(i,c))continue;
+        if(this.gatCel(i,c)||bar(i))continue;
         dests.push(i);
         if(this.g[i][c])tiles.push(this.g[i][c]);
       }
@@ -83,13 +101,34 @@
     }
   };
 
+  /* gewone tegels (geen potten) vallen wél door een gat naar het volgende stuk */
+  Bord.prototype.valDoorGaten=function(){
+    let iets=false;
+    for(let c=0;c<KOL;c++){
+      for(let r=RIJEN-2;r>=0;r--){
+        const t=this.g[r][c];
+        if(!t||t.k===-1)continue;
+        if(this.gatCel(r,c)||this.kist[r][c]||muur(this,r,c))continue;
+        if(r+1>=RIJEN||!this.gatCel(r+1,c))continue;
+        for(let rr=r+2;rr<RIJEN;rr++){
+          if(this.kist[rr][c]||muur(this,rr,c))break;
+          if(this.gatCel(rr,c))continue;
+          if(!this.g[rr][c]){this.g[rr][c]=t;this.g[r][c]=null;iets=true}
+          break;
+        }
+      }
+    }
+    return iets;
+  };
+
   Bord.prototype.schuifDiagonaal=function(){
     let iets=false;
     for(let r=RIJEN-2;r>=0;r--){
       for(let c=0;c<KOL;c++){
         const t=this.g[r][c];
         if(!t||this.gatCel(r,c)||this.kist[r][c]||muur(this,r,c))continue;
-        if(this.kolomExit(c)===r)continue;
+        if(t.k===-1&&this.segmentExit(r,c)===r)continue;
+        if(t.k!==-1&&this.kolomExit(c)===r)continue;
         const onder=r+1;
         const vrijOnder=onder<RIJEN&&!this.gatCel(onder,c)&&!this.kist[onder][c]&&!muur(this,onder,c)&&!this.g[onder][c];
         if(vrijOnder)continue;
@@ -113,6 +152,10 @@
     let n=0;
     do{
       for(let c=0;c<KOL;c++)this.packKolom(c);
+      let v=0;
+      while(this.valDoorGaten()&&v++<12){
+        for(let c=0;c<KOL;c++)this.packKolom(c);
+      }
       n++;
     }while(this.schuifDiagonaal()&&n<24);
   };
@@ -184,12 +227,12 @@
         for(let r=0;r<RIJEN;r++){
           if(!this.g[r][c]||this.g[r][c].k<0)continue;
           if(!this.kanPotSpawn(r,c))continue;
-          kand.push([r,c]);break;
+          const len=Math.max(0,this.segmentExit(r,c)-r);
+          kand.push([r,c,len]);
         }
       }
-      const midden=kand.filter(([,c])=>c>0&&c<KOL-1);
-      const bron=midden.length?midden:kand;
-      for(const[r,c] of bron){
+      kand.sort((a,b)=>a[2]-b[2]||Math.abs(a[1]-(KOL-1)/2)-Math.abs(b[1]-(KOL-1)/2));
+      for(const[r,c] of kand){
         if(nu>=max)break;
         if(this.g[r][c]&&this.g[r][c].k===-1)continue;
         this.g[r][c]=this.tegel(-1,r,c,r);nu++;
@@ -219,10 +262,9 @@
       const t=this.g[r][c];if(!t||t.k!==-1)return;
       this.g[r][c]=null;this.telDoel('p');this.fx.push({t:'pot',r,c});iets=true;
     };
-    for(let c=0;c<KOL;c++){
-      let r=RIJEN-1;
-      while(r>=0&&(this.kist[r][c]||this.gatCel(r,c)||muur(this,r,c)))r--;
-      if(r>=0)pak(r,c);
+    for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){
+      if(this.gatCel(r,c)||this.kist[r][c]||muur(this,r,c))continue;
+      if(this.segmentExit(r,c)===r)pak(r,c);
     }
     if(this.strik){
       for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){
@@ -268,6 +310,28 @@
       }
     };
   }
+
+  Bord.prototype.tekenPotUitgang=function(ctx,cel){
+    if(!this.L||!(this.L.pot>0))return;
+    for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){
+      if(this.gatCel(r,c)||this.kist[r][c]||muur(this,r,c))continue;
+      if(this.segmentExit(r,c)!==r)continue;
+      const x=c*cel+cel/2,y=r*cel+cel*.86;
+      ctx.save();
+      ctx.globalAlpha=.55;
+      ctx.fillStyle='rgba(255,220,120,.4)';
+      ctx.beginPath();ctx.ellipse(x,y-cel*.02,cel*.2,cel*.09,0,0,7);ctx.fill();
+      ctx.strokeStyle='rgba(180,130,30,.9)';
+      ctx.lineWidth=Math.max(1.5,cel*.045);
+      ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.beginPath();
+      ctx.moveTo(x-cel*.13,y-cel*.07);
+      ctx.lineTo(x,y+cel*.05);
+      ctx.lineTo(x+cel*.13,y-cel*.07);
+      ctx.stroke();
+      ctx.restore();
+    }
+  };
 
   window.m3ValCheck=function(n){
     const L=m3Level(n);

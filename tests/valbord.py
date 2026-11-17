@@ -56,7 +56,7 @@ def main():
         pg = ctx.new_page()
         pg.goto(url, wait_until='domcontentloaded')
         pg.wait_for_function('() => typeof m3ValCheckAlles==="function" && typeof Bord==="function"', timeout=30000)
-        # unit: bliksem col 5, pot at r1 must reach exit / be collected
+        # unit: pot above a hole is collected at the segment exit (not the lowest cell of the whole column)
         bliksem = pg.evaluate("""() => {
           const niveaus=[];
           for(let n=1;n<=120;n++){const L=m3Level(n);if((L.vorm||'')==='bliksem')niveaus.push(n)}
@@ -64,27 +64,27 @@ def main():
           const L=m3Level(n);
           const b=new Bord(L,'herbologie',99);
           const vorm=L.vorm, R=RIJEN, K=KOL;
-          const gat=[], play=[];
-          for(let r=0;r<R;r++)for(let c=0;c<K;c++){
-            if(b.gatCel(r,c))gat.push([r,c]); else if(!b.kist[r][c])play.push([r,c]);
+          // find a playable cell that has a hole directly below (classic lastige pot)
+          let sr=-1,sc=-1;
+          outer: for(let c=0;c<K;c++)for(let r=0;r<R-1;r++){
+            if(b.gatCel(r,c)||b.kist[r][c])continue;
+            if(b.gatCel(r+1,c)){sr=r;sc=c;break outer}
           }
-          // force pot at r=1,c=5 if playable else first playable in col 5
-          let sr=1,sc=5;
-          if(b.gatCel(sr,sc)||!b.g[sr]||!b.g[sr][sc]){
-            for(let r=0;r<R;r++)if(!b.gatCel(r,5)&&b.g[r]&&b.g[r][5]){sr=r;break}
-          }
+          if(sr<0){sr=1;sc=1}
           for(let r=0;r<R;r++)for(let c=0;c<K;c++){
             if(b.gatCel(r,c)||b.kist[r][c])continue;
             b.g[r][c]=null;
           }
           b.g[sr][sc]=b.tegel(-1,sr,sc,sr);
           const voor={r:sr,c:sc,k:b.g[sr][sc]&&b.g[sr][sc].k};
+          const seg=b.segmentExit(sr,sc);
           b.packSchuif();
           let plek=null;
           for(let r=0;r<R;r++)for(let c=0;c<K;c++){
             const t=b.g[r][c];if(t&&t.k===-1)plek=[r,c];
           }
           const naPack=plek&&plek.slice();
+          const opSegment=!!(naPack&&b.segmentExit(naPack[0],naPack[1])===naPack[0]);
           b.potten();
           b.vangVastPotten();
           plek=null;
@@ -92,17 +92,41 @@ def main():
             const t=b.g[r][c];if(t&&t.k===-1)plek=[r,c];
           }
           const doel=b.doel.find(d=>d.t==='p');
-          return {n,vorm,R,K,voor,naPack,plek,doelOver:doel&&doel.over,doelN:doel&&doel.n,exit5:b.kolomExit(5),exit6:b.kolomExit(6)};
+          const origineelWeg=!(naPack&&b.g[naPack[0]][naPack[1]]&&b.g[naPack[0]][naPack[1]].k===-1);
+          const doelMinder=!!(doel&&doel.over<doel.n);
+          return {n,vorm,R,K,voor,seg,naPack,opSegment,plek,doelOver:doel&&doel.over,doelN:doel&&doel.n,origineelWeg,doelMinder,verzameld:origineelWeg&&doelMinder};
         }""")
         print('  bliksem unit', bliksem)
         ok('bliksem-level bestaat', bool(bliksem and bliksem.get('n')))
-        # pot should be collected (gone) or sitting on the column exit
-        na = bliksem.get('naPack')
-        exit5 = bliksem.get('exit5')
-        op_exit = bool(na and na[1]==5 and na[0]==exit5)
-        ok('bliksem-pot valt door het gat naar de kolom-exit', op_exit, str(bliksem))
+        # after gravity the pot sits on the segment exit, then potten() collects it
+        na = bliksem.get('naPack') if bliksem else None
+        seg = bliksem.get('seg') if bliksem else None
+        zelfde_stuk = bool(na and seg is not None and na[0]==seg and na[1]==bliksem['voor']['c'])
+        ok('bliksem-pot blijft op de segment-uitgang en wordt daar verzameld',
+           bool(zelfde_stuk and bliksem.get('verzameld')),
+           str(bliksem))
+
+        startpots = pg.evaluate("""() => {
+          const uit=[];
+          for(let n=1;n<=600;n++){
+            const L=m3Level(n); if(!L||!L.pot)continue;
+            const thema=(typeof m3VakVoor==='function'&&m3VakVoor(n).thema)||'herbologie';
+            const b=new Bord(L,thema,n*17+3);
+            const opUitgang=[];
+            for(let r=0;r<RIJEN;r++)for(let c=0;c<KOL;c++){
+              const t=b.g[r][c];
+              if(t&&t.k===-1&&b.segmentExit(r,c)===r)opUitgang.push({r,c});
+            }
+            if(opUitgang.length)uit.push({n,vorm:L.vorm||'',opUitgang});
+          }
+          return {fout:uit.length,voorbeelden:uit.slice(0,8)};
+        }""")
+        print('  startpotten op uitgang', startpots)
+        ok('geen startpot op een segment-uitgang (en wel potten gezet)',
+           bool(startpots and startpots.get('fout')==0), str(startpots))
 
         rapport = pg.evaluate('() => m3ValCheckAlles(1,600)')
+
         print('  validator fouten', rapport.get('fout'), 'van', rapport.get('totaal'))
         if rapport.get('levels'):
             for item in rapport['levels'][:12]:
