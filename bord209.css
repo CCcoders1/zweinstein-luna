@@ -1,0 +1,13 @@
+/* v209: het gewone bord krijgt een gouden kader en een zachte schaduw */
+body.m3aan .m3bord:not(.m3vorm){
+  border-radius:16px;
+  box-shadow:
+    0 10px 24px rgba(20,10,0,.38),
+    0 0 0 2px #d4b24a,
+    0 0 0 5px rgba(60,36,8,.4);
+  background:linear-gradient(180deg,#fff3d4,#e8cb8a);
+}
+body.m3aan .m3bord.m3vorm{
+  background:transparent!important;
+  box-shadow:none!important;
+}
