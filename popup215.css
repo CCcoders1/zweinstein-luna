@@ -1,0 +1,100 @@
+/* v215: pop-ups als nette perkamentkaarten */
+body .modalin.rococo:not(.m3eind):not(.hwfm):not(.wmfm),
+body .perkament.modalin.weekbrief,
+body .mpmodal{
+  position:relative;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(255,230,140,.22),transparent 48%),
+    linear-gradient(#fff8e8,#f3e3bf)!important;
+  border:2.5px solid #c9a227!important;
+  border-radius:22px!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.6),
+    0 16px 36px rgba(0,0,0,.4)!important;
+  color:#3a2410!important;
+  padding:20px 18px 18px!important;
+}
+body .modalin.rococo:not(.m3eind):not(.hwfm):not(.wmfm):before,
+body .modalin.rococo:not(.m3eind):not(.hwfm):not(.wmfm):after,
+body .perkament.modalin.weekbrief:before,
+body .perkament.modalin.weekbrief:after{
+  content:"";
+  position:absolute;width:16px;height:16px;pointer-events:none;z-index:2;
+  border:2px solid #c9a227;
+}
+body .modalin.rococo:not(.m3eind):not(.hwfm):not(.wmfm):before,
+body .perkament.modalin.weekbrief:before{left:8px;top:8px;border-right:0;border-bottom:0;border-radius:3px 0 0 0}
+body .modalin.rococo:not(.m3eind):not(.hwfm):not(.wmfm):after,
+body .perkament.modalin.weekbrief:after{right:8px;top:8px;border-left:0;border-bottom:0;border-radius:0 3px 0 0}
+body.kleur195 .modalin.rococo:not(.m3eind):not(.hwfm) h2,
+body .modalin.rococo:not(.m3eind):not(.hwfm) h2,
+body .weekbrief h2{
+  font-family:Cinzel,Georgia,serif!important;
+  font-size:1.22rem!important;
+  letter-spacing:.05em;
+  text-align:center;
+  color:#6b1d0e!important;
+  -webkit-text-fill-color:#6b1d0e!important;
+  background:none!important;
+  margin:.15em 0 .25em!important;
+  padding:0!important;
+}
+body .weekbrief .wbperiode{
+  text-align:center;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-size:.72rem!important;
+  color:#7a5a28!important;
+  margin:0 0 .8em!important;
+}
+body .weekbrief .wbport{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  text-align:left;
+  margin:0 4px 14px;
+}
+body .weekbrief .wbport p{
+  margin:0;
+  line-height:1.45;
+  color:#2a1c0c!important;
+  font-size:.95rem;
+}
+body .modalin.vh{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  gap:12px;
+  text-align:left;
+}
+body .modalin.vh .vh-t{
+  flex:1;
+  min-width:0;
+}
+body .modalin.vh .vh-t b{
+  display:block;
+  font-family:Cinzel,Georgia,serif;
+  color:#6b1d0e;
+  letter-spacing:.04em;
+  margin:0 0 4px;
+}
+body .modalin.vh .vh-t p{
+  margin:0;
+  color:#2a1c0c!important;
+  line-height:1.45;
+}
+body .modalin.rococo:not(.m3eind):not(.hwfm) .knop.volgende,
+body .weekbrief .knop.volgende,
+body .modalin.vh .knop.volgende{
+  display:block;
+  width:calc(100% - 8px);
+  margin:12px 4px 2px!important;
+  min-height:50px!important;
+}
+body #gids.zien{
+  background:linear-gradient(#fff8e8,#f3e3bf)!important;
+  border:2px solid #c9a227!important;
+  border-radius:18px!important;
+  color:#3a2410!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.35)!important;
+}
