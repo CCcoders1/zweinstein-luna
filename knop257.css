@@ -1,0 +1,79 @@
+/* v257: overal dezelfde knop-hiërarchie — groen is de hoofdactie, goud is secundair */
+
+/* Secundair: warm glanzend goud, duidelijk anders dan de groene hoofdknop */
+body.kleur195 button.knop:not(.volgende),
+body.kleur195 .knop:not(.volgende),
+body.kleur195 button.knop-sec,
+body.kleur195 .knop-sec,
+body.kleur195 #terug,
+body.kleur195 #terug.zien,
+body.kleur195 #gptest,
+body.kleur195 #gpwis{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,.14) 38%,transparent 52%),
+    linear-gradient(180deg,#ffe58a 0%,#e0b23a 50%,#c49216 100%)!important;
+  color:#3a2408!important;
+  -webkit-text-fill-color:#3a2408!important;
+  border:3px solid #8a6414!important;
+  border-radius:18px!important;
+  box-shadow:
+    0 5px 0 #6a4a10,
+    0 10px 16px rgba(0,0,0,.28),
+    inset 0 2px 0 rgba(255,255,255,.6),
+    inset 0 -2px 0 rgba(120,70,10,.2)!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.35);
+  font-weight:800;
+  letter-spacing:.02em;
+}
+body.kleur195 #terug{
+  padding:6px 14px 6px 8px!important;
+  min-height:44px!important;
+  font-size:.88rem!important;
+  border-radius:22px!important;
+}
+body.kleur195 #terug .icn{
+  stroke:#3a2408!important;
+  color:#3a2408!important;
+}
+body.kleur195 button.knop-sec:active,
+body.kleur195 .knop:not(.volgende):active,
+body.kleur195 #terug.zien:active{
+  transform:translateY(2px);
+  box-shadow:0 3px 0 #6a4a10,0 5px 8px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.4)!important;
+}
+
+/* Hoofdactie blijft het glanzende groen van v195, ook als de tag later komt */
+body.kleur195 #gpkies.knop.volgende,
+body.kleur195 #m3opn.knop.volgende{
+  /* erft de groene hoofdknop */
+}
+
+@media (prefers-reduced-motion:reduce){
+  body.kleur195 button.knop-sec:active,
+  body.kleur195 .knop:not(.volgende):active,
+  body.kleur195 #terug.zien:active{transform:none}
+}
+
+/* Geluid: groene hoofdknop over de volle breedte, zonder lakzegel; Proef en Verwijderen ernaast in goud */
+body[data-view=geluid] #gpkies.knop.volgende{
+  display:block!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin:8px 0 6px!important;
+  padding-left:16px!important;
+  padding-right:16px!important;
+  font-size:.95rem!important;
+  white-space:nowrap;
+}
+body[data-view=geluid] #gpkies.knop.volgende::before,
+body[data-view=geluid] #gpkies.knop.volgende::after{
+  content:none!important;
+  display:none!important;
+}
+body[data-view=geluid] #gptest,
+body[data-view=geluid] #gpwis{
+  display:block!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin:6px 0!important;
+}

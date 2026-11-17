@@ -574,3 +574,4 @@ v253 (18 november 2026): op een smal scherm blijven de doelen van een level, de 
 v254 (18 november 2026): de eerste dertig levels zijn rustiger, en bij nieuwe dingen (onkruid, kisten, potten) staat een korte uitleg. Mama’s voortgang is alleen aangevuld, niet gereset.
 v255 (18 november 2026): het welkomstkaartje in de Hal is netter, zonder het losse stokje, met gouden hoeken en een duidelijke groene knop Naar binnen. Mama’s voortgang is alleen aangevuld, niet gereset.
 v256 (18 november 2026): het begin van een les op de Kaart heeft een nettere banner, een gouden startboog en een bordje “Begin van de les”. Mama’s voortgang is alleen aangevuld, niet gereset.
+v257 (18 november 2026): overal is de hoofdknop groen (Spelen, Verder, Openen) en de tweede knop goud (Terug, Proef, Verwijderen, Straks). Mama’s voortgang is alleen aangevuld, niet gereset.
