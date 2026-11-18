@@ -1,0 +1,226 @@
+/* v259: drie lagen in de pot — achter, plant, voorrand */
+
+body[data-view=mijnkas] .mk-pot .potwrap,
+body.kleur195[data-view=mijnkas] .mk-pot .potwrap{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:80%;
+  margin:0 auto;
+  overflow:visible;
+}
+body[data-view=mijnkas] .mk-tafel.klein .mk-pot .potwrap{width:90%!important}
+body[data-view=mijnkas] .mk-tafel.groot .mk-pot .potwrap{width:86%!important}
+body[data-view=mijnkas] .mk-pot .potwrap .potimg,
+body[data-view=mijnkas] .mk-pot .potwrap .potlip,
+body[data-view=mijnkas] .mk-tafel.klein .mk-pot .potwrap .potimg,
+body[data-view=mijnkas] .mk-tafel.klein .mk-pot .potwrap .potlip,
+body[data-view=mijnkas] .mk-tafel.groot .mk-pot .potwrap .potimg,
+body[data-view=mijnkas] .mk-tafel.groot .mk-pot .potwrap .potlip,
+body.kleur195[data-view=mijnkas] .mk-tafel.groot .mk-pot .potimg,
+body.kleur195[data-view=mijnkas] .mk-tafel.klein .mk-pot .potimg,
+body.kleur195[data-view=mijnkas] .mk-pot .potwrap .potimg,
+body.kleur195[data-view=mijnkas] .mk-pot .potwrap .potlip{
+  width:100%!important;
+  height:auto!important;
+  display:block!important;
+  max-width:none!important;
+}
+
+body[data-view=mijnkas] .mk-pot .potimg{
+  position:relative!important;
+  z-index:1!important;
+}
+
+/* Plant: onderkant op de aardelijn van de potfoto (opening ~18% van boven) */
+body[data-view=mijnkas] .mk-pot .kplant,
+body.kleur195[data-view=mijnkas] .mk-pot .kplant{
+  position:absolute!important;
+  left:50%!important;
+  bottom:80%!important;
+  transform:translateX(-50%)!important;
+  margin:0!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  z-index:2!important;
+  pointer-events:none;
+  width:68%!important;
+  /* boven de rand volle breedte; onder de rand alleen de opening */
+  clip-path:polygon(0 0,100% 0,100% 84%,80% 100%,20% 100%,0 84%)!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st0){width:30%!important;bottom:81.5%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst1),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st1){width:46%!important;bottom:81%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst2),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st2){width:58%!important;bottom:78.5%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst3),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st3){width:74%!important;bottom:77%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst4),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st4){width:86%!important;bottom:72%!important}
+
+body[data-view=mijnkas] .mk-pot .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant img,
+body[data-view=mijnkas] .mk-pot .plantimg.kst0,
+body[data-view=mijnkas] .mk-pot .plantimg.kst1,
+body[data-view=mijnkas] .mk-pot .plantimg.kst2,
+body[data-view=mijnkas] .mk-pot .plantimg.kst3,
+body[data-view=mijnkas] .mk-pot .plantimg.kst4,
+body.kleur195[data-view=mijnkas] .mk-pot .plantimg{
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:bottom center!important;
+  display:block!important;
+  transform:translateY(8%)!important;
+  transform-origin:50% 100%!important;
+  filter:drop-shadow(0 1px 1px rgba(20,12,0,.25))!important;
+  clip-path:none!important;
+}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st0) .plantimg{transform:translateY(10%)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst1) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st1) .plantimg{transform:translateY(4%)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst2) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st2) .plantimg{transform:translateY(8%)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst3) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st3) .plantimg{transform:translateY(14%)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst4) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st4) .plantimg{transform:translateY(22%)!important}
+
+/* Mandragora: aardkluit en pootjes dieper de opening in */
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant{bottom:68%!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant .plantimg{transform:translateY(30%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st0){bottom:78%!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst0) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st0) .plantimg{transform:translateY(10%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst1),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st1){bottom:74%!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst1) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st1) .plantimg{transform:translateY(18%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst2),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st2){bottom:67%!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst2) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st2) .plantimg{transform:translateY(32%)!important}
+
+body[data-view=mijnkas] .mk-pot .kplant svg{
+  width:100%!important;
+  height:auto!important;
+  display:block!important;
+  transform:translateY(8%)!important;
+  transform-origin:50% 100%!important;
+}
+
+/* Voorrand over de plant: zelfde potfoto, opening uitgespaard */
+body[data-view=mijnkas] .mk-pot .potlip,
+body.kleur195[data-view=mijnkas] .mk-pot .potlip{
+  position:absolute!important;
+  left:0;
+  top:0;
+  width:100%!important;
+  height:100%!important;
+  object-fit:fill!important;
+  z-index:3!important;
+  pointer-events:none;
+  filter:none!important;
+  -webkit-mask-image:radial-gradient(ellipse 56% 13% at 50% 5%, transparent 99%, #000 101%);
+  mask-image:radial-gradient(ellipse 56% 13% at 50% 5%, transparent 99%, #000 101%);
+  -webkit-mask-size:100% 100%;
+  mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+}
+
+body[data-view=mijnkas] .mk-pot::after,
+body[data-view=mijnkas] .mk-vloer::after{
+  display:none!important;
+  content:none!important;
+}
+body[data-view=mijnkas] .mk-pot .mk-lab,
+body[data-view=mijnkas] .mk-pot .kpot-groei{
+  z-index:4!important;
+  position:relative;
+}
+
+/* Megapot */
+body[data-view=mijnkas] .mk-vloer .gpwrap{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:100%;
+  overflow:visible;
+}
+body[data-view=mijnkas] .mk-vloer .gpwrap .gpimg,
+body[data-view=mijnkas] .mk-vloer .gpwrap .gplip{
+  width:100%!important;
+  height:auto!important;
+  display:block!important;
+}
+body[data-view=mijnkas] .mk-vloer .gpimg{
+  position:relative!important;
+  z-index:1!important;
+}
+body[data-view=mijnkas] .mk-vloer .gplip,
+body.kleur195[data-view=mijnkas] .mk-vloer .gplip{
+  position:absolute!important;
+  left:0;
+  top:0;
+  width:100%!important;
+  height:100%!important;
+  object-fit:fill!important;
+  z-index:3!important;
+  pointer-events:none;
+  filter:none!important;
+  -webkit-mask-image:radial-gradient(ellipse 58% 10% at 50% 4%, transparent 99%, #000 101%);
+  mask-image:radial-gradient(ellipse 58% 10% at 50% 4%, transparent 99%, #000 101%);
+  -webkit-mask-size:100% 100%;
+  mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+}
+body[data-view=mijnkas] .mk-vloer .superimg,
+body[data-view=mijnkas] .mk-vloer .plantimg,
+body[data-view=mijnkas] .mk-vloer .kplant,
+body.kleur195[data-view=mijnkas] .mk-vloer .superimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .plantimg{
+  position:absolute!important;
+  left:50%!important;
+  bottom:84%!important;
+  width:70%!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:0!important;
+  z-index:2!important;
+  object-fit:contain!important;
+  object-position:bottom center!important;
+  transform:translateX(-50%) translateY(8%)!important;
+  transform-origin:50% 100%!important;
+  clip-path:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  filter:drop-shadow(0 2px 2px rgba(20,12,0,.3))!important;
+  pointer-events:none;
+}
+body[data-view=mijnkas] .mk-vloer .superimg.kst0,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst0{width:38%!important;bottom:85%!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst1,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst1{width:48%!important;bottom:84.5%!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst2,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst2{width:58%!important;bottom:84%!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst3,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst3{width:70%!important;bottom:83.5%!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst4,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst4{width:82%!important;bottom:82%!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst4,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst4{transform:translateX(-50%) translateY(14%)!important}
+
+body[data-view=mijnkas] .mk-vloer .gplabel,
+body[data-view=mijnkas] .mk-vloer .kpot-groei{
+  z-index:4!important;
+  position:relative;
+}
