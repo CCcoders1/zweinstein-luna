@@ -1,0 +1,189 @@
+/* v261: stengelvoet op 70% naar voren in de gemeten aarde-ellips.
+   --voet komt uit kas261.js (onderkant dekkende pixels van de sprite).
+   Geen grote translateY: die duwt de voet onder de lip en de stengel lijkt dan achterin te staan. */
+
+/* 70% naar voren in de ellips (CSS-fallback; JS zet --aarde nog precies) */
+body[data-view=mijnkas] .mk-pot[data-pot=pot0]{--aarde:84.0%;--lip-cx:50%;--lip-cy:13.8%;--lip-rx:40%;--lip-ry:6.0%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot1]{--aarde:89.9%;--lip-cx:50%;--lip-cy:8.3%;--lip-rx:38%;--lip-ry:5.2%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot2]{--aarde:90.7%;--lip-cx:50%;--lip-cy:7.7%;--lip-rx:38%;--lip-ry:4.7%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot3]{--aarde:84.3%;--lip-cx:50%;--lip-cy:12.9%;--lip-rx:38%;--lip-ry:7.5%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot4]{--aarde:85.7%;--lip-cx:50%;--lip-cy:12.0%;--lip-rx:38%;--lip-ry:6.2%}
+body[data-view=mijnkas] .mk-vloer[data-pot=grotepot],
+body[data-view=mijnkas] .mk-vloer{
+  --aarde:88.5%;--lip-cx:50%;--lip-cy:9.9%;--lip-rx:34%;--lip-ry:4.6%;
+}
+
+/* Lip-gat volgt de hele opening, iets ruimer naar voren, niet door de buik */
+body[data-view=mijnkas] .mk-pot .potlip,
+body.kleur195[data-view=mijnkas] .mk-pot .potlip,
+body[data-view=mijnkas] .mk-vloer .gplip,
+body.kleur195[data-view=mijnkas] .mk-vloer .gplip{
+  -webkit-mask-image:radial-gradient(ellipse var(--lip-rx,56%) var(--lip-ry,13%) at var(--lip-cx,50%) var(--lip-cy,5%), transparent 99%, #000 101%)!important;
+  mask-image:radial-gradient(ellipse var(--lip-rx,56%) var(--lip-ry,13%) at var(--lip-cx,50%) var(--lip-cy,5%), transparent 99%, #000 101%)!important;
+}
+
+/* Box-onderkant = doel in de ellips. Alle eerdere stage/mandragora-bottoms vervallen. */
+body[data-view=mijnkas] .mk-pot .kplant,
+body.kleur195[data-view=mijnkas] .mk-pot .kplant,
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst1),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st1),
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst2),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st2),
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst3),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st3),
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst4),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st4),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst1),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st1),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst2),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st2){
+  bottom:var(--aarde,88%)!important;
+  clip-path:none!important;
+}
+
+/* Alleen de transparante marge onder de stengelvoet compenseren, in % van de sprite zelf */
+body[data-view=mijnkas] .mk-pot .kplant img,
+body[data-view=mijnkas] .mk-pot .plantimg,
+body.kleur195[data-view=mijnkas] .mk-pot .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st0) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst1) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st1) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst2) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st2) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst3) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st3) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst4) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst1) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st1) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst2) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st2) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst3) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st3) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.kst3) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.st3) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.kst4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.st4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst0) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st0) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst1) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st1) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst2) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st2) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-pot=pot0] .kplant:has(.kst0) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-pot=pot0] .kplant:has(.st0) .plantimg{
+  transform:translateY(calc((1 - var(--voet, 0.98)) * 100%))!important;
+}
+
+body[data-view=mijnkas] .mk-vloer .superimg,
+body[data-view=mijnkas] .mk-vloer .plantimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .superimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .plantimg,
+body[data-view=mijnkas] .mk-vloer .superimg.kst0,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst0,
+body[data-view=mijnkas] .mk-vloer .superimg.kst1,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst1,
+body[data-view=mijnkas] .mk-vloer .superimg.kst2,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst2,
+body[data-view=mijnkas] .mk-vloer .superimg.kst3,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst3,
+body[data-view=mijnkas] .mk-vloer .superimg.kst4,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst4{
+  bottom:var(--aarde,88.5%)!important;
+  clip-path:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  transform:translateX(-50%) translateY(calc((1 - var(--voet, 0.98)) * 100%))!important;
+}
+
+/* Aarde-terp rond de voet, in de opening */
+body[data-view=mijnkas] .mk-pot .potwrap::after,
+body[data-view=mijnkas] .mk-vloer .gpwrap::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:var(--aarde,88%);
+  width:38%;
+  height:8%;
+  transform:translate(-50%,40%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 40%,rgba(22,12,6,.6) 0 48%,rgba(22,12,6,0) 76%);
+  z-index:2;
+  pointer-events:none;
+}
+
+/* Alleen ovale zaadjes kleiner; jonge mandragora/tentacula/duivelsstrik niet krimpen */
+body[data-view=mijnkas] .mk-pot[data-z=affodil] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=affodil] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=varkensgras] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=varkensgras] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=sodejus] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=sodejus] .kplant:has(.st0){width:32%!important}
+
+/* mega-voet-override: wint van kas258/259 stage-bottoms (kst0/kst2 hadden een vaste bottom) */
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg,
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst0,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst0,
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst1,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst1,
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst2,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst2,
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst3,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst3,
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst4,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst4,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap .superimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap .plantimg{
+  bottom:var(--aarde,88.5%)!important;
+  clip-path:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  transform:translateX(-50%) translateY(calc((1 - var(--voet, 0.98)) * 100%))!important;
+}
+
+/* geen-zaad-breedte: jonge mandragora/tentacula/duivelsstrik zijn geen ovale zaadjes */
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=tentacula] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=tentacula] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=duivelsstrik] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=duivelsstrik] .kplant:has(.st0){width:62%!important}
+
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst0,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst0{width:62%!important}
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst1,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst1{width:70%!important}
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst2,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst2{width:78%!important}
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst3,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst3{width:86%!important}
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg.kst4,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg.kst4{width:94%!important}
+
+/* Geen breedte-animatie die de voet halverwege een wissel meet */
+body[data-view=mijnkas] .mk-pot .kplant,
+body[data-view=mijnkas] .mk-pot .plantimg,
+body[data-view=mijnkas] .mk-vloer .plantimg,
+body[data-view=mijnkas] .mk-vloer .superimg,
+body[data-view=mijnkas] .potwrap,
+body[data-view=mijnkas] .gpwrap{
+  transition:none!important;
+}
