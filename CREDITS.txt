@@ -577,3 +577,4 @@ v256 (18 november 2026): het begin van een les op de Kaart heeft een nettere ban
 v257 (18 november 2026): overal is de hoofdknop groen (Spelen, Verder, Openen) en de tweede knop goud (Terug, Proef, Verwijderen, Straks). Mama’s voortgang is alleen aangevuld, niet gereset.
 v258 (18 november 2026): de 3D-tuin is weer licht en zonnig, en in de kas staan de planten echt in de pot, met zichtbare aarde in de rand. Mama’s voortgang is alleen aangevuld, niet gereset.
 v259 (18 november 2026): in de kas groeit elke plant uit de aarde achter de voorrand van de pot, in elke pot en elke groeifase. Mama’s voortgang is alleen aangevuld, niet gereset.
+v260 (18 november 2026): de planten groeien uit het midden van de aarde in de pot, en de potten staan weer stevig op de tafel, met een zachte schaduw onder de voet. Mama’s voortgang is alleen aangevuld, niet gereset.

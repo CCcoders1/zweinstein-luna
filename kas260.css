@@ -1,0 +1,259 @@
+/* v260: plantvoet in het midden van de aarde; potten staan op tafel met contactschaduw */
+
+/* Gemeten opening per pot-skin (aarde-ellips, % van potfoto):
+   pot0  mid 13.8%  front 15.1%  → --aarde 84.9%
+   pot1  mid  8.3%  front  9.4%  → --aarde 90.6%
+   pot2  mid  7.6%  front  8.6%  → --aarde 91.4%
+   pot3  mid 12.9%  front 14.5%  → --aarde 85.5%
+   pot4  mid 12.0%  front 13.4%  → --aarde 86.6%
+   grotepot mid 9.9% front 10.9% → --aarde 89.1%
+*/
+body[data-view=mijnkas] .mk-pot[data-pot=pot0]{--aarde:84.9%;--lip-cx:50%;--lip-cy:13.8%;--lip-rx:40%;--lip-ry:5.6%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot1]{--aarde:90.6%;--lip-cx:50%;--lip-cy:8.3%;--lip-rx:38%;--lip-ry:4.8%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot2]{--aarde:91.4%;--lip-cx:50%;--lip-cy:7.6%;--lip-rx:38%;--lip-ry:4.3%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot3]{--aarde:85.5%;--lip-cx:50%;--lip-cy:12.9%;--lip-rx:38%;--lip-ry:7.1%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot4]{--aarde:86.6%;--lip-cx:50%;--lip-cy:12.0%;--lip-rx:38%;--lip-ry:5.8%}
+body[data-view=mijnkas] .mk-vloer[data-pot=grotepot],
+body[data-view=mijnkas] .mk-vloer{
+  --aarde:89.1%;--lip-cx:50%;--lip-cy:9.9%;--lip-rx:34%;--lip-ry:4.2%;
+}
+
+/* Voorrand-masker volgt de gemeten opening, zodat het midden van de aarde vrij blijft */
+body[data-view=mijnkas] .mk-pot .potlip,
+body.kleur195[data-view=mijnkas] .mk-pot .potlip,
+body[data-view=mijnkas] .mk-vloer .gplip,
+body.kleur195[data-view=mijnkas] .mk-vloer .gplip{
+  -webkit-mask-image:radial-gradient(ellipse var(--lip-rx,56%) var(--lip-ry,13%) at var(--lip-cx,50%) var(--lip-cy,5%), transparent 99%, #000 101%)!important;
+  mask-image:radial-gradient(ellipse var(--lip-rx,56%) var(--lip-ry,13%) at var(--lip-cx,50%) var(--lip-cy,5%), transparent 99%, #000 101%)!important;
+}
+
+/* Plantvoet op het midden-tot-iets-voor-midden van de aarde */
+body[data-view=mijnkas] .mk-pot .kplant,
+body.kleur195[data-view=mijnkas] .mk-pot .kplant,
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst1),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st1),
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst2),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st2),
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst3),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st3),
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst4),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st4),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst1),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st1),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst2),
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st2){
+  bottom:var(--aarde,88%)!important;
+  clip-path:none!important;
+}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st0){width:32%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst1),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st1){width:46%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst2),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st2){width:58%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst3),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st3){width:72%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst4),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st4){width:84%!important}
+
+/* Voet van de tekening blijft in de opening. Geen grote translateY:
+   die duwt de stengel onder de voorrand en de plant lijkt dan achterin te zitten. */
+body[data-view=mijnkas] .mk-pot .kplant img,
+body[data-view=mijnkas] .mk-pot .plantimg,
+body.kleur195[data-view=mijnkas] .mk-pot .plantimg{
+  transform:translateY(2%)!important;
+}
+/* Zaadje: in het midden van de aarde, bovenkant duidelijk zichtbaar, onderkant in de grond */
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st0){
+  bottom:var(--aarde,88%)!important;
+  width:34%!important;
+}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st0) .plantimg{transform:translateY(28%)!important}
+/* Donkere zaadjes in pot0 (lage opening): iets hoger, zodat de glans zichtbaar blijft */
+body[data-view=mijnkas] .mk-pot[data-pot=pot0] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-pot=pot0] .kplant:has(.st0){width:36%!important}
+body[data-view=mijnkas] .mk-pot[data-pot=pot0] .kplant:has(.kst0) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-pot=pot0] .kplant:has(.st0) .plantimg{transform:translateY(22%)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst1) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st1) .plantimg{transform:translateY(6%)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst2) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st2) .plantimg{transform:translateY(5%)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst3) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st3) .plantimg{transform:translateY(5%)!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst4) .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant:has(.st4) .plantimg{transform:translateY(6%)!important}
+/* Alsem is een breed struikje: iets dieper, zodat de onderste bladeren de aarde raken */
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst1) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st1) .plantimg{transform:translateY(40%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst2) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st2) .plantimg{transform:translateY(22%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst3) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st3) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st4) .plantimg{transform:translateY(18%)!important}
+/* Wolfsmelk struik: een klein beetje extra in de aarde */
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.kst3) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.st3) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.kst4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.st4) .plantimg{transform:translateY(8%)!important}
+/* Mandragora: aardkluit en benen onder de voorrand, bol/lijf in de opening */
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant{bottom:var(--aarde,88%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant .plantimg{transform:translateY(36%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst0) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st0) .plantimg{transform:translateY(22%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst1) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st1) .plantimg{transform:translateY(32%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst2) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st2) .plantimg{transform:translateY(38%)!important}
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.kst4) .plantimg,
+body[data-view=mijnkas] .mk-pot[data-z=mandragora] .kplant:has(.st4) .plantimg{transform:translateY(38%)!important}
+
+/* Klein aarde-heuveltje rond de voet, in de opening */
+body[data-view=mijnkas] .mk-pot .potwrap::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:var(--aarde,88%);
+  width:34%;
+  height:7%;
+  transform:translate(-50%,35%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 40%,rgba(28,16,8,.55) 0 46%,rgba(28,16,8,.0) 74%);
+  z-index:2;
+  pointer-events:none;
+}
+body[data-view=mijnkas] .mk-pot .kplant{z-index:2!important}
+
+/* Contactschaduw onder de potvoet, op het tafelblad */
+body[data-view=mijnkas] .mk-pot .potwrap::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-1px;
+  width:78%;
+  height:10px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,rgba(20,10,0,.55) 0 38%,rgba(20,10,0,.0) 72%);
+  z-index:0;
+  pointer-events:none;
+  filter:blur(1px);
+}
+
+/* Labels en groeibalk uit de flow: ze tillen de pot niet meer van de plank.
+   Ze komen op de voorkant van de tafel, onder de voet. */
+body[data-view=mijnkas] .mk-pot .mk-lab,
+body[data-view=mijnkas] .mk-tafel .mk-lab,
+body.kleur195[data-view=mijnkas] .mk-pot .mk-lab{
+  position:absolute!important;
+  left:50%!important;
+  right:auto!important;
+  top:100%!important;
+  bottom:auto!important;
+  transform:translateX(-50%)!important;
+  margin:16px 0 0!important;
+  z-index:5!important;
+  white-space:nowrap!important;
+}
+body[data-view=mijnkas] .mk-pot .kpot-groei,
+body.kleur195[data-view=mijnkas] .mk-pot .kpot-groei{
+  position:absolute!important;
+  left:50%!important;
+  right:auto!important;
+  top:100%!important;
+  bottom:auto!important;
+  transform:translateX(-50%)!important;
+  margin:7px 0 0!important;
+  z-index:5!important;
+}
+
+/* Potvoeten op het tafelblad (bovenkant van tafel2 is ~10px dik) */
+body[data-view=mijnkas] .mk-tafel .mk-rij,
+body[data-view=mijnkas] .mk-tafel.klein .mk-rij,
+body[data-view=mijnkas] .mk-tafel.groot .mk-rij{
+  align-items:flex-end!important;
+  bottom:calc(100% - 20px)!important;
+  margin:0!important;
+}
+
+/* Megapot: zelfde anker en contactschaduw; label uit de flow */
+body[data-view=mijnkas] .mk-vloer .superimg,
+body[data-view=mijnkas] .mk-vloer .plantimg,
+body[data-view=mijnkas] .mk-vloer .kplant,
+body.kleur195[data-view=mijnkas] .mk-vloer .superimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .plantimg,
+body[data-view=mijnkas] .mk-vloer .superimg.kst0,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst0,
+body[data-view=mijnkas] .mk-vloer .superimg.kst1,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst1,
+body[data-view=mijnkas] .mk-vloer .superimg.kst2,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst2,
+body[data-view=mijnkas] .mk-vloer .superimg.kst3,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst3,
+body[data-view=mijnkas] .mk-vloer .superimg.kst4,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst4{
+  bottom:var(--aarde,89.1%)!important;
+  clip-path:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+}
+body[data-view=mijnkas] .mk-vloer .superimg,
+body[data-view=mijnkas] .mk-vloer .plantimg{
+  transform:translateX(-50%) translateY(2%)!important;
+}
+body[data-view=mijnkas] .mk-vloer .superimg.kst0,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst0{
+  width:38%!important;
+  bottom:var(--aarde,89.1%)!important;
+  transform:translateX(-50%) translateY(36%)!important;
+}
+body[data-view=mijnkas] .mk-vloer .superimg.kst1,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst1{width:48%!important;transform:translateX(-50%) translateY(3%)!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst4,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst4{transform:translateX(-50%) translateY(4%)!important}
+
+body[data-view=mijnkas] .mk-vloer .gpwrap::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:var(--aarde,89.1%);
+  width:36%;
+  height:6%;
+  transform:translate(-50%,35%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 40%,rgba(28,16,8,.5) 0 46%,rgba(28,16,8,.0) 74%);
+  z-index:2;
+  pointer-events:none;
+}
+body[data-view=mijnkas] .mk-vloer .gpwrap::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-1%;
+  width:78%;
+  height:16px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,rgba(20,10,0,.48) 0 40%,rgba(20,10,0,.0) 74%);
+  z-index:0;
+  pointer-events:none;
+  filter:blur(1.5px);
+}
+body[data-view=mijnkas] .mk-vloer .gplabel,
+body[data-view=mijnkas] .mk-vloer .kpot-groei{
+  position:absolute!important;
+  left:50%!important;
+  top:100%!important;
+  bottom:auto!important;
+  transform:translateX(-50%)!important;
+  margin:8px 0 0!important;
+  z-index:5!important;
+  white-space:nowrap;
+}
