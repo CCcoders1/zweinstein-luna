@@ -1,0 +1,142 @@
+/* v258: planten staan écht in de pot — basis in de aarde, potrand voor de stam, aarde zichtbaar */
+
+body[data-view=mijnkas] .mk-pot,
+body.kleur195[data-view=mijnkas] .mk-pot{
+  position:relative!important;
+  overflow:visible!important;
+}
+
+/* De pot zit boven de basis van de plant, zodat de rand de stam bedekt */
+body[data-view=mijnkas] .mk-pot .potimg,
+body.kleur195[data-view=mijnkas] .mk-pot .potimg{
+  position:relative!important;
+  z-index:3!important;
+  display:block!important;
+}
+
+/* Aarde in de opening, iets boven de potfoto zodat je de aarde in de rand ziet */
+body[data-view=mijnkas] .mk-pot::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  width:54%;
+  height:11%;
+  transform:translateX(-50%);
+  bottom:62%;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 40%,#6a4a24 0 42%,#3d2812 70%,rgba(40,24,8,.0) 76%);
+  box-shadow:inset 0 1px 2px rgba(20,10,0,.45);
+  z-index:4;
+  pointer-events:none;
+}
+body[data-view=mijnkas] .mk-tafel.groot .mk-pot::after{width:50%;bottom:63%}
+
+/* Plantvak: onderkant op de aardelijn, een klein stukje de pot in, rest afgeknipt */
+body[data-view=mijnkas] .mk-pot .kplant,
+body.kleur195[data-view=mijnkas] .mk-pot .kplant{
+  position:absolute!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  margin:0!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  z-index:5!important;
+  pointer-events:none;
+  bottom:54%!important;          /* 8% de pot in, onder de aarde-ellips */
+  width:74%!important;
+  clip-path:none!important;
+}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st0){width:40%!important;bottom:56%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst1),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st1){width:52%!important;bottom:55%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst2),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st2){width:64%!important;bottom:54%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst3),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st3){width:80%!important;bottom:53%!important}
+body[data-view=mijnkas] .mk-pot .kplant:has(.kst4),
+body[data-view=mijnkas] .mk-pot .kplant:has(.st4){width:92%!important;bottom:52%!important}
+
+body[data-view=mijnkas] .mk-pot .plantimg,
+body[data-view=mijnkas] .mk-pot .kplant img,
+body[data-view=mijnkas] .mk-pot .plantimg.kst0,
+body[data-view=mijnkas] .mk-pot .plantimg.kst1,
+body[data-view=mijnkas] .mk-pot .plantimg.kst2,
+body[data-view=mijnkas] .mk-pot .plantimg.kst3,
+body[data-view=mijnkas] .mk-pot .plantimg.kst4,
+body.kleur195[data-view=mijnkas] .mk-pot .plantimg{
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:bottom center!important;
+  display:block!important;
+  /* aardkluit / stamvoet zakt de pot in; overflow:hidden op .kplant knipt de rest */
+  transform:translateY(24%)!important;
+  transform-origin:50% 100%!important;
+  filter:drop-shadow(0 2px 2px rgba(20,12,0,.35))!important;
+}
+body[data-view=mijnkas] .mk-pot .kplant svg{
+  width:100%!important;
+  height:auto!important;
+  display:block!important;
+  transform:translateY(18%)!important;
+  transform-origin:50% 100%!important;
+}
+
+body[data-view=mijnkas] .mk-pot .mk-lab,
+body[data-view=mijnkas] .mk-pot .kpot-groei{
+  z-index:6!important;
+}
+
+/* Megapot: zelfde idee, de grote aarde-foto blijft zichtbaar in de rand */
+body[data-view=mijnkas] .mk-vloer{
+  position:relative!important;
+  overflow:visible!important;
+}
+body[data-view=mijnkas] .mk-vloer .gpimg{
+  position:relative!important;
+  z-index:3!important;
+}
+body[data-view=mijnkas] .mk-vloer .superimg,
+body[data-view=mijnkas] .mk-vloer .plantimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .superimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .plantimg{
+  position:absolute!important;
+  left:50%!important;
+  bottom:62%!important;
+  width:86%!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:0!important;
+  z-index:5!important;
+  object-fit:contain!important;
+  object-position:bottom center!important;
+  transform:translateX(-50%)!important;
+  transform-origin:50% 100%!important;
+  clip-path:none!important;
+  filter:drop-shadow(0 3px 3px rgba(20,12,0,.4))!important;
+  pointer-events:none;
+  /* aardkluit verdwijnt in de pot; koppen steken boven de rand uit */
+  -webkit-mask-image:linear-gradient(to top,transparent 0%,#000 36%,#000 100%);
+  mask-image:linear-gradient(to top,transparent 0%,#000 36%,#000 100%);
+}
+body[data-view=mijnkas] .mk-vloer .superimg.kst0,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst0{width:44%!important;bottom:64%!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst1,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst1{width:56%!important;bottom:63%!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst2,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst2{width:68%!important;bottom:63%!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst3,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst3{width:78%!important;bottom:62%!important}
+body[data-view=mijnkas] .mk-vloer .superimg.kst4,
+body[data-view=mijnkas] .mk-vloer .plantimg.kst4{width:90%!important;bottom:61%!important}
+body[data-view=mijnkas] .mk-pot .kplant{
+  -webkit-mask-image:linear-gradient(to top,transparent 0%,#000 16%,#000 100%);
+  mask-image:linear-gradient(to top,transparent 0%,#000 16%,#000 100%);
+}
+
+body[data-view=mijnkas] .mk-vloer .gplabel{
+  z-index:6!important;
+}

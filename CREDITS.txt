@@ -575,3 +575,4 @@ v254 (18 november 2026): de eerste dertig levels zijn rustiger, en bij nieuwe di
 v255 (18 november 2026): het welkomstkaartje in de Hal is netter, zonder het losse stokje, met gouden hoeken en een duidelijke groene knop Naar binnen. Mama’s voortgang is alleen aangevuld, niet gereset.
 v256 (18 november 2026): het begin van een les op de Kaart heeft een nettere banner, een gouden startboog en een bordje “Begin van de les”. Mama’s voortgang is alleen aangevuld, niet gereset.
 v257 (18 november 2026): overal is de hoofdknop groen (Spelen, Verder, Openen) en de tweede knop goud (Terug, Proef, Verwijderen, Straks). Mama’s voortgang is alleen aangevuld, niet gereset.
+v258 (18 november 2026): de 3D-tuin is weer licht en zonnig, en in de kas staan de planten echt in de pot, met zichtbare aarde in de rand. Mama’s voortgang is alleen aangevuld, niet gereset.

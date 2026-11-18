@@ -709,15 +709,15 @@
   mat.kopSteen=new THREE.MeshLambertMaterial({map:T.zandsteen,color:0xd0c8bc});
 
   const scene=new THREE.Scene();
-  scene.background=new THREE.Color(0x2a62d4);
-  scene.fog=new THREE.Fog(0x6a9ae0,90,170);
+  scene.background=new THREE.Color(0x6eb4ee);
+  scene.fog=new THREE.Fog(0x9ec8f0,90,170);
 
   const camera=new THREE.PerspectiveCamera(52,innerWidth/Math.max(1,innerHeight),0.28,180);
   const renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:false,powerPreference:'high-performance'});
-  renderer.setClearColor(0x2a62d4,1);
+  renderer.setClearColor(0x6eb4ee,1);
   if(THREE.ACESFilmicToneMapping!=null){
     renderer.toneMapping=THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure=0.94;
+    renderer.toneMappingExposure=1.08;
   }
   // v179: ACES blijft, maar we verlagen de interne resolutie iets (zie pixelRatio)
 
@@ -748,7 +748,7 @@
   function zetKwal(trap){
     kwalTrap=Math.max(0,Math.min(KWAL.length-1,trap|0));
     licht=kwalTrap>=2;
-    if(renderer.toneMappingExposure!=null)renderer.toneMappingExposure=0.94+kwalTrap*0.03;
+    if(renderer.toneMappingExposure!=null)renderer.toneMappingExposure=(SFEER&&SFEER[sfeerNu]?SFEER[sfeerNu].ex:1.08)+kwalTrap*0.03;
     if(typeof wolkInstO!=='undefined'&&wolkInstO)wolkInstO.visible=kwalTrap<2;
     zetNormalen(kwalTrap<2);
     if(typeof waterVlakken!=='undefined'){
@@ -766,10 +766,10 @@
   maat();
   addEventListener('resize',maat,{passive:true});
 
-  const hemel=new THREE.HemisphereLight(0x9ec8f4,0x2a3e18,0.92);
+  const hemel=new THREE.HemisphereLight(0xb8deff,0x4a6a28,1.18);
   scene.add(hemel);
-  const zon=new THREE.DirectionalLight(0xffffff,1.00);
-  zon.position.set(-14,24,10);
+  const zon=new THREE.DirectionalLight(0xfff2d6,1.22);
+  zon.position.set(-12,26,8);
   scene.add(zon);
   const omgeef=new THREE.AmbientLight(0xdce0e6,0.40);scene.add(omgeef);
 
@@ -1931,7 +1931,7 @@
   const bloemPlek=[[-10.2,11.2],[-10.0,11.35],[-10.4,11.1],[3.2,9.0],[3.0,9.15],[3.4,8.85],[-3.2,20.2],[-3.0,20.35],[3.2,20.4],[3.4,20.25]];
   bloemPlek.forEach(([x,z],i)=>{
     const f=new THREE.Mesh(new THREE.PlaneGeometry(0.18,0.26),mat.bloem);
-    f.position.set(x+(rnd(i)-.5)*0.2,0.68,z+(rnd(i+3)-.5)*0.15);
+    f.position.set(x+(rnd(i)-.5)*0.2,0.61,z+(rnd(i+3)-.5)*0.15);
     bloemen.push(f);voeg(f);
   });
   /* v246: extra bloemen langs de paden */
@@ -3066,15 +3066,14 @@
   }
   let sfeerVast=null,sfeerNu='dag',sfeerKlok=0;
   const SFEER={
-    dag:{hh:0x9ec8f4,hg:0x2a3e18,hi:0.92,zc:0xffffff,zi:1.00,zp:[-14,24,10],ai:0.40,ex:0.94,fg:0x6a9ae0,cl:0x2a62d4,kp:0xffffff,lo:0.72,so:0.16},
+    dag:{hh:0xb8deff,hg:0x4a6a28,hi:1.18,zc:0xfff2d6,zi:1.22,zp:[-12,26,8],ai:0.55,ex:1.08,fg:0x9ec8f0,cl:0x6eb4ee,kp:0xffffff,lo:0.58,so:0.14},
     schemer:{hh:0xffb070,hg:0x1a1824,hi:0.52,zc:0xff8a4a,zi:0.40,zp:[-6,9,16],ai:0.20,ex:0.76,fg:0x4a3658,cl:0x2c1e38,kp:0xffc090,lo:0.95,so:0.34},
     nacht:{hh:0x3a4a78,hg:0x0a0c14,hi:0.26,zc:0x8899cc,zi:0.12,zp:[-14,22,10],ai:0.12,ex:0.68,fg:0x121428,cl:0x0c1020,kp:0x6a88cc,lo:1.0,so:0.28}
   };
   function sfeerFase(){
+    /* v258: de tuin is standaard zonnig en vrolijk, niet donker in de avond.
+       Schemer en nacht blijven beschikbaar via ZW_TUIN.zetSfeer('schemer'|'nacht'). */
     if(sfeerVast)return sfeerVast;
-    const d=new Date(),h=d.getHours()+d.getMinutes()/60;
-    if(h>=20.6||h<6.2)return 'nacht';
-    if((h>=17.3&&h<20.6)||(h>=6.2&&h<8.0))return 'schemer';
     return 'dag';
   }
   function pasTuinSfeer(force){
@@ -4448,7 +4447,7 @@
       });
       // haagzwaai uitgezet: te duur voor weinig winst
 
-      zon.intensity=1.08;
+      if(SFEER[sfeerNu])zon.intensity=SFEER[sfeerNu].zi;
       gloed.material.opacity=0.4+Math.sin(t*2.4)*0.18;
       ven.material.opacity=0.45+Math.sin(t*1.7)*0.15;
       if(typeof deurGloed!=='undefined'){
