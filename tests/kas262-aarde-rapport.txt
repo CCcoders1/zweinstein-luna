@@ -1,0 +1,224 @@
+KALIBRATIE v261 fixture (affodil pot2)
+  strook=1.018  fail='geen plantpixels in of aan de ellips'  → v261 wordt AFGEKEURD
+
+view        skin      plant        st   strook  result
+----------------------------------------------------------------------------------
+412x915     pot0      affodil      0   0.00   OK
+412x915     pot0      affodil      1   0.09   OK
+412x915     pot0      affodil      2   0.00   OK
+412x915     pot0      affodil      4   0.00   OK
+412x915     pot0      wolfsmelk    0   0.00   OK
+412x915     pot0      wolfsmelk    1   0.39   FAIL: kale-aarde-strook 0.39 van de ellips (>0.15)
+412x915     pot0      wolfsmelk    2   0.00   OK
+412x915     pot0      wolfsmelk    4   0.00   OK
+412x915     pot0      alsem        0   0.00   OK
+412x915     pot0      alsem        1   0.30   FAIL: kale-aarde-strook 0.30 van de ellips (>0.15)
+412x915     pot0      alsem        2   0.00   OK
+412x915     pot0      alsem        4   0.00   OK
+412x915     pot0      mandragora   0   0.00   OK
+412x915     pot0      mandragora   1   0.00   OK
+412x915     pot0      mandragora   2   0.00   OK
+412x915     pot0      mandragora   4   0.00   OK
+412x915     pot0      varkensgras  0   0.00   OK
+412x915     pot0      varkensgras  1   1.00   FAIL: geen plantpixels in of aan de ellips
+412x915     pot0      varkensgras  2   0.00   OK
+412x915     pot0      varkensgras  4   0.00   OK
+412x915     pot1      affodil      0   0.00   OK
+412x915     pot1      affodil      1   0.00   OK
+412x915     pot1      affodil      2   0.00   OK
+412x915     pot1      affodil      4   0.00   OK
+412x915     pot1      wolfsmelk    0   0.00   OK
+412x915     pot1      wolfsmelk    1   0.59   FAIL: kale-aarde-strook 0.59 van de ellips (>0.15)
+412x915     pot1      wolfsmelk    2   0.00   OK
+412x915     pot1      wolfsmelk    4   0.00   OK
+412x915     pot1      alsem        0   0.00   OK
+412x915     pot1      alsem        1   0.26   FAIL: kale-aarde-strook 0.26 van de ellips (>0.15)
+412x915     pot1      alsem        2   0.00   OK
+412x915     pot1      alsem        4   0.00   OK
+412x915     pot1      mandragora   0   0.00   OK
+412x915     pot1      mandragora   1   0.00   OK
+412x915     pot1      mandragora   2   0.00   OK
+412x915     pot1      mandragora   4   0.00   OK
+412x915     pot1      varkensgras  0   0.00   OK
+412x915     pot1      varkensgras  1   1.04   FAIL: geen plantpixels in of aan de ellips
+412x915     pot1      varkensgras  2   0.00   OK
+412x915     pot1      varkensgras  4   0.00   OK
+412x915     pot2      affodil      0   0.00   OK
+412x915     pot2      affodil      1   0.00   OK
+412x915     pot2      affodil      2   0.00   OK
+412x915     pot2      affodil      4   0.00   OK
+412x915     pot2      wolfsmelk    0   0.00   OK
+412x915     pot2      wolfsmelk    1   0.56   FAIL: kale-aarde-strook 0.56 van de ellips (>0.15)
+412x915     pot2      wolfsmelk    2   0.00   OK
+412x915     pot2      wolfsmelk    4   0.00   OK
+412x915     pot2      alsem        0   0.00   OK
+412x915     pot2      alsem        1   0.37   FAIL: kale-aarde-strook 0.37 van de ellips (>0.15)
+412x915     pot2      alsem        2   0.00   OK
+412x915     pot2      alsem        4   0.00   OK
+412x915     pot2      mandragora   0   0.00   OK
+412x915     pot2      mandragora   1   0.00   OK
+412x915     pot2      mandragora   2   0.00   OK
+412x915     pot2      mandragora   4   0.00   OK
+412x915     pot2      varkensgras  0   0.00   OK
+412x915     pot2      varkensgras  1   1.04   FAIL: geen plantpixels in of aan de ellips
+412x915     pot2      varkensgras  2   0.00   OK
+412x915     pot2      varkensgras  4   0.00   OK
+412x915     pot3      affodil      0   0.00   OK
+412x915     pot3      affodil      1   0.00   OK
+412x915     pot3      affodil      2   0.00   OK
+412x915     pot3      affodil      4   0.00   OK
+412x915     pot3      wolfsmelk    0   0.00   OK
+412x915     pot3      wolfsmelk    1   0.21   FAIL: kale-aarde-strook 0.21 van de ellips (>0.15)
+412x915     pot3      wolfsmelk    2   0.00   OK
+412x915     pot3      wolfsmelk    4   0.00   OK
+412x915     pot3      alsem        0   0.00   OK
+412x915     pot3      alsem        1   0.10   OK
+412x915     pot3      alsem        2   0.00   OK
+412x915     pot3      alsem        4   0.00   OK
+412x915     pot3      mandragora   0   0.00   OK
+412x915     pot3      mandragora   1   0.00   OK
+412x915     pot3      mandragora   2   0.00   OK
+412x915     pot3      mandragora   4   0.00   OK
+412x915     pot3      varkensgras  0   0.00   OK
+412x915     pot3      varkensgras  1   0.74   FAIL: kale-aarde-strook 0.74 van de ellips (>0.15)
+412x915     pot3      varkensgras  2   0.00   OK
+412x915     pot3      varkensgras  4   0.00   OK
+412x915     pot4      affodil      0   0.00   OK
+412x915     pot4      affodil      1   0.03   OK
+412x915     pot4      affodil      2   0.00   OK
+412x915     pot4      affodil      4   0.00   OK
+412x915     pot4      wolfsmelk    0   0.00   OK
+412x915     pot4      wolfsmelk    1   0.27   FAIL: kale-aarde-strook 0.27 van de ellips (>0.15)
+412x915     pot4      wolfsmelk    2   0.00   OK
+412x915     pot4      wolfsmelk    4   0.00   OK
+412x915     pot4      alsem        0   0.00   OK
+412x915     pot4      alsem        1   0.16   FAIL: kale-aarde-strook 0.16 van de ellips (>0.15)
+412x915     pot4      alsem        2   0.00   OK
+412x915     pot4      alsem        4   0.00   OK
+412x915     pot4      mandragora   0   0.00   OK
+412x915     pot4      mandragora   1   0.00   OK
+412x915     pot4      mandragora   2   0.00   OK
+412x915     pot4      mandragora   4   0.00   OK
+412x915     pot4      varkensgras  0   0.00   OK
+412x915     pot4      varkensgras  1   0.78   FAIL: kale-aarde-strook 0.78 van de ellips (>0.15)
+412x915     pot4      varkensgras  2   0.00   OK
+412x915     pot4      varkensgras  4   0.00   OK
+412x915     grotepot  tentacula    0   0.00   OK
+412x915     grotepot  tentacula    1   0.00   OK
+412x915     grotepot  tentacula    2   0.00   OK
+412x915     grotepot  tentacula    4   0.00   OK
+412x915     grotepot  duivelsstrik 0   0.00   OK
+412x915     grotepot  duivelsstrik 1   0.00   OK
+412x915     grotepot  duivelsstrik 2   0.00   OK
+412x915     grotepot  duivelsstrik 4   0.03   OK
+360x800     pot0      affodil      0   0.00   OK
+360x800     pot0      affodil      1   0.11   OK
+360x800     pot0      affodil      2   0.00   OK
+360x800     pot0      affodil      4   0.00   OK
+360x800     pot0      wolfsmelk    0   0.00   OK
+360x800     pot0      wolfsmelk    1   0.43   FAIL: kale-aarde-strook 0.43 van de ellips (>0.15)
+360x800     pot0      wolfsmelk    2   0.00   OK
+360x800     pot0      wolfsmelk    4   0.00   OK
+360x800     pot0      alsem        0   0.00   OK
+360x800     pot0      alsem        1   0.25   FAIL: kale-aarde-strook 0.25 van de ellips (>0.15)
+360x800     pot0      alsem        2   0.00   OK
+360x800     pot0      alsem        4   0.00   OK
+360x800     pot0      mandragora   0   0.00   OK
+360x800     pot0      mandragora   1   0.00   OK
+360x800     pot0      mandragora   2   0.00   OK
+360x800     pot0      mandragora   4   0.00   OK
+360x800     pot0      varkensgras  0   0.00   OK
+360x800     pot0      varkensgras  1   1.04   FAIL: geen plantpixels in of aan de ellips
+360x800     pot0      varkensgras  2   0.00   OK
+360x800     pot0      varkensgras  4   0.00   OK
+360x800     pot1      affodil      0   0.00   OK
+360x800     pot1      affodil      1   0.00   OK
+360x800     pot1      affodil      2   0.00   OK
+360x800     pot1      affodil      4   0.00   OK
+360x800     pot1      wolfsmelk    0   0.00   OK
+360x800     pot1      wolfsmelk    1   0.54   FAIL: kale-aarde-strook 0.54 van de ellips (>0.15)
+360x800     pot1      wolfsmelk    2   0.00   OK
+360x800     pot1      wolfsmelk    4   0.00   OK
+360x800     pot1      alsem        0   0.00   OK
+360x800     pot1      alsem        1   0.00   OK
+360x800     pot1      alsem        2   0.00   OK
+360x800     pot1      alsem        4   0.00   OK
+360x800     pot1      mandragora   0   0.00   OK
+360x800     pot1      mandragora   1   0.00   OK
+360x800     pot1      mandragora   2   0.00   OK
+360x800     pot1      mandragora   4   0.00   OK
+360x800     pot1      varkensgras  0   0.00   OK
+360x800     pot1      varkensgras  1   1.04   FAIL: geen plantpixels in of aan de ellips
+360x800     pot1      varkensgras  2   0.00   OK
+360x800     pot1      varkensgras  4   0.00   OK
+360x800     pot2      affodil      0   0.00   OK
+360x800     pot2      affodil      1   0.00   OK
+360x800     pot2      affodil      2   0.00   OK
+360x800     pot2      affodil      4   0.00   OK
+360x800     pot2      wolfsmelk    0   0.00   OK
+360x800     pot2      wolfsmelk    1   0.54   FAIL: kale-aarde-strook 0.54 van de ellips (>0.15)
+360x800     pot2      wolfsmelk    2   0.00   OK
+360x800     pot2      wolfsmelk    4   0.00   OK
+360x800     pot2      alsem        0   0.00   OK
+360x800     pot2      alsem        1   0.29   FAIL: kale-aarde-strook 0.29 van de ellips (>0.15)
+360x800     pot2      alsem        2   0.00   OK
+360x800     pot2      alsem        4   0.00   OK
+360x800     pot2      mandragora   0   0.00   OK
+360x800     pot2      mandragora   1   0.00   OK
+360x800     pot2      mandragora   2   0.00   OK
+360x800     pot2      mandragora   4   0.00   OK
+360x800     pot2      varkensgras  0   0.00   OK
+360x800     pot2      varkensgras  1   1.04   FAIL: geen plantpixels in of aan de ellips
+360x800     pot2      varkensgras  2   0.00   OK
+360x800     pot2      varkensgras  4   0.00   OK
+360x800     pot3      affodil      0   0.00   OK
+360x800     pot3      affodil      1   0.03   OK
+360x800     pot3      affodil      2   0.00   OK
+360x800     pot3      affodil      4   0.00   OK
+360x800     pot3      wolfsmelk    0   0.00   OK
+360x800     pot3      wolfsmelk    1   0.25   FAIL: kale-aarde-strook 0.25 van de ellips (>0.15)
+360x800     pot3      wolfsmelk    2   0.00   OK
+360x800     pot3      wolfsmelk    4   0.00   OK
+360x800     pot3      alsem        0   0.00   OK
+360x800     pot3      alsem        1   0.06   OK
+360x800     pot3      alsem        2   0.00   OK
+360x800     pot3      alsem        4   0.00   OK
+360x800     pot3      mandragora   0   0.00   OK
+360x800     pot3      mandragora   1   0.00   OK
+360x800     pot3      mandragora   2   0.00   OK
+360x800     pot3      mandragora   4   0.00   OK
+360x800     pot3      varkensgras  0   0.00   OK
+360x800     pot3      varkensgras  1   0.67   FAIL: kale-aarde-strook 0.67 van de ellips (>0.15)
+360x800     pot3      varkensgras  2   0.00   OK
+360x800     pot3      varkensgras  4   0.00   OK
+360x800     pot4      affodil      0   0.00   OK
+360x800     pot4      affodil      1   0.06   OK
+360x800     pot4      affodil      2   0.00   OK
+360x800     pot4      affodil      4   0.00   OK
+360x800     pot4      wolfsmelk    0   0.00   OK
+360x800     pot4      wolfsmelk    1   0.27   FAIL: kale-aarde-strook 0.27 van de ellips (>0.15)
+360x800     pot4      wolfsmelk    2   0.00   OK
+360x800     pot4      wolfsmelk    4   0.00   OK
+360x800     pot4      alsem        0   0.00   OK
+360x800     pot4      alsem        1   0.18   FAIL: kale-aarde-strook 0.18 van de ellips (>0.15)
+360x800     pot4      alsem        2   0.00   OK
+360x800     pot4      alsem        4   0.00   OK
+360x800     pot4      mandragora   0   0.00   OK
+360x800     pot4      mandragora   1   0.00   OK
+360x800     pot4      mandragora   2   0.00   OK
+360x800     pot4      mandragora   4   0.00   OK
+360x800     pot4      varkensgras  0   0.00   OK
+360x800     pot4      varkensgras  1   0.79   FAIL: kale-aarde-strook 0.79 van de ellips (>0.15)
+360x800     pot4      varkensgras  2   0.00   OK
+360x800     pot4      varkensgras  4   0.00   OK
+360x800     grotepot  tentacula    0   0.00   OK
+360x800     grotepot  tentacula    1   0.00   OK
+360x800     grotepot  tentacula    2   0.00   OK
+360x800     grotepot  tentacula    4   0.00   OK
+360x800     grotepot  duivelsstrik 0   0.00   OK
+360x800     grotepot  duivelsstrik 1   0.00   OK
+360x800     grotepot  duivelsstrik 2   0.00   OK
+360x800     grotepot  duivelsstrik 4   0.00   OK
+
+live: 216 checks, 27 fail, 189 ok
+kalibratie: v261-affodil FAALT zoals bedoeld

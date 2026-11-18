@@ -1,0 +1,107 @@
+/* v262: de achterlaag (pot + hele aarde-ellips) zit achter de plant.
+   De voorlaag is alleen de voorrand (lip + buik). kas258 zette .potimg op
+   z-index 3 bij body.kleur195, waardoor de aarde over de stengelvoet tekende. */
+
+/* Achterlaag: potfoto inclusief aarde, achter de plant */
+body[data-view=mijnkas] .mk-pot .potwrap .potimg,
+body.kleur195[data-view=mijnkas] .mk-pot .potwrap .potimg,
+body.kleur194[data-view=mijnkas] .mk-pot .potwrap .potimg,
+body[data-view=mijnkas] .mk-tafel.klein .mk-pot .potwrap .potimg,
+body[data-view=mijnkas] .mk-tafel.groot .mk-pot .potwrap .potimg,
+body.kleur195[data-view=mijnkas] .mk-tafel.klein .mk-pot .potwrap .potimg,
+body.kleur195[data-view=mijnkas] .mk-tafel.groot .mk-pot .potwrap .potimg{
+  position:relative!important;
+  z-index:1!important;
+}
+body[data-view=mijnkas] .mk-vloer .gpwrap .gpimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap .gpimg{
+  z-index:1!important;
+}
+
+/* Plant over de aarde */
+body[data-view=mijnkas] .mk-pot .potwrap .kplant,
+body.kleur195[data-view=mijnkas] .mk-pot .potwrap .kplant,
+body.kleur195[data-view=mijnkas] .mk-pot .kplant,
+body[data-view=mijnkas] .mk-pot .potwrap .plantimg,
+body.kleur195[data-view=mijnkas] .mk-pot .potwrap .plantimg{
+  z-index:2!important;
+}
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg,
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap .plantimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap .superimg{
+  z-index:2!important;
+}
+
+/* Voorlaag: alleen lip + buik, aarde volledig uitgeponst */
+body[data-view=mijnkas] .mk-pot .potwrap .potlip,
+body.kleur195[data-view=mijnkas] .mk-pot .potwrap .potlip,
+body.kleur195[data-view=mijnkas] .mk-pot .potlip{
+  z-index:3!important;
+}
+body[data-view=mijnkas] .mk-vloer .gpwrap .gplip,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap .gplip{
+  z-index:3!important;
+}
+
+/* Gat = de hele gemeten aarde-ellips (iets ruimer), niet de voorrand-lip */
+body[data-view=mijnkas] .mk-pot[data-pot=pot0]{--lip-cx:50%;--lip-cy:13.8%;--lip-rx:42%;--lip-ry:6.5%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot1]{--lip-cx:50%;--lip-cy:8.3%;--lip-rx:42%;--lip-ry:5.8%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot2]{--lip-cx:50%;--lip-cy:7.7%;--lip-rx:42%;--lip-ry:5.4%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot3]{--lip-cx:50%;--lip-cy:12.9%;--lip-rx:42%;--lip-ry:8.2%}
+body[data-view=mijnkas] .mk-pot[data-pot=pot4]{--lip-cx:50%;--lip-cy:12.0%;--lip-rx:42%;--lip-ry:6.8%}
+body[data-view=mijnkas] .mk-vloer[data-pot=grotepot],
+body[data-view=mijnkas] .mk-vloer{
+  --lip-cx:50%;--lip-cy:9.9%;--lip-rx:38%;--lip-ry:5.2%;
+}
+
+body[data-view=mijnkas] .mk-pot .potwrap .potlip,
+body.kleur195[data-view=mijnkas] .mk-pot .potwrap .potlip,
+body[data-view=mijnkas] .mk-vloer .gpwrap .gplip,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap .gplip{
+  -webkit-mask-image:radial-gradient(ellipse var(--lip-rx,42%) var(--lip-ry,6%) at var(--lip-cx,50%) var(--lip-cy,8%), transparent 99%, #000 101%)!important;
+  mask-image:radial-gradient(ellipse var(--lip-rx,42%) var(--lip-ry,6%) at var(--lip-cx,50%) var(--lip-cy,8%), transparent 99%, #000 101%)!important;
+  -webkit-mask-size:100% 100%!important;
+  mask-size:100% 100%!important;
+}
+
+/* Oude aarde-overlay op .mk-pot zelf blijft uit, ook met kleur195 */
+body[data-view=mijnkas] .mk-pot::after,
+body.kleur195[data-view=mijnkas] .mk-pot::after,
+body[data-view=mijnkas] .mk-vloer::after,
+body.kleur195[data-view=mijnkas] .mk-vloer::after{
+  display:none!important;
+  content:none!important;
+}
+
+/* Aarde-terp onder de plant, niet eroverheen */
+body[data-view=mijnkas] .mk-pot .potwrap::after,
+body.kleur195[data-view=mijnkas] .mk-pot .potwrap::after,
+body[data-view=mijnkas] .mk-vloer .gpwrap::after,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap::after{
+  z-index:1!important;
+}
+
+/* Zaadjes klein genoeg voor de opening, voet in de voorste aarde */
+body[data-view=mijnkas] .mk-pot[data-z=affodil] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=affodil] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=wolfsmelk] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=alsem] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=varkensgras] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=varkensgras] .kplant:has(.st0),
+body[data-view=mijnkas] .mk-pot[data-z=sodejus] .kplant:has(.kst0),
+body[data-view=mijnkas] .mk-pot[data-z=sodejus] .kplant:has(.st0){
+  width:16%!important;
+}
+
+/* Mega-plant boven de aarde, clip van licht.css uit */
+body[data-view=mijnkas] .mk-vloer .gpwrap .superimg,
+body[data-view=mijnkas] .mk-vloer .gpwrap .plantimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap .superimg,
+body.kleur195[data-view=mijnkas] .mk-vloer .gpwrap .plantimg{
+  clip-path:none!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+}
